@@ -49,6 +49,14 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
   const isColorSelectionRequired = product.hasColorOptions && productColors && productColors.length > 0;
   const isScentSelectionRequired = productScents && productScents.length > 0;
 
+  // Za debugging - logiraj podatke o mirisima
+  useEffect(() => {
+    if (isOpen) {
+      console.log('ProductScents:', productScents);
+      console.log('ProductColors:', productColors);
+    }
+  }, [isOpen, productScents, productColors]);
+
   // Check if all required options are selected
   const canAddToCart = 
     (!isScentSelectionRequired || selectedScentId !== null) && 
