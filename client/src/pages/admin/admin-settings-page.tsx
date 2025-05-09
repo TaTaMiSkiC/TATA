@@ -105,13 +105,18 @@ export default function AdminSettingsPage() {
   const { data: standardShippingRateSetting, isLoading: isLoadingStandardShipping } = getSetting("standardShippingRate");
   const { data: expressShippingRateSetting, isLoading: isLoadingExpressShipping } = getSetting("expressShippingRate");
   
+  // Dohvati lokalno spremljene postavke
+  const localFreeShippingThreshold = typeof window !== 'undefined' ? localStorage.getItem('freeShippingThreshold') : null;
+  const localStandardShippingRate = typeof window !== 'undefined' ? localStorage.getItem('standardShippingRate') : null;
+  const localExpressShippingRate = typeof window !== 'undefined' ? localStorage.getItem('expressShippingRate') : null;
+  
   // Shipping settings form
   const shippingSettingsForm = useForm<ShippingSettingsFormValues>({
     resolver: zodResolver(shippingSettingsSchema),
     defaultValues: {
-      freeShippingThreshold: freeShippingThresholdSetting?.value || "50",
-      standardShippingRate: standardShippingRateSetting?.value || "5",
-      expressShippingRate: expressShippingRateSetting?.value || "15",
+      freeShippingThreshold: localFreeShippingThreshold || freeShippingThresholdSetting?.value || "50",
+      standardShippingRate: localStandardShippingRate || standardShippingRateSetting?.value || "5",
+      expressShippingRate: localExpressShippingRate || expressShippingRateSetting?.value || "15",
     },
   });
 
@@ -173,36 +178,20 @@ export default function AdminSettingsPage() {
     }
   };
 
-  // Učitavanje podataka iz API-ja u formu - samo kad se učitaju API podaci, a nisu još u formi
+  // Učitavanje console loga za potvrdu
   useEffect(() => {
-    const isLoadingAny = isLoadingFreeShipping || isLoadingStandardShipping || isLoadingExpressShipping;
-    
-    // Provjeri jesu li svi podaci učitani i postavi u formu
-    if (!isLoadingAny && 
-        freeShippingThresholdSetting && 
-        standardShippingRateSetting && 
-        expressShippingRateSetting) {
+    if (!isLoadingFreeShipping && !isLoadingStandardShipping && !isLoadingExpressShipping) {
+      console.log('Učitane postavke iz API-ja:', {
+        freeShippingThreshold: freeShippingThresholdSetting?.value || 'nije učitano',
+        standardShippingRate: standardShippingRateSetting?.value || 'nije učitano',
+        expressShippingRate: expressShippingRateSetting?.value || 'nije učitano',
+      });
       
-      // Dohvati trenutne vrijednosti forme
-      const formValues = shippingSettingsForm.getValues();
-      
-      // Samo ako se trenutne vrijednosti forme razlikuju od API vrijednosti, ažuriraj ih
-      // Ovo sprječava resetiranje forme tijekom tipkanja
-      const apiValues = {
-        freeShippingThreshold: freeShippingThresholdSetting.value,
-        standardShippingRate: standardShippingRateSetting.value,
-        expressShippingRate: expressShippingRateSetting.value
-      };
-      
-      // Usporedba trenutnih vrijednosti forme s API vrijednostima
-      const needsUpdate = 
-        formValues.freeShippingThreshold === "" || 
-        formValues.standardShippingRate === "" || 
-        formValues.expressShippingRate === "";
-      
-      if (needsUpdate) {
-        shippingSettingsForm.reset(apiValues, { keepDefaultValues: false });
-      }
+      console.log('Učitane lokalne postavke:', {
+        freeShippingThreshold: localFreeShippingThreshold || 'nije postavljeno',
+        standardShippingRate: localStandardShippingRate || 'nije postavljeno',
+        expressShippingRate: localExpressShippingRate || 'nije postavljeno',
+      });
     }
   }, [
     isLoadingFreeShipping, 
@@ -211,7 +200,9 @@ export default function AdminSettingsPage() {
     freeShippingThresholdSetting,
     standardShippingRateSetting,
     expressShippingRateSetting,
-    shippingSettingsForm
+    localFreeShippingThreshold,
+    localStandardShippingRate,
+    localExpressShippingRate
   ]);
 
   // Handler za postavke dostave
@@ -234,6 +225,11 @@ export default function AdminSettingsPage() {
         key: "expressShippingRate",
         value: data.expressShippingRate
       });
+      
+      // Spremi vrijednosti u localStorage za backup
+      localStorage.setItem('freeShippingThreshold', data.freeShippingThreshold);
+      localStorage.setItem('standardShippingRate', data.standardShippingRate);
+      localStorage.setItem('expressShippingRate', data.expressShippingRate);
       
       toast({
         title: "Postavke dostave spremljene",
