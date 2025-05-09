@@ -45,7 +45,9 @@ export default function PayPalButton({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderPayload),
     });
+    console.log("Create order response:", response);
     const output = await response.json();
+    console.log("Create order output:", output);
     return { orderId: output.id };
   };
 
@@ -112,14 +114,17 @@ export default function PayPalButton({
   }, []);
   const initPayPal = async () => {
     try {
+      console.log("Fetching PayPal setup...");
       const clientToken: string = await fetch("/api/paypal/setup")
         .then((res) => {
+          console.log("PayPal setup response:", res);
           if (!res.ok) {
             throw new Error(`Failed to fetch PayPal setup: ${res.status}`);
           }
           return res.json();
         })
         .then((data) => {
+          console.log("PayPal setup data:", data);
           return data.clientToken;
         });
       const sdkInstance = await (window as any).paypal.createInstance({
@@ -135,14 +140,21 @@ export default function PayPalButton({
             });
 
       const onClick = async () => {
+        console.log("PayPal button clicked!");
         try {
+          console.log("Creating order...");
           const checkoutOptionsPromise = createOrder();
+          console.log("Starting PayPal checkout...");
           await paypalCheckout.start(
             { paymentFlow: "auto" },
             checkoutOptionsPromise,
           );
+          console.log("PayPal checkout started");
         } catch (e) {
-          console.error(e);
+          console.error("Error in PayPal onClick handler:", e);
+          if (onPaymentError) {
+            onPaymentError(e);
+          }
         }
       };
 
@@ -162,9 +174,40 @@ export default function PayPalButton({
     }
   };
 
+  // Direktni onClick umjesto event listenera
+  const handleButtonClick = async () => {
+    console.log("PayPal button clicked!");
+    try {
+      console.log("Creating order...");
+      const checkoutOptionsPromise = createOrder();
+      const sdkInstance = await (window as any).paypal.createInstance({
+        clientToken: await fetch("/api/paypal/setup").then(res => res.json()).then(data => data.clientToken),
+        components: ["paypal-payments"],
+      });
+      
+      const paypalCheckout = sdkInstance.createPayPalOneTimePaymentSession({
+        onApprove,
+        onCancel,
+        onError,
+      });
+      
+      console.log("Starting PayPal checkout...");
+      await paypalCheckout.start(
+        { paymentFlow: "auto" },
+        checkoutOptionsPromise,
+      );
+    } catch (e) {
+      console.error("PayPal error:", e);
+      if (onPaymentError) {
+        onPaymentError(e);
+      }
+    }
+  };
+
   return (
-    <paypal-button 
+    <button 
       id="paypal-button" 
+      onClick={handleButtonClick}
       style={{
         display: "block",
         padding: "10px 30px",
@@ -173,11 +216,13 @@ export default function PayPalButton({
         borderRadius: "4px",
         cursor: "pointer",
         fontWeight: "bold",
-        textAlign: "center"
+        textAlign: "center",
+        border: "none",
+        width: "100%"
       }}
     >
       Plati putem PayPal-a
-    </paypal-button>
+    </button>
   );
 }
 // <END_EXACT_CODE>

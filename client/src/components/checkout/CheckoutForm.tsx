@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
 import { useToast } from "@/hooks/use-toast";
+import { useSettings } from "@/hooks/use-settings-api";
 import PayPalButton from "@/components/PayPalButton";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useLocation } from "wouter";
@@ -60,13 +61,27 @@ export default function CheckoutForm() {
   const { cartItems, cartTotal } = useCart();
   const { toast } = useToast();
   const [, navigate] = useLocation();
+  const { getSetting } = useSettings();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("credit_card");
   const [paypalOrderComplete, setPaypalOrderComplete] = useState(false);
   
+  // Dohvati postavke za dostavu
+  const { data: freeShippingThresholdSetting } = getSetting("freeShippingThreshold");
+  const { data: standardShippingRateSetting } = getSetting("standardShippingRate");
+  
+  // Dohvati vrijednosti iz localStorage ako postoje, inače koristi API vrijednosti
+  const localFreeShippingThreshold = typeof window !== 'undefined' ? localStorage.getItem('freeShippingThreshold') : null;
+  const localStandardShippingRate = typeof window !== 'undefined' ? localStorage.getItem('standardShippingRate') : null;
+  
+  // Prioritet imaju localStorage vrijednosti, zatim API vrijednosti, i na kraju defaultne vrijednosti
+  const freeShippingThreshold = parseFloat(localFreeShippingThreshold || freeShippingThresholdSetting?.value || "50");
+  const standardShippingRate = parseFloat(localStandardShippingRate || standardShippingRateSetting?.value || "5");
+  
   // Calculate shipping and total
-  const shipping = cartTotal > 50 ? 0 : 5;
+  const isFreeShipping = standardShippingRate === 0 || (cartTotal >= freeShippingThreshold && freeShippingThreshold > 0);
+  const shipping = isFreeShipping ? 0 : standardShippingRate;
   const total = cartTotal + shipping;
   
   // Initialize form with user data if available
