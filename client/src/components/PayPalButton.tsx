@@ -23,12 +23,16 @@ interface PayPalButtonProps {
   amount: string;
   currency: string;
   intent: string;
+  onPaymentSuccess?: (orderData: any) => void;
+  onPaymentError?: (error: any) => void;
 }
 
 export default function PayPalButton({
   amount,
   currency,
   intent,
+  onPaymentSuccess,
+  onPaymentError,
 }: PayPalButtonProps) {
   const createOrder = async () => {
     const orderPayload = {
@@ -59,16 +63,30 @@ export default function PayPalButton({
 
   const onApprove = async (data: any) => {
     console.log("onApprove", data);
-    const orderData = await captureOrder(data.orderId);
-    console.log("Capture result", orderData);
+    try {
+      const orderData = await captureOrder(data.orderId);
+      console.log("Capture result", orderData);
+      if (onPaymentSuccess) {
+        onPaymentSuccess(orderData);
+      }
+    } catch (error) {
+      console.error("Error capturing PayPal order:", error);
+      if (onPaymentError) {
+        onPaymentError(error);
+      }
+    }
   };
 
   const onCancel = async (data: any) => {
     console.log("onCancel", data);
+    // Korisnik je odustao od plaćanja, ne trebamo ništa poduzeti
   };
 
   const onError = async (data: any) => {
     console.log("onError", data);
+    if (onPaymentError) {
+      onPaymentError(data);
+    }
   };
 
   useEffect(() => {
@@ -95,7 +113,12 @@ export default function PayPalButton({
   const initPayPal = async () => {
     try {
       const clientToken: string = await fetch("/api/paypal/setup")
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`Failed to fetch PayPal setup: ${res.status}`);
+          }
+          return res.json();
+        })
         .then((data) => {
           return data.clientToken;
         });

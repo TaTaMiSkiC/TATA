@@ -63,6 +63,7 @@ export default function CheckoutForm() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("credit_card");
+  const [paypalOrderComplete, setPaypalOrderComplete] = useState(false);
   
   // Calculate shipping and total
   const shipping = cartTotal > 50 ? 0 : 5;
@@ -157,6 +158,86 @@ export default function CheckoutForm() {
   };
   
   const watchPaymentMethod = form.watch("paymentMethod");
+
+  // PayPal handleri
+  const handlePayPalSuccess = async (paypalData: any) => {
+    console.log("PayPal payment successful", paypalData);
+    setPaypalOrderComplete(true);
+    setIsSubmitting(true);
+    
+    try {
+      // Preuzmite vrijednosti obrasca
+      const formData = form.getValues();
+      
+      // Kreirajte narudžbu na temelju podataka obrasca i PayPal odgovora
+      const orderItems = cartItems?.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.product.price
+      })) || [];
+      
+      // Kreirajte podatke narudžbe
+      const orderData = {
+        total: total.toString(),
+        paymentMethod: "paypal",
+        paymentStatus: "completed", // PayPal uspješno plaćanje
+        shippingAddress: formData.address,
+        shippingCity: formData.city,
+        shippingPostalCode: formData.postalCode,
+        shippingCountry: formData.country,
+        items: orderItems,
+        paypalOrderId: paypalData.id,
+        paypalTransactionId: paypalData.purchase_units?.[0]?.payments?.captures?.[0]?.id
+      };
+      
+      const response = await apiRequest("POST", "/api/orders", orderData);
+      const order = await response.json();
+      
+      // Osvježi košaricu (očisti ju)
+      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      
+      // Updejtaj korisnikovu adresu ako je označeno
+      if (formData.saveAddress && user) {
+        await apiRequest("PUT", "/api/user", {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          address: formData.address,
+          city: formData.city,
+          postalCode: formData.postalCode,
+          country: formData.country,
+          phone: formData.phone,
+        });
+        queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      }
+      
+      // Poruka o uspjehu
+      toast({
+        title: "Narudžba uspješno kreirana",
+        description: `Vaša narudžba #${order.id} je uspješno zaprimljena. Zahvaljujemo na plaćanju putem PayPal-a.`,
+      });
+      
+      // Preusmjeravanje na stranicu uspjeha
+      navigate(`/order-success?orderId=${order.id}`);
+    } catch (error) {
+      console.error("Error creating order after PayPal payment:", error);
+      toast({
+        title: "Greška pri kreiranju narudžbe",
+        description: "Plaćanje je bilo uspješno, ali došlo je do greške prilikom kreiranja narudžbe. Kontaktirajte nas za pomoć.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  const handlePayPalError = (error: any) => {
+    console.error("PayPal payment error", error);
+    toast({
+      title: "Greška pri PayPal plaćanju",
+      description: "Došlo je do greške prilikom procesiranja PayPal plaćanja. Molimo pokušajte ponovno ili odaberite drugi način plaćanja.",
+      variant: "destructive",
+    });
+  };
 
   return (
     <Form {...form}>
@@ -407,17 +488,22 @@ export default function CheckoutForm() {
             )}
             
             {watchPaymentMethod === 'paypal' && (
-              <div className="border rounded-lg p-4 bg-blue-50">
-                <p className="text-sm text-gray-600 mb-4">
-                  Nakon što potvrdite narudžbu, bit ćete preusmjereni na PayPal za sigurno plaćanje.
+              <div className="border rounded-lg p-4 bg-neutral">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Kliknite na PayPal gumb ispod za sigurno plaćanje putem PayPal servisa.
                 </p>
                 <div className="flex justify-center">
                   <PayPalButton 
                     amount={(total).toFixed(2)}
                     currency="EUR"
                     intent="CAPTURE"
+                    onPaymentSuccess={handlePayPalSuccess}
+                    onPaymentError={handlePayPalError}
                   />
                 </div>
+                <p className="text-sm text-muted-foreground mt-4">
+                  Nakon uspješnog plaćanja, vaša narudžba će biti automatski kreirana i potvrđena.
+                </p>
               </div>
             )}
             
