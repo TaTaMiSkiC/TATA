@@ -9,10 +9,13 @@ import {
   type Setting, type InsertSetting,
   type CartItemWithProduct,
   type OrderItemWithProduct,
-  type Scent,
-  type Color,
+  type Scent, type InsertScent,
+  type Color, type InsertColor,
+  type Page, type InsertPage,
+  type ProductScent,
+  type ProductColor,
   users, products, categories, orders, orderItems, cartItems, reviews, settings,
-  scents, colors
+  scents, colors, pages, productScents, productColors
 } from "@shared/schema";
 import { db, pool } from "./db";
 import { eq, and, desc, sql, isNull } from "drizzle-orm";
