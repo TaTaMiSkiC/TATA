@@ -20,7 +20,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { toast } = useToast();
   const [isHovered, setIsHovered] = useState(false);
   
-  const { id, name, price, imageUrl, categoryId } = product;
+  const { id, name, price, imageUrl = '', categoryId } = product;
   
   // Mock data for ratings
   const rating = 4.5;
@@ -48,7 +48,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
   
   return (
-    <Card className="product-card overflow-hidden bg-white shadow-md">
+    <Card className="product-card overflow-hidden bg-card shadow-md">
       <div 
         className="aspect-square overflow-hidden relative group"
         onMouseEnter={() => setIsHovered(true)}
@@ -56,7 +56,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       >
         <Link href={`/products/${id}`}>
           <img 
-            src={imageUrl} 
+            src={imageUrl || ''} 
             alt={name} 
             className={`w-full h-full object-cover transition-transform duration-500 ${isHovered ? 'scale-110' : ''}`}
           />
@@ -110,7 +110,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </h3>
         </Link>
         
-        <div className="text-sm text-gray-600 mb-2">
+        <div className="text-sm text-muted-foreground mb-2">
           {categoryId === 1 ? "Mirisna svijeća" : 
            categoryId === 2 ? "Dekorativna svijeća" : 
            categoryId === 3 ? "Personalizirana svijeća" : "Svijeća"}
@@ -128,7 +128,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               <Star className={rating >= 5 ? "fill-current" : ""} size={14} />
             )}
           </div>
-          <span className="text-xs text-gray-500 ml-1">({reviewCount})</span>
+          <span className="text-xs text-muted-foreground ml-1">({reviewCount})</span>
         </div>
         
         <div className="flex justify-between items-center">
