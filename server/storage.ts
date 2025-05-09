@@ -384,8 +384,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async addScentToProduct(productId: number, scentId: number): Promise<ProductScent> {
+    console.log(`Attempting to add scent ${scentId} to product ${productId}`);
     try {
       // Provjeri postoji li već ta veza
+      console.log("Checking for existing product-scent link...");
       const [existingLink] = await db
         .select()
         .from(productScents)
@@ -397,11 +399,15 @@ export class DatabaseStorage implements IStorage {
         );
       
       if (existingLink) {
+        console.log("Found existing link, returning it:", existingLink);
         return existingLink;
       }
       
       // Dodaj novu vezu
-      const [link] = await db
+      console.log("Creating new product-scent link...");
+      console.log("Values:", { productId, scentId });
+      
+      const insertResult = await db
         .insert(productScents)
         .values({
           productId,
@@ -409,10 +415,20 @@ export class DatabaseStorage implements IStorage {
         })
         .returning();
       
+      console.log("Insert result:", insertResult);
+      
+      if (!insertResult || insertResult.length === 0) {
+        throw new Error("Insert returned empty result");
+      }
+      
+      const [link] = insertResult;
+      console.log("Successfully added scent to product:", link);
+      
       return link;
     } catch (error) {
       console.error("Error in addScentToProduct:", error);
-      throw new Error("Failed to add scent to product");
+      console.error("Stack trace:", error instanceof Error ? error.stack : "No stack trace");
+      throw new Error(`Failed to add scent to product: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -503,8 +519,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async addColorToProduct(productId: number, colorId: number): Promise<ProductColor> {
+    console.log(`Attempting to add color ${colorId} to product ${productId}`);
     try {
       // Provjeri postoji li već ta veza
+      console.log("Checking for existing product-color link...");
       const [existingLink] = await db
         .select()
         .from(productColors)
@@ -516,11 +534,15 @@ export class DatabaseStorage implements IStorage {
         );
       
       if (existingLink) {
+        console.log("Found existing link, returning it:", existingLink);
         return existingLink;
       }
       
       // Dodaj novu vezu
-      const [link] = await db
+      console.log("Creating new product-color link...");
+      console.log("Values:", { productId, colorId });
+      
+      const insertResult = await db
         .insert(productColors)
         .values({
           productId,
@@ -528,10 +550,20 @@ export class DatabaseStorage implements IStorage {
         })
         .returning();
       
+      console.log("Insert result:", insertResult);
+      
+      if (!insertResult || insertResult.length === 0) {
+        throw new Error("Insert returned empty result");
+      }
+      
+      const [link] = insertResult;
+      console.log("Successfully added color to product:", link);
+      
       return link;
     } catch (error) {
       console.error("Error in addColorToProduct:", error);
-      throw new Error("Failed to add color to product");
+      console.error("Stack trace:", error instanceof Error ? error.stack : "No stack trace");
+      throw new Error(`Failed to add color to product: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
