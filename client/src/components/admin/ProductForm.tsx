@@ -55,6 +55,9 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
     categoryId: z.number({
       required_error: "Kategorija je obavezna",
     }),
+    // Ova polja imamo samo zbog defaultValues, ali su zamijenjena checkbox listama
+    scent: z.string().optional().nullable(),
+    color: z.string().optional().nullable(),
   });
 
   // Create form with validation
@@ -129,10 +132,16 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
     setIsSubmitting(true);
     
     try {
+      // Uklanjamo scent i color polja jer više ne koristimo pojedinačne vrijednosti
+      const { scent, color, ...restValues } = values;
+      
       const productData = {
-        ...values,
+        ...restValues,
         featured,
         hasColorOptions,
+        // Postavljamo na null da ih ne bi API izbacio kao grešku
+        scent: null,
+        color: null
       };
       
       let savedProduct;
@@ -325,90 +334,6 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                       {...field} 
                     />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* Scent */}
-            <FormField
-              control={form.control}
-              name="scent"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Miris</FormLabel>
-                  <Select
-                    onValueChange={(value) => field.onChange(value)}
-                    value={field.value || ""}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Odaberite miris" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {scentsLoading ? (
-                        <div className="py-2 text-center">Učitavanje...</div>
-                      ) : (
-                        <>
-                          <SelectItem value="_none_">Bez mirisa</SelectItem>
-                          {scents?.map((scent: any) => (
-                            <SelectItem 
-                              key={scent.id} 
-                              value={scent.name}
-                            >
-                              {scent.name}
-                            </SelectItem>
-                          ))}
-                        </>
-                      )}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* Color */}
-            <FormField
-              control={form.control}
-              name="color"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Boja</FormLabel>
-                  <Select
-                    onValueChange={(value) => field.onChange(value)}
-                    value={field.value || ""}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Odaberite boju" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {colorsLoading ? (
-                        <div className="py-2 text-center">Učitavanje...</div>
-                      ) : (
-                        <>
-                          <SelectItem value="_none_">Bez boje</SelectItem>
-                          {colors?.map((color: any) => (
-                            <SelectItem 
-                              key={color.id} 
-                              value={color.name}
-                            >
-                              <div className="flex items-center">
-                                <span 
-                                  className="w-4 h-4 rounded-full mr-2" 
-                                  style={{ backgroundColor: color.hexValue }}
-                                ></span>
-                                {color.name}
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </>
-                      )}
-                    </SelectContent>
-                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
