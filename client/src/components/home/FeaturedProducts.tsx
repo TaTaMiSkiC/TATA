@@ -10,12 +10,12 @@ export default function FeaturedProducts() {
   });
 
   return (
-    <section className="py-16 bg-neutral">
+    <section className="py-16 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-end mb-10">
           <div>
-            <h2 className="heading text-3xl md:text-4xl font-bold text-text-dark">Istaknuti proizvodi</h2>
-            <p className="mt-3 text-gray-600">Naši najpopularniji proizvodi koje naši kupci vole</p>
+            <h2 className="heading text-3xl md:text-4xl font-bold text-foreground">Istaknuti proizvodi</h2>
+            <p className="mt-3 text-muted-foreground">Naši najpopularniji proizvodi koje naši kupci vole</p>
           </div>
           <div 
             className="hidden md:inline-flex items-center font-accent text-primary hover:text-opacity-80 transition cursor-pointer"
