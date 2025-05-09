@@ -65,7 +65,7 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
       icon: <CreditCard size={20} />
     },
     {
-      name: "Postavke",
+      name: "Postavke dostave",
       path: "/admin/settings",
       icon: <Settings size={20} />
     },
