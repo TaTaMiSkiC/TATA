@@ -66,7 +66,7 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
     },
     {
       name: "Postavke dostave",
-      path: "/admin/settings",
+      path: "/admin/delivery-settings",
       icon: <Settings size={20} />
     },
   ];
