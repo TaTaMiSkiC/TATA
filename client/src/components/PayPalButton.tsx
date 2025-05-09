@@ -162,6 +162,22 @@ export default function PayPalButton({
     }
   };
 
-  return <paypal-button id="paypal-button"></paypal-button>;
+  return (
+    <paypal-button 
+      id="paypal-button" 
+      style={{
+        display: "block",
+        padding: "10px 30px",
+        background: "#0070ba",
+        color: "white",
+        borderRadius: "4px",
+        cursor: "pointer",
+        fontWeight: "bold",
+        textAlign: "center"
+      }}
+    >
+      Plati putem PayPal-a
+    </paypal-button>
+  );
 }
 // <END_EXACT_CODE>
