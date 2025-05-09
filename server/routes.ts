@@ -915,27 +915,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Ruta za obradu POST i PUT zahtjeva za stranice
-  // POST /api/pages - Kreira novu stranicu
+  // POST /api/pages - Kreira novu stranicu ili ažurira postojeću
   app.post("/api/pages", async (req, res) => {
     try {
       if (!req.isAuthenticated() || !req.user?.isAdmin) {
         return res.status(403).json({ message: "Unauthorized" });
       }
       
-      const { type, title, content } = req.body;
+      const { type, title, content, id } = req.body;
       
       if (!type || !title || !content) {
         return res.status(400).json({ message: "Type, title, and content are required" });
       }
       
-      // Provjeri postoji li stranica
-      const existingPage = await storage.getPageByType(type);
-      
-      if (existingPage) {
-        return res.status(400).json({ message: "Page with this type already exists" });
-      }
-      
-      // Kreiraj novu stranicu
+      // Kreiraj novu stranicu ili ažuriraj postojeću
+      // createPage metoda će sama provjeriti postoji li stranica s tim tipom
+      // i ažurirati je ako postoji
       const page = await storage.createPage({
         title,
         content,
@@ -944,6 +939,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.status(201).json(page);
     } catch (error) {
+      console.error("Greška pri kreiranju/ažuriranju stranice:", error);
       res.status(500).json({ message: "Failed to create page" });
     }
   });

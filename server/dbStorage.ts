@@ -35,6 +35,76 @@ export class DatabaseStorage implements IStorage {
       tableName: 'session',
       createTableIfMissing: true
     });
+    
+    // Provjeri i inicijaliziraj potrebne tablice
+    this.initializeRelationTables().catch(err => {
+      console.error("Greška pri inicijalizaciji pomoćnih tablica:", err);
+    });
+  }
+  
+  private async initializeRelationTables() {
+    try {
+      // Provjeri postoji li tablica product_scents
+      const scentTableExists = await this.tableExists('product_scents');
+      if (!scentTableExists) {
+        console.log("Kreiranje tablice product_scents jer ne postoji...");
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS product_scents (
+            id SERIAL PRIMARY KEY,
+            product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+            scent_id INTEGER NOT NULL REFERENCES scents(id) ON DELETE CASCADE,
+            UNIQUE(product_id, scent_id)
+          )
+        `);
+      }
+      
+      // Provjeri postoji li tablica product_colors
+      const colorTableExists = await this.tableExists('product_colors');
+      if (!colorTableExists) {
+        console.log("Kreiranje tablice product_colors jer ne postoji...");
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS product_colors (
+            id SERIAL PRIMARY KEY,
+            product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+            color_id INTEGER NOT NULL REFERENCES colors(id) ON DELETE CASCADE,
+            UNIQUE(product_id, color_id)
+          )
+        `);
+      }
+      
+      // Provjeri postoji li tablica pages
+      const pagesTableExists = await this.tableExists('pages');
+      if (!pagesTableExists) {
+        console.log("Kreiranje tablice pages jer ne postoji...");
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS pages (
+            id SERIAL PRIMARY KEY,
+            type TEXT NOT NULL UNIQUE,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+          )
+        `);
+      }
+      
+      console.log("Inicijalizacija pomoćnih tablica završena.");
+    } catch (error) {
+      console.error("Greška pri inicijalizaciji pomoćnih tablica:", error);
+      throw error;
+    }
+  }
+  
+  private async tableExists(tableName: string): Promise<boolean> {
+    const result = await pool.query(
+      `SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_schema = 'public' 
+        AND table_name = $1
+      )`,
+      [tableName]
+    );
+    return result.rows[0].exists;
   }
 
   // User methods
@@ -632,5 +702,64 @@ export class DatabaseStorage implements IStorage {
 
   async deleteSetting(key: string): Promise<void> {
     await db.delete(settings).where(eq(settings.key, key));
+  }
+  
+  // Page methods
+  async getPage(id: number): Promise<Page | undefined> {
+    const [page] = await db.select().from(pages).where(eq(pages.id, id));
+    return page;
+  }
+  
+  async getPageByType(type: string): Promise<Page | undefined> {
+    const [page] = await db.select().from(pages).where(eq(pages.type, type));
+    return page;
+  }
+  
+  async getAllPages(): Promise<Page[]> {
+    return await db.select().from(pages);
+  }
+  
+  async createPage(pageData: InsertPage): Promise<Page> {
+    try {
+      // Provjeri postoji li stranica s istim tipom
+      const existingPage = await this.getPageByType(pageData.type);
+      
+      if (existingPage) {
+        // Ako postoji, ažuriraj je
+        return await this.updatePage(existingPage.id, pageData) as Page;
+      } else {
+        // Ako ne postoji, kreiraj novu
+        const [page] = await db.insert(pages).values({
+          ...pageData,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }).returning();
+        return page;
+      }
+    } catch (error) {
+      console.error("Greška pri kreiranju stranice:", error);
+      throw new Error("Failed to create page");
+    }
+  }
+  
+  async updatePage(id: number, pageData: Partial<InsertPage>): Promise<Page | undefined> {
+    try {
+      const [updatedPage] = await db
+        .update(pages)
+        .set({ 
+          ...pageData,
+          updatedAt: new Date()
+        })
+        .where(eq(pages.id, id))
+        .returning();
+      return updatedPage;
+    } catch (error) {
+      console.error("Greška pri ažuriranju stranice:", error);
+      throw new Error("Failed to update page");
+    }
+  }
+  
+  async deletePage(id: number): Promise<void> {
+    await db.delete(pages).where(eq(pages.id, id));
   }
 }
