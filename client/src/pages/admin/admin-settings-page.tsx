@@ -1,17 +1,31 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { useSettings } from "@/hooks/use-settings";
+import { useLocation } from "wouter";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Save, Moon, Sun, Languages, Trash2, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 // Form schema za promjenu lozinke
 const passwordSchema = z.object({
@@ -51,10 +65,13 @@ const shippingSettingsSchema = z.object({
 type ShippingSettingsFormValues = z.infer<typeof shippingSettingsSchema>;
 
 export default function AdminSettingsPage() {
-  const { user } = useAuth();
+  const { user, logoutMutation } = useAuth();
+  const { theme, language, setTheme, setLanguage } = useSettings();
   const { toast } = useToast();
+  const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("account");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Password change form
   const passwordForm = useForm<PasswordFormValues>({
@@ -182,6 +199,7 @@ export default function AdminSettingsPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList>
             <TabsTrigger value="account">Korisnički račun</TabsTrigger>
+            <TabsTrigger value="appearance">Izgled i jezik</TabsTrigger>
             <TabsTrigger value="store">Postavke trgovine</TabsTrigger>
             <TabsTrigger value="shipping">Dostava</TabsTrigger>
           </TabsList>
@@ -268,6 +286,173 @@ export default function AdminSettingsPage() {
                       </Button>
                     </form>
                   </Form>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Brisanje korisničkog računa */}
+            <Card className="border-destructive/50">
+              <CardHeader>
+                <CardTitle className="text-destructive">Opasna zona</CardTitle>
+                <CardDescription>
+                  Brisanje korisničkog računa je trajna akcija i ne može se poništiti
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" disabled={isDeleting}>
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Izbriši korisnički račun
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Jeste li sigurni?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Ova radnja će trajno izbrisati vaš korisnički račun i sve povezane podatke. 
+                        Ova radnja se ne može poništiti.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Odustani</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        onClick={async () => {
+                          setIsDeleting(true);
+                          
+                          try {
+                            if (user) {
+                              // Ovdje bi poslali zahtjev za brisanje računa
+                              await apiRequest("DELETE", `/api/users/${user.id}`);
+                              
+                              toast({
+                                title: "Račun je izbrisan",
+                                description: "Vaš korisnički račun je uspješno izbrisan.",
+                              });
+                              
+                              // Odjavi korisnika
+                              logoutMutation.mutate(undefined, {
+                                onSuccess: () => {
+                                  navigate("/");
+                                }
+                              });
+                            }
+                          } catch (error: any) {
+                            toast({
+                              title: "Greška pri brisanju računa",
+                              description: error.message || "Došlo je do greške prilikom brisanja korisničkog računa.",
+                              variant: "destructive",
+                            });
+                            setIsDeleting(false);
+                          }
+                        }}
+                      >
+                        {isDeleting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Brisanje...
+                          </>
+                        ) : (
+                          "Izbriši račun"
+                        )}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          {/* Izgled i jezik */}
+          <TabsContent value="appearance" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Izgled</CardTitle>
+                <CardDescription>
+                  Prilagodite izgled aplikacije
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-medium">Tema</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Postavite svjetlu ili tamnu temu sučelja
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant={theme === "light" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setTheme("light")}
+                      >
+                        <Sun className="h-4 w-4 mr-1" />
+                        Svjetla
+                      </Button>
+                      <Button
+                        variant={theme === "dark" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setTheme("dark")}
+                      >
+                        <Moon className="h-4 w-4 mr-1" />
+                        Tamna
+                      </Button>
+                      <Button
+                        variant={theme === "system" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setTheme("system")}
+                      >
+                        <span className="mr-1">🖥️</span>
+                        Sustav
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Jezik</CardTitle>
+                <CardDescription>
+                  Odaberite jezik sučelja
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <h3 className="font-medium">Odabrani jezik: <span className="font-bold">{language === "hr" ? "Hrvatski" : language === "en" ? "Engleski" : "Njemački"}</span></h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Odaberite jezik koji želite koristiti u aplikaciji
+                  </p>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <Button
+                      variant={language === "hr" ? "default" : "outline"}
+                      className="justify-start"
+                      onClick={() => setLanguage("hr")}
+                    >
+                      <Languages className="h-4 w-4 mr-2" />
+                      Hrvatski
+                    </Button>
+                    <Button
+                      variant={language === "en" ? "default" : "outline"}
+                      className="justify-start"
+                      onClick={() => setLanguage("en")}
+                    >
+                      <Languages className="h-4 w-4 mr-2" />
+                      Engleski
+                    </Button>
+                    <Button
+                      variant={language === "de" ? "default" : "outline"}
+                      className="justify-start"
+                      onClick={() => setLanguage("de")}
+                    >
+                      <Languages className="h-4 w-4 mr-2" />
+                      Njemački
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
