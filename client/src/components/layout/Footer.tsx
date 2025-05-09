@@ -66,7 +66,7 @@ export default function Footer() {
               <li>
                 <Link href="/blog">
                   <div className="text-gray-400 hover:text-white transition cursor-pointer">
-                    Blog
+                    Slike
                   </div>
                 </Link>
               </li>
