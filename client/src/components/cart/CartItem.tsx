@@ -14,7 +14,7 @@ export default function CartItem({ item }: CartItemProps) {
   const [quantity, setQuantity] = useState(item.quantity);
   const [isUpdating, setIsUpdating] = useState(false);
   
-  const { id, product } = item;
+  const { id, product, scentId, colorId } = item;
   const { name, price, imageUrl, stock } = product;
   
   // Format price
