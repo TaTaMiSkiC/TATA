@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from 'react-helmet';
 import AdminLayout from "@/components/admin/AdminLayout";
-import { Order, OrderItem, User } from "@shared/schema";
+import { Order, OrderItemWithProduct, User } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -60,7 +60,7 @@ export default function AdminOrders() {
   });
   
   // Fetch order items for selected order
-  const { data: orderItems, isLoading: orderItemsLoading } = useQuery<OrderItem[]>({
+  const { data: orderItems, isLoading: orderItemsLoading } = useQuery<OrderItemWithProduct[]>({
     queryKey: [`/api/orders/${selectedOrder?.id}/items`],
     enabled: !!selectedOrder,
   });
@@ -427,7 +427,7 @@ export default function AdminOrders() {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead>ID Proizvoda</TableHead>
+                            <TableHead>Naziv proizvoda</TableHead>
                             <TableHead>Količina</TableHead>
                             <TableHead>Cijena po komadu</TableHead>
                             <TableHead>Ukupno</TableHead>
@@ -436,7 +436,7 @@ export default function AdminOrders() {
                         <TableBody>
                           {orderItems.map((item) => (
                             <TableRow key={item.id}>
-                              <TableCell>{item.productId}</TableCell>
+                              <TableCell>{item.product?.name || `Proizvod #${item.productId}`}</TableCell>
                               <TableCell>{item.quantity}</TableCell>
                               <TableCell>{parseFloat(item.price).toFixed(2)} €</TableCell>
                               <TableCell>

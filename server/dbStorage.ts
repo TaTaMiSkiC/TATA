@@ -8,6 +8,7 @@ import {
   type Review, type InsertReview,
   type Setting, type InsertSetting,
   type CartItemWithProduct,
+  type OrderItemWithProduct,
   users, products, categories, orders, orderItems, cartItems, reviews, settings
 } from "@shared/schema";
 import { db, pool } from "./db";
@@ -167,8 +168,20 @@ export class DatabaseStorage implements IStorage {
     return updatedOrder;
   }
 
-  async getOrderItems(orderId: number): Promise<OrderItem[]> {
-    return await db.select().from(orderItems).where(eq(orderItems.orderId, orderId));
+  async getOrderItems(orderId: number): Promise<OrderItemWithProduct[]> {
+    const items = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId));
+    
+    // Dohvati detalje za svaki proizvod
+    const result = await Promise.all(items.map(async (item) => {
+      const [product] = await db.select().from(products).where(eq(products.id, item.productId));
+      
+      return {
+        ...item,
+        product
+      };
+    }));
+    
+    return result;
   }
 
   // Cart methods
