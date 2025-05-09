@@ -408,6 +408,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Reviews
+  app.get("/api/reviews", async (req, res) => {
+    try {
+      // Dohvati sve recenzije s podacima o korisniku i proizvodu
+      const result = await db.query.reviews.findMany({
+        with: {
+          user: {
+            columns: {
+              id: true,
+              username: true,
+              firstName: true,
+              lastName: true,
+              password: false,
+            },
+          },
+          product: {
+            columns: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      });
+      
+      res.json(result);
+    } catch (error) {
+      console.error("Failed to fetch all reviews:", error);
+      res.status(500).json({ message: "Failed to fetch reviews" });
+    }
+  });
+
   app.get("/api/products/:id/reviews", async (req, res) => {
     try {
       const productId = parseInt(req.params.id);
