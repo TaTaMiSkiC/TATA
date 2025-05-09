@@ -7,6 +7,7 @@ import { Product, Review, Scent, Color } from "@shared/schema";
 import { useCart } from "@/hooks/use-cart";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import ProductViewModal from "@/components/product/ProductViewModal";
 import {
   Minus,
   Plus,
@@ -75,6 +76,7 @@ export default function ProductDetailsPage() {
   const [quantity, setQuantity] = useState(1);
   const [selectedScentId, setSelectedScentId] = useState<number | null>(null);
   const [selectedColorId, setSelectedColorId] = useState<number | null>(null);
+  const [productViewModalOpen, setProductViewModalOpen] = useState(false);
   const { addToCart } = useCart();
   const { user } = useAuth();
   const { toast } = useToast();
