@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { useCart } from "@/hooks/use-cart";
 import { useAuth } from "@/hooks/use-auth";
+import { useSettings } from "@/hooks/use-settings-api";
 import { Helmet } from 'react-helmet';
 import Layout from "@/components/layout/Layout";
 import CartItem from "@/components/cart/CartItem";
@@ -34,13 +35,14 @@ export default function CartPage() {
   // Total after discount (shipping will be calculated dynamically by ShippingCostCalculator)
   const totalAfterDiscount = cartTotal - discount;
   
-  // Dohvati vrijednosti iz localStorage ako postoje
-  const localStandardShippingRate = typeof window !== 'undefined' ? localStorage.getItem('standardShippingRate') : null;
-  const localFreeShippingThreshold = typeof window !== 'undefined' ? localStorage.getItem('freeShippingThreshold') : null;
+  // Koristi useSettings hook umjesto lokalnog storagea
+  const { getSetting } = useSettings();
+  const { data: freeShippingThresholdSetting, isLoading: isLoadingFreeThreshold } = getSetting("freeShippingThreshold");
+  const { data: standardShippingRateSetting, isLoading: isLoadingStandardRate } = getSetting("standardShippingRate");
   
   // Izračunaj troškove dostave za prikaz ukupnog iznosa
-  const standardShippingRate = parseFloat(localStandardShippingRate || "5");
-  const freeShippingThreshold = parseFloat(localFreeShippingThreshold || "50");
+  const standardShippingRate = parseFloat(standardShippingRateSetting?.value || "5");
+  const freeShippingThreshold = parseFloat(freeShippingThresholdSetting?.value || "50");
   
   // Ako je standardShippingRate 0, dostava je uvijek besplatna
   // Inače, dostava je besplatna ako je ukupan iznos veći od praga za besplatnu dostavu
@@ -58,7 +60,8 @@ export default function CartPage() {
     }
   };
   
-  if (isLoading) {
+  const isLoadingShippingSettings = isLoadingFreeThreshold || isLoadingStandardRate;
+  if (isLoading || isLoadingShippingSettings) {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-12">

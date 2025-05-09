@@ -25,13 +25,22 @@ export function ShippingCostCalculator({ subtotal }: ShippingCostCalculatorProps
     );
   }
   
-  // Dohvati vrijednosti iz localStorage ako postoje, inače koristi API vrijednosti
-  const localFreeShippingThreshold = typeof window !== 'undefined' ? localStorage.getItem('freeShippingThreshold') : null;
-  const localStandardShippingRate = typeof window !== 'undefined' ? localStorage.getItem('standardShippingRate') : null;
+  // Prioritiziraj API vrijednosti i ažuriraj localStorage kad god se dohvate nove vrijednosti
+  const apiThreshold = freeShippingThresholdSetting?.value || "50";
+  const apiRate = standardShippingRateSetting?.value || "5";
   
-  // Izračunaj troškove dostave na temelju postavki, prioritizirajući localStorage
-  const freeShippingThreshold = parseFloat(localFreeShippingThreshold || freeShippingThresholdSetting?.value || "50");
-  const standardShippingRate = parseFloat(localStandardShippingRate || standardShippingRateSetting?.value || "5");
+  // Ako imamo vrijednosti iz API-ja, spremi ih u localStorage
+  if (typeof window !== 'undefined' && freeShippingThresholdSetting?.value) {
+    localStorage.setItem('freeShippingThreshold', freeShippingThresholdSetting.value);
+  }
+  
+  if (typeof window !== 'undefined' && standardShippingRateSetting?.value) {
+    localStorage.setItem('standardShippingRate', standardShippingRateSetting.value);
+  }
+  
+  // Koristi vrijednosti iz API-ja
+  const freeShippingThreshold = parseFloat(apiThreshold);
+  const standardShippingRate = parseFloat(apiRate);
   
   // Ako je standardShippingRate postavljen na 0, dostava je uvijek besplatna
   if (standardShippingRate === 0) {
@@ -74,13 +83,22 @@ export function FreeShippingProgress({ subtotal }: ShippingCostCalculatorProps) 
     return null;
   }
   
-  // Dohvati vrijednosti iz localStorage ako postoje, inače koristi API vrijednosti
-  const localFreeShippingThreshold = typeof window !== 'undefined' ? localStorage.getItem('freeShippingThreshold') : null;
-  const localStandardShippingRate = typeof window !== 'undefined' ? localStorage.getItem('standardShippingRate') : null;
+  // Prioritiziraj API vrijednosti i ažuriraj localStorage kad god se dohvate nove vrijednosti
+  const apiThreshold = freeShippingThresholdSetting?.value || "50";
+  const apiRate = standardShippingRateSetting?.value || "5";
   
-  // Prioritet imaju localStorage vrijednosti, zatim API vrijednosti, i na kraju defaultne vrijednosti
-  const freeShippingThreshold = parseFloat(localFreeShippingThreshold || freeShippingThresholdSetting?.value || "50");
-  const standardShippingRate = parseFloat(localStandardShippingRate || standardShippingRateSetting?.value || "5");
+  // Ako imamo vrijednosti iz API-ja, spremi ih u localStorage
+  if (typeof window !== 'undefined' && freeShippingThresholdSetting?.value) {
+    localStorage.setItem('freeShippingThreshold', freeShippingThresholdSetting.value);
+  }
+  
+  if (typeof window !== 'undefined' && standardShippingRateSetting?.value) {
+    localStorage.setItem('standardShippingRate', standardShippingRateSetting.value);
+  }
+  
+  // Koristi vrijednosti iz API-ja
+  const freeShippingThreshold = parseFloat(apiThreshold);
+  const standardShippingRate = parseFloat(apiRate);
   
   // Ako je standardShippingRate 0, dostava je uvijek besplatna, pa ne prikazujemo informaciju
   // Također, ako je prag za besplatnu dostavu 0 ili je već dosegnut prag, ne prikazujemo komponentu
