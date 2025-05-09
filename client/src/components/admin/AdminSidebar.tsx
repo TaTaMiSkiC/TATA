@@ -9,7 +9,10 @@ import {
   Flame,
   TagsIcon,
   Sparkles,
-  Palette
+  Palette,
+  Truck,
+  Mail,
+  FileText
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -64,10 +67,21 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
       path: "/admin/payments",
       icon: <CreditCard size={20} />
     },
+    // Postavke grupa
+    {
+      name: "Postavke stranica",
+      path: "/admin/page-settings",
+      icon: <Settings size={20} />
+    },
+    {
+      name: "Kontakt podaci",
+      path: "/admin/contact-settings",
+      icon: <Mail size={20} />
+    },
     {
       name: "Postavke dostave",
       path: "/admin/delivery-settings",
-      icon: <Settings size={20} />
+      icon: <Truck size={20} />
     },
   ];
 
