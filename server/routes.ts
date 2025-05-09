@@ -1021,8 +1021,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Ako postavka ne postoji, kreiraj je
         await storage.createSetting({
           key: "instagram_manual_images",
-          value: JSON.stringify(images),
-          description: "Manually added Instagram images"
+          value: JSON.stringify(images)
         });
       }
       
@@ -1055,8 +1054,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Ako token ne postoji, kreiraj ga
         await storage.createSetting({
           key: "instagram_token",
-          value: token,
-          description: "Instagram API access token"
+          value: token
         });
       }
       
