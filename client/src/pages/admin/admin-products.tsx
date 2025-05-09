@@ -288,7 +288,7 @@ export default function AdminProducts() {
       
       {/* Product Form Dialog */}
       <Dialog open={showProductForm} onOpenChange={setShowProductForm}>
-        <DialogContent className="max-w-4xl">
+        <DialogContent className="max-w-4xl max-h-[90vh]">
           <DialogHeader>
             <DialogTitle>{editingProduct ? "Uredi proizvod" : "Novi proizvod"}</DialogTitle>
             <DialogDescription>
@@ -298,16 +298,12 @@ export default function AdminProducts() {
             </DialogDescription>
           </DialogHeader>
           
-          <ProductForm 
-            product={editingProduct || undefined} 
-            onSuccess={resetProductForm}
-          />
-          
-          <DialogFooter className="mt-6">
-            <DialogClose asChild>
-              <Button variant="outline">Odustani</Button>
-            </DialogClose>
-          </DialogFooter>
+          <div className="overflow-y-auto max-h-[calc(90vh-140px)] pr-4">
+            <ProductForm 
+              product={editingProduct || undefined} 
+              onSuccess={resetProductForm}
+            />
+          </div>
         </DialogContent>
       </Dialog>
       
