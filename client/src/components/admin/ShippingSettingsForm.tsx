@@ -77,24 +77,39 @@ export default function ShippingSettingsForm() {
     }
   }, [settings, form]);
 
-  // Akcija za spremanje postavki
-  const saveSettingsMutation = useMutation({
-    mutationFn: async (settingData: { key: string; value: string }) => {
-      // Prvo provjeravamo postoji li postavka
-      const res = await apiRequest("GET", `/api/settings/${settingData.key}`);
+  // Akcija za spremanje svih postavki odjednom
+  const saveAllSettingsMutation = useMutation({
+    mutationFn: async (data: ShippingFormValues) => {
+      const results = [];
       
-      if (res.ok) {
-        // Ako postoji, ažuriramo
-        return apiRequest("PATCH", `/api/settings/${settingData.key}`, { value: settingData.value });
-      } else {
-        // Ako ne postoji, kreiramo novu
-        return apiRequest("POST", "/api/settings", settingData);
+      // Spremamo svaku postavku u nizu
+      for (const [key, value] of Object.entries(data)) {
+        console.log(`Spremanje postavke: ${key} = ${value}`);
+        // Prvo provjeravamo postoji li postavka
+        const res = await apiRequest("GET", `/api/settings/${key}`);
+        
+        if (res.ok) {
+          // Ako postoji, ažuriramo
+          results.push(await apiRequest("PATCH", `/api/settings/${key}`, { value }));
+        } else {
+          // Ako ne postoji, kreiramo novu
+          results.push(await apiRequest("POST", "/api/settings", { key, value }));
+        }
       }
+      
+      return results;
     },
     onSuccess: () => {
+      // Osvježavamo podatke nakon uspješnog spremanja
       queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
+      
+      toast({
+        title: "Uspjeh",
+        description: "Postavke dostave su uspješno spremljene.",
+      });
     },
     onError: (error) => {
+      console.error("Greška pri spremanju postavki:", error);
       toast({
         title: "Greška",
         description: "Došlo je do greške prilikom spremanja postavki.",
@@ -106,15 +121,7 @@ export default function ShippingSettingsForm() {
   // Spremanje svih postavki
   const onSubmit = async (data: ShippingFormValues) => {
     try {
-      // Spremamo svaku postavku posebno
-      await saveSettingsMutation.mutateAsync({ key: "freeShippingThreshold", value: data.freeShippingThreshold });
-      await saveSettingsMutation.mutateAsync({ key: "standardShippingRate", value: data.standardShippingRate });
-      await saveSettingsMutation.mutateAsync({ key: "expressShippingRate", value: data.expressShippingRate });
-      
-      toast({
-        title: "Uspjeh",
-        description: "Postavke dostave su uspješno spremljene.",
-      });
+      await saveAllSettingsMutation.mutateAsync(data);
     } catch (error) {
       console.error("Greška pri spremanju postavki:", error);
     }
@@ -167,8 +174,8 @@ export default function ShippingSettingsForm() {
           />
         </div>
         
-        <Button type="submit" disabled={isLoadingSettings || saveSettingsMutation.isPending}>
-          {saveSettingsMutation.isPending ? (
+        <Button type="submit" disabled={isLoadingSettings || saveAllSettingsMutation.isPending}>
+          {saveAllSettingsMutation.isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Spremanje...
