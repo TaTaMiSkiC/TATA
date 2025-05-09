@@ -14,6 +14,7 @@ import OrderSuccessPage from "@/pages/order-success-page";
 import AboutPage from "@/pages/about-page";
 import ContactPage from "@/pages/contact-page";
 import BlogPage from "@/pages/blog-page";
+import ShippingReturnsPage from "@/pages/shipping-returns-page";
 import AdminDashboard from "@/pages/admin/admin-dashboard";
 import AdminProducts from "@/pages/admin/admin-products";
 import AdminCategories from "@/pages/admin/admin-categories";
@@ -25,6 +26,7 @@ import DeliverySettingsPage from "@/pages/admin/delivery-settings-page";
 import AdminSettings from "@/pages/admin/settings-page";
 import PageSettingsPage from "@/pages/admin/page-settings";
 import ContactSettingsPage from "@/pages/admin/contact-settings";
+import ShippingReturnsSettingsPage from "@/pages/admin/shipping-returns-settings";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "./hooks/use-auth";
 import { CartProvider } from "./hooks/use-cart";
@@ -43,6 +45,7 @@ function Router() {
       <Route path="/about" component={AboutPage} />
       <Route path="/contact" component={ContactPage} />
       <Route path="/blog" component={BlogPage} />
+      <Route path="/shipping-returns" component={ShippingReturnsPage} />
       <ProtectedRoute path="/checkout" component={CheckoutPage} />
       <ProtectedRoute path="/order-success" component={OrderSuccessPage} />
       <ProtectedRoute path="/admin" component={AdminDashboard} />
