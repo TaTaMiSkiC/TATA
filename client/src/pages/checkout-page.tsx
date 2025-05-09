@@ -1,8 +1,9 @@
 import { useCart } from "@/hooks/use-cart";
 import { useAuth } from "@/hooks/use-auth";
+import { useSettings } from "@/hooks/use-settings-api";
 import { Helmet } from 'react-helmet';
 import { useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import CheckoutForm from "@/components/checkout/CheckoutForm";
 import { Button } from "@/components/ui/button";
@@ -15,9 +16,23 @@ export default function CheckoutPage() {
   const { cartItems, cartTotal, isLoading } = useCart();
   const { user } = useAuth();
   const [location, navigate] = useLocation();
+  const { getSetting } = useSettings();
+  
+  // Dohvati postavke za dostavu
+  const { data: freeShippingThresholdSetting } = getSetting("freeShippingThreshold");
+  const { data: standardShippingRateSetting } = getSetting("standardShippingRate");
+  
+  // Dohvati vrijednosti iz localStorage ako postoje, inače koristi API vrijednosti
+  const localFreeShippingThreshold = typeof window !== 'undefined' ? localStorage.getItem('freeShippingThreshold') : null;
+  const localStandardShippingRate = typeof window !== 'undefined' ? localStorage.getItem('standardShippingRate') : null;
+  
+  // Prioritet imaju localStorage vrijednosti, zatim API vrijednosti, i na kraju defaultne vrijednosti
+  const freeShippingThreshold = parseFloat(localFreeShippingThreshold || freeShippingThresholdSetting?.value || "50");
+  const standardShippingRate = parseFloat(localStandardShippingRate || standardShippingRateSetting?.value || "5");
   
   // Calculate shipping and total
-  const shipping = cartTotal > 50 ? 0 : 5;
+  const isFreeShipping = standardShippingRate === 0 || (cartTotal >= freeShippingThreshold && freeShippingThreshold > 0);
+  const shipping = isFreeShipping ? 0 : standardShippingRate;
   const total = cartTotal + shipping;
   
   // Redirect to cart if cart is empty
