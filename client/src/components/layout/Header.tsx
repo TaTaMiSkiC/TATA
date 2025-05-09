@@ -110,7 +110,7 @@ export default function Header() {
               className={`font-body hover:text-primary transition cursor-pointer ${location === '/blog' ? 'text-primary' : 'text-text-dark'}`}
               onClick={() => window.location.href = '/blog'}
             >
-              Blog
+              Slike
             </div>
             
             <div 

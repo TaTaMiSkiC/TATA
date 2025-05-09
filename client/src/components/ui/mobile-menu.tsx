@@ -93,7 +93,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             </Link>
             <Link href="/blog">
               <a className="font-body text-text-dark py-2 hover:text-primary" onClick={onClose}>
-                Blog
+                Slike
               </a>
             </Link>
             <Link href="/contact">
