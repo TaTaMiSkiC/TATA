@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, ShoppingBag, CheckCircle } from "lucide-react";
+import { ShoppingBag, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/hooks/use-cart";
 import { useQuery } from "@tanstack/react-query";
 import Image from "@/components/ui/image";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ProductViewModalProps {
   isOpen: boolean;
@@ -108,136 +109,134 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[680px] max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Odaberite opcije</DialogTitle>
         </DialogHeader>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Product image */}
-          <div className="bg-card rounded-lg overflow-hidden">
-            <Image 
-              src={product.imageUrl || '/placeholder.png'} 
-              alt={product.name}
-              className="w-full h-[250px] object-cover"
-            />
-          </div>
-          
-          {/* Product info and options */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-lg font-semibold">{product.name}</h3>
-              <p className="text-primary text-xl font-bold">{new Intl.NumberFormat('hr-HR', { style: 'currency', currency: 'EUR' }).format(parseFloat(product.price))}</p>
+        <ScrollArea className="h-[calc(90vh-180px)] pr-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4">
+            {/* Product image */}
+            <div className="bg-card rounded-lg overflow-hidden">
+              <Image 
+                src={product.imageUrl || '/placeholder.png'} 
+                alt={product.name}
+                className="w-full h-[250px] object-cover"
+              />
             </div>
             
-            {/* Scent options */}
-            {isScentSelectionRequired && (
+            {/* Product info and options */}
+            <div className="space-y-4">
               <div>
-                <h4 className="text-sm font-medium mb-2">Miris <span className="text-destructive">*</span></h4>
-                <RadioGroup 
-                  value={selectedScentId?.toString()} 
-                  onValueChange={(value) => setSelectedScentId(parseInt(value))}
-                  className="grid grid-cols-1 gap-2"
-                >
-                  {productScents.map((scent) => (
-                    <div key={scent.id} 
-                      className={`flex items-center border rounded-md p-3 transition-colors cursor-pointer
-                        ${selectedScentId === scent.id 
-                          ? 'border-primary bg-primary/5 text-primary' 
-                          : 'border-input hover:border-primary/50 hover:bg-muted/30'}`}
-                      onClick={() => setSelectedScentId(scent.id)}
-                    >
-                      <RadioGroupItem value={scent.id.toString()} id={`modal-scent-${scent.id}`} className="mr-2" />
-                      <Label
-                        htmlFor={`modal-scent-${scent.id}`}
-                        className="cursor-pointer flex-1 text-sm"
-                      >
-                        {scent.name}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
+                <h3 className="text-lg font-semibold">{product.name}</h3>
+                <p className="text-primary text-xl font-bold">{new Intl.NumberFormat('hr-HR', { style: 'currency', currency: 'EUR' }).format(parseFloat(product.price))}</p>
               </div>
-            )}
-            
-            {/* Color options */}
-            {isColorSelectionRequired && (
-              <div>
-                <h4 className="text-sm font-medium mb-2">Boja <span className="text-destructive">*</span></h4>
-                <RadioGroup 
-                  value={selectedColorId?.toString()} 
-                  onValueChange={(value) => setSelectedColorId(parseInt(value))}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-2"
-                >
-                  {productColors.map((color) => (
-                    <div 
-                      key={color.id} 
-                      className={`flex items-center border rounded-md p-3 transition-colors cursor-pointer
-                        ${selectedColorId === color.id 
-                          ? 'border-primary bg-primary/5 text-primary' 
-                          : 'border-input hover:border-primary/50 hover:bg-muted/30'}`}
-                      onClick={() => setSelectedColorId(color.id)}
-                    >
+              
+              {/* Scent options */}
+              {isScentSelectionRequired && (
+                <div>
+                  <h4 className="text-sm font-medium mb-2">Miris <span className="text-destructive">*</span></h4>
+                  <RadioGroup 
+                    value={selectedScentId?.toString()} 
+                    onValueChange={(value) => setSelectedScentId(parseInt(value))}
+                    className="grid grid-cols-1 gap-2"
+                  >
+                    {productScents.map((scent) => (
+                      <div key={scent.id} 
+                        className={`flex items-center border rounded-md p-2 transition-colors cursor-pointer
+                          ${selectedScentId === scent.id 
+                            ? 'border-primary bg-primary/5 text-primary' 
+                            : 'border-input hover:border-primary/50 hover:bg-muted/30'}`}
+                        onClick={() => setSelectedScentId(scent.id)}
+                      >
+                        <RadioGroupItem value={scent.id.toString()} id={`modal-scent-${scent.id}`} className="mr-2" />
+                        <Label
+                          htmlFor={`modal-scent-${scent.id}`}
+                          className="cursor-pointer flex-1 text-sm"
+                        >
+                          {scent.name}
+                        </Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </div>
+              )}
+              
+              {/* Color options */}
+              {isColorSelectionRequired && (
+                <div>
+                  <h4 className="text-sm font-medium mb-2">Boja <span className="text-destructive">*</span></h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-2">
+                    {productColors.map((color) => (
                       <div 
-                        className={`w-6 h-6 mr-2 rounded-full border-2 ${selectedColorId === color.id ? 'border-primary' : 'border-muted'}`}
-                        style={{ backgroundColor: color.hexValue }}
-                      ></div>
-                      <RadioGroupItem 
-                        value={color.id.toString()} 
-                        id={`modal-color-${color.id}`}
-                        className="mr-2" 
-                      />
-                      <Label
-                        htmlFor={`modal-color-${color.id}`}
-                        className="cursor-pointer flex-1 text-sm"
+                        key={color.id} 
+                        className={`flex items-center border rounded-md p-2 transition-colors cursor-pointer
+                          ${selectedColorId === color.id 
+                            ? 'border-primary bg-primary/5 text-primary' 
+                            : 'border-input hover:border-primary/50 hover:bg-muted/30'}`}
+                        onClick={() => setSelectedColorId(color.id)}
                       >
-                        {color.name}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </div>
-            )}
-            
-            {/* Quantity */}
-            <div>
-              <h4 className="text-sm font-medium mb-2">Količina</h4>
-              <div className="flex items-center border border-input rounded-md w-[120px]">
-                <button 
-                  type="button" 
-                  className="w-10 h-10 flex items-center justify-center bg-muted hover:bg-muted/80 transition"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  disabled={quantity <= 1}
-                >
-                  <span className="sr-only">Smanji</span>
-                  <span className="font-medium">-</span>
-                </button>
-                <input 
-                  type="number" 
-                  className="w-12 h-10 text-center border-x border-input focus:outline-none focus:ring-0 bg-transparent"
-                  value={quantity}
-                  onChange={(e) => {
-                    const val = parseInt(e.target.value);
-                    if (!isNaN(val) && val > 0 && val <= product.stock) {
-                      setQuantity(val);
-                    }
-                  }}
-                  min={1}
-                  max={product.stock}
-                />
-                <button 
-                  type="button" 
-                  className="w-10 h-10 flex items-center justify-center bg-muted hover:bg-muted/80 transition"
-                  onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                  disabled={quantity >= product.stock}
-                >
-                  <span className="sr-only">Povećaj</span>
-                  <span className="font-medium">+</span>
-                </button>
+                        <div 
+                          className={`w-5 h-5 mr-2 rounded-full border ${selectedColorId === color.id ? 'border-primary' : 'border-muted'}`}
+                          style={{ backgroundColor: color.hexValue }}
+                        ></div>
+                        <RadioGroupItem 
+                          value={color.id.toString()} 
+                          id={`modal-color-${color.id}`}
+                          className="sr-only" 
+                        />
+                        <Label
+                          htmlFor={`modal-color-${color.id}`}
+                          className="cursor-pointer text-xs"
+                        >
+                          {color.name}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Quantity */}
+              <div>
+                <h4 className="text-sm font-medium mb-2">Količina</h4>
+                <div className="flex items-center border border-input rounded-md w-[120px]">
+                  <button 
+                    type="button" 
+                    className="w-10 h-10 flex items-center justify-center bg-muted hover:bg-muted/80 transition"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={quantity <= 1}
+                  >
+                    <span className="sr-only">Smanji</span>
+                    <span className="font-medium">-</span>
+                  </button>
+                  <input 
+                    type="number" 
+                    className="w-12 h-10 text-center border-x border-input focus:outline-none focus:ring-0 bg-transparent"
+                    value={quantity}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      if (!isNaN(val) && val > 0 && val <= product.stock) {
+                        setQuantity(val);
+                      }
+                    }}
+                    min={1}
+                    max={product.stock}
+                  />
+                  <button 
+                    type="button" 
+                    className="w-10 h-10 flex items-center justify-center bg-muted hover:bg-muted/80 transition"
+                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                    disabled={quantity >= product.stock}
+                  >
+                    <span className="sr-only">Povećaj</span>
+                    <span className="font-medium">+</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </ScrollArea>
         
         <DialogFooter className="sm:justify-start mt-4">
           {addedToCart ? (
