@@ -267,11 +267,11 @@ export default function ProductDetailsPage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center text-sm text-muted-foreground">
             <Link href="/">
-              <a className="hover:text-primary">Početna</a>
+              <div className="hover:text-primary cursor-pointer">Početna</div>
             </Link>
             <ChevronRight size={14} className="mx-2" />
             <Link href="/products">
-              <a className="hover:text-primary">Proizvodi</a>
+              <div className="hover:text-primary cursor-pointer">Proizvodi</div>
             </Link>
             <ChevronRight size={14} className="mx-2" />
             <span className="text-foreground font-medium">{product.name}</span>

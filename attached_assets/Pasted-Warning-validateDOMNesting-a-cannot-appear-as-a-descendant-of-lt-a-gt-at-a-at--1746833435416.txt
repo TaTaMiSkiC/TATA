@@ -1,0 +1,22 @@
+Warning: validateDOMNesting(...): <a> cannot appear as a descendant of &lt;a&gt;.
+    at a
+    at a
+    at https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=c7ce5dd0:337:18
+    at div
+    at div
+    at div
+    at main
+    at div
+    at Layout (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/components/layout/Layout.tsx:19:34)
+    at ProductDetailsPage (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/pages/product-details-page.tsx:78:22)
+    at Route (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=c7ce5dd0:323:16)
+    at Switch (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=c7ce5dd0:379:17)
+    at Router
+    at Provider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-VFYO4PQK.js?v=c7ce5dd0:38:15)
+    at TooltipProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=c7ce5dd0:61:5)
+    at CartProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/hooks/use-cart.tsx:27:32)
+    at AuthProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/hooks/use-auth.tsx:26:32)
+    at LanguageProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/hooks/use-language.tsx:30:36)
+    at ThemeProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/hooks/use-theme.tsx:35:33)
+    at QueryClientProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=c7ce5dd0:2805:3)
+    at App
