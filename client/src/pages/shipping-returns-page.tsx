@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
 import { Loader2 } from "lucide-react";
-import Layout from "@/components/layout/Layout";
-import PageHeader from "@/components/layout/PageHeader";
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
 
 export default function ShippingReturnsPage() {
   // Postavljanje naslova stranice
@@ -47,13 +47,21 @@ export default function ShippingReturnsPage() {
   });
 
   return (
-    <Layout>
+    <>
       <Helmet>
         <title>{pageData?.title || "Dostava i povrat"} | Kerzenwelt by Dani</title>
         <meta name="description" content="Informacije o dostavi i povratu proizvoda. Besplatna dostava za narudžbe iznad 50€." />
       </Helmet>
       
-      <PageHeader title={pageData?.title || "Dostava i povrat"} />
+      <Header />
+      
+      <div className="bg-muted/30 border-b">
+        <div className="container mx-auto px-4 py-12 md:py-16">
+          <h1 className="heading text-3xl md:text-4xl font-bold text-foreground mb-2">
+            {pageData?.title || "Dostava i povrat"}
+          </h1>
+        </div>
+      </div>
       
       <div className="container mx-auto px-4 py-12">
         {isLoading ? (
@@ -67,6 +75,8 @@ export default function ShippingReturnsPage() {
           />
         )}
       </div>
-    </Layout>
+      
+      <Footer />
+    </>
   );
 }

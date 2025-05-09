@@ -12,7 +12,8 @@ import {
   Palette,
   Truck,
   Mail,
-  FileText
+  FileText,
+  RefreshCw
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -82,6 +83,11 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
       name: "Postavke dostave",
       path: "/admin/delivery-settings",
       icon: <Truck size={20} />
+    },
+    {
+      name: "Dostava i povrat",
+      path: "/admin/shipping-returns-settings",
+      icon: <RefreshCw size={20} />
     },
   ];
 

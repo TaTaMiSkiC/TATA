@@ -59,6 +59,7 @@ function Router() {
       <ProtectedRoute path="/admin/settings" component={AdminSettings} />
       <ProtectedRoute path="/admin/page-settings" component={PageSettingsPage} />
       <ProtectedRoute path="/admin/contact-settings" component={ContactSettingsPage} />
+      <ProtectedRoute path="/admin/shipping-returns-settings" component={ShippingReturnsSettingsPage} />
       <Route component={NotFound} />
     </Switch>
   );
