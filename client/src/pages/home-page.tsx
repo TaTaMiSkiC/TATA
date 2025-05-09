@@ -29,11 +29,11 @@ export default function HomePage() {
       <Hero />
       
       {/* Categories Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="heading text-3xl md:text-4xl font-bold text-text-dark">Naše kategorije</h2>
-            <p className="mt-3 text-gray-600 max-w-xl mx-auto">
+            <h2 className="heading text-3xl md:text-4xl font-bold text-foreground">Naše kategorije</h2>
+            <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
               Istražite našu bogatu ponudu ručno izrađenih svijeća za svaku priliku
             </p>
           </div>
@@ -41,7 +41,7 @@ export default function HomePage() {
           {categoriesLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[1, 2, 3].map((index) => (
-                <div key={index} className="relative rounded-lg overflow-hidden bg-gray-200 h-80 animate-pulse" />
+                <div key={index} className="relative rounded-lg overflow-hidden bg-muted h-80 animate-pulse" />
               ))}
             </div>
           ) : (

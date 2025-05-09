@@ -35,11 +35,11 @@ const instagramPosts = [
 
 export default function InstagramFeed() {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="heading text-3xl md:text-4xl font-bold text-text-dark">Pratite nas na Instagramu</h2>
-          <p className="mt-3 text-gray-600 max-w-xl mx-auto">@kerzenwelt_by_dani</p>
+          <h2 className="heading text-3xl md:text-4xl font-bold text-foreground">Pratite nas na Instagramu</h2>
+          <p className="mt-3 text-muted-foreground max-w-xl mx-auto">@kerzenwelt_by_dani</p>
         </div>
         
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
