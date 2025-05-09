@@ -6,8 +6,9 @@ import {
   type OrderItem, type InsertOrderItem,
   type CartItem, type InsertCartItem,
   type Review, type InsertReview,
+  type Setting, type InsertSetting,
   type CartItemWithProduct,
-  users, products, categories, orders, orderItems, cartItems, reviews
+  users, products, categories, orders, orderItems, cartItems, reviews, settings
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -62,6 +63,13 @@ export interface IStorage {
   // Review methods
   getProductReviews(productId: number): Promise<Review[]>;
   createReview(review: InsertReview): Promise<Review>;
+  
+  // Settings methods
+  getSetting(key: string): Promise<Setting | undefined>;
+  getAllSettings(): Promise<Setting[]>;
+  createSetting(setting: InsertSetting): Promise<Setting>;
+  updateSetting(key: string, value: string): Promise<Setting | undefined>;
+  deleteSetting(key: string): Promise<void>;
   
   // Session store
   sessionStore: SessionStore;
@@ -358,6 +366,37 @@ export class DatabaseStorage implements IStorage {
   async createReview(reviewData: InsertReview): Promise<Review> {
     const [review] = await db.insert(reviews).values(reviewData).returning();
     return review;
+  }
+
+  // Settings methods
+  async getSetting(key: string): Promise<Setting | undefined> {
+    const [setting] = await db.select().from(settings).where(eq(settings.key, key));
+    return setting;
+  }
+
+  async getAllSettings(): Promise<Setting[]> {
+    return await db.select().from(settings);
+  }
+
+  async createSetting(settingData: InsertSetting): Promise<Setting> {
+    const [setting] = await db.insert(settings).values(settingData).returning();
+    return setting;
+  }
+
+  async updateSetting(key: string, value: string): Promise<Setting | undefined> {
+    const [setting] = await db
+      .update(settings)
+      .set({ 
+        value,
+        updatedAt: new Date()
+      })
+      .where(eq(settings.key, key))
+      .returning();
+    return setting;
+  }
+
+  async deleteSetting(key: string): Promise<void> {
+    await db.delete(settings).where(eq(settings.key, key));
   }
 }
 

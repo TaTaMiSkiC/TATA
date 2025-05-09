@@ -193,6 +193,24 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
 }));
 
 // Extended CartItem type that includes product information
+// Definiranje tablice za postavke
+export const settings = pgTable("settings", {
+  id: serial("id").primaryKey(),
+  key: text("key").notNull().unique(),
+  value: text("value").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertSettingSchema = createInsertSchema(settings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type Setting = typeof settings.$inferSelect;
+export type InsertSetting = z.infer<typeof insertSettingSchema>;
+
 export type CartItemWithProduct = CartItem & {
   product: Product;
 };
