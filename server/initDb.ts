@@ -242,23 +242,19 @@ async function createDefaultGeneralSettings() {
   await db.insert(settings).values([
     {
       key: "store_name",
-      value: "Kerzenwelt"
+      value: "Kerzenwelt by Dani"
     },
     {
-      key: "store_description",
-      value: "Ručno izrađene svijeće od prirodnih sastojaka. Od naše obitelji do vašeg doma."
+      key: "store_email",
+      value: "info@kerzenwelt.hr"
     },
     {
-      key: "store_owner",
-      value: "Dani"
+      key: "store_phone",
+      value: "+385 91 234 5678"
     },
     {
-      key: "store_legal_name",
-      value: "Kerzenwelt d.o.o."
-    },
-    {
-      key: "store_tax_id",
-      value: "HR12345678901"
+      key: "store_address",
+      value: "Ilica 123, 10000 Zagreb, Hrvatska"
     }
   ]);
   
