@@ -9,10 +9,13 @@ import {
   type Setting, type InsertSetting,
   type CartItemWithProduct,
   type OrderItemWithProduct,
-  users, products, categories, orders, orderItems, cartItems, reviews, settings
+  type Scent,
+  type Color,
+  users, products, categories, orders, orderItems, cartItems, reviews, settings,
+  scents, colors
 } from "@shared/schema";
 import { db, pool } from "./db";
-import { eq, and, desc, sql } from "drizzle-orm";
+import { eq, and, desc, sql, isNull } from "drizzle-orm";
 import { IStorage } from "./storage";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
@@ -253,27 +256,67 @@ export class DatabaseStorage implements IStorage {
       },
     });
 
-    // Convert the result to CartItemWithProduct type
-    return result.map((item) => ({
-      ...item,
-      product: item.product,
-    }));
+    // Dohvati scent i color informacije za svaki item ako postoje
+    const cartItemsWithScentColor = await Promise.all(
+      result.map(async (item) => {
+        let scent = undefined;
+        let color = undefined;
+        
+        if (item.scentId) {
+          const [scentData] = await db
+            .select()
+            .from(scents)
+            .where(eq(scents.id, item.scentId));
+          scent = scentData;
+        }
+        
+        if (item.colorId) {
+          const [colorData] = await db
+            .select()
+            .from(colors)
+            .where(eq(colors.id, item.colorId));
+          color = colorData;
+        }
+        
+        return {
+          ...item,
+          product: item.product,
+          scent,
+          color
+        };
+      })
+    );
+
+    return cartItemsWithScentColor;
   }
 
   async addToCart(itemData: InsertCartItem): Promise<CartItem> {
-    // Check if the product is already in the cart
+    // Provjeri postoji li već isti proizvod s istim mirisom i bojom u košarici
+    let query = and(
+      eq(cartItems.userId, itemData.userId),
+      eq(cartItems.productId, itemData.productId)
+    );
+    
+    // Dodaj uvjete za miris i boju ako postoje
+    if (itemData.scentId) {
+      query = and(query, eq(cartItems.scentId, itemData.scentId));
+    } else {
+      query = and(query, isNull(cartItems.scentId));
+    }
+    
+    if (itemData.colorId) {
+      query = and(query, eq(cartItems.colorId, itemData.colorId));
+    } else {
+      query = and(query, isNull(cartItems.colorId));
+    }
+    
     const [existingItem] = await db
       .select()
       .from(cartItems)
-      .where(
-        and(
-          eq(cartItems.userId, itemData.userId),
-          eq(cartItems.productId, itemData.productId)
-        )
-      );
+      .where(query);
 
     if (existingItem) {
-      // Update quantity if item exists
+      // Ažuriraj količinu ako isti proizvod s istim mirisom i bojom već postoji
       const [updatedItem] = await db
         .update(cartItems)
         .set({
@@ -283,7 +326,7 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return updatedItem;
     } else {
-      // Insert new item
+      // Dodaj novi artikl
       const [cartItem] = await db.insert(cartItems).values(itemData).returning();
       return cartItem;
     }

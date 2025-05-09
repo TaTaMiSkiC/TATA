@@ -85,7 +85,27 @@ export default function CartItem({ item }: CartItemProps) {
               <span className="text-warning">Dostupno: {stock} kom</span>
             )}
           </p>
-          <p className="text-sm font-medium text-primary">
+          
+          {/* Prikaz odabranog mirisa ako postoji */}
+          {item.scent && (
+            <p className="text-xs text-muted-foreground">
+              Miris: <span className="font-medium">{item.scent.name}</span>
+            </p>
+          )}
+          
+          {/* Prikaz odabrane boje ako postoji */}
+          {item.color && (
+            <div className="flex items-center mt-1">
+              <span className="text-xs text-muted-foreground mr-1">Boja:</span>
+              <div 
+                className="w-3 h-3 rounded-full mr-1 border"
+                style={{ backgroundColor: item.color.hexValue }}
+              ></div>
+              <span className="text-xs font-medium">{item.color.name}</span>
+            </div>
+          )}
+          
+          <p className="text-sm font-medium text-primary mt-1">
             {formattedPrice} €
           </p>
         </div>
