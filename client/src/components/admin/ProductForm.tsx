@@ -165,7 +165,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
         
         // Add selected scents
         for (const scentId of selectedScents) {
-          await apiRequest("POST", `/api/products/${savedProduct.id}/scents/${scentId}`);
+          await apiRequest("POST", `/api/products/${savedProduct.id}/scents`, { scentId });
         }
         
         // First delete all existing colors for this product if we're updating
@@ -175,7 +175,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
         
         // Add selected colors
         for (const colorId of selectedColors) {
-          await apiRequest("POST", `/api/products/${savedProduct.id}/colors/${colorId}`);
+          await apiRequest("POST", `/api/products/${savedProduct.id}/colors`, { colorId });
         }
       }
       

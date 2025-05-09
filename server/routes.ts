@@ -657,10 +657,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const productId = parseInt(req.params.id);
       
-      // Izvršavamo SQL upit za brisanje svih povezanih mirisa
-      await storage.db.delete(productScents)
-        .where(eq(productScents.productId, productId))
-        .execute();
+      // Dohvatimo sve mirise proizvoda
+      const scents = await storage.getProductScents(productId);
+      
+      // Brišemo sve mirise jednog po jednog
+      for (const scent of scents) {
+        await storage.removeScentFromProduct(productId, scent.id);
+      }
       
       res.status(204).send();
     } catch (error) {
