@@ -11,6 +11,9 @@ import ProductDetailsPage from "@/pages/product-details-page";
 import CartPage from "@/pages/cart-page";
 import CheckoutPage from "@/pages/checkout-page";
 import OrderSuccessPage from "@/pages/order-success-page";
+import AboutPage from "@/pages/about-page";
+import ContactPage from "@/pages/contact-page";
+import BlogPage from "@/pages/blog-page";
 import AdminDashboard from "@/pages/admin/admin-dashboard";
 import AdminProducts from "@/pages/admin/admin-products";
 import AdminCategories from "@/pages/admin/admin-categories";
@@ -37,6 +40,9 @@ function Router() {
       <Route path="/products" component={ProductsPage} />
       <Route path="/products/:id" component={ProductDetailsPage} />
       <Route path="/cart" component={CartPage} />
+      <Route path="/about" component={AboutPage} />
+      <Route path="/contact" component={ContactPage} />
+      <Route path="/blog" component={BlogPage} />
       <ProtectedRoute path="/checkout" component={CheckoutPage} />
       <ProtectedRoute path="/order-success" component={OrderSuccessPage} />
       <ProtectedRoute path="/admin" component={AdminDashboard} />

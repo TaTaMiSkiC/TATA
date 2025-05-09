@@ -1,10 +1,74 @@
 import React from "react";
 import { Helmet } from "react-helmet";
+import { useQuery } from "@tanstack/react-query";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import PageSettingsForm from "@/components/admin/PageSettingsForm";
+import { Card, CardContent } from "@/components/ui/card";
+import AboutPageForm from "@/components/admin/AboutPageForm";
+import ContactPageForm from "@/components/admin/ContactPageForm";
+import BlogPageForm from "@/components/admin/BlogPageForm";
 
 export default function PageSettingsPage() {
+  // Dohvati podatke za sve stranice
+  const { data: aboutPage, isLoading: aboutLoading } = useQuery({
+    queryKey: ["/api/pages/about"],
+    queryFn: async () => {
+      try {
+        const response = await fetch("/api/pages/about");
+        if (!response.ok) {
+          if (response.status === 404) {
+            return { id: null, type: "about", title: "O nama", content: "" };
+          }
+          throw new Error("Neuspješno dohvaćanje sadržaja stranice O nama");
+        }
+        return await response.json();
+      } catch (error) {
+        console.error("Greška pri dohvaćanju stranice:", error);
+        return { id: null, type: "about", title: "O nama", content: "" };
+      }
+    }
+  });
+
+  const { data: contactPage, isLoading: contactLoading } = useQuery({
+    queryKey: ["/api/pages/contact"],
+    queryFn: async () => {
+      try {
+        const response = await fetch("/api/pages/contact");
+        if (!response.ok) {
+          if (response.status === 404) {
+            return { id: null, type: "contact", title: "Kontakt", content: "" };
+          }
+          throw new Error("Neuspješno dohvaćanje sadržaja stranice Kontakt");
+        }
+        return await response.json();
+      } catch (error) {
+        console.error("Greška pri dohvaćanju stranice:", error);
+        return { id: null, type: "contact", title: "Kontakt", content: "" };
+      }
+    }
+  });
+
+  const { data: blogPage, isLoading: blogLoading } = useQuery({
+    queryKey: ["/api/pages/blog"],
+    queryFn: async () => {
+      try {
+        const response = await fetch("/api/pages/blog");
+        if (!response.ok) {
+          if (response.status === 404) {
+            return { id: null, type: "blog", title: "Blog", content: "" };
+          }
+          throw new Error("Neuspješno dohvaćanje sadržaja stranice Blog");
+        }
+        return await response.json();
+      } catch (error) {
+        console.error("Greška pri dohvaćanju stranice:", error);
+        return { id: null, type: "blog", title: "Blog", content: "" };
+      }
+    }
+  });
+
+  const isLoading = aboutLoading || contactLoading || blogLoading;
+
   return (
     <>
       <Helmet>
@@ -14,8 +78,11 @@ export default function PageSettingsPage() {
       <AdminLayout>
         <div className="container py-6">
           <h1 className="text-3xl font-bold mb-6">Postavke stranica</h1>
-          
-          <Tabs defaultValue="about">
+          <p className="text-muted-foreground mb-6">
+            Uređivanje sadržaja stranica koje posjetitelji mogu vidjeti.
+          </p>
+
+          <Tabs defaultValue="about" className="w-full">
             <TabsList className="mb-6">
               <TabsTrigger value="about">O nama</TabsTrigger>
               <TabsTrigger value="contact">Kontakt</TabsTrigger>
@@ -23,27 +90,42 @@ export default function PageSettingsPage() {
             </TabsList>
             
             <TabsContent value="about">
-              <PageSettingsForm 
-                pageType="about" 
-                title="O nama stranica" 
-                description="Uredite sadržaj stranice O nama. Ovaj sadržaj će biti prikazan na stranici O nama na web stranici."
-              />
+              <Card>
+                <CardContent className="pt-6">
+                  <h2 className="text-xl font-semibold mb-4">Stranica O nama</h2>
+                  {!isLoading && aboutPage && (
+                    <AboutPageForm 
+                      initialData={aboutPage}
+                    />
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
             
             <TabsContent value="contact">
-              <PageSettingsForm 
-                pageType="contact" 
-                title="Kontakt stranica" 
-                description="Uredite sadržaj kontakt stranice. Ovaj sadržaj će biti prikazan na kontakt stranici na web stranici."
-              />
+              <Card>
+                <CardContent className="pt-6">
+                  <h2 className="text-xl font-semibold mb-4">Stranica Kontakt</h2>
+                  {!isLoading && contactPage && (
+                    <ContactPageForm 
+                      initialData={contactPage}
+                    />
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
             
             <TabsContent value="blog">
-              <PageSettingsForm 
-                pageType="blog" 
-                title="Blog stranica" 
-                description="Uredite sadržaj blog stranice. Ovaj sadržaj će biti prikazan na blog stranici na web stranici."
-              />
+              <Card>
+                <CardContent className="pt-6">
+                  <h2 className="text-xl font-semibold mb-4">Stranica Blog</h2>
+                  {!isLoading && blogPage && (
+                    <BlogPageForm 
+                      initialData={blogPage}
+                    />
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
         </div>
