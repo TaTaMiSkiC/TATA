@@ -878,17 +878,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Dohvati sve opće postavke
       const storeName = await storage.getSetting("store_name");
-      const storeDescription = await storage.getSetting("store_description");
-      const storeOwner = await storage.getSetting("store_owner");
-      const storeLegalName = await storage.getSetting("store_legal_name");
-      const storeTaxId = await storage.getSetting("store_tax_id");
+      const storeEmail = await storage.getSetting("store_email");
+      const storePhone = await storage.getSetting("store_phone");
+      const storeAddress = await storage.getSetting("store_address");
       
       res.json({
         store_name: storeName?.value || "",
-        store_description: storeDescription?.value || "",
-        store_owner: storeOwner?.value || "",
-        store_legal_name: storeLegalName?.value || "",
-        store_tax_id: storeTaxId?.value || "",
+        store_email: storeEmail?.value || "",
+        store_phone: storePhone?.value || "",
+        store_address: storeAddress?.value || "",
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch general settings" });
@@ -940,15 +938,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized" });
       }
       
-      const { store_name, store_description, store_owner, store_legal_name, store_tax_id } = req.body;
+      const { store_name, store_email, store_phone, store_address } = req.body;
       
       // Ažuriraj ili kreiraj opće postavke
       await Promise.all([
         storage.updateSetting("store_name", store_name),
-        storage.updateSetting("store_description", store_description),
-        storage.updateSetting("store_owner", store_owner),
-        storage.updateSetting("store_legal_name", store_legal_name),
-        storage.updateSetting("store_tax_id", store_tax_id),
+        storage.updateSetting("store_email", store_email),
+        storage.updateSetting("store_phone", store_phone),
+        storage.updateSetting("store_address", store_address),
       ]);
       
       res.json({ success: true });

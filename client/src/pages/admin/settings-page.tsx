@@ -2,11 +2,17 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import AdminLayout from "@/components/admin/AdminLayout";
 import ShippingSettingsForm from "@/components/admin/ShippingSettingsForm";
-import ContactSettingsForm from "@/components/admin/ContactSettingsForm";
-import GeneralSettingsForm from "@/components/admin/GeneralSettingsForm";
+import StoreSettingsForm from "@/components/admin/StoreSettingsForm";
+import UserAccountSettingsForm from "@/components/admin/UserAccountSettingsForm";
+import AppearanceSettingsForm from "@/components/admin/AppearanceSettingsForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings, Truck, CreditCard, Globe, MapPin } from "lucide-react";
+import { 
+  Settings, 
+  Truck, 
+  User, 
+  Palette, 
+  Store 
+} from "lucide-react";
 
 export default function SettingsPage() {
   return (
@@ -15,76 +21,45 @@ export default function SettingsPage() {
         <title>Postavke | Admin Panel</title>
       </Helmet>
       
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="heading text-3xl font-bold">Postavke</h1>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">Postavke</h1>
+        <p className="text-muted-foreground">Upravljajte postavkama vašeg računa i trgovine</p>
       </div>
       
-      <Tabs defaultValue="general" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="general" className="flex items-center">
-            <Settings className="mr-2 h-4 w-4" />
-            Postavke trgovine
+      <Tabs defaultValue="account" className="space-y-4">
+        <TabsList className="mb-4">
+          <TabsTrigger value="account" className="flex items-center">
+            <User className="mr-2 h-4 w-4" />
+            Korisnički račun
           </TabsTrigger>
-          <TabsTrigger value="contact" className="flex items-center">
-            <MapPin className="mr-2 h-4 w-4" />
-            Kontakt
+          <TabsTrigger value="appearance" className="flex items-center">
+            <Palette className="mr-2 h-4 w-4" />
+            Izgled i jezik
+          </TabsTrigger>
+          <TabsTrigger value="store" className="flex items-center">
+            <Store className="mr-2 h-4 w-4" />
+            Postavke trgovine
           </TabsTrigger>
           <TabsTrigger value="shipping" className="flex items-center">
             <Truck className="mr-2 h-4 w-4" />
             Dostava
           </TabsTrigger>
-          <TabsTrigger value="payment" className="flex items-center">
-            <CreditCard className="mr-2 h-4 w-4" />
-            Plaćanje
-          </TabsTrigger>
-          <TabsTrigger value="localization" className="flex items-center">
-            <Globe className="mr-2 h-4 w-4" />
-            Lokalizacija
-          </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="general" className="space-y-4">
-          <GeneralSettingsForm />
+        <TabsContent value="account" className="space-y-4 bg-card p-6 rounded-md border">
+          <UserAccountSettingsForm />
         </TabsContent>
         
-        <TabsContent value="contact" className="space-y-4">
-          <ContactSettingsForm />
+        <TabsContent value="appearance" className="space-y-4 bg-card p-6 rounded-md border">
+          <AppearanceSettingsForm />
         </TabsContent>
         
-        <TabsContent value="shipping" className="space-y-4">
+        <TabsContent value="store" className="space-y-4 bg-card p-6 rounded-md border">
+          <StoreSettingsForm />
+        </TabsContent>
+        
+        <TabsContent value="shipping" className="space-y-4 bg-card p-6 rounded-md border">
           <ShippingSettingsForm />
-        </TabsContent>
-        
-        <TabsContent value="payment" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Postavke plaćanja</CardTitle>
-              <CardDescription>
-                Upravljajte metodama plaćanja i postavkama naplate
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                Ova funkcionalnost će biti implementirana uskoro.
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="localization" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Postavke lokalizacije</CardTitle>
-              <CardDescription>
-                Upravljajte jezicima, formatima datuma i valutama
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                Ova funkcionalnost će biti implementirana uskoro.
-              </p>
-            </CardContent>
-          </Card>
         </TabsContent>
       </Tabs>
     </AdminLayout>
