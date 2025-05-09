@@ -713,6 +713,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Ruta za brisanje svih boja s proizvoda
+  app.delete("/api/products/:id/colors", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const productId = parseInt(req.params.id);
+      
+      // Dohvati sve boje proizvoda
+      const colors = await storage.getProductColors(productId);
+      
+      // Obriši svaku boju
+      for (const color of colors) {
+        await storage.removeColorFromProduct(productId, color.id);
+      }
+      
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove all colors from product" });
+    }
+  });
+  
   // Change password
   app.put("/api/users/:id/password", async (req, res) => {
     try {

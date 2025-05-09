@@ -428,7 +428,7 @@ export default function ProductDetailsPage() {
                           htmlFor={`color-${color.id}`}
                           className={`w-10 h-10 rounded-full border-2 cursor-pointer transition-all
                             ${selectedColorId === color.id ? 'border-primary ring-2 ring-primary ring-offset-2' : 'border-input hover:border-primary/50'}`}
-                          style={{ backgroundColor: color.hexCode }}
+                          style={{ backgroundColor: color.hexValue }}
                           title={color.name}
                         ></label>
                         <span className="text-xs mt-1">{color.name}</span>
