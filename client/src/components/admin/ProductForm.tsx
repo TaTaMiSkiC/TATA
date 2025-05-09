@@ -88,8 +88,8 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
       imageUrl: product?.imageUrl || "",
       categoryId: product?.categoryId || 0,
       stock: product?.stock || 0,
-      scent: product?.scent || "",
-      color: product?.color || "",
+      scent: product?.scent || "_none_",
+      color: product?.color || "_none_",
       burnTime: product?.burnTime || "",
       featured: product?.featured || false,
     },
@@ -105,8 +105,8 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
         imageUrl: product.imageUrl || "",
         categoryId: product.categoryId || 0,
         stock: product.stock,
-        scent: product.scent || "",
-        color: product.color || "",
+        scent: product.scent ? product.scent : "_none_",
+        color: product.color ? product.color : "_none_",
         burnTime: product.burnTime || "",
         featured: product.featured,
       });
@@ -121,6 +121,9 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
       const productData: InsertProduct = {
         ...data,
         price: data.price,
+        // Postavi na prazan string ako korisnik odabere "_none_"
+        scent: data.scent === "_none_" ? "" : data.scent,
+        color: data.color === "_none_" ? "" : data.color,
       };
       
       if (product) {
@@ -324,7 +327,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                           <div className="py-2 text-center">Učitavanje...</div>
                         ) : (
                           <>
-                            <SelectItem value="">Bez mirisa</SelectItem>
+                            <SelectItem value="_none_">Bez mirisa</SelectItem>
                             {scents?.map((scent) => (
                               <SelectItem 
                                 key={scent.id} 
@@ -363,7 +366,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                           <div className="py-2 text-center">Učitavanje...</div>
                         ) : (
                           <>
-                            <SelectItem value="">Bez boje</SelectItem>
+                            <SelectItem value="_none_">Bez boje</SelectItem>
                             {colors?.map((color) => (
                               <SelectItem 
                                 key={color.id} 

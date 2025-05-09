@@ -34,6 +34,8 @@ export const products = pgTable("products", {
   imageUrl: text("image_url"),
   categoryId: integer("category_id"),
   stock: integer("stock").default(0).notNull(),
+  scent: text("scent"),  // Direktno pohranjen miris za proizvod
+  color: text("color"),  // Direktno pohranjena boja za proizvod
   burnTime: text("burn_time"),
   featured: boolean("featured").default(false).notNull(),
   hasColorOptions: boolean("has_color_options").default(true).notNull(),  // Treba li proizvod imati opcije boja
