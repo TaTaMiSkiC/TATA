@@ -127,8 +127,8 @@ export default function ProductDetailsPage() {
   const handleAddToCart = () => {
     if (!product) return;
     
-    // Provjeri jesu li odabrani potrebni mirisi/boje
-    if (productScents && productScents.length > 0 && !selectedScentId) {
+    // Provjeri jesu li odabrani potrebni mirisi
+    if (productScents && productScents.length > 0 && selectedScentId === null) {
       toast({
         title: "Potreban odabir",
         description: "Molimo odaberite miris prije dodavanja u košaricu.",
@@ -137,7 +137,8 @@ export default function ProductDetailsPage() {
       return;
     }
     
-    if (product.hasColorOptions && productColors && productColors.length > 0 && !selectedColorId) {
+    // Provjeri jesu li odabrane potrebne boje samo ako proizvod ima opcije boja
+    if (product.hasColorOptions && productColors && productColors.length > 0 && selectedColorId === null) {
       toast({
         title: "Potreban odabir",
         description: "Molimo odaberite boju prije dodavanja u košaricu.",
@@ -476,7 +477,12 @@ export default function ProductDetailsPage() {
                   <Button 
                     className="flex-1"
                     onClick={handleAddToCart}
-                    disabled={product.stock === 0 || addToCart.isPending}
+                    disabled={
+                      product.stock === 0 || 
+                      addToCart.isPending || 
+                      (productScents && productScents.length > 0 && selectedScentId === null) ||
+                      (product.hasColorOptions && productColors && productColors.length > 0 && selectedColorId === null)
+                    }
                   >
                     <ShoppingBag size={18} className="mr-2" />
                     {addToCart.isPending ? "Dodavanje..." : "Dodaj u košaricu"}
