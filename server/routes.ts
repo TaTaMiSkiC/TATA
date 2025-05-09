@@ -981,7 +981,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/instagram/manual", async (req, res) => {
     try {
       // Dohvaća ručno dodane slike iz settings tabele
-      const instagramImages = await storage.getSetting("instagram_images");
+      const instagramImages = await storage.getSetting("instagram_manual_images");
       if (!instagramImages) {
         return res.json([]);
       }
@@ -1011,8 +1011,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid image data" });
       }
       
-      // Spremi slike u settings tablicu
-      await storage.updateSetting("instagram_images", JSON.stringify(images));
+      // Prvo provjeri postoji li postavka
+      const existingSetting = await storage.getSetting("instagram_manual_images");
+      
+      if (existingSetting) {
+        // Ako postavka već postoji, ažuriraj je
+        await storage.updateSetting("instagram_manual_images", JSON.stringify(images));
+      } else {
+        // Ako postavka ne postoji, kreiraj je
+        await storage.createSetting({
+          key: "instagram_manual_images",
+          value: JSON.stringify(images),
+          description: "Manually added Instagram images"
+        });
+      }
       
       res.status(200).json({ success: true });
     } catch (error) {
@@ -1033,8 +1045,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Token is required" });
       }
       
-      // Spremi token u settings tablicu
-      await storage.updateSetting("instagram_token", token);
+      // Provjeri postoji li token već u bazi
+      const existingToken = await storage.getSetting("instagram_token");
+      
+      if (existingToken) {
+        // Ako token već postoji, ažuriraj ga
+        await storage.updateSetting("instagram_token", token);
+      } else {
+        // Ako token ne postoji, kreiraj ga
+        await storage.createSetting({
+          key: "instagram_token",
+          value: token,
+          description: "Instagram API access token"
+        });
+      }
       
       res.status(200).json({ success: true });
     } catch (error) {
