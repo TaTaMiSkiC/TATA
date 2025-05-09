@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useRoute, Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Helmet } from 'react-helmet';
 import Layout from "@/components/layout/Layout";
 import { Product, Review, Scent, Color } from "@shared/schema";
 import { useCart } from "@/hooks/use-cart";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { queryClient } from "@/lib/queryClient";
 import ProductViewModal from "@/components/product/ProductViewModal";
 import {
   Minus,
@@ -21,7 +22,9 @@ import {
   PackageCheck,
   RefreshCw,
   Clock,
-  Flame
+  Flame,
+  Trash2,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -62,6 +65,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const reviewSchema = z.object({
   rating: z.number().min(1).max(5),
@@ -77,6 +91,7 @@ export default function ProductDetailsPage() {
   const [selectedScentId, setSelectedScentId] = useState<number | null>(null);
   const [selectedColorId, setSelectedColorId] = useState<number | null>(null);
   const [productViewModalOpen, setProductViewModalOpen] = useState(false);
+  const [reviewToDelete, setReviewToDelete] = useState<number | null>(null);
   const { addToCart } = useCart();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -199,6 +214,38 @@ export default function ProductDetailsPage() {
       });
     }
   };
+  
+  // Mutation za brisanje recenzije
+  const deleteReviewMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/reviews/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Neuspješno brisanje recenzije');
+      }
+      
+      return id;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Recenzija izbrisana",
+        description: "Recenzija je uspješno izbrisana",
+      });
+      // Osvježi podatke
+      queryClient.invalidateQueries({ queryKey: [`/api/products/${productId}/reviews`] });
+      setReviewToDelete(null);
+    },
+    onError: (error) => {
+      toast({
+        title: "Greška",
+        description: `Neuspješno brisanje recenzije: ${error.message}`,
+        variant: "destructive",
+      });
+    }
+  });
   
   // Increment/decrement quantity
   const decrementQuantity = () => {
@@ -566,7 +613,47 @@ export default function ProductDetailsPage() {
               {reviews?.length ? (
                 <div className="space-y-6 mb-8">
                   {reviews.map((review) => (
-                    <Card key={review.id}>
+                    <Card key={review.id} className="relative">
+                      {user?.isAdmin && (
+                        <div className="absolute top-4 right-4">
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="h-8 w-8 p-0"
+                                onClick={() => setReviewToDelete(review.id)}
+                              >
+                                <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Jeste li sigurni?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Ova akcija je nepovratna. Recenzija će biti trajno izbrisana iz sustava.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel onClick={() => setReviewToDelete(null)}>Odustani</AlertDialogCancel>
+                                <AlertDialogAction 
+                                  onClick={() => {
+                                    if (reviewToDelete) {
+                                      deleteReviewMutation.mutate(reviewToDelete);
+                                    }
+                                  }}
+                                  className="bg-destructive hover:bg-destructive/90"
+                                >
+                                  {deleteReviewMutation.isPending ? (
+                                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                  ) : null}
+                                  Izbriši
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      )}
                       <CardContent className="pt-6">
                         <div className="flex justify-between items-start mb-2">
                           <div>
