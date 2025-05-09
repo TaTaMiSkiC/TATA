@@ -46,7 +46,7 @@ export default function SlikePage() {
             <h1 className="text-3xl md:text-4xl font-bold mb-2">
               {isLoading ? <Skeleton className="h-10 w-[250px] mx-auto" /> : pageData?.title || "Slike"}
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <div className="text-muted-foreground max-w-2xl mx-auto">
               {isLoading ? (
                 <Skeleton className="h-4 w-full mx-auto mb-4" />
               ) : (
@@ -55,7 +55,7 @@ export default function SlikePage() {
                   <span>Pratite nas na Instagramu za najnovije kreacije i inspiracije</span>
                 </div>
               )}
-            </p>
+            </div>
           </div>
           
           <div className="max-w-7xl mx-auto">

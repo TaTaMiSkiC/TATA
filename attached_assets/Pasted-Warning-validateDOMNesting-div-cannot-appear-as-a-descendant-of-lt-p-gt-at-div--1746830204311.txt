@@ -1,0 +1,45 @@
+Warning: validateDOMNesting(...): <div> cannot appear as a descendant of &lt;p&gt;.
+    at div
+    at Skeleton (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/components/ui/skeleton.tsx:19:3)
+    at p
+    at div
+    at div
+    at main
+    at div
+    at Layout (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/components/layout/Layout.tsx?t=1746829702385:19:34)
+    at SlikePage (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/pages/blog-page.tsx?t=1746829727958:27:48)
+    at Route (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=1428a592:323:16)
+    at Switch (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=1428a592:379:17)
+    at Router
+    at Provider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-TONAP5II.js?v=1428a592:43:15)
+    at TooltipProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=1428a592:61:5)
+    at CartProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/hooks/use-cart.tsx:27:32)
+    at AuthProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/hooks/use-auth.tsx:26:32)
+    at LanguageProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/hooks/use-language.tsx:30:36)
+    at ThemeProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/hooks/use-theme.tsx:35:33)
+    at QueryClientProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=1428a592:2805:3)
+    at App
+at div
+at Skeleton (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/components/ui/skeleton.tsx:19:3)
+at p
+at div
+at div
+at main
+at div
+at Layout (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/components/layout/Layout.tsx?t=1746829702385:19:34)
+at SlikePage (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/pages/blog-page.tsx?t=1746829727958:27:48)
+at Route (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=1428a592:323:16)
+at Switch (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=1428a592:379:17)
+at Router
+at Provider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-TONAP5II.js?v=1428a592:43:15)
+at TooltipProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=1428a592:61:5)
+at CartProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/hooks/use-cart.tsx:27:32)
+at AuthProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/hooks/use-auth.tsx:26:32)
+at LanguageProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/hooks/use-language.tsx:30:36)
+at ThemeProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/src/hooks/use-theme.tsx:35:33)
+at QueryClientProvider (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=1428a592:2805:3)
+at App
+at t.value (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://d07915c1-4b7a-458a-8b3d-720e6c5131b7-00-6gbh8d6ubmp1.spock.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
