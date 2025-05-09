@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { useSettings } from "@/hooks/use-settings";
+import { useTheme } from "@/hooks/use-theme";
+import { useLanguage } from "@/hooks/use-language";
 import { useLocation } from "wouter";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -66,7 +67,8 @@ type ShippingSettingsFormValues = z.infer<typeof shippingSettingsSchema>;
 
 export default function AdminSettingsPage() {
   const { user, logoutMutation } = useAuth();
-  const { theme, language, setTheme, setLanguage } = useSettings();
+  const { theme, setTheme } = useTheme();
+  const { language, setLanguage } = useLanguage();
   const { toast } = useToast();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("account");

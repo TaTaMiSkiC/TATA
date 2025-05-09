@@ -18,7 +18,8 @@ import AdminSettings from "@/pages/admin/admin-settings-page";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "./hooks/use-auth";
 import { CartProvider } from "./hooks/use-cart";
-import { SettingsProvider } from "./hooks/use-settings";
+import { ThemeProvider } from "./hooks/use-theme";
+import { LanguageProvider } from "./hooks/use-language";
 import CookieConsent from "./components/CookieConsent";
 
 function Router() {
@@ -43,17 +44,19 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <SettingsProvider>
-        <AuthProvider>
-          <CartProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Router />
-              <CookieConsent />
-            </TooltipProvider>
-          </CartProvider>
-        </AuthProvider>
-      </SettingsProvider>
+      <ThemeProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <CartProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Router />
+                <CookieConsent />
+              </TooltipProvider>
+            </CartProvider>
+          </AuthProvider>
+        </LanguageProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
