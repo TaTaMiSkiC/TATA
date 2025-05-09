@@ -14,7 +14,7 @@ import createMemoryStore from "memorystore";
 const MemoryStore = createMemoryStore(session);
 
 // Define SessionStore type
-type SessionStore = ReturnType<typeof createMemoryStore>;
+type SessionStore = session.Store;
 
 export interface IStorage {
   // User methods
@@ -23,6 +23,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   getAllUsers(): Promise<User[]>;
+  updateUser(id: number, userData: Partial<User>): Promise<User | undefined>;
   
   // Product methods
   getProduct(id: number): Promise<Product | undefined>;
@@ -216,14 +217,15 @@ export class MemStorage implements IStorage {
 
   private async createDefaultAdmin() {
     try {
-      // Koristeći hashPassword funkciju iz auth.ts ovdje nije moguće
-      // pa koristimo već pripremljenu hash+salt kombinaciju koja je ručno generirana
-      // Format je "hash.salt"
-      const hashedPassword = "5871a59177a1d761c2f1d28d8992e392f66a4f1759ea6b347b691e2f9c8ca2b30c3d6ebce20135a6c5af952bcc5b69dc8992247c31bfbc73cd95a15922e88c8e.e8fcc87bbef1c544e95149b3d64c187a";
+      // Importiramo funkciju za hashiranje lozinke
+      const { hashPassword } = await import('./auth');
+      
+      // Hashiramo password direktno s funkcijom
+      const hashedPassword = await hashPassword("admin123");
       
       await this.createUser({
         username: "admin",
-        password: hashedPassword, // "admin123"
+        password: hashedPassword, 
         email: "admin@kerzenwelt.hr",
         isAdmin: true
       });
@@ -273,6 +275,26 @@ export class MemStorage implements IStorage {
 
   async getAllUsers(): Promise<User[]> {
     return Array.from(this.users.values());
+  }
+  
+  async updateUser(id: number, userData: Partial<User>): Promise<User | undefined> {
+    const existingUser = this.users.get(id);
+    if (!existingUser) {
+      return undefined;
+    }
+    
+    const updatedUser: User = {
+      ...existingUser,
+      ...userData,
+      // Ne dopusti promjenu ovih polja
+      id: existingUser.id,
+      createdAt: existingUser.createdAt,
+      // Zadrži isAdmin status osim ako se eksplicitno mijenja
+      isAdmin: userData.isAdmin !== undefined ? userData.isAdmin : existingUser.isAdmin
+    };
+    
+    this.users.set(id, updatedUser);
+    return updatedUser;
   }
   
   // Product methods
@@ -506,7 +528,15 @@ export class MemStorage implements IStorage {
   async createReview(reviewData: InsertReview): Promise<Review> {
     const id = this.reviewIdCounter++;
     const createdAt = new Date();
-    const review: Review = { ...reviewData, id, createdAt };
+    
+    // Osiguraj da comment bude string ili null, nikad undefined
+    const review: Review = { 
+      ...reviewData, 
+      id, 
+      createdAt,
+      comment: reviewData.comment || null
+    };
+    
     this.reviews.set(id, review);
     return review;
   }
