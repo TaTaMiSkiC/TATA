@@ -8,6 +8,7 @@ import {
   type Review, type InsertReview,
   type Setting, type InsertSetting,
   type CartItemWithProduct,
+  type OrderItemWithProduct,
   type Scent, type InsertScent,
   type Color, type InsertColor,
   type ProductScent, type InsertProductScent,
@@ -80,7 +81,7 @@ export interface IStorage {
   getUserOrders(userId: number): Promise<Order[]>;
   createOrder(order: InsertOrder, items: InsertOrderItem[]): Promise<Order>;
   updateOrderStatus(id: number, status: string): Promise<Order | undefined>;
-  getOrderItems(orderId: number): Promise<OrderItem[]>;
+  getOrderItems(orderId: number): Promise<OrderItemWithProduct[]>;
   
   // Cart methods
   getCartItems(userId: number): Promise<CartItemWithProduct[]>;

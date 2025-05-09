@@ -316,3 +316,9 @@ export type CartItemWithProduct = CartItem & {
   scent?: Scent;
   color?: Color;
 };
+
+export type OrderItemWithProduct = OrderItem & {
+  product: Product;
+  scent?: Scent;
+  color?: Color;
+};
