@@ -84,8 +84,8 @@ async function createDefaultCategories() {
 
 // Funkcija za provjeru postojanja proizvoda
 async function checkProductsExist() {
-  const count = await db.select({ count: db.fn.count() }).from(products);
-  return count[0].count > 0;
+  const count = await db.select({ count: sql`count(*)` }).from(products);
+  return Number(count[0].count) > 0;
 }
 
 // Funkcija za stvaranje zadanih proizvoda

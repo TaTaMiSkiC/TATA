@@ -38,6 +38,14 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Inicijaliziraj bazu podataka prije registriranja ruta
+  try {
+    await initializeDatabase();
+    console.log("Baza podataka je uspješno inicijalizirana");
+  } catch (error) {
+    console.error("Greška prilikom inicijalizacije baze podataka:", error);
+  }
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
