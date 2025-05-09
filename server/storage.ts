@@ -349,29 +349,37 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getProductScents(productId: number): Promise<Scent[]> {
-    // Dohvati sve poveznice proizvoda s mirisima
-    const productScentLinks = await db
-      .select()
-      .from(productScents)
-      .where(eq(productScents.productId, productId));
-    
-    // Ako nema poveznica, vrati prazan niz
-    if (productScentLinks.length === 0) {
+    try {
+      // Dohvati sve poveznice proizvoda s mirisima
+      const productScentLinks = await db
+        .select()
+        .from(productScents)
+        .where(eq(productScents.productId, productId));
+      
+      // Ako nema poveznica, vrati prazan niz
+      if (productScentLinks.length === 0) {
+        return [];
+      }
+      
+      // Dohvati sve mirise koji su povezani s proizvodom
+      const scentIds = productScentLinks.map(link => link.scentId);
+      
+      // Koristimo IN operator za dohvaćanje svih mirisa po ID-jevima
+      // Također provjeravamo da ne šaljemo prazan array
+      if (scentIds.length === 0) {
+        return [];
+      }
+      
+      const result = await db
+        .select()
+        .from(scents)
+        .where(sql`${scents.id} IN (${scentIds.join(',')})`);
+      
+      return result;
+    } catch (error) {
+      console.error("Error in getProductScents:", error);
       return [];
     }
-    
-    // Dohvati sve mirise koji su povezani s proizvodom
-    const scentIds = productScentLinks.map(link => link.scentId);
-    
-    // IN operator u SQL-u za dohvaćanje više zapisa po ID-jevima
-    const result = await db
-      .select()
-      .from(scents)
-      .where(
-        sql`${scents.id} IN (${scentIds.join(',')})`
-      );
-    
-    return result;
   }
 
   async addScentToProduct(productId: number, scentId: number): Promise<ProductScent> {
@@ -450,29 +458,37 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getProductColors(productId: number): Promise<Color[]> {
-    // Dohvati sve poveznice proizvoda s bojama
-    const productColorLinks = await db
-      .select()
-      .from(productColors)
-      .where(eq(productColors.productId, productId));
-    
-    // Ako nema poveznica, vrati prazan niz
-    if (productColorLinks.length === 0) {
+    try {
+      // Dohvati sve poveznice proizvoda s bojama
+      const productColorLinks = await db
+        .select()
+        .from(productColors)
+        .where(eq(productColors.productId, productId));
+      
+      // Ako nema poveznica, vrati prazan niz
+      if (productColorLinks.length === 0) {
+        return [];
+      }
+      
+      // Dohvati sve boje koje su povezane s proizvodom
+      const colorIds = productColorLinks.map(link => link.colorId);
+      
+      // Koristimo IN operator za dohvaćanje svih boja po ID-jevima
+      // Također provjeravamo da ne šaljemo prazan array
+      if (colorIds.length === 0) {
+        return [];
+      }
+      
+      const result = await db
+        .select()
+        .from(colors)
+        .where(sql`${colors.id} IN (${colorIds.join(',')})`);
+      
+      return result;
+    } catch (error) {
+      console.error("Error in getProductColors:", error);
       return [];
     }
-    
-    // Dohvati sve boje koje su povezane s proizvodom
-    const colorIds = productColorLinks.map(link => link.colorId);
-    
-    // IN operator u SQL-u za dohvaćanje više zapisa po ID-jevima
-    const result = await db
-      .select()
-      .from(colors)
-      .where(
-        sql`${colors.id} IN (${colorIds.join(',')})`
-      );
-    
-    return result;
   }
 
   async addColorToProduct(productId: number, colorId: number): Promise<ProductColor> {
