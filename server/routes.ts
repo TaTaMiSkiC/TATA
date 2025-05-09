@@ -5,7 +5,7 @@ import { setupAuth } from "./auth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { db } from "./db";
+import { db, pool } from "./db";
 import {
   productScents,
   productColors,
@@ -656,14 +656,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const productId = parseInt(req.params.id);
+      console.log(`Brisanje svih mirisa za proizvod ID: ${productId}`);
       
-      // Brišemo sve mirise odjednom
-      await storage.removeAllScentsFromProduct(productId);
-      
-      res.status(204).send();
+      try {
+        // Direktno koristimo pool.query za brisanje svih mirisa
+        await pool.query(
+          `DELETE FROM product_scents WHERE product_id = $1`,
+          [productId]
+        );
+        console.log(`Uspješno izbrisani svi mirisi za proizvod ID: ${productId}`);
+        res.status(204).send();
+      } catch (dbError) {
+        console.error("Database error removing scents:", dbError);
+        
+        // Još jedan pokušaj s inicijalizacijom tablice
+        console.log("Pokušaj inicijalizacije tablice product_scents...");
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS product_scents (
+            id SERIAL PRIMARY KEY,
+            product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+            scent_id INTEGER NOT NULL REFERENCES scents(id) ON DELETE CASCADE,
+            UNIQUE(product_id, scent_id)
+          )
+        `);
+        
+        // Sada ponovo pokušamo brisanje
+        await pool.query(
+          `DELETE FROM product_scents WHERE product_id = $1`,
+          [productId]
+        );
+        console.log(`Nakon inicijalizacije, uspješno izbrisani svi mirisi za proizvod ID: ${productId}`);
+        res.status(204).send();
+      }
     } catch (error) {
       console.error("Error removing scents from product:", error);
-      res.status(500).json({ message: "Failed to remove all scents from product" });
+      res.status(500).json({ 
+        message: "Failed to remove all scents from product", 
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   });
 
@@ -721,14 +751,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const productId = parseInt(req.params.id);
+      console.log(`Brisanje svih boja za proizvod ID: ${productId}`);
       
-      // Brišemo sve boje odjednom
-      await storage.removeAllColorsFromProduct(productId);
-      
-      res.status(204).send();
+      try {
+        // Direktno koristimo pool.query za brisanje svih boja
+        await pool.query(
+          `DELETE FROM product_colors WHERE product_id = $1`,
+          [productId]
+        );
+        console.log(`Uspješno izbrisane sve boje za proizvod ID: ${productId}`);
+        res.status(204).send();
+      } catch (dbError) {
+        console.error("Database error removing colors:", dbError);
+        
+        // Još jedan pokušaj s inicijalizacijom tablice
+        console.log("Pokušaj inicijalizacije tablice product_colors...");
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS product_colors (
+            id SERIAL PRIMARY KEY,
+            product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+            color_id INTEGER NOT NULL REFERENCES colors(id) ON DELETE CASCADE,
+            UNIQUE(product_id, color_id)
+          )
+        `);
+        
+        // Sada ponovo pokušamo brisanje
+        await pool.query(
+          `DELETE FROM product_colors WHERE product_id = $1`,
+          [productId]
+        );
+        console.log(`Nakon inicijalizacije, uspješno izbrisane sve boje za proizvod ID: ${productId}`);
+        res.status(204).send();
+      }
     } catch (error) {
       console.error("Error removing colors from product:", error);
-      res.status(500).json({ message: "Failed to remove all colors from product" });
+      res.status(500).json({ 
+        message: "Failed to remove all colors from product", 
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   });
   
