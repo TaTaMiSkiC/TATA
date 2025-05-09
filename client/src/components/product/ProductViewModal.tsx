@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Product, Scent, Color } from "@shared/schema";
-import { useCart } from "@/hooks/use-cart";
-import { useToast } from "@/hooks/use-toast";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { X, ShoppingBag, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Minus, Plus, ShoppingBag } from "lucide-react";
+import { Product, Scent, Color } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/hooks/use-cart";
+import { useQuery } from "@tanstack/react-query";
+import Image from "@/components/ui/image";
 
 interface ProductViewModalProps {
   isOpen: boolean;
@@ -18,111 +19,108 @@ interface ProductViewModalProps {
 export default function ProductViewModal({ isOpen, onClose, product }: ProductViewModalProps) {
   const { toast } = useToast();
   const { addToCart } = useCart();
-  const [quantity, setQuantity] = useState(1);
   const [selectedScentId, setSelectedScentId] = useState<number | null>(null);
   const [selectedColorId, setSelectedColorId] = useState<number | null>(null);
-  const [isValid, setIsValid] = useState(false);
-  
-  // Fetch product scents if available
+  const [quantity, setQuantity] = useState(1);
+  const [addedToCart, setAddedToCart] = useState(false);
+
+  // Fetch product scents
   const { data: productScents = [] } = useQuery<Scent[]>({
-    queryKey: [`/api/products/${product.id}/scents`],
-    enabled: isOpen && product.id !== undefined,
+    queryKey: ['/api/products', product.id, 'scents'],
+    enabled: isOpen
   });
-  
-  // Fetch product colors if product has color options
+
+  // Fetch product colors
   const { data: productColors = [] } = useQuery<Color[]>({
-    queryKey: [`/api/products/${product.id}/colors`],
-    enabled: isOpen && product.hasColorOptions && product.id !== undefined,
+    queryKey: ['/api/products', product.id, 'colors'],
+    enabled: isOpen && product.hasColorOptions
   });
-  
-  // Reset selections when product changes
+
+  // Reset selections when modal is opened
   useEffect(() => {
     if (isOpen) {
       setSelectedScentId(null);
       setSelectedColorId(null);
       setQuantity(1);
+      setAddedToCart(false);
     }
-  }, [isOpen, product.id]);
-  
-  // Validate selections
-  useEffect(() => {
-    let valid = true;
+  }, [isOpen]);
+
+  const isColorSelectionRequired = product.hasColorOptions && productColors && productColors.length > 0;
+  const isScentSelectionRequired = productScents && productScents.length > 0;
+
+  // Check if all required options are selected
+  const canAddToCart = 
+    (!isScentSelectionRequired || selectedScentId !== null) && 
+    (!isColorSelectionRequired || selectedColorId !== null);
+
+  const handleAddToCart = async () => {
+    if (!canAddToCart) return;
     
-    // Validate scent selection
-    if (productScents && productScents.length > 0 && selectedScentId === null) {
-      valid = false;
-    }
-    
-    // Validate color selection
-    if (product.hasColorOptions && productColors && productColors.length > 0 && selectedColorId === null) {
-      valid = false;
-    }
-    
-    setIsValid(valid);
-  }, [selectedScentId, selectedColorId, productScents, productColors, product.hasColorOptions]);
-  
-  // Increment/decrement quantity
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-  
-  const incrementQuantity = () => {
-    if (product && quantity < product.stock) {
-      setQuantity(quantity + 1);
-    }
-  };
-  
-  // Add to cart
-  const handleAddToCart = () => {
-    if (!isValid) return;
-    
-    addToCart.mutate(
-      {
+    try {
+      await addToCart.mutateAsync({
         productId: product.id,
-        quantity,
-        scentId: selectedScentId || undefined,
-        colorId: selectedColorId || undefined,
-      },
-      {
-        onSuccess: () => {
-          toast({
-            title: "Dodano u košaricu",
-            description: `${product.name} (${quantity}x) je dodan u vašu košaricu.`,
-          });
-          onClose();
-        },
-      }
-    );
+        quantity: quantity,
+        scentId: selectedScentId,
+        colorId: selectedColorId
+      });
+      
+      setAddedToCart(true);
+      
+      toast({
+        title: "Proizvod dodan u košaricu",
+        description: `${product.name} je uspješno dodan u vašu košaricu.`,
+      });
+      
+      // Close the modal after 1.5 seconds
+      setTimeout(() => {
+        onClose();
+      }, 1500);
+    } catch (error) {
+      toast({
+        title: "Greška",
+        description: "Dodavanje u košaricu nije uspjelo. Molimo pokušajte ponovno.",
+        variant: "destructive",
+      });
+    }
   };
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle className="heading text-xl">Odaberite opcije</DialogTitle>
+          <DialogTitle className="text-xl font-bold">Odaberite opcije</DialogTitle>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-4 top-4"
+            onClick={onClose}
+          >
+            <X className="h-4 w-4" />
+          </Button>
         </DialogHeader>
         
-        <div className="flex flex-col md:flex-row items-start gap-4 py-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Product image */}
-          <div className="w-full md:w-1/3">
-            <img 
-              src={product.imageUrl || ''} 
-              alt={product.name} 
-              className="w-full rounded-md object-cover aspect-square"
+          <div className="bg-card rounded-lg overflow-hidden">
+            <Image 
+              src={product.imageUrl || '/placeholder.png'} 
+              alt={product.name}
+              className="w-full h-[250px] object-cover"
             />
           </div>
           
-          {/* Product details */}
-          <div className="w-full md:w-2/3">
-            <h3 className="font-semibold text-lg">{product.name}</h3>
-            <p className="text-xl font-bold text-primary mt-1 mb-4">{parseFloat(product.price).toFixed(2)} €</p>
+          {/* Product info and options */}
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold">{product.name}</h3>
+              <p className="text-primary text-xl font-bold">{new Intl.NumberFormat('hr-HR', { style: 'currency', currency: 'EUR' }).format(parseFloat(product.price))}</p>
+            </div>
             
             {/* Scent options */}
-            {productScents && productScents.length > 0 && (
-              <div className="mb-4">
-                <h4 className="text-sm font-medium mb-2">Odaberite miris:</h4>
+            {isScentSelectionRequired && (
+              <div>
+                <h4 className="text-sm font-medium mb-2">Miris <span className="text-destructive">*</span></h4>
                 <RadioGroup 
                   value={selectedScentId?.toString()} 
                   onValueChange={(value) => setSelectedScentId(parseInt(value))}
@@ -131,7 +129,7 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
                   {productScents.map((scent) => (
                     <div key={scent.id} className="flex items-center space-x-2">
                       <RadioGroupItem value={scent.id.toString()} id={`modal-scent-${scent.id}`} />
-                      <Label 
+                      <Label
                         htmlFor={`modal-scent-${scent.id}`}
                         className={`px-3 py-2 rounded-md text-sm cursor-pointer transition-colors
                           ${selectedScentId === scent.id ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80'}`}
@@ -141,16 +139,13 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
                     </div>
                   ))}
                 </RadioGroup>
-                {productScents.length > 0 && selectedScentId === null && (
-                  <p className="text-xs text-destructive mt-1">Obavezan odabir mirisa</p>
-                )}
               </div>
             )}
             
             {/* Color options */}
-            {product.hasColorOptions && productColors && productColors.length > 0 && (
-              <div className="mb-4">
-                <h4 className="text-sm font-medium mb-2">Odaberite boju:</h4>
+            {isColorSelectionRequired && (
+              <div>
+                <h4 className="text-sm font-medium mb-2">Boja <span className="text-destructive">*</span></h4>
                 <RadioGroup 
                   value={selectedColorId?.toString()} 
                   onValueChange={(value) => setSelectedColorId(parseInt(value))}
@@ -165,86 +160,73 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
                       />
                       <Label
                         htmlFor={`modal-color-${color.id}`}
-                        className={`w-8 h-8 rounded-full cursor-pointer flex items-center justify-center transition-all
-                          ${selectedColorId === color.id ? 'ring-2 ring-primary ring-offset-2' : 'hover:opacity-80'}`}
-                      >
-                        <div 
-                          className="w-6 h-6 rounded-full" 
-                          style={{ backgroundColor: color.hexValue }}
-                          title={color.name}
-                        />
-                      </Label>
+                        className={`w-10 h-10 rounded-full border-2 cursor-pointer transition-all
+                          ${selectedColorId === color.id ? 'border-primary ring-2 ring-primary ring-offset-2' : 'border-input hover:border-primary/50'}`}
+                        style={{ backgroundColor: color.hexValue }}
+                      ></Label>
                       <span className="text-xs mt-1">{color.name}</span>
                     </div>
                   ))}
                 </RadioGroup>
-                {productColors.length > 0 && selectedColorId === null && (
-                  <p className="text-xs text-destructive mt-1">Obavezan odabir boje</p>
-                )}
               </div>
             )}
             
-            {/* Quantity selector */}
-            <div className="flex items-center mt-6">
-              <span className="text-sm font-medium mr-3">Količina:</span>
-              <div className="flex items-center border rounded-md overflow-hidden">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 p-0 rounded-none"
-                  onClick={decrementQuantity}
-                  disabled={quantity <= 1 || addToCart.isPending}
+            {/* Quantity */}
+            <div>
+              <h4 className="text-sm font-medium mb-2">Količina</h4>
+              <div className="flex items-center border border-input rounded-md w-[120px]">
+                <button 
+                  type="button" 
+                  className="px-3 py-2 bg-muted hover:bg-muted/80 transition"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  disabled={quantity <= 1}
                 >
-                  <Minus size={14} />
-                </Button>
-                
-                <input
-                  type="number"
-                  min="1"
-                  max={product.stock}
-                  className="w-12 text-center border-none focus:ring-0 text-sm h-8 px-0"
+                  <span className="sr-only">Smanji</span>
+                  <span>-</span>
+                </button>
+                <input 
+                  type="number" 
+                  className="w-12 text-center border-x border-input focus:ring-0 bg-transparent"
                   value={quantity}
                   onChange={(e) => {
                     const val = parseInt(e.target.value);
-                    if (!isNaN(val) && val >= 1 && val <= product.stock) {
+                    if (!isNaN(val) && val > 0 && val <= product.stock) {
                       setQuantity(val);
                     }
                   }}
-                  disabled={addToCart.isPending}
+                  min={1}
+                  max={product.stock}
                 />
-                
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 p-0 rounded-none"
-                  onClick={incrementQuantity}
-                  disabled={quantity >= product.stock || addToCart.isPending}
+                <button 
+                  type="button" 
+                  className="px-3 py-2 bg-muted hover:bg-muted/80 transition"
+                  onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                  disabled={quantity >= product.stock}
                 >
-                  <Plus size={14} />
-                </Button>
+                  <span className="sr-only">Povećaj</span>
+                  <span>+</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
         
-        <DialogFooter>
-          <Button 
-            variant="outline" 
-            onClick={onClose}
-            disabled={addToCart.isPending}
-          >
-            Odustani
-          </Button>
-          <Button 
-            onClick={handleAddToCart}
-            disabled={!isValid || product.stock === 0 || addToCart.isPending}
-            className="ml-2"
-          >
-            <ShoppingBag size={16} className="mr-2" />
-            {addToCart.isPending ? "Dodavanje..." : "Dodaj u košaricu"}
-          </Button>
+        <DialogFooter className="sm:justify-start">
+          {addedToCart ? (
+            <Button className="w-full" variant="default" disabled>
+              <CheckCircle size={18} className="mr-2" />
+              Dodano u košaricu
+            </Button>
+          ) : (
+            <Button 
+              className="w-full" 
+              onClick={handleAddToCart} 
+              disabled={!canAddToCart || addToCart.isPending}
+            >
+              <ShoppingBag size={18} className="mr-2" />
+              {addToCart.isPending ? "Dodavanje..." : "Dodaj u košaricu"}
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

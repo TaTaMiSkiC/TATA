@@ -386,60 +386,20 @@ export default function ProductDetailsPage() {
                 </div>
               </div>
               
-              {/* Scent options */}
-              {productScents && productScents.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="text-sm font-medium mb-3">Odaberite miris:</h3>
-                  <RadioGroup 
-                    value={selectedScentId?.toString()} 
-                    onValueChange={(value) => setSelectedScentId(parseInt(value))}
-                    className="flex flex-wrap gap-2"
-                  >
-                    {productScents.map((scent) => (
-                      <div key={scent.id} className="flex items-center space-x-2">
-                        <RadioGroupItem value={scent.id.toString()} id={`scent-${scent.id}`} />
-                        <label
-                          htmlFor={`scent-${scent.id}`}
-                          className={`px-3 py-2 rounded-md text-sm cursor-pointer transition-colors
-                            ${selectedScentId === scent.id ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80'}`}
-                        >
-                          {scent.name}
-                        </label>
-                      </div>
-                    ))}
-                  </RadioGroup>
+              {/* Opcije - Informacija */}
+              {(productScents && productScents.length > 0) || (product.hasColorOptions && productColors && productColors.length > 0) ? (
+                <div className="mb-6 p-4 bg-muted/20 rounded-md">
+                  <div className="flex items-center">
+                    <div className="mr-2 text-primary">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Ovaj proizvod ima dostupne opcije</p>
+                      <p className="text-xs text-muted-foreground">Kliknite na "Odaberi opcije" da biste izabrali željeni {productScents && productScents.length > 0 ? "miris" : ""}{(productScents && productScents.length > 0) && (product.hasColorOptions && productColors && productColors.length > 0) ? " i " : ""}{(product.hasColorOptions && productColors && productColors.length > 0) ? "boju" : ""} prije dodavanja u košaricu.</p>
+                    </div>
+                  </div>
                 </div>
-              )}
-              
-              {/* Color options */}
-              {product.hasColorOptions && productColors && productColors.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="text-sm font-medium mb-3">Odaberite boju:</h3>
-                  <RadioGroup 
-                    value={selectedColorId?.toString()} 
-                    onValueChange={(value) => setSelectedColorId(parseInt(value))}
-                    className="flex flex-wrap gap-3"
-                  >
-                    {productColors.map((color) => (
-                      <div key={color.id} className="flex flex-col items-center">
-                        <RadioGroupItem 
-                          value={color.id.toString()} 
-                          id={`color-${color.id}`} 
-                          className="sr-only"
-                        />
-                        <label
-                          htmlFor={`color-${color.id}`}
-                          className={`w-10 h-10 rounded-full border-2 cursor-pointer transition-all
-                            ${selectedColorId === color.id ? 'border-primary ring-2 ring-primary ring-offset-2' : 'border-input hover:border-primary/50'}`}
-                          style={{ backgroundColor: color.hexValue }}
-                          title={color.name}
-                        ></label>
-                        <span className="text-xs mt-1">{color.name}</span>
-                      </div>
-                    ))}
-                  </RadioGroup>
-                </div>
-              )}
+              ) : null}
               
               {/* Add to cart */}
               <div className="flex flex-col space-y-4">
@@ -478,16 +438,11 @@ export default function ProductDetailsPage() {
                   
                   <Button 
                     className="flex-1"
-                    onClick={handleAddToCart}
-                    disabled={
-                      product.stock === 0 || 
-                      addToCart.isPending || 
-                      (productScents && productScents.length > 0 && selectedScentId === null) ||
-                      (product.hasColorOptions && productColors && productColors.length > 0 && selectedColorId === null)
-                    }
+                    onClick={() => setProductViewModalOpen(true)}
+                    disabled={product.stock === 0}
                   >
                     <ShoppingBag size={18} className="mr-2" />
-                    {addToCart.isPending ? "Dodavanje..." : "Dodaj u košaricu"}
+                    Odaberi opcije
                   </Button>
                 </div>
                 
@@ -718,6 +673,15 @@ export default function ProductDetailsPage() {
           </Tabs>
         </div>
       </section>
+      
+      {/* Product view modal */}
+      {product && (
+        <ProductViewModal
+          isOpen={productViewModalOpen}
+          onClose={() => setProductViewModalOpen(false)}
+          product={product}
+        />
+      )}
     </Layout>
   );
 }
