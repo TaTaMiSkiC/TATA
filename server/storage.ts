@@ -350,18 +350,31 @@ export class DatabaseStorage implements IStorage {
 
   async getProductScents(productId: number): Promise<Scent[]> {
     try {
-      // Koristimo sigurniji pristup bez SQL injection rizika
-      // Izravno spojimo tablice productScents i scents
-      const result = await db
-        .select({
-          id: scents.id,
-          name: scents.name,
-          description: scents.description,
-          active: scents.active
-        })
+      // Dohvati sve veze između proizvoda i mirisa
+      const relations = await db
+        .select()
         .from(productScents)
-        .innerJoin(scents, eq(productScents.scentId, scents.id))
         .where(eq(productScents.productId, productId));
+      
+      if (relations.length === 0) {
+        return [];
+      }
+      
+      // Izvuci ID-jeve mirisa
+      const scentIds = relations.map(rel => rel.scentId);
+      
+      // Dohvati mirise po njihovim ID-jevima kroz više pojedinačnih upita
+      const result: Scent[] = [];
+      for (const scentId of scentIds) {
+        const [scent] = await db
+          .select()
+          .from(scents)
+          .where(eq(scents.id, scentId));
+        
+        if (scent) {
+          result.push(scent);
+        }
+      }
       
       return result;
     } catch (error) {
@@ -456,18 +469,31 @@ export class DatabaseStorage implements IStorage {
 
   async getProductColors(productId: number): Promise<Color[]> {
     try {
-      // Koristimo sigurniji pristup bez SQL injection rizika
-      // Izravno spojimo tablice productColors i colors
-      const result = await db
-        .select({
-          id: colors.id,
-          name: colors.name,
-          hexValue: colors.hexValue,
-          active: colors.active
-        })
+      // Dohvati sve veze između proizvoda i boja
+      const relations = await db
+        .select()
         .from(productColors)
-        .innerJoin(colors, eq(productColors.colorId, colors.id))
         .where(eq(productColors.productId, productId));
+      
+      if (relations.length === 0) {
+        return [];
+      }
+      
+      // Izvuci ID-jeve boja
+      const colorIds = relations.map(rel => rel.colorId);
+      
+      // Dohvati boje po njihovim ID-jevima kroz više pojedinačnih upita
+      const result: Color[] = [];
+      for (const colorId of colorIds) {
+        const [color] = await db
+          .select()
+          .from(colors)
+          .where(eq(colors.id, colorId));
+        
+        if (color) {
+          result.push(color);
+        }
+      }
       
       return result;
     } catch (error) {
