@@ -114,9 +114,208 @@ export class DatabaseStorage implements IStorage {
     const [category] = await db.insert(categories).values(categoryData).returning();
     return category;
   }
+  
+  async updateCategory(id: number, categoryData: InsertCategory): Promise<Category | undefined> {
+    const [updatedCategory] = await db
+      .update(categories)
+      .set(categoryData)
+      .where(eq(categories.id, id))
+      .returning();
+    return updatedCategory;
+  }
+  
+  async deleteCategory(id: number): Promise<void> {
+    await db.delete(categories).where(eq(categories.id, id));
+  }
 
   async getProductsByCategory(categoryId: number): Promise<Product[]> {
     return await db.select().from(products).where(eq(products.categoryId, categoryId));
+  }
+  
+  // Scent methods
+  async getScent(id: number): Promise<Scent | undefined> {
+    const [scent] = await db.select().from(scents).where(eq(scents.id, id));
+    return scent;
+  }
+  
+  async getAllScents(): Promise<Scent[]> {
+    return await db.select().from(scents);
+  }
+  
+  async getActiveScents(): Promise<Scent[]> {
+    return await db.select().from(scents).where(eq(scents.active, true));
+  }
+  
+  async createScent(scentData: InsertScent): Promise<Scent> {
+    const [scent] = await db.insert(scents).values(scentData).returning();
+    return scent;
+  }
+  
+  async updateScent(id: number, scentData: InsertScent): Promise<Scent | undefined> {
+    const [updatedScent] = await db
+      .update(scents)
+      .set(scentData)
+      .where(eq(scents.id, id))
+      .returning();
+    return updatedScent;
+  }
+  
+  async deleteScent(id: number): Promise<void> {
+    await db.delete(scents).where(eq(scents.id, id));
+  }
+  
+  async getProductScents(productId: number): Promise<Scent[]> {
+    // Dohvati sve veze između proizvoda i mirisa
+    const scentRelations = await db
+      .select()
+      .from(productScents)
+      .where(eq(productScents.productId, productId));
+      
+    if (scentRelations.length === 0) {
+      return [];
+    }
+    
+    // Izvuci ID-jeve mirisa
+    const scentIds = scentRelations.map(rel => rel.scentId);
+    
+    // Dohvati sve mirise koji su povezani s proizvodom
+    return await db
+      .select()
+      .from(scents)
+      .where(sql`${scents.id} IN (${scentIds.join(',')})`);
+  }
+  
+  async addScentToProduct(productId: number, scentId: number): Promise<ProductScent> {
+    // Provjeri postoji li već ta veza
+    const [existingRelation] = await db
+      .select()
+      .from(productScents)
+      .where(
+        and(
+          eq(productScents.productId, productId),
+          eq(productScents.scentId, scentId)
+        )
+      );
+      
+    // Ako veza već postoji, vrati je
+    if (existingRelation) {
+      return existingRelation;
+    }
+    
+    // Inače dodaj novu vezu
+    const [relation] = await db
+      .insert(productScents)
+      .values({
+        productId,
+        scentId
+      })
+      .returning();
+      
+    return relation;
+  }
+  
+  async removeScentFromProduct(productId: number, scentId: number): Promise<void> {
+    await db
+      .delete(productScents)
+      .where(
+        and(
+          eq(productScents.productId, productId),
+          eq(productScents.scentId, scentId)
+        )
+      );
+  }
+  
+  // Color methods
+  async getColor(id: number): Promise<Color | undefined> {
+    const [color] = await db.select().from(colors).where(eq(colors.id, id));
+    return color;
+  }
+  
+  async getAllColors(): Promise<Color[]> {
+    return await db.select().from(colors);
+  }
+  
+  async getActiveColors(): Promise<Color[]> {
+    return await db.select().from(colors).where(eq(colors.active, true));
+  }
+  
+  async createColor(colorData: InsertColor): Promise<Color> {
+    const [color] = await db.insert(colors).values(colorData).returning();
+    return color;
+  }
+  
+  async updateColor(id: number, colorData: InsertColor): Promise<Color | undefined> {
+    const [updatedColor] = await db
+      .update(colors)
+      .set(colorData)
+      .where(eq(colors.id, id))
+      .returning();
+    return updatedColor;
+  }
+  
+  async deleteColor(id: number): Promise<void> {
+    await db.delete(colors).where(eq(colors.id, id));
+  }
+  
+  async getProductColors(productId: number): Promise<Color[]> {
+    // Dohvati sve veze između proizvoda i boja
+    const colorRelations = await db
+      .select()
+      .from(productColors)
+      .where(eq(productColors.productId, productId));
+      
+    if (colorRelations.length === 0) {
+      return [];
+    }
+    
+    // Izvuci ID-jeve boja
+    const colorIds = colorRelations.map(rel => rel.colorId);
+    
+    // Dohvati sve boje koje su povezane s proizvodom
+    return await db
+      .select()
+      .from(colors)
+      .where(sql`${colors.id} IN (${colorIds.join(',')})`);
+  }
+  
+  async addColorToProduct(productId: number, colorId: number): Promise<ProductColor> {
+    // Provjeri postoji li već ta veza
+    const [existingRelation] = await db
+      .select()
+      .from(productColors)
+      .where(
+        and(
+          eq(productColors.productId, productId),
+          eq(productColors.colorId, colorId)
+        )
+      );
+      
+    // Ako veza već postoji, vrati je
+    if (existingRelation) {
+      return existingRelation;
+    }
+    
+    // Inače dodaj novu vezu
+    const [relation] = await db
+      .insert(productColors)
+      .values({
+        productId,
+        colorId
+      })
+      .returning();
+      
+    return relation;
+  }
+  
+  async removeColorFromProduct(productId: number, colorId: number): Promise<void> {
+    await db
+      .delete(productColors)
+      .where(
+        and(
+          eq(productColors.productId, productId),
+          eq(productColors.colorId, colorId)
+        )
+      );
   }
 
   // Order methods
