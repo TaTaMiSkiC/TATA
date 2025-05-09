@@ -175,6 +175,39 @@ export class DatabaseStorage implements IStorage {
       tableName: 'session',
       createTableIfMissing: true
     });
+    
+    // Inicijaliziraj pomoćne tablice pri pokretanju
+    this.initializeRelationTables();
+  }
+  
+  private async initializeRelationTables() {
+    try {
+      console.log("Inicijalizacija pomoćnih tablica za veze između entiteta...");
+      
+      // Kreiraj tablicu product_scents ako ne postoji
+      await db.execute(`
+        CREATE TABLE IF NOT EXISTS product_scents (
+          id SERIAL PRIMARY KEY,
+          product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+          scent_id INTEGER NOT NULL REFERENCES scents(id) ON DELETE CASCADE,
+          UNIQUE(product_id, scent_id)
+        )
+      `);
+      
+      // Kreiraj tablicu product_colors ako ne postoji
+      await db.execute(`
+        CREATE TABLE IF NOT EXISTS product_colors (
+          id SERIAL PRIMARY KEY,
+          product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+          color_id INTEGER NOT NULL REFERENCES colors(id) ON DELETE CASCADE,
+          UNIQUE(product_id, color_id)
+        )
+      `);
+      
+      console.log("Inicijalizacija pomoćnih tablica završena.");
+    } catch (error) {
+      console.error("Greška pri inicijalizaciji pomoćnih tablica:", error);
+    }
   }
 
   // User methods
@@ -475,7 +508,7 @@ export class DatabaseStorage implements IStorage {
     try {
       // Direktno povezani upit koji dohvaća boje povezane s proizvodom
       const result = await db.execute(
-        `SELECT c.id, c.name, c.hexValue, c.active 
+        `SELECT c.id, c.name, c.hex_value as "hexValue", c.active 
          FROM product_colors pc 
          JOIN colors c ON pc.color_id = c.id 
          WHERE pc.product_id = $1`,
