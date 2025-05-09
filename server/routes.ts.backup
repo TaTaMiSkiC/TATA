@@ -4,7 +4,11 @@ import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { z } from "zod";
+import { eq } from "drizzle-orm";
+import { db, pool } from "./db";
 import {
+  productScents,
+  productColors,
   insertProductSchema,
   insertCategorySchema,
   insertOrderSchema,
@@ -652,18 +656,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const productId = parseInt(req.params.id);
+      console.log(`Brisanje svih mirisa za proizvod ID: ${productId}`);
       
-      // Dohvati sve mirise proizvoda
-      const scents = await storage.getProductScents(productId);
-      
-      // Obriši svaki miris
-      for (const scent of scents) {
-        await storage.removeScentFromProduct(productId, scent.id);
+      try {
+        // Direktno koristimo pool.query za brisanje svih mirisa
+        await pool.query(
+          `DELETE FROM product_scents WHERE product_id = $1`,
+          [productId]
+        );
+        console.log(`Uspješno izbrisani svi mirisi za proizvod ID: ${productId}`);
+        res.status(204).send();
+      } catch (dbError) {
+        console.error("Database error removing scents:", dbError);
+        
+        // Još jedan pokušaj s inicijalizacijom tablice
+        console.log("Pokušaj inicijalizacije tablice product_scents...");
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS product_scents (
+            id SERIAL PRIMARY KEY,
+            product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+            scent_id INTEGER NOT NULL REFERENCES scents(id) ON DELETE CASCADE,
+            UNIQUE(product_id, scent_id)
+          )
+        `);
+        
+        // Sada ponovo pokušamo brisanje
+        await pool.query(
+          `DELETE FROM product_scents WHERE product_id = $1`,
+          [productId]
+        );
+        console.log(`Nakon inicijalizacije, uspješno izbrisani svi mirisi za proizvod ID: ${productId}`);
+        res.status(204).send();
       }
-      
-      res.status(204).send();
     } catch (error) {
-      res.status(500).json({ message: "Failed to remove all scents from product" });
+      console.error("Error removing scents from product:", error);
+      res.status(500).json({ 
+        message: "Failed to remove all scents from product", 
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   });
 
@@ -721,18 +751,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const productId = parseInt(req.params.id);
+      console.log(`Brisanje svih boja za proizvod ID: ${productId}`);
       
-      // Dohvati sve boje proizvoda
-      const colors = await storage.getProductColors(productId);
-      
-      // Obriši svaku boju
-      for (const color of colors) {
-        await storage.removeColorFromProduct(productId, color.id);
+      try {
+        // Direktno koristimo pool.query za brisanje svih boja
+        await pool.query(
+          `DELETE FROM product_colors WHERE product_id = $1`,
+          [productId]
+        );
+        console.log(`Uspješno izbrisane sve boje za proizvod ID: ${productId}`);
+        res.status(204).send();
+      } catch (dbError) {
+        console.error("Database error removing colors:", dbError);
+        
+        // Još jedan pokušaj s inicijalizacijom tablice
+        console.log("Pokušaj inicijalizacije tablice product_colors...");
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS product_colors (
+            id SERIAL PRIMARY KEY,
+            product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+            color_id INTEGER NOT NULL REFERENCES colors(id) ON DELETE CASCADE,
+            UNIQUE(product_id, color_id)
+          )
+        `);
+        
+        // Sada ponovo pokušamo brisanje
+        await pool.query(
+          `DELETE FROM product_colors WHERE product_id = $1`,
+          [productId]
+        );
+        console.log(`Nakon inicijalizacije, uspješno izbrisane sve boje za proizvod ID: ${productId}`);
+        res.status(204).send();
       }
-      
-      res.status(204).send();
     } catch (error) {
-      res.status(500).json({ message: "Failed to remove all colors from product" });
+      console.error("Error removing colors from product:", error);
+      res.status(500).json({ 
+        message: "Failed to remove all colors from product", 
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   });
   
@@ -817,6 +873,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Opće postavke - moraju biti prije generičke rute za :key
+  app.get("/api/settings/general", async (req, res) => {
+    try {
+      // Dohvati sve opće postavke
+      const storeName = await storage.getSetting("store_name");
+      const storeEmail = await storage.getSetting("store_email");
+      const storePhone = await storage.getSetting("store_phone");
+      const storeAddress = await storage.getSetting("store_address");
+      
+      res.json({
+        store_name: storeName?.value || "",
+        store_email: storeEmail?.value || "",
+        store_phone: storePhone?.value || "",
+        store_address: storeAddress?.value || "",
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch general settings" });
+    }
+  });
+  
+  // Kontakt postavke - moraju biti prije generičke rute za :key
+  app.get("/api/settings/contact", async (req, res) => {
+    try {
+      // Dohvati sve postavke koje se tiču kontakta
+      const address = await storage.getSetting("contact_address");
+      const city = await storage.getSetting("contact_city");
+      const postalCode = await storage.getSetting("contact_postal_code");
+      const phone = await storage.getSetting("contact_phone");
+      const email = await storage.getSetting("contact_email");
+      const workingHours = await storage.getSetting("contact_working_hours");
+      
+      res.json({
+        address: address?.value || "",
+        city: city?.value || "",
+        postalCode: postalCode?.value || "",
+        phone: phone?.value || "",
+        email: email?.value || "",
+        workingHours: workingHours?.value || "",
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch contact settings" });
+    }
+  });
+  
   app.get("/api/settings/:key", async (req, res) => {
     try {
       const key = req.params.key;
@@ -829,6 +929,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(setting);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch setting" });
+    }
+  });
+  
+  app.post("/api/settings/general", async (req, res) => {
+    try {
+      console.log("Primljeni zahtjev za ažuriranje općih postavki:", req.body);
+      
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        console.log("Zahtjev odbijen - korisnik nije prijavljen ili nije admin");
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const { store_name, store_email, store_phone, store_address } = req.body;
+      
+      console.log("Parsiran zahtjev:", { store_name, store_email, store_phone, store_address });
+      
+      // Direktno ažuriranje u bazi podataka kao test
+      console.log("Izvršavanje SQL upita za ažuriranje 'store_name'");
+      if (store_name) {
+        try {
+          // Prvo pokušavamo ažurirati kao test
+          const checkResult = await db.execute(
+            `SELECT * FROM settings WHERE key = $1`,
+            ['store_name']
+          );
+          console.log("Rezultat provjere:", checkResult.rows);
+          
+          if (checkResult.rows.length > 0) {
+            // Ažuriraj postojeću postavku
+            const updateResult = await db.execute(
+              `UPDATE settings SET value = $1, updated_at = NOW() WHERE key = $2 RETURNING *`,
+              [store_name, 'store_name']
+            );
+            console.log("SQL Rezultat ažuriranja 'store_name':", updateResult.rows);
+          } else {
+            // Kreiraj novu postavku
+            const insertResult = await db.execute(
+              `INSERT INTO settings (key, value) VALUES ($1, $2) RETURNING *`,
+              ['store_name', store_name]
+            );
+            console.log("SQL Rezultat dodavanja 'store_name':", insertResult.rows);
+          }
+        } catch (sqlError) {
+          console.error("SQL greška:", sqlError);
+        }
+      }
+      
+      // Nakon SQL testa, pokušajmo i standardni način
+      try {
+        const results = await Promise.all([
+          storage.updateSetting("store_name", store_name),
+          storage.updateSetting("store_email", store_email),
+          storage.updateSetting("store_phone", store_phone),
+          storage.updateSetting("store_address", store_address),
+        ]);
+        console.log("Postavke uspješno ažurirane - rezultati:", results);
+        res.json({ success: true, results });
+      } catch (updateError) {
+        console.error("Greška pri ažuriranju postavki:", updateError);
+        throw updateError;
+      }
+    } catch (error) {
+      console.error("Greška pri ažuriranju općih postavki:", error);
+      res.status(500).json({ message: "Failed to update general settings", error: String(error) });
+    }
+  });
+  
+  app.post("/api/settings/contact", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const { address, city, postalCode, phone, email, workingHours } = req.body;
+      
+      // Ažuriraj ili kreiraj postavke za kontakt
+      await Promise.all([
+        storage.updateSetting("contact_address", address),
+        storage.updateSetting("contact_city", city),
+        storage.updateSetting("contact_postal_code", postalCode),
+        storage.updateSetting("contact_phone", phone),
+        storage.updateSetting("contact_email", email),
+        storage.updateSetting("contact_working_hours", workingHours),
+      ]);
+      
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update contact settings" });
     }
   });
 
@@ -980,48 +1168,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Product Scents
-  app.get("/api/products/:id/scents", async (req, res) => {
-    try {
-      const productId = parseInt(req.params.id);
-      const scents = await storage.getProductScents(productId);
-      res.json(scents);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch product scents" });
-    }
-  });
-
-  app.post("/api/products/:id/scents/:scentId", async (req, res) => {
-    try {
-      if (!req.isAuthenticated() || !req.user?.isAdmin) {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
-      
-      const productId = parseInt(req.params.id);
-      const scentId = parseInt(req.params.scentId);
-      
-      const productScent = await storage.addScentToProduct(productId, scentId);
-      res.status(201).json(productScent);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to add scent to product" });
-    }
-  });
-
-  app.delete("/api/products/:id/scents/:scentId", async (req, res) => {
-    try {
-      if (!req.isAuthenticated() || !req.user?.isAdmin) {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
-      
-      const productId = parseInt(req.params.id);
-      const scentId = parseInt(req.params.scentId);
-      
-      await storage.removeScentFromProduct(productId, scentId);
-      res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ message: "Failed to remove scent from product" });
-    }
-  });
+  // Ove rute su već definirane iznad - duplikati
 
   // Colors
   app.get("/api/colors", async (req, res) => {

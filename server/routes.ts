@@ -874,25 +874,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Opće postavke - moraju biti prije generičke rute za :key
-  app.get("/api/settings/general", async (req, res) => {
-    try {
-      // Dohvati sve opće postavke
-      const storeName = await storage.getSetting("store_name");
-      const storeEmail = await storage.getSetting("store_email");
-      const storePhone = await storage.getSetting("store_phone");
-      const storeAddress = await storage.getSetting("store_address");
-      
-      res.json({
-        store_name: storeName?.value || "",
-        store_email: storeEmail?.value || "",
-        store_phone: storePhone?.value || "",
-        store_address: storeAddress?.value || "",
-      });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch general settings" });
-    }
-  });
-  
   // Kontakt postavke - moraju biti prije generičke rute za :key
   app.get("/api/settings/contact", async (req, res) => {
     try {
@@ -929,70 +910,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(setting);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch setting" });
-    }
-  });
-  
-  app.post("/api/settings/general", async (req, res) => {
-    try {
-      console.log("Primljeni zahtjev za ažuriranje općih postavki:", req.body);
-      
-      if (!req.isAuthenticated() || !req.user?.isAdmin) {
-        console.log("Zahtjev odbijen - korisnik nije prijavljen ili nije admin");
-        return res.status(403).json({ message: "Unauthorized" });
-      }
-      
-      const { store_name, store_email, store_phone, store_address } = req.body;
-      
-      console.log("Parsiran zahtjev:", { store_name, store_email, store_phone, store_address });
-      
-      // Direktno ažuriranje u bazi podataka kao test
-      console.log("Izvršavanje SQL upita za ažuriranje 'store_name'");
-      if (store_name) {
-        try {
-          // Prvo pokušavamo ažurirati kao test
-          const checkResult = await db.execute(
-            `SELECT * FROM settings WHERE key = $1`,
-            ['store_name']
-          );
-          console.log("Rezultat provjere:", checkResult.rows);
-          
-          if (checkResult.rows.length > 0) {
-            // Ažuriraj postojeću postavku
-            const updateResult = await db.execute(
-              `UPDATE settings SET value = $1, updated_at = NOW() WHERE key = $2 RETURNING *`,
-              [store_name, 'store_name']
-            );
-            console.log("SQL Rezultat ažuriranja 'store_name':", updateResult.rows);
-          } else {
-            // Kreiraj novu postavku
-            const insertResult = await db.execute(
-              `INSERT INTO settings (key, value) VALUES ($1, $2) RETURNING *`,
-              ['store_name', store_name]
-            );
-            console.log("SQL Rezultat dodavanja 'store_name':", insertResult.rows);
-          }
-        } catch (sqlError) {
-          console.error("SQL greška:", sqlError);
-        }
-      }
-      
-      // Nakon SQL testa, pokušajmo i standardni način
-      try {
-        const results = await Promise.all([
-          storage.updateSetting("store_name", store_name),
-          storage.updateSetting("store_email", store_email),
-          storage.updateSetting("store_phone", store_phone),
-          storage.updateSetting("store_address", store_address),
-        ]);
-        console.log("Postavke uspješno ažurirane - rezultati:", results);
-        res.json({ success: true, results });
-      } catch (updateError) {
-        console.error("Greška pri ažuriranju postavki:", updateError);
-        throw updateError;
-      }
-    } catch (error) {
-      console.error("Greška pri ažuriranju općih postavki:", error);
-      res.status(500).json({ message: "Failed to update general settings", error: String(error) });
     }
   });
   
