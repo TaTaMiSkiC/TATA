@@ -14,15 +14,20 @@ export default function Hero() {
             Otkrijte našu kolekciju premium mirisnih svijeća izrađenih s ljubavlju
           </p>
           <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-            <Button size="lg" asChild>
-              <Link href="/products">
-                <a className="w-full sm:w-auto">Istraži kolekciju</a>
-              </Link>
+            <Button 
+              size="lg" 
+              className="w-full sm:w-auto"
+              onClick={() => window.location.href = '/products'}
+            >
+              Istraži kolekciju
             </Button>
-            <Button size="lg" variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary" asChild>
-              <Link href="/about">
-                <a className="w-full sm:w-auto">O nama</a>
-              </Link>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary w-full sm:w-auto"
+              onClick={() => window.location.href = '/about'}
+            >
+              O nama
             </Button>
           </div>
         </div>

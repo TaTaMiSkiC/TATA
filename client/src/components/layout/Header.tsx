@@ -35,14 +35,18 @@ export default function Header() {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <div className="text-primary heading text-2xl md:text-3xl font-bold cursor-pointer">
-            <Link href="/">Kerzenwelt</Link>
+          <div className="text-primary heading text-2xl md:text-3xl font-bold cursor-pointer" 
+               onClick={() => window.location.href = '/'}>
+            Kerzenwelt
           </div>
           
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-6">
-            <div className={`font-body hover:text-primary transition cursor-pointer ${location === '/' ? 'text-primary' : 'text-text-dark'}`}>
-              <Link href="/">Početna</Link>
+            <div 
+              className={`font-body hover:text-primary transition cursor-pointer ${location === '/' ? 'text-primary' : 'text-text-dark'}`}
+              onClick={() => window.location.href = '/'}
+            >
+              Početna
             </div>
             
             <DropdownMenu>
@@ -74,16 +78,25 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
             
-            <div className={`font-body hover:text-primary transition cursor-pointer ${location === '/about' ? 'text-primary' : 'text-text-dark'}`}>
-              <Link href="/about">O nama</Link>
+            <div 
+              className={`font-body hover:text-primary transition cursor-pointer ${location === '/about' ? 'text-primary' : 'text-text-dark'}`}
+              onClick={() => window.location.href = '/about'}
+            >
+              O nama
             </div>
             
-            <div className={`font-body hover:text-primary transition cursor-pointer ${location === '/blog' ? 'text-primary' : 'text-text-dark'}`}>
-              <Link href="/blog">Blog</Link>
+            <div 
+              className={`font-body hover:text-primary transition cursor-pointer ${location === '/blog' ? 'text-primary' : 'text-text-dark'}`}
+              onClick={() => window.location.href = '/blog'}
+            >
+              Blog
             </div>
             
-            <div className={`font-body hover:text-primary transition cursor-pointer ${location === '/contact' ? 'text-primary' : 'text-text-dark'}`}>
-              <Link href="/contact">Kontakt</Link>
+            <div 
+              className={`font-body hover:text-primary transition cursor-pointer ${location === '/contact' ? 'text-primary' : 'text-text-dark'}`}
+              onClick={() => window.location.href = '/contact'}
+            >
+              Kontakt
             </div>
           </nav>
           
