@@ -60,9 +60,15 @@ export default function AdminOrders() {
   });
   
   // Fetch order items for selected order
-  const { data: orderItems, isLoading: orderItemsLoading } = useQuery<OrderItemWithProduct[]>({
+  const { data: orderItems, isLoading: orderItemsLoading, error: orderItemsError } = useQuery<OrderItemWithProduct[]>({
     queryKey: [`/api/orders/${selectedOrder?.id}/items`],
     enabled: !!selectedOrder,
+    onSuccess: (data) => {
+      console.log("Dobavljen sadržaj narudžbe:", data);
+    },
+    onError: (error) => {
+      console.error("Greška kod dohvaćanja sadržaja narudžbe:", error);
+    }
   });
   
   // Filter orders based on search term and status
