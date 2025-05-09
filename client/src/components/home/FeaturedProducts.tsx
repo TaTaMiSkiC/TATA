@@ -17,12 +17,13 @@ export default function FeaturedProducts() {
             <h2 className="heading text-3xl md:text-4xl font-bold text-text-dark">Istaknuti proizvodi</h2>
             <p className="mt-3 text-gray-600">Naši najpopularniji proizvodi koje naši kupci vole</p>
           </div>
-          <Link href="/products">
-            <a className="hidden md:inline-flex items-center font-accent text-primary hover:text-opacity-80 transition">
-              Vidi sve proizvode
-              <ArrowRight className="ml-2" size={16} />
-            </a>
-          </Link>
+          <div 
+            className="hidden md:inline-flex items-center font-accent text-primary hover:text-opacity-80 transition cursor-pointer"
+            onClick={() => window.location.href = '/products'}
+          >
+            Vidi sve proizvode
+            <ArrowRight className="ml-2" size={16} />
+          </div>
         </div>
         
         {error ? (
@@ -37,12 +38,13 @@ export default function FeaturedProducts() {
         )}
         
         <div className="mt-8 text-center md:hidden">
-          <Link href="/products">
-            <a className="inline-flex items-center font-accent text-primary hover:text-opacity-80 transition">
-              Vidi sve proizvode
-              <ArrowRight className="ml-2" size={16} />
-            </a>
-          </Link>
+          <div
+            className="inline-flex items-center font-accent text-primary hover:text-opacity-80 transition cursor-pointer"
+            onClick={() => window.location.href = '/products'}
+          >
+            Vidi sve proizvode
+            <ArrowRight className="ml-2" size={16} />
+          </div>
         </div>
       </div>
     </section>

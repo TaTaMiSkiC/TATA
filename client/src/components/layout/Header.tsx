@@ -5,8 +5,11 @@ import {
   User, 
   ShoppingBag, 
   ChevronDown, 
-  Menu 
+  Menu,
+  Sun,
+  Moon
 } from "lucide-react";
+import { useTheme } from "@/hooks/use-theme";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +25,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logoutMutation } = useAuth();
   const { cartItems } = useCart();
+  const { theme, setTheme } = useTheme();
   const [location] = useLocation();
 
   const cartItemCount = cartItems?.length || 0;
@@ -29,9 +33,13 @@ export default function Header() {
   const handleLogout = () => {
     logoutMutation.mutate();
   };
+  
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
+    <header className="bg-background shadow-sm sticky top-0 z-50 border-b">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
@@ -43,7 +51,7 @@ export default function Header() {
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-6">
             <div 
-              className={`font-body hover:text-primary transition cursor-pointer ${location === '/' ? 'text-primary' : 'text-text-dark'}`}
+              className={`font-body hover:text-primary transition cursor-pointer ${location === '/' ? 'text-primary' : 'text-foreground'}`}
               onClick={() => window.location.href = '/'}
             >
               Početna
@@ -102,6 +110,10 @@ export default function Header() {
           
           {/* User actions */}
           <div className="flex items-center space-x-4">
+            <Button variant="ghost" size="icon" className="text-text-dark hover:text-primary hover:bg-transparent" onClick={toggleTheme}>
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            </Button>
+            
             <Button variant="ghost" size="icon" className="text-text-dark hover:text-primary hover:bg-transparent">
               <Search size={20} />
             </Button>
