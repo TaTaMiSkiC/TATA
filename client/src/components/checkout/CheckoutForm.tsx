@@ -46,7 +46,7 @@ const checkoutSchema = z.object({
   phone: z.string().min(8, "Unesite valjan telefonski broj"),
   address: z.string().min(5, "Adresa je obavezna"),
   city: z.string().min(2, "Grad je obavezan"),
-  postalCode: z.string().min(5, "Poštanski broj je obavezan"),
+  postalCode: z.string().min(4, "Poštanski broj mora imati najmanje 4 znaka"),
   country: z.string().min(2, "Država je obavezna"),
   paymentMethod: z.enum(["credit_card", "paypal", "bank_transfer"]),
   saveAddress: z.boolean().optional(),
