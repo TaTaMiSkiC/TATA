@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, decimal, timestamp, json } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, decimal, timestamp, json, varchar } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -244,6 +244,7 @@ export const productsRelations = relations(products, ({ one, many }) => ({
   reviews: many(reviews),
   productScents: many(productScents),
   productColors: many(productColors),
+  productCollections: many(productCollections),
 }));
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
@@ -344,3 +345,55 @@ export const insertPageSchema = createInsertSchema(pages).omit({
 
 export type Page = typeof pages.$inferSelect;
 export type InsertPage = z.infer<typeof insertPageSchema>;
+
+// Definiranje tablice za kolekcije
+export const collections = pgTable("collections", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  imageUrl: text("image_url"),
+  featuredOnHome: boolean("featured_on_home").default(false).notNull(),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertCollectionSchema = createInsertSchema(collections).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type Collection = typeof collections.$inferSelect;
+export type InsertCollection = z.infer<typeof insertCollectionSchema>;
+
+// Relacijska tablica između proizvoda i kolekcija
+export const productCollections = pgTable("product_collections", {
+  id: serial("id").primaryKey(),
+  productId: integer("product_id").notNull(),
+  collectionId: integer("collection_id").notNull(),
+});
+
+export const insertProductCollectionSchema = createInsertSchema(productCollections).omit({
+  id: true,
+});
+
+export type ProductCollection = typeof productCollections.$inferSelect;
+export type InsertProductCollection = z.infer<typeof insertProductCollectionSchema>;
+
+// Relacije za kolekcije
+export const collectionsRelations = relations(collections, ({ many }) => ({
+  productCollections: many(productCollections),
+}));
+
+// Dodajemo relacije za proizvode s kolekcijama
+export const productCollectionsRelations = relations(productCollections, ({ one }) => ({
+  product: one(products, {
+    fields: [productCollections.productId],
+    references: [products.id],
+  }),
+  collection: one(collections, {
+    fields: [productCollections.collectionId],
+    references: [collections.id],
+  }),
+}));

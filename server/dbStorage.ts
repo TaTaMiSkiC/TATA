@@ -762,4 +762,93 @@ export class DatabaseStorage implements IStorage {
   async deletePage(id: number): Promise<void> {
     await db.delete(pages).where(eq(pages.id, id));
   }
+
+  // ----- Kolekcije -----
+  
+  async getCollection(id: number): Promise<Collection | undefined> {
+    const [collection] = await db.select().from(collections).where(eq(collections.id, id));
+    return collection;
+  }
+  
+  async getAllCollections(): Promise<Collection[]> {
+    return await db.select().from(collections);
+  }
+  
+  async getActiveCollections(): Promise<Collection[]> {
+    return await db.select().from(collections).where(eq(collections.active, true));
+  }
+  
+  async getFeaturedCollections(): Promise<Collection[]> {
+    return await db.select().from(collections).where(and(
+      eq(collections.active, true),
+      eq(collections.featuredOnHome, true)
+    ));
+  }
+  
+  async createCollection(collectionData: InsertCollection): Promise<Collection> {
+    const [collection] = await db
+      .insert(collections)
+      .values(collectionData)
+      .returning();
+    return collection;
+  }
+  
+  async updateCollection(id: number, collectionData: Partial<InsertCollection>): Promise<Collection | undefined> {
+    try {
+      const [updatedCollection] = await db
+        .update(collections)
+        .set({
+          ...collectionData,
+          updatedAt: new Date()
+        })
+        .where(eq(collections.id, id))
+        .returning();
+      return updatedCollection;
+    } catch (error) {
+      console.error("Greška pri ažuriranju kolekcije:", error);
+      throw new Error("Failed to update collection");
+    }
+  }
+  
+  async deleteCollection(id: number): Promise<void> {
+    // Prvo obrišimo sve veze između proizvoda i ove kolekcije
+    await db.delete(productCollections).where(eq(productCollections.collectionId, id));
+    // Zatim obrišemo kolekciju
+    await db.delete(collections).where(eq(collections.id, id));
+  }
+  
+  async getCollectionProducts(collectionId: number): Promise<Product[]> {
+    const result = await db
+      .select({
+        product: products
+      })
+      .from(productCollections)
+      .innerJoin(products, eq(productCollections.productId, products.id))
+      .where(eq(productCollections.collectionId, collectionId));
+    
+    return result.map(r => r.product);
+  }
+  
+  async addProductToCollection(productId: number, collectionId: number): Promise<ProductCollection> {
+    const [relation] = await db
+      .insert(productCollections)
+      .values({
+        productId,
+        collectionId
+      })
+      .returning();
+    
+    return relation;
+  }
+  
+  async removeProductFromCollection(productId: number, collectionId: number): Promise<void> {
+    await db
+      .delete(productCollections)
+      .where(
+        and(
+          eq(productCollections.productId, productId),
+          eq(productCollections.collectionId, collectionId)
+        )
+      );
+  }
 }
