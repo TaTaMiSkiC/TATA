@@ -143,14 +143,32 @@ export class DatabaseStorage implements IStorage {
         .values(orderData)
         .returning();
 
-      // Create the order items with the order ID
+      // Dohvati nazive svih proizvoda koje treba dodati u narudžbu
       if (items.length > 0) {
+        // Prikupi sve ID-jeve proizvoda za dohvaćanje naziva
+        const productIds = items.map(item => item.productId);
+        
+        // Dohvati sve proizvode u jednom upitu
+        const productsList = await tx
+          .select({ id: products.id, name: products.name })
+          .from(products)
+          .where(
+            productIds.length > 0 ?
+              sql`${products.id} IN (${productIds.join(',')})` :
+              sql`FALSE`
+          );
+        
+        // Kreiraj mapu proizvoda po ID-ju za brže pretraživanje
+        const productsMap = new Map(productsList.map(product => [product.id, product.name]));
+        
+        // Dodaj stavke narudžbe s nazivima proizvoda
         await tx
           .insert(orderItems)
           .values(
             items.map((item) => ({
               ...item,
               orderId: order.id,
+              productName: productsMap.get(item.productId) || `Proizvod (ID: ${item.productId})`,
             }))
           );
       }
@@ -195,12 +213,13 @@ export class DatabaseStorage implements IStorage {
         // Pronađi proizvod u mapi
         const product = productsMap.get(item.productId);
         
-        console.log(`Stavka ${item.id}, Proizvod ID ${item.productId}, Pronađen: ${!!product}`);
+        console.log(`Stavka ${item.id}, Proizvod ID ${item.productId}, Pronađen: ${!!product}, Naziv iz narudžbe: ${item.productName}`);
         
         // Ako proizvod nije pronađen, stvori zamjenski proizvod s osnovnim informacijama
+        // Koristi naziv proizvoda iz narudžbe ako postoji
         const resolvedProduct = product || {
           id: item.productId,
-          name: `Proizvod (ID: ${item.productId})`,
+          name: item.productName || `Proizvod (ID: ${item.productId})`,
           createdAt: new Date(),
           description: "Proizvod nije pronađen",
           price: item.price,
