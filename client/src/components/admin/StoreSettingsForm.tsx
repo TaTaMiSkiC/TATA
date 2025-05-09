@@ -34,27 +34,52 @@ export default function StoreSettingsForm() {
   const queryClient = useQueryClient();
 
   // Dohvaćanje trenutnih postavki
-  const { data: storeSettings, isLoading } = useQuery({
-    queryKey: ["/api/settings/general"],
+  const { data: storeSettings, isLoading, isError, error } = useQuery({
+    queryKey: ["store-settings", "general"],
     queryFn: async () => {
       try {
-        console.log("Dohvaćam postavke trgovine...");
-        const res = await fetch("/api/settings/general");
+        console.log("STORE FORM: Dohvaćam postavke trgovine...");
+        // Dodajemo timestamp kao query parameter kako bismo izbjegli caching
+        const timestamp = new Date().getTime();
+        const res = await fetch(`/api/settings/general?_=${timestamp}`);
+        
+        console.log(`STORE FORM: Status odgovora: ${res.status} ${res.statusText}`);
+        
         if (!res.ok) {
           const errorText = await res.text();
-          console.error("Greška kod dohvaćanja postavki", errorText);
-          throw new Error("Neuspješno dohvaćanje postavki trgovine");
+          console.error("STORE FORM: Greška kod dohvaćanja postavki", errorText);
+          throw new Error(`Neuspješno dohvaćanje postavki trgovine: ${res.status} ${res.statusText}`);
         }
-        const data = await res.json();
-        console.log("Dohvaćene postavke trgovine:", data);
+        
+        const text = await res.text();
+        console.log("STORE FORM: Odgovor od servera (tekst):", text);
+        
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          console.error("STORE FORM: Nije moguće parsirati odgovor kao JSON", e);
+          data = { 
+            store_name: "", 
+            store_email: "", 
+            store_phone: "", 
+            store_address: "" 
+          };
+        }
+        
+        console.log("STORE FORM: Dohvaćene postavke trgovine:", data);
         return data;
       } catch (error) {
-        console.error("Greška kod dohvaćanja postavki:", error);
+        console.error("STORE FORM: Greška kod dohvaćanja postavki:", error);
         throw error;
       }
     },
-    retry: 1,
+    retry: 2,
+    retryDelay: 1000,
+    refetchOnWindowFocus: false,
   });
+  
+  console.log("STORE FORM: Stanje upita:", { isLoading, isError, storeSettings });
 
   // Inicijalizacija forme
   const form = useForm<StoreSettingsFormValues>({
@@ -111,7 +136,7 @@ export default function StoreSettingsForm() {
         description: "Postavke trgovine su uspješno ažurirane.",
       });
       // Osvježavanje podataka
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/general"] });
+      queryClient.invalidateQueries({ queryKey: ["store-settings", "general"] });
     },
     onError: (error: Error) => {
       console.error("Greška u mutaciji:", error);
