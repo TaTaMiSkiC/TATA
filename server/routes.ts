@@ -427,6 +427,245 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Scents (mirisi)
+  app.get("/api/scents", async (req, res) => {
+    try {
+      const scents = await storage.getAllScents();
+      res.json(scents);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch scents" });
+    }
+  });
+
+  app.get("/api/scents/active", async (req, res) => {
+    try {
+      const scents = await storage.getActiveScents();
+      res.json(scents);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch active scents" });
+    }
+  });
+
+  app.post("/api/scents", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const validatedData = insertScentSchema.parse(req.body);
+      const scent = await storage.createScent(validatedData);
+      res.status(201).json(scent);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create scent" });
+    }
+  });
+
+  app.put("/api/scents/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const id = parseInt(req.params.id);
+      const validatedData = insertScentSchema.parse(req.body);
+      const scent = await storage.updateScent(id, validatedData);
+      
+      if (!scent) {
+        return res.status(404).json({ message: "Scent not found" });
+      }
+      
+      res.json(scent);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update scent" });
+    }
+  });
+
+  app.delete("/api/scents/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const id = parseInt(req.params.id);
+      await storage.deleteScent(id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete scent" });
+    }
+  });
+
+  // Colors (boje)
+  app.get("/api/colors", async (req, res) => {
+    try {
+      const colors = await storage.getAllColors();
+      res.json(colors);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch colors" });
+    }
+  });
+
+  app.get("/api/colors/active", async (req, res) => {
+    try {
+      const colors = await storage.getActiveColors();
+      res.json(colors);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch active colors" });
+    }
+  });
+
+  app.post("/api/colors", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const validatedData = insertColorSchema.parse(req.body);
+      const color = await storage.createColor(validatedData);
+      res.status(201).json(color);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create color" });
+    }
+  });
+
+  app.put("/api/colors/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const id = parseInt(req.params.id);
+      const validatedData = insertColorSchema.parse(req.body);
+      const color = await storage.updateColor(id, validatedData);
+      
+      if (!color) {
+        return res.status(404).json({ message: "Color not found" });
+      }
+      
+      res.json(color);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update color" });
+    }
+  });
+
+  app.delete("/api/colors/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const id = parseInt(req.params.id);
+      await storage.deleteColor(id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete color" });
+    }
+  });
+
+  // Product scents and colors
+  app.get("/api/products/:id/scents", async (req, res) => {
+    try {
+      const productId = parseInt(req.params.id);
+      const scents = await storage.getProductScents(productId);
+      res.json(scents);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch product scents" });
+    }
+  });
+
+  app.post("/api/products/:id/scents", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const productId = parseInt(req.params.id);
+      const { scentId } = req.body;
+      
+      if (!scentId || typeof scentId !== 'number') {
+        return res.status(400).json({ message: "Invalid scent ID" });
+      }
+      
+      const productScent = await storage.addScentToProduct(productId, scentId);
+      res.status(201).json(productScent);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to add scent to product" });
+    }
+  });
+
+  app.delete("/api/products/:productId/scents/:scentId", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const productId = parseInt(req.params.productId);
+      const scentId = parseInt(req.params.scentId);
+      
+      await storage.removeScentFromProduct(productId, scentId);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove scent from product" });
+    }
+  });
+
+  app.get("/api/products/:id/colors", async (req, res) => {
+    try {
+      const productId = parseInt(req.params.id);
+      const colors = await storage.getProductColors(productId);
+      res.json(colors);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch product colors" });
+    }
+  });
+
+  app.post("/api/products/:id/colors", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const productId = parseInt(req.params.id);
+      const { colorId } = req.body;
+      
+      if (!colorId || typeof colorId !== 'number') {
+        return res.status(400).json({ message: "Invalid color ID" });
+      }
+      
+      const productColor = await storage.addColorToProduct(productId, colorId);
+      res.status(201).json(productColor);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to add color to product" });
+    }
+  });
+
+  app.delete("/api/products/:productId/colors/:colorId", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const productId = parseInt(req.params.productId);
+      const colorId = parseInt(req.params.colorId);
+      
+      await storage.removeColorFromProduct(productId, colorId);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove color from product" });
+    }
+  });
+  
   // Change password
   app.put("/api/users/:id/password", async (req, res) => {
     try {

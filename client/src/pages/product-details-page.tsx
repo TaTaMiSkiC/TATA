@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRoute, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from 'react-helmet';
 import Layout from "@/components/layout/Layout";
-import { Product, Review } from "@shared/schema";
+import { Product, Review, Scent, Color } from "@shared/schema";
 import { useCart } from "@/hooks/use-cart";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
@@ -44,6 +44,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@/components/ui/radio-group";
+import {
   Form,
   FormControl,
   FormField,
@@ -69,6 +73,8 @@ export default function ProductDetailsPage() {
   const [, params] = useRoute("/products/:id");
   const productId = parseInt(params?.id || "0");
   const [quantity, setQuantity] = useState(1);
+  const [selectedScentId, setSelectedScentId] = useState<number | null>(null);
+  const [selectedColorId, setSelectedColorId] = useState<number | null>(null);
   const { addToCart } = useCart();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -85,6 +91,29 @@ export default function ProductDetailsPage() {
     enabled: !!productId,
   });
   
+  // Fetch product scents
+  const { data: productScents, isLoading: scentsLoading } = useQuery<Scent[]>({
+    queryKey: [`/api/products/${productId}/scents`],
+    enabled: !!productId,
+  });
+  
+  // Fetch product colors
+  const { data: productColors, isLoading: colorsLoading } = useQuery<Color[]>({
+    queryKey: [`/api/products/${productId}/colors`],
+    enabled: !!productId && product?.hasColorOptions,
+  });
+  
+  // Set default scent and color when data is loaded
+  useEffect(() => {
+    if (productScents && productScents.length > 0 && !selectedScentId) {
+      setSelectedScentId(productScents[0].id);
+    }
+    
+    if (productColors && productColors.length > 0 && !selectedColorId && product?.hasColorOptions) {
+      setSelectedColorId(productColors[0].id);
+    }
+  }, [productScents, productColors, product]);
+  
   // Review form
   const form = useForm<ReviewFormValues>({
     resolver: zodResolver(reviewSchema),
@@ -98,8 +127,32 @@ export default function ProductDetailsPage() {
   const handleAddToCart = () => {
     if (!product) return;
     
+    // Provjeri jesu li odabrani potrebni mirisi/boje
+    if (productScents && productScents.length > 0 && !selectedScentId) {
+      toast({
+        title: "Potreban odabir",
+        description: "Molimo odaberite miris prije dodavanja u košaricu.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (product.hasColorOptions && productColors && productColors.length > 0 && !selectedColorId) {
+      toast({
+        title: "Potreban odabir",
+        description: "Molimo odaberite boju prije dodavanja u košaricu.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     addToCart.mutate(
-      { productId: product.id, quantity },
+      { 
+        productId: product.id, 
+        quantity,
+        scentId: selectedScentId || undefined,
+        colorId: selectedColorId || undefined,
+      },
       {
         onSuccess: () => {
           toast({
@@ -329,6 +382,61 @@ export default function ProductDetailsPage() {
                   </div>
                 </div>
               </div>
+              
+              {/* Scent options */}
+              {productScents && productScents.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-sm font-medium mb-3">Odaberite miris:</h3>
+                  <RadioGroup 
+                    value={selectedScentId?.toString()} 
+                    onValueChange={(value) => setSelectedScentId(parseInt(value))}
+                    className="flex flex-wrap gap-2"
+                  >
+                    {productScents.map((scent) => (
+                      <div key={scent.id} className="flex items-center space-x-2">
+                        <RadioGroupItem value={scent.id.toString()} id={`scent-${scent.id}`} />
+                        <label
+                          htmlFor={`scent-${scent.id}`}
+                          className={`px-3 py-2 rounded-md text-sm cursor-pointer transition-colors
+                            ${selectedScentId === scent.id ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80'}`}
+                        >
+                          {scent.name}
+                        </label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </div>
+              )}
+              
+              {/* Color options */}
+              {product.hasColorOptions && productColors && productColors.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-sm font-medium mb-3">Odaberite boju:</h3>
+                  <RadioGroup 
+                    value={selectedColorId?.toString()} 
+                    onValueChange={(value) => setSelectedColorId(parseInt(value))}
+                    className="flex flex-wrap gap-3"
+                  >
+                    {productColors.map((color) => (
+                      <div key={color.id} className="flex flex-col items-center">
+                        <RadioGroupItem 
+                          value={color.id.toString()} 
+                          id={`color-${color.id}`} 
+                          className="sr-only"
+                        />
+                        <label
+                          htmlFor={`color-${color.id}`}
+                          className={`w-10 h-10 rounded-full border-2 cursor-pointer transition-all
+                            ${selectedColorId === color.id ? 'border-primary ring-2 ring-primary ring-offset-2' : 'border-input hover:border-primary/50'}`}
+                          style={{ backgroundColor: color.hexCode }}
+                          title={color.name}
+                        ></label>
+                        <span className="text-xs mt-1">{color.name}</span>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </div>
+              )}
               
               {/* Add to cart */}
               <div className="flex flex-col space-y-4">

@@ -15,7 +15,12 @@ type CartContextType = {
   error: Error | null;
   cartTotal: number;
   cartItemCount: number;
-  addToCart: UseMutationResult<any, Error, { productId: number; quantity: number }>;
+  addToCart: UseMutationResult<any, Error, { 
+    productId: number; 
+    quantity: number;
+    scentId?: number;
+    colorId?: number;
+  }>;
   updateCartItem: UseMutationResult<any, Error, { id: number; quantity: number }>;
   removeFromCart: UseMutationResult<any, Error, number>;
   clearCart: UseMutationResult<any, Error, void>;
@@ -47,7 +52,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   ) || 0;
 
   const addToCart = useMutation({
-    mutationFn: async (data: { productId: number; quantity: number }) => {
+    mutationFn: async (data: { 
+      productId: number; 
+      quantity: number;
+      scentId?: number;
+      colorId?: number;
+    }) => {
       const res = await apiRequest("POST", "/api/cart", data);
       return await res.json();
     },
