@@ -51,8 +51,13 @@ export default function Header() {
               alt="Kerzenwelt Logo" 
               className="h-10 md:h-12 w-auto" 
             />
-            <div className="text-primary heading text-2xl md:text-3xl font-bold">
-              Kerzenwelt by Dani
+            <div className="flex items-center">
+              <span className="text-primary heading text-2xl md:text-3xl font-bold">
+                Kerzenwelt
+              </span>
+              <span className="text-foreground text-lg md:text-xl ml-1">
+                by Dani
+              </span>
             </div>
           </div>
           

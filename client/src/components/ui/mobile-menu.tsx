@@ -35,7 +35,10 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               alt="Kerzenwelt Logo" 
               className="h-10 w-auto" 
             />
-            <SheetTitle className="heading text-xl font-bold text-primary">Kerzenwelt by Dani</SheetTitle>
+            <div className="flex items-center">
+              <SheetTitle className="heading text-xl font-bold text-primary">Kerzenwelt</SheetTitle>
+              <span className="text-foreground text-sm ml-1">by Dani</span>
+            </div>
           </div>
         </SheetHeader>
         
