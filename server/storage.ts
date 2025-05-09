@@ -112,6 +112,18 @@ export interface IStorage {
   updatePage(id: number, page: Partial<InsertPage>): Promise<Page | undefined>;
   deletePage(id: number): Promise<void>;
   
+  // Collection methods
+  getCollection(id: number): Promise<Collection | undefined>;
+  getAllCollections(): Promise<Collection[]>;
+  getActiveCollections(): Promise<Collection[]>;
+  getFeaturedCollections(): Promise<Collection[]>;
+  createCollection(collection: InsertCollection): Promise<Collection>;
+  updateCollection(id: number, collection: Partial<InsertCollection>): Promise<Collection | undefined>;
+  deleteCollection(id: number): Promise<void>;
+  getCollectionProducts(collectionId: number): Promise<Product[]>;
+  addProductToCollection(productId: number, collectionId: number): Promise<ProductCollection>;
+  removeProductFromCollection(productId: number, collectionId: number): Promise<void>;
+  
   // Session store
   sessionStore: SessionStore;
 }
