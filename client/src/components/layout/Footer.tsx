@@ -54,29 +54,29 @@ export default function Footer() {
             <h3 className="heading text-xl font-semibold mb-4">Brzi linkovi</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/products">
-                  <a className="text-gray-400 hover:text-white transition">Naši proizvodi</a>
-                </Link>
+                <div className="text-gray-400 hover:text-white transition cursor-pointer" onClick={() => window.location.href = '/products'}>
+                  Naši proizvodi
+                </div>
               </li>
               <li>
-                <Link href="/about">
-                  <a className="text-gray-400 hover:text-white transition">O nama</a>
-                </Link>
+                <div className="text-gray-400 hover:text-white transition cursor-pointer" onClick={() => window.location.href = '/about'}>
+                  O nama
+                </div>
               </li>
               <li>
-                <Link href="/blog">
-                  <a className="text-gray-400 hover:text-white transition">Blog</a>
-                </Link>
+                <div className="text-gray-400 hover:text-white transition cursor-pointer" onClick={() => window.location.href = '/blog'}>
+                  Blog
+                </div>
               </li>
               <li>
-                <Link href="/faq">
-                  <a className="text-gray-400 hover:text-white transition">Često postavljana pitanja</a>
-                </Link>
+                <div className="text-gray-400 hover:text-white transition cursor-pointer" onClick={() => window.location.href = '/faq'}>
+                  Često postavljana pitanja
+                </div>
               </li>
               <li>
-                <Link href="/contact">
-                  <a className="text-gray-400 hover:text-white transition">Kontakt</a>
-                </Link>
+                <div className="text-gray-400 hover:text-white transition cursor-pointer" onClick={() => window.location.href = '/contact'}>
+                  Kontakt
+                </div>
               </li>
             </ul>
           </div>
@@ -86,29 +86,29 @@ export default function Footer() {
             <h3 className="heading text-xl font-semibold mb-4">Korisnička podrška</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/profile">
-                  <a className="text-gray-400 hover:text-white transition">Moj račun</a>
-                </Link>
+                <div className="text-gray-400 hover:text-white transition cursor-pointer" onClick={() => window.location.href = '/profile'}>
+                  Moj račun
+                </div>
               </li>
               <li>
-                <Link href="/shipping-returns">
-                  <a className="text-gray-400 hover:text-white transition">Dostava i povrat</a>
-                </Link>
+                <div className="text-gray-400 hover:text-white transition cursor-pointer" onClick={() => window.location.href = '/shipping-returns'}>
+                  Dostava i povrat
+                </div>
               </li>
               <li>
-                <Link href="/terms">
-                  <a className="text-gray-400 hover:text-white transition">Uvjeti korištenja</a>
-                </Link>
+                <div className="text-gray-400 hover:text-white transition cursor-pointer" onClick={() => window.location.href = '/terms'}>
+                  Uvjeti korištenja
+                </div>
               </li>
               <li>
-                <Link href="/privacy">
-                  <a className="text-gray-400 hover:text-white transition">Politika privatnosti</a>
-                </Link>
+                <div className="text-gray-400 hover:text-white transition cursor-pointer" onClick={() => window.location.href = '/privacy'}>
+                  Politika privatnosti
+                </div>
               </li>
               <li>
-                <Link href="/payment">
-                  <a className="text-gray-400 hover:text-white transition">Načini plaćanja</a>
-                </Link>
+                <div className="text-gray-400 hover:text-white transition cursor-pointer" onClick={() => window.location.href = '/payment'}>
+                  Načini plaćanja
+                </div>
               </li>
             </ul>
           </div>
