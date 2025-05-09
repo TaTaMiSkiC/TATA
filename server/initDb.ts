@@ -1,5 +1,5 @@
 import { db } from './db';
-import { users, categories, products } from '@shared/schema';
+import { users, categories, products, settings } from '@shared/schema';
 import { hashPassword } from './auth';
 import { eq, sql } from 'drizzle-orm';
 
@@ -23,6 +23,12 @@ export async function initializeDatabase() {
   const productsExist = await checkProductsExist();
   if (!productsExist) {
     await createDefaultProducts();
+  }
+  
+  // Provjeri postojanje postavki
+  const settingsExist = await checkSettingsExist();
+  if (!settingsExist) {
+    await createDefaultSettings();
   }
   
   console.log("Inicijalizacija baze podataka završena");
@@ -141,4 +147,32 @@ async function createDefaultProducts() {
   ]);
   
   console.log("Proizvodi uspješno kreirani");
+}
+
+// Funkcija za provjeru postojanja postavki
+async function checkSettingsExist() {
+  const count = await db.select({ count: sql`count(*)` }).from(settings);
+  return Number(count[0].count) > 0;
+}
+
+// Funkcija za stvaranje zadanih postavki
+async function createDefaultSettings() {
+  console.log("Kreiranje postavki dostave...");
+  
+  await db.insert(settings).values([
+    {
+      key: "freeShippingThreshold",
+      value: "50"
+    },
+    {
+      key: "standardShippingRate",
+      value: "5"
+    },
+    {
+      key: "expressShippingRate",
+      value: "15"
+    }
+  ]);
+  
+  console.log("Postavke dostave uspješno kreirane");
 }
