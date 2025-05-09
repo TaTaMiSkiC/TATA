@@ -1,16 +1,13 @@
-import { useState, useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
-
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,191 +15,156 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import RichTextEditor from "../RichTextEditor";
+import { Loader2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-// Definiranje Zod sheme za validaciju forme
+import RichTextEditor from "@/components/RichTextEditor";
+
+// Definiranje sheme za validaciju
 const formSchema = z.object({
-  title: z.string().min(1, "Naslov je obavezan"),
-  content: z.string().min(10, "Sadržaj mora imati barem 10 znakova"),
+  title: z.string().min(1, { message: "Naslov je obavezan" }),
+  content: z.string().min(1, { message: "Sadržaj je obavezan" }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function ShippingReturnsPageForm() {
+interface ShippingReturnsPageFormProps {
+  initialData: {
+    id?: number;
+    title: string;
+    content: string;
+    type?: string;
+  };
+}
+
+export default function ShippingReturnsPageForm({ initialData }: ShippingReturnsPageFormProps) {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const [editorLoaded, setEditorLoaded] = useState(false);
-
-  // Učitaj podatke o stranici
-  const { data: pageData, isLoading } = useQuery({
-    queryKey: ["/api/pages/shipping-returns"],
-    queryFn: async () => {
-      try {
-        const res = await fetch("/api/pages/shipping-returns");
-        if (!res.ok) {
-          if (res.status === 404) {
-            // Ako stranica ne postoji, vrati zadane podatke
-            return {
-              id: null, 
-              title: "Dostava i povrat",
-              content: "<h2>Naša politika dostave</h2><p>Dostava se vrši putem dostavnih službi na području cijele Hrvatske.</p><p>Rok dostave je 2-5 radnih dana od potvrde narudžbe.</p><p>Za narudžbe iznad 50€ dostava je besplatna.</p><p>Za narudžbe ispod 50€ trošak dostave iznosi 5€.</p><h2>Politika povrata</h2><p>Kupac ima pravo na povrat robe u roku od 14 dana od primitka.</p><p>Povrat je moguć samo za neoštećenu i nekorištenu robu u originalnom pakiranju.</p><p>Za povrat nas kontaktirajte putem e-maila ili telefona.</p><p>Troškove povrata snosi kupac osim u slučaju kada je razlog povrata greška s naše strane.</p><h2>Reklamacije</h2><p>Ukoliko proizvod ima vidljiva oštećenja, molimo vas da to odmah prijavite.</p><p>Reklamacije se rješavaju u najkraćem mogućem roku, a najkasnije u roku od 15 dana od zaprimanja.</p>",
-              type: "shipping-returns"
-            };
-          }
-          throw new Error("Neuspješno dohvaćanje stranice");
-        }
-        return await res.json();
-      } catch (error) {
-        console.error("Error fetching page:", error);
-        return null;
-      }
-    },
-  });
-
-  // Postavi formu s React Hook Form
+  const [activeTab, setActiveTab] = useState("editor");
+  
+  // Postavljanje forme s početnim vrijednostima
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: pageData?.title || "Dostava i povrat",
-      content: pageData?.content || "",
-    },
-    values: {
-      title: pageData?.title || "Dostava i povrat",
-      content: pageData?.content || "",
+      title: initialData.title || "Dostava i povrat",
+      content: initialData.content || "",
     },
   });
 
-  // Ažuriraj formu kada se učitaju podaci
-  useEffect(() => {
-    if (pageData) {
-      form.reset({
-        title: pageData.title,
-        content: pageData.content,
-      });
-    }
-  }, [pageData, form]);
-
-  // Učitaj WYSIWYG editor
-  useEffect(() => {
-    setEditorLoaded(true);
-  }, []);
-
-  // Mutacija za ažuriranje ili stvaranje stranice
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (data: FormValues) => {
-      // Ako stranica ima ID, ažuriraj je, inače stvori novu
-      if (pageData?.id) {
-        const res = await apiRequest(
-          "PATCH",
-          `/api/pages/${pageData.id}`,
-          {
-            ...data,
-            type: "shipping-returns",
-          }
-        );
+  // Mutacija za spremanje promjena
+  const mutation = useMutation({
+    mutationFn: async (values: FormValues) => {
+      // Ako stranica već postoji, ažuriramo je, inače kreiramo novu
+      if (initialData.id) {
+        const res = await apiRequest("PATCH", `/api/pages/${initialData.id}`, values);
         return await res.json();
       } else {
-        const res = await apiRequest(
-          "POST",
-          "/api/pages",
-          {
-            ...data,
-            type: "shipping-returns",
-          }
-        );
+        const res = await apiRequest("POST", "/api/pages", {
+          ...values,
+          type: "shipping-returns"
+        });
         return await res.json();
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/pages/shipping-returns"] });
       toast({
-        title: "Uspjeh!",
-        description: "Stranica za dostavu i povrat je uspješno ažurirana.",
+        title: "Uspješno spremljeno",
+        description: "Stranica Dostava i povrat je uspješno ažurirana.",
       });
+      queryClient.invalidateQueries({ queryKey: ["/api/pages/shipping-returns"] });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast({
         title: "Greška",
-        description: "Došlo je do greške prilikom ažuriranja stranice. Pokušajte ponovno.",
+        description: `Došlo je do greške: ${error.message}`,
         variant: "destructive",
       });
-      console.error("Mutation error:", error);
     },
   });
 
   // Funkcija za slanje forme
-  function onSubmit(data: FormValues) {
-    mutate(data);
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  const onSubmit = (values: FormValues) => {
+    mutation.mutate(values);
+  };
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold mb-6">Uredi stranicu Dostava i povrat</h1>
-      
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Naslov</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Naslov stranice" />
-                </FormControl>
-                <FormDescription>
-                  Ovo je naslov koji će se prikazati na vrhu stranice.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="content"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Sadržaj</FormLabel>
-                <FormControl>
-                  {editorLoaded ? (
-                    <RichTextEditor 
-                      value={field.value} 
-                      onChange={field.onChange}
-                      editorId="shipping-returns-editor"
-                    />
-                  ) : (
-                    <div className="h-64 w-full flex items-center justify-center bg-muted rounded-md">
-                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                    </div>
+    <Card>
+      <CardContent className="p-6">
+        <Tabs defaultValue="editor" value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="mb-6">
+            <TabsTrigger value="editor">Uredi sadržaj</TabsTrigger>
+            <TabsTrigger value="preview">Pregled</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="editor">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Naslov stranice</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Unesite naslov stranice"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </FormControl>
-                <FormDescription>
-                  Unesite sadržaj stranice za dostavu i povrat. Možete koristiti oblikovanje teksta.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button 
-            type="submit" 
-            disabled={isPending}
-            className="flex items-center gap-2"
-          >
-            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-            Spremi promjene
-          </Button>
-        </form>
-      </Form>
-    </div>
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sadržaj stranice</FormLabel>
+                      <FormControl>
+                        <RichTextEditor
+                          value={field.value}
+                          onChange={field.onChange}
+                          editorId="shipping-returns-editor"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="flex justify-end">
+                  <Button 
+                    type="submit" 
+                    disabled={mutation.isPending}
+                    className="ml-auto"
+                  >
+                    {mutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Spremanje...
+                      </>
+                    ) : (
+                      "Spremi promjene"
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </TabsContent>
+          
+          <TabsContent value="preview">
+            <div className="p-4 border rounded-md">
+              <h1 className="text-2xl font-bold mb-4">{form.watch("title")}</h1>
+              <div 
+                className="prose prose-lg max-w-none dark:prose-invert"
+                dangerouslySetInnerHTML={{ __html: form.watch("content") }}
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
   );
 }

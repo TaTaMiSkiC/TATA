@@ -1,10 +1,4 @@
-import { useEffect, useRef } from 'react';
-
-interface RichTextEditorProps {
-  value: string;
-  onChange: (value: string) => void;
-  editorId: string;
-}
+import { useEffect, useRef } from "react";
 
 declare global {
   interface Window {
@@ -12,62 +6,89 @@ declare global {
   }
 }
 
+interface RichTextEditorProps {
+  value: string;
+  onChange: (value: string) => void;
+  editorId: string;
+}
+
 export default function RichTextEditor({ value, onChange, editorId }: RichTextEditorProps) {
-  const editorRef = useRef<HTMLTextAreaElement>(null);
-  const prevValueRef = useRef<string>(value);
-
+  const editorRef = useRef<any>(null);
+  
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js';
-    script.referrerPolicy = 'origin';
-    document.head.appendChild(script);
-
-    script.onload = () => {
-      if (!editorRef.current) return;
-
-      window.tinymce.init({
+    // Učitavanje TinyMCE skripte ako još nije učitana
+    if (!window.tinymce) {
+      const script = document.createElement("script");
+      script.src = "https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js";
+      script.referrerPolicy = "origin";
+      document.head.appendChild(script);
+      
+      script.onload = initEditor;
+      return () => {
+        document.head.removeChild(script);
+      };
+    } else {
+      initEditor();
+    }
+    
+    // Funkcija za inicijalizaciju editora
+    function initEditor() {
+      const init = {
         selector: `#${editorId}`,
-        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-        menubar: false,
+        height: 400,
+        menubar: true,
+        plugins: [
+          'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+          'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+          'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+        ],
+        toolbar: 'undo redo | blocks | bold italic forecolor | ' +
+          'alignleft aligncenter alignright alignjustify | ' +
+          'bullist numlist outdent indent | removeformat | help',
+        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
         setup: (editor: any) => {
-          editor.on('change', function () {
-            onChange(editor.getContent());
+          editorRef.current = editor;
+          
+          // Postavlja inicijalni sadržaj
+          editor.on('init', () => {
+            editor.setContent(value || '');
           });
           
-          // Set initial content when the editor is ready
-          editor.on('init', function () {
-            editor.setContent(value);
+          // Ažurira sadržaj prilikom promjene
+          editor.on('change', () => {
+            onChange(editor.getContent());
           });
         }
-      });
-    };
-
+      };
+      
+      window.tinymce.init(init);
+    }
+    
+    // Čišćenje prilikom uništavanja komponente
     return () => {
-      if (window.tinymce) {
-        window.tinymce.remove(`#${editorId}`);
+      if (window.tinymce && editorRef.current) {
+        window.tinymce.remove(editorRef.current);
       }
-      document.head.removeChild(script);
     };
-  }, [editorId]);
-
-  // Update editor content if value prop changes externally
+  }, [editorId]); // Ne dodajemo value i onChange u dependency array da bismo izbjegli re-inicijalizaciju
+  
+  // Ručno ažuriramo sadržaj editora kada se promijeni props.value
   useEffect(() => {
-    if (value !== prevValueRef.current && window.tinymce) {
-      const editor = window.tinymce.get(editorId);
-      if (editor) {
-        editor.setContent(value);
-        prevValueRef.current = value;
+    if (editorRef.current && editorRef.current.initialized) {
+      const currentContent = editorRef.current.getContent();
+      if (currentContent !== value) {
+        editorRef.current.setContent(value || '');
       }
     }
-  }, [value, editorId]);
-
+  }, [value]);
+  
   return (
-    <textarea
-      id={editorId}
-      ref={editorRef}
-      className="hidden"
-      defaultValue={value}
-    />
+    <div className="rich-text-editor">
+      <textarea
+        id={editorId}
+        className="hidden"
+        defaultValue={value}
+      />
+    </div>
   );
 }
