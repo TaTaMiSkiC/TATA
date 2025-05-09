@@ -166,7 +166,11 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
               {isColorSelectionRequired && (
                 <div>
                   <h4 className="text-sm font-medium mb-2">Boja <span className="text-destructive">*</span></h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-2">
+                  <RadioGroup 
+                    value={selectedColorId?.toString()} 
+                    onValueChange={(value) => setSelectedColorId(parseInt(value))}
+                    className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-2"
+                  >
                     {productColors.map((color) => (
                       <div 
                         key={color.id} 
@@ -193,7 +197,7 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
                         </Label>
                       </div>
                     ))}
-                  </div>
+                  </RadioGroup>
                 </div>
               )}
               
