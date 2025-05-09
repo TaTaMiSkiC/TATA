@@ -25,9 +25,13 @@ export function ShippingCostCalculator({ subtotal }: ShippingCostCalculatorProps
     );
   }
   
-  // Izračunaj troškove dostave na temelju postavki
-  const freeShippingThreshold = parseFloat(freeShippingThresholdSetting?.value || "50");
-  const standardShippingRate = parseFloat(standardShippingRateSetting?.value || "5");
+  // Dohvati vrijednosti iz localStorage ako postoje, inače koristi API vrijednosti
+  const localFreeShippingThreshold = typeof window !== 'undefined' ? localStorage.getItem('freeShippingThreshold') : null;
+  const localStandardShippingRate = typeof window !== 'undefined' ? localStorage.getItem('standardShippingRate') : null;
+  
+  // Izračunaj troškove dostave na temelju postavki, prioritizirajući localStorage
+  const freeShippingThreshold = parseFloat(localFreeShippingThreshold || freeShippingThresholdSetting?.value || "50");
+  const standardShippingRate = parseFloat(localStandardShippingRate || standardShippingRateSetting?.value || "5");
   
   // Ako je standardShippingRate postavljen na 0, dostava je uvijek besplatna
   if (standardShippingRate === 0) {
@@ -70,8 +74,13 @@ export function FreeShippingProgress({ subtotal }: ShippingCostCalculatorProps) 
     return null;
   }
   
-  const freeShippingThreshold = parseFloat(freeShippingThresholdSetting?.value || "50");
-  const standardShippingRate = parseFloat(standardShippingRateSetting?.value || "5");
+  // Dohvati vrijednosti iz localStorage ako postoje, inače koristi API vrijednosti
+  const localFreeShippingThreshold = typeof window !== 'undefined' ? localStorage.getItem('freeShippingThreshold') : null;
+  const localStandardShippingRate = typeof window !== 'undefined' ? localStorage.getItem('standardShippingRate') : null;
+  
+  // Prioritet imaju localStorage vrijednosti, zatim API vrijednosti, i na kraju defaultne vrijednosti
+  const freeShippingThreshold = parseFloat(localFreeShippingThreshold || freeShippingThresholdSetting?.value || "50");
+  const standardShippingRate = parseFloat(localStandardShippingRate || standardShippingRateSetting?.value || "5");
   
   // Ako je standardShippingRate 0, dostava je uvijek besplatna, pa ne prikazujemo informaciju
   // Također, ako je prag za besplatnu dostavu 0 ili je već dosegnut prag, ne prikazujemo komponentu

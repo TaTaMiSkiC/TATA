@@ -34,6 +34,22 @@ export default function CartPage() {
   // Total after discount (shipping will be calculated dynamically by ShippingCostCalculator)
   const totalAfterDiscount = cartTotal - discount;
   
+  // Dohvati vrijednosti iz localStorage ako postoje
+  const localStandardShippingRate = typeof window !== 'undefined' ? localStorage.getItem('standardShippingRate') : null;
+  const localFreeShippingThreshold = typeof window !== 'undefined' ? localStorage.getItem('freeShippingThreshold') : null;
+  
+  // Izračunaj troškove dostave za prikaz ukupnog iznosa
+  const standardShippingRate = parseFloat(localStandardShippingRate || "5");
+  const freeShippingThreshold = parseFloat(localFreeShippingThreshold || "50");
+  
+  // Ako je standardShippingRate 0, dostava je uvijek besplatna
+  // Inače, dostava je besplatna ako je ukupan iznos veći od praga za besplatnu dostavu
+  const isFreeShipping = standardShippingRate === 0 || (totalAfterDiscount >= freeShippingThreshold && freeShippingThreshold > 0);
+  const shippingCost = isFreeShipping ? 0 : standardShippingRate;
+  
+  // Ukupan iznos s dostavom
+  const totalWithShipping = totalAfterDiscount + shippingCost;
+  
   const handleApplyCoupon = () => {
     if (couponCode.toLowerCase() === "dobrodosli") {
       setDiscount(cartTotal * 0.1); // 10% discount
@@ -158,10 +174,10 @@ export default function CartPage() {
                     {/* Traka napretka do besplatne dostave */}
                     <FreeShippingProgress subtotal={totalAfterDiscount} />
                     
-                    {/* Ukupno - izračunat će se nakon što se učitaju podaci o dostavi */}
+                    {/* Ukupno - uključuje dostavu */}
                     <div className="flex justify-between font-bold text-lg">
                       <span>Ukupno</span>
-                      <span>{totalAfterDiscount.toFixed(2)} €</span>
+                      <span>{totalWithShipping.toFixed(2)} €</span>
                     </div>
                     
                     {/* Coupon code input */}
@@ -207,7 +223,15 @@ export default function CartPage() {
                   </div>
                   <div className="flex items-center text-sm text-gray-500">
                     <Truck size={14} className="mr-2" />
-                    <span>Besplatna dostava za narudžbe iznad 50€</span>
+                    <span>
+                      {standardShippingRate === 0 ? (
+                        "Besplatna dostava za sve narudžbe"
+                      ) : freeShippingThreshold > 0 ? (
+                        `Besplatna dostava za narudžbe iznad ${freeShippingThreshold.toFixed(2)}€`
+                      ) : (
+                        `Dostava: ${standardShippingRate.toFixed(2)}€`
+                      )}
+                    </span>
                   </div>
                 </CardFooter>
               </Card>
@@ -225,7 +249,15 @@ export default function CartPage() {
                     <AccordionContent className="text-sm text-gray-500">
                       <p className="mb-2">Dostava se vrši putem dostavne službe GLS ili Hrvatska Pošta.</p>
                       <p className="mb-2">Rok isporuke je 2-4 radna dana od trenutka narudžbe.</p>
-                      <p>Za narudžbe iznad 50€ dostava je besplatna. Za ostale narudžbe trošak dostave iznosi 5€.</p>
+                      <p>
+                        {standardShippingRate === 0 ? (
+                          "Dostava je besplatna za sve narudžbe."
+                        ) : freeShippingThreshold > 0 ? (
+                          `Za narudžbe iznad ${freeShippingThreshold.toFixed(2)}€ dostava je besplatna. Za ostale narudžbe trošak dostave iznosi ${standardShippingRate.toFixed(2)}€.`
+                        ) : (
+                          `Trošak dostave iznosi ${standardShippingRate.toFixed(2)}€ za sve narudžbe.`
+                        )}
+                      </p>
                     </AccordionContent>
                   </AccordionItem>
                   <AccordionItem value="payment">
