@@ -4,7 +4,11 @@ import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { z } from "zod";
+import { eq } from "drizzle-orm";
+import { db } from "./db";
 import {
+  productScents,
+  productColors,
   insertProductSchema,
   insertCategorySchema,
   insertOrderSchema,
@@ -653,16 +657,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const productId = parseInt(req.params.id);
       
-      // Dohvati sve mirise proizvoda
-      const scents = await storage.getProductScents(productId);
-      
-      // Obriši svaki miris
-      for (const scent of scents) {
-        await storage.removeScentFromProduct(productId, scent.id);
-      }
+      // Izvršavamo SQL upit za brisanje svih povezanih mirisa
+      await storage.db.delete(productScents)
+        .where(eq(productScents.productId, productId))
+        .execute();
       
       res.status(204).send();
     } catch (error) {
+      console.error("Error removing scents from product:", error);
       res.status(500).json({ message: "Failed to remove all scents from product" });
     }
   });
