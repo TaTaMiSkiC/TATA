@@ -58,7 +58,7 @@ export default function CartPage() {
     return (
       <Layout>
         <Helmet>
-          <title>Košarica | Kerzenwelt by Dani</title>
+          <title>{`Košarica | Kerzenwelt by Dani`}</title>
           <meta name="description" content="Pregledajte proizvode u vašoj košarici i dovršite narudžbu." />
         </Helmet>
         
@@ -72,7 +72,7 @@ export default function CartPage() {
             </p>
             <Button size="lg" asChild>
               <Link href="/products">
-                <a>Pregledajte proizvode</a>
+                Pregledajte proizvode
               </Link>
             </Button>
           </div>
@@ -84,7 +84,7 @@ export default function CartPage() {
   return (
     <Layout>
       <Helmet>
-        <title>Košarica ({cartItems.length}) | Kerzenwelt by Dani</title>
+        <title>{`Košarica (${cartItems.length}) | Kerzenwelt by Dani`}</title>
         <meta name="description" content="Pregledajte proizvode u vašoj košarici i dovršite narudžbu." />
       </Helmet>
       
@@ -92,8 +92,8 @@ export default function CartPage() {
         <div className="container mx-auto px-4">
           <h1 className="heading text-3xl font-bold mb-2">Košarica</h1>
           <div className="flex items-center text-sm text-gray-500 mb-8">
-            <Link href="/">
-              <a className="hover:text-primary">Početna</a>
+            <Link href="/" className="hover:text-primary">
+              Početna
             </Link>
             <ChevronRight size={14} className="mx-2" />
             <span className="text-gray-800 font-medium">Košarica</span>
@@ -125,7 +125,7 @@ export default function CartPage() {
                   </Button>
                   <Button asChild>
                     <Link href="/products">
-                      <a>Nastavi kupovinu</a>
+                      Nastavi kupovinu
                     </Link>
                   </Button>
                 </CardFooter>
@@ -193,11 +193,9 @@ export default function CartPage() {
                       size="lg"
                       asChild
                     >
-                      <Link href={user ? "/checkout" : "/auth?redirect=checkout"}>
-                        <a className="flex items-center justify-center">
-                          <CreditCard size={18} className="mr-2" />
-                          Nastavi na plaćanje
-                        </a>
+                      <Link href={user ? "/checkout" : "/auth?redirect=checkout"} className="flex items-center justify-center">
+                        <CreditCard size={18} className="mr-2" />
+                        Nastavi na plaćanje
                       </Link>
                     </Button>
                   </div>
