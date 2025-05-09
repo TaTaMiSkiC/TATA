@@ -49,23 +49,21 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
         <AdminSidebar />
       </div>
       
-      {/* Mobile Sidebar */}
-      <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-        <SheetContent side="left" className="p-0">
-          <AdminSidebar onItemClick={() => setIsMobileMenuOpen(false)} />
-        </SheetContent>
-      </Sheet>
-      
       {/* Main Content */}
       <div className="flex flex-col flex-1 md:pl-64">
         {/* Top Navigation */}
         <header className="sticky top-0 z-10 bg-white flex justify-between items-center px-4 py-2 border-b shadow-sm">
           <div className="flex items-center">
-            <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(true)}>
-                <Menu size={20} />
-              </Button>
-            </SheetTrigger>
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <Button variant="ghost" size="icon">
+                  <Menu size={20} />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-0">
+                <AdminSidebar onItemClick={() => setIsMobileMenuOpen(false)} />
+              </SheetContent>
+            </Sheet>
             <h1 className="text-lg font-medium ml-4">{title}</h1>
           </div>
           
