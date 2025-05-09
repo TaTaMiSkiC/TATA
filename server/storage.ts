@@ -227,6 +227,56 @@ export class DatabaseStorage implements IStorage {
     const [category] = await db.insert(categories).values(categoryData).returning();
     return category;
   }
+  
+  async updateCategory(id: number, categoryData: InsertCategory): Promise<Category | undefined> {
+    const [updatedCategory] = await db
+      .update(categories)
+      .set(categoryData)
+      .where(eq(categories.id, id))
+      .returning();
+    return updatedCategory;
+  }
+  
+  async deleteCategory(id: number): Promise<void> {
+    // Prvo provjerimo ima li proizvoda povezanih s ovom kategorijom
+    const relatedProducts = await db
+      .select({ count: count() })
+      .from(products)
+      .where(eq(products.categoryId, id));
+    
+    // Ako ima proizvoda, prvo ih premjestimo u "Razno" ili kreirajmo tu kategoriju ako ne postoji
+    if (relatedProducts[0].count > 0) {
+      let miscCategoryId: number;
+      
+      // Pronađi ili kreiraj "Razno" kategoriju
+      const [miscCategory] = await db
+        .select()
+        .from(categories)
+        .where(eq(categories.name, "Razno"));
+      
+      if (miscCategory) {
+        miscCategoryId = miscCategory.id;
+      } else {
+        const [newMiscCategory] = await db
+          .insert(categories)
+          .values({
+            name: "Razno",
+            description: "Razni proizvodi koji nisu kategorizirani"
+          })
+          .returning();
+        miscCategoryId = newMiscCategory.id;
+      }
+      
+      // Prebaci sve proizvode iz kategorije koja se briše u "Razno"
+      await db
+        .update(products)
+        .set({ categoryId: miscCategoryId })
+        .where(eq(products.categoryId, id));
+    }
+    
+    // Sada možemo sigurno obrisati kategoriju
+    await db.delete(categories).where(eq(categories.id, id));
+  }
 
   async getProductsByCategory(categoryId: number): Promise<Product[]> {
     return await db.select().from(products).where(eq(products.categoryId, categoryId));
