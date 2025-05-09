@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { useCart } from "@/hooks/use-cart";
 import { useToast } from "@/hooks/use-toast";
+import ProductViewModal from "@/components/product/ProductViewModal";
 
 interface ProductCardProps {
   product: Product;
@@ -19,6 +20,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
   const { toast } = useToast();
   const [isHovered, setIsHovered] = useState(false);
+  const [productViewModalOpen, setProductViewModalOpen] = useState(false);
   
   const { id, name, price, imageUrl = '', categoryId } = product;
   
@@ -26,34 +28,18 @@ export default function ProductCard({ product }: ProductCardProps) {
   const rating = 4.5;
   const reviewCount = 42;
   
-  const handleAddToCart = () => {
-    addToCart.mutate(
-      { productId: id, quantity: 1 },
-      {
-        onSuccess: () => {
-          toast({
-            title: "Dodano u košaricu",
-            description: `${name} je dodan u vašu košaricu.`,
-          });
-        },
-        onError: (error) => {
-          toast({
-            title: "Greška",
-            description: "Proizvod nije moguće dodati u košaricu.",
-            variant: "destructive",
-          });
-        },
-      }
-    );
+  const handleShowOptions = () => {
+    setProductViewModalOpen(true);
   };
   
   return (
-    <Card className="product-card overflow-hidden bg-card shadow-md">
-      <div 
-        className="aspect-square overflow-hidden relative group"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
+    <>
+      <Card className="product-card overflow-hidden bg-card shadow-md">
+        <div 
+          className="aspect-square overflow-hidden relative group"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
         <Link href={`/products/${id}`}>
           <img 
             src={imageUrl || ''} 
@@ -88,7 +74,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             size="icon"
             variant="secondary"
             className="bg-white text-primary hover:bg-primary hover:text-white rounded-full"
-            onClick={handleAddToCart}
+            onClick={handleShowOptions}
           >
             <ShoppingBag size={18} />
           </Button>
@@ -135,13 +121,23 @@ export default function ProductCard({ product }: ProductCardProps) {
           <span className="font-accent font-medium text-primary">{parseFloat(price).toFixed(2)} €</span>
           <Button 
             size="sm" 
-            onClick={handleAddToCart}
+            onClick={handleShowOptions}
             className="text-sm bg-primary hover:bg-opacity-90 text-white py-1 px-3 rounded transition"
           >
-            Dodaj u košaricu
+            Odaberi opcije
           </Button>
         </div>
       </CardContent>
     </Card>
+    
+    {/* Modalni prozor za odabir opcija proizvoda */}
+    {product && (
+      <ProductViewModal
+        isOpen={productViewModalOpen}
+        onClose={() => setProductViewModalOpen(false)}
+        product={product}
+      />
+    )}
+    </>
   );
 }
