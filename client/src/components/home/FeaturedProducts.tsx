@@ -37,13 +37,12 @@ export default function FeaturedProducts() {
         )}
         
         <div className="mt-8 text-center md:hidden">
-          <div
-            className="inline-flex items-center font-accent text-primary hover:text-opacity-80 transition cursor-pointer"
-            onClick={() => window.location.href = '/products'}
-          >
-            Vidi sve proizvode
-            <ArrowRight className="ml-2" size={16} />
-          </div>
+          <Link href="/products">
+            <div className="inline-flex items-center font-accent text-primary hover:text-opacity-80 transition cursor-pointer">
+              Vidi sve proizvode
+              <ArrowRight className="ml-2" size={16} />
+            </div>
+          </Link>
         </div>
       </div>
     </section>
