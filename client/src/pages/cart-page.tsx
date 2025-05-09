@@ -299,8 +299,8 @@ export default function CartPage() {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="text-sm text-gray-500">
-                      <p className="mb-2">Dostava se vrši putem dostavne službe GLS ili Hrvatska Pošta.</p>
-                      <p className="mb-2">Rok isporuke je 2-4 radna dana od trenutka narudžbe.</p>
+                      <p className="mb-2">Dostava se vrši putem dostavne službe GLS, DPD, UPS ili Pošte.</p>
+                      <p className="mb-2">Rok isporuke je 2-5 radna dana od trenutka narudžbe.</p>
                       <p>
                         {standardShippingRate === 0 ? (
                           "Dostava je besplatna za sve narudžbe."
