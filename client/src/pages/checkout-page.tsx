@@ -45,7 +45,7 @@ export default function CheckoutPage() {
           <div className="text-center">
             <Button asChild>
               <Link href="/products">
-                <a>Pregledajte proizvode</a>
+                Pregledajte proizvode
               </Link>
             </Button>
           </div>
@@ -66,12 +66,12 @@ export default function CheckoutPage() {
           <div className="flex items-center justify-between mb-6">
             <h1 className="heading text-3xl font-bold">Plaćanje</h1>
             <div className="flex items-center text-sm text-gray-500">
-              <Link href="/">
-                <a className="hover:text-primary">Početna</a>
+              <Link href="/" className="hover:text-primary">
+                Početna
               </Link>
               <ChevronRight size={14} className="mx-2" />
-              <Link href="/cart">
-                <a className="hover:text-primary">Košarica</a>
+              <Link href="/cart" className="hover:text-primary">
+                Košarica
               </Link>
               <ChevronRight size={14} className="mx-2" />
               <span className="text-gray-800 font-medium">Plaćanje</span>

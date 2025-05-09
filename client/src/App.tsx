@@ -32,6 +32,7 @@ function Router() {
       <Route path="/products/:id" component={ProductDetailsPage} />
       <Route path="/cart" component={CartPage} />
       <ProtectedRoute path="/checkout" component={CheckoutPage} />
+      <ProtectedRoute path="/order-success" component={OrderSuccessPage} />
       <ProtectedRoute path="/admin" component={AdminDashboard} />
       <ProtectedRoute path="/admin/products" component={AdminProducts} />
       <ProtectedRoute path="/admin/orders" component={AdminOrders} />
