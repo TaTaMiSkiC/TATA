@@ -1,160 +1,183 @@
-import React, { useState, useEffect } from "react";
-import { useSettings } from "@/hooks/use-settings-api";
+import React, { useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { 
-  Form, 
-  FormControl, 
-  FormDescription, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormMessage 
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Save } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
-const formSchema = z.object({
-  shippingCost: z.string().regex(/^\d+(\.\d{1,2})?$/, {
-    message: "Unesite ispravnu cijenu (npr. 5.99)",
-  }),
-  freeShippingThreshold: z.string().regex(/^\d+(\.\d{1,2})?$/, {
-    message: "Unesite ispravnu cijenu (npr. 50)",
-  }),
+// Definiramo validacijsku shemu za form
+const shippingFormSchema = z.object({
+  freeShippingThreshold: z.string().min(1, "Obavezno polje"),
+  standardShippingRate: z.string().min(1, "Obavezno polje"),
+  expressShippingRate: z.string().min(1, "Obavezno polje"),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+type ShippingFormValues = z.infer<typeof shippingFormSchema>;
 
 export default function ShippingSettingsForm() {
-  const { updateSetting, getSetting } = useSettings();
-  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
   
-  // Dohvaćanje postavki
-  const { data: shippingCostSetting, isLoading: isLoadingShippingCost } = getSetting("shippingCost");
-  const { data: freeShippingThresholdSetting, isLoading: isLoadingFreeShippingThreshold } = getSetting("freeShippingThreshold");
-  
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  // Dohvaćamo trenutne postavke iz API-ja
+  const { data: settings, isLoading: isLoadingSettings } = useQuery({
+    queryKey: ["/api/settings"],
+    select: (data) => {
+      // Pretvaranje liste postavki u objekt
+      const settingsObj: Record<string, string> = {};
+      data.forEach((setting: { key: string; value: string }) => {
+        settingsObj[setting.key] = setting.value;
+      });
+      
+      console.log("Učitane postavke iz API-ja:", {
+        freeShippingThreshold: settingsObj.freeShippingThreshold || "nije učitano",
+        standardShippingRate: settingsObj.standardShippingRate || "nije učitano",
+        expressShippingRate: settingsObj.expressShippingRate || "nije učitano"
+      });
+      
+      return settingsObj;
+    }
+  });
+
+  // Postavke forme
+  const form = useForm<ShippingFormValues>({
+    resolver: zodResolver(shippingFormSchema),
     defaultValues: {
-      shippingCost: "0",
       freeShippingThreshold: "0",
+      standardShippingRate: "0",
+      expressShippingRate: "0",
     },
   });
   
-  // Postavlja vrijednosti forme kada se podaci učitaju
+  // Kad se učitaju postavke, ažuriramo formu
   useEffect(() => {
-    if (!isLoadingShippingCost && !isLoadingFreeShippingThreshold) {
-      setIsLoading(false);
+    if (settings) {
+      console.log("Učitane lokalne postavke:", {
+        freeShippingThreshold: settings.freeShippingThreshold || "0",
+        standardShippingRate: settings.standardShippingRate || "0",
+        expressShippingRate: settings.expressShippingRate || "0"
+      });
       
       form.reset({
-        shippingCost: shippingCostSetting?.value || "4.99",
-        freeShippingThreshold: freeShippingThresholdSetting?.value || "50",
+        freeShippingThreshold: settings.freeShippingThreshold || "0",
+        standardShippingRate: settings.standardShippingRate || "0",
+        expressShippingRate: settings.expressShippingRate || "0"
       });
     }
-  }, [
-    isLoadingShippingCost, 
-    isLoadingFreeShippingThreshold, 
-    shippingCostSetting, 
-    freeShippingThresholdSetting,
-    form
-  ]);
-  
-  const onSubmit = async (data: FormValues) => {
-    // Ažuriranje postavki
-    await updateSetting.mutateAsync({
-      key: "shippingCost",
-      value: data.shippingCost,
-    });
-    
-    await updateSetting.mutateAsync({
-      key: "freeShippingThreshold",
-      value: data.freeShippingThreshold,
-    });
+  }, [settings, form]);
+
+  // Akcija za spremanje postavki
+  const saveSettingsMutation = useMutation({
+    mutationFn: async (settingData: { key: string; value: string }) => {
+      // Prvo provjeravamo postoji li postavka
+      const res = await apiRequest("GET", `/api/settings/${settingData.key}`);
+      
+      if (res.ok) {
+        // Ako postoji, ažuriramo
+        return apiRequest("PATCH", `/api/settings/${settingData.key}`, { value: settingData.value });
+      } else {
+        // Ako ne postoji, kreiramo novu
+        return apiRequest("POST", "/api/settings", settingData);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Greška",
+        description: "Došlo je do greške prilikom spremanja postavki.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Spremanje svih postavki
+  const onSubmit = async (data: ShippingFormValues) => {
+    try {
+      // Spremamo svaku postavku posebno
+      await saveSettingsMutation.mutateAsync({ key: "freeShippingThreshold", value: data.freeShippingThreshold });
+      await saveSettingsMutation.mutateAsync({ key: "standardShippingRate", value: data.standardShippingRate });
+      await saveSettingsMutation.mutateAsync({ key: "expressShippingRate", value: data.expressShippingRate });
+      
+      toast({
+        title: "Uspjeh",
+        description: "Postavke dostave su uspješno spremljene.",
+      });
+    } catch (error) {
+      console.error("Greška pri spremanju postavki:", error);
+    }
   };
-  
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Postavke dostave</CardTitle>
-        <CardDescription>
-          Upravljajte troškovima dostave i pragom za besplatnu dostavu
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <div className="flex justify-center py-6">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-        ) : (
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="shippingCost"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Cijena dostave (€)</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="number" step="0.01" min="0" />
-                    </FormControl>
-                    <FormDescription>
-                      Standardna cijena dostave koja će se naplaćivati kupcima
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="freeShippingThreshold"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Prag za besplatnu dostavu (€)</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="number" step="0.01" min="0" />
-                    </FormControl>
-                    <FormDescription>
-                      Iznos narudžbe iznad kojeg je dostava besplatna (0 za isključivanje)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <div className="pt-4">
-                <Button 
-                  type="submit" 
-                  disabled={updateSetting.isPending}
-                  className="w-full md:w-auto"
-                >
-                  {updateSetting.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Spremanje...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="mr-2 h-4 w-4" />
-                      Spremi postavke
-                    </>
-                  )}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        )}
-      </CardContent>
-    </Card>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="freeShippingThreshold"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Prag za besplatnu dostavu (EUR)</FormLabel>
+                <FormControl>
+                  <Input type="number" min="0" step="0.01" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="standardShippingRate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cijena standardne dostave (EUR)</FormLabel>
+                <FormControl>
+                  <Input type="number" min="0" step="0.01" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="expressShippingRate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cijena ekspresne dostave (EUR)</FormLabel>
+                <FormControl>
+                  <Input type="number" min="0" step="0.01" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        
+        <Button type="submit" disabled={isLoadingSettings || saveSettingsMutation.isPending}>
+          {saveSettingsMutation.isPending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Spremanje...
+            </>
+          ) : (
+            "Spremi postavke"
+          )}
+        </Button>
+      </form>
+    </Form>
   );
 }

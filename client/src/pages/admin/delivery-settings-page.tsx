@@ -11,9 +11,12 @@ export default function DeliverySettingsPage() {
         <title>Postavke dostave | Admin Panel</title>
       </Helmet>
       
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Postavke dostave</h1>
-        <p className="text-muted-foreground">Upravljajte postavkama dostave</p>
+      <div className="flex items-center mb-6">
+        <Truck className="mr-2 h-6 w-6 text-primary" />
+        <div>
+          <h1 className="text-2xl font-bold">Postavke dostave</h1>
+          <p className="text-muted-foreground">Upravljajte troškovima dostave i postavkama dostave</p>
+        </div>
       </div>
       
       <div className="space-y-4 bg-card p-6 rounded-md border">

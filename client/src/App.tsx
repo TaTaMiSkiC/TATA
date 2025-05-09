@@ -1,5 +1,4 @@
-import { Switch, Route, useLocation } from "wouter";
-import { useEffect } from "react";
+import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -20,6 +19,7 @@ import AdminColors from "@/pages/admin/admin-colors";
 import AdminOrders from "@/pages/admin/admin-orders";
 import AdminUsers from "@/pages/admin/admin-users";
 import DeliverySettingsPage from "@/pages/admin/delivery-settings-page";
+import AdminSettings from "@/pages/admin/settings-page";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "./hooks/use-auth";
 import { CartProvider } from "./hooks/use-cart";
@@ -45,13 +45,7 @@ function Router() {
       <ProtectedRoute path="/admin/orders" component={AdminOrders} />
       <ProtectedRoute path="/admin/users" component={AdminUsers} />
       <ProtectedRoute path="/admin/delivery-settings" component={DeliverySettingsPage} />
-      <ProtectedRoute path="/admin/settings" component={() => {
-        const [, setLocation] = useLocation();
-        useEffect(() => {
-          setLocation("/admin/delivery-settings");
-        }, [setLocation]);
-        return <div>Preusmjeravanje...</div>;
-      }} />
+      <ProtectedRoute path="/admin/settings" component={AdminSettings} />
       <Route component={NotFound} />
     </Switch>
   );
