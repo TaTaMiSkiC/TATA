@@ -1,9 +1,22 @@
-import { Star, StarHalf, Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { Star, StarHalf, Loader2, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger 
+} from "@/components/ui/alert-dialog";
+import { queryClient } from "@/lib/queryClient";
 
 type ReviewWithUser = {
   id: number;
@@ -26,6 +39,8 @@ type ReviewWithUser = {
 
 export default function Testimonials() {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [reviewToDelete, setReviewToDelete] = useState<number | null>(null);
   
   // Dohvati sve recenzije
   const { data: reviews, isLoading, isError } = useQuery<ReviewWithUser[]>({
@@ -43,6 +58,38 @@ export default function Testimonials() {
     .slice(0, 6);
     
   console.log('Recent reviews:', recentReviews);
+  
+  // Mutation za brisanje recenzije
+  const deleteReviewMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/reviews/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Neuspješno brisanje recenzije');
+      }
+      
+      return id;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Recenzija izbrisana",
+        description: "Recenzija je uspješno izbrisana",
+      });
+      // Osvježi podatke
+      queryClient.invalidateQueries({ queryKey: ["/api/reviews"] });
+      setReviewToDelete(null);
+    },
+    onError: (error) => {
+      toast({
+        title: "Greška",
+        description: `Neuspješno brisanje recenzije: ${error.message}`,
+        variant: "destructive",
+      });
+    }
+  });
 
   // Stvaranje inicijala iz imena korisnika
   const getInitials = (review: ReviewWithUser) => {
@@ -69,7 +116,48 @@ export default function Testimonials() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {recentReviews.map((review) => (
-                <div key={review.id} className="bg-card p-6 rounded-lg shadow-md">
+                <div key={review.id} className="bg-card p-6 rounded-lg shadow-md relative">
+                  {user?.isAdmin && (
+                    <div className="absolute top-2 right-2">
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                            onClick={() => setReviewToDelete(review.id)}
+                          >
+                            <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Jeste li sigurni?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Ova akcija je nepovratna. Recenzija će biti trajno izbrisana iz sustava.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel onClick={() => setReviewToDelete(null)}>Odustani</AlertDialogCancel>
+                            <AlertDialogAction 
+                              onClick={() => {
+                                if (reviewToDelete) {
+                                  deleteReviewMutation.mutate(reviewToDelete);
+                                }
+                              }}
+                              className="bg-destructive hover:bg-destructive/90"
+                            >
+                              {deleteReviewMutation.isPending ? (
+                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                              ) : null}
+                              Izbriši
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  )}
+                
                   <div className="flex text-warning mb-4">
                     {Array.from({ length: 5 }).map((_, i) => {
                       if (i < Math.floor(review.rating)) {

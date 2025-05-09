@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { z } from "zod";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db, pool } from "./db";
 import {
   productScents,
@@ -468,6 +468,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: error.errors });
       }
       res.status(500).json({ message: "Failed to create review" });
+    }
+  });
+  
+  // Brisanje recenzije (samo admin)
+  app.delete("/api/reviews/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const reviewId = parseInt(req.params.id);
+      
+      // Izbriši recenziju
+      await db.execute(sql`DELETE FROM reviews WHERE id = ${reviewId}`);
+      
+      res.status(204).send();
+    } catch (error) {
+      console.error("Failed to delete review:", error);
+      res.status(500).json({ message: "Failed to delete review" });
     }
   });
 
