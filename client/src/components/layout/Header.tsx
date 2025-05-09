@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { MobileMenu } from "@/components/ui/mobile-menu";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
+import logoImage from "@/assets/logo.png";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -46,7 +47,7 @@ export default function Header() {
           <div className="flex items-center gap-3 cursor-pointer" 
                onClick={() => window.location.href = '/'}>
             <img 
-              src="/images/logo.png" 
+              src={logoImage} 
               alt="Kerzenwelt Logo" 
               className="h-10 md:h-12 w-auto" 
             />

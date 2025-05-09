@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import logoImage from "@/assets/logo.png";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -30,7 +31,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         <SheetHeader className="p-6 text-left border-b">
           <div className="flex items-center gap-3">
             <img 
-              src="/images/logo.png" 
+              src={logoImage} 
               alt="Kerzenwelt Logo" 
               className="h-10 w-auto" 
             />
