@@ -434,6 +434,7 @@ export default function AdminOrders() {
                         <TableHeader>
                           <TableRow>
                             <TableHead>Naziv proizvoda</TableHead>
+                            <TableHead>Opcije</TableHead>
                             <TableHead>Količina</TableHead>
                             <TableHead>Cijena po komadu</TableHead>
                             <TableHead>Ukupno</TableHead>
@@ -442,7 +443,30 @@ export default function AdminOrders() {
                         <TableBody>
                           {orderItems.map((item) => (
                             <TableRow key={item.id}>
-                              <TableCell>{item.productName || item.product?.name || `Proizvod (ID: ${item.productId})`}</TableCell>
+                              <TableCell>
+                                {item.productName || item.product?.name || `Proizvod (ID: ${item.productId})`}
+                              </TableCell>
+                              <TableCell>
+                                {item.scent && (
+                                  <div className="flex items-center mb-1">
+                                    <span className="text-xs text-muted-foreground mr-1">Miris:</span>
+                                    <span className="text-xs font-medium">{item.scent.name}</span>
+                                  </div>
+                                )}
+                                {item.color && (
+                                  <div className="flex items-center">
+                                    <span className="text-xs text-muted-foreground mr-1">Boja:</span>
+                                    <div 
+                                      className="w-3 h-3 rounded-full mr-1 border"
+                                      style={{ backgroundColor: item.color.hexValue }}
+                                    ></div>
+                                    <span className="text-xs font-medium">{item.color.name}</span>
+                                  </div>
+                                )}
+                                {!item.scent && !item.color && (
+                                  <span className="text-xs text-muted-foreground">Standardni proizvod</span>
+                                )}
+                              </TableCell>
                               <TableCell>{item.quantity}</TableCell>
                               <TableCell>{parseFloat(item.price).toFixed(2)} €</TableCell>
                               <TableCell>

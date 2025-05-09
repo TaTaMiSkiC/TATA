@@ -14,6 +14,7 @@ export default function OrderSuccessPage() {
   const [location] = useLocation();
   const { user } = useAuth();
   const [order, setOrder] = useState<any>(null);
+  const [orderItems, setOrderItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
   // Extract order ID from URL query parameter
@@ -28,9 +29,16 @@ export default function OrderSuccessPage() {
       }
       
       try {
-        const response = await apiRequest("GET", `/api/orders/${orderId}`);
-        const orderData = await response.json();
+        // Fetch order details
+        const orderResponse = await apiRequest("GET", `/api/orders/${orderId}`);
+        const orderData = await orderResponse.json();
         setOrder(orderData);
+        
+        // Fetch order items with product, scent, and color details
+        const itemsResponse = await apiRequest("GET", `/api/orders/${orderId}/items`);
+        const itemsData = await itemsResponse.json();
+        setOrderItems(itemsData);
+        
         setLoading(false);
       } catch (error) {
         console.error("Error fetching order:", error);
@@ -141,6 +149,63 @@ export default function OrderSuccessPage() {
                       <Clock className="h-5 w-5 text-yellow-500 mr-2" />
                       <span className="font-medium">Na čekanju</span>
                     </>
+                  )}
+                </div>
+              </div>
+              
+              {/* Order items list */}
+              <div className="border rounded-lg p-4 mb-4">
+                <h3 className="text-sm font-medium mb-3">Proizvodi u narudžbi</h3>
+                <div className="space-y-3">
+                  {orderItems.length === 0 ? (
+                    <p className="text-sm text-gray-500">Učitavanje proizvoda...</p>
+                  ) : (
+                    orderItems.map((item) => (
+                      <div key={item.id} className="flex items-start border-b pb-3 last:border-b-0 last:pb-0">
+                        <div className="w-12 h-12 rounded overflow-hidden mr-3 bg-neutral flex-shrink-0">
+                          {item.product?.imageUrl && (
+                            <img 
+                              src={item.product.imageUrl} 
+                              alt={item.productName || item.product?.name} 
+                              className="w-full h-full object-cover" 
+                            />
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex justify-between">
+                            <div>
+                              <p className="font-medium">{item.productName || item.product?.name}</p>
+                              <p className="text-xs text-gray-500">Količina: {item.quantity}</p>
+                              
+                              {/* Scent info */}
+                              {item.scent && (
+                                <p className="text-xs text-muted-foreground">
+                                  Miris: <span className="font-medium">{item.scent.name}</span>
+                                </p>
+                              )}
+                              
+                              {/* Color info */}
+                              {item.color && (
+                                <div className="flex items-center mt-1">
+                                  <span className="text-xs text-muted-foreground mr-1">Boja:</span>
+                                  <div 
+                                    className="w-3 h-3 rounded-full mr-1 border"
+                                    style={{ backgroundColor: item.color.hexValue }}
+                                  ></div>
+                                  <span className="text-xs font-medium">{item.color.name}</span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="text-right">
+                              <p className="font-medium">{parseFloat(item.price).toFixed(2)} €</p>
+                              <p className="text-xs text-gray-500">
+                                Ukupno: {(parseFloat(item.price) * item.quantity).toFixed(2)} €
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))
                   )}
                 </div>
               </div>

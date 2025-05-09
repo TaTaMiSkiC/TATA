@@ -127,6 +127,21 @@ export default function CheckoutPage() {
                           <div>
                             <h3 className="font-medium">{item.product.name}</h3>
                             <p className="text-sm text-gray-500">Količina: {item.quantity}</p>
+                            {item.scent && (
+                              <p className="text-xs text-muted-foreground">
+                                Miris: <span className="font-medium">{item.scent.name}</span>
+                              </p>
+                            )}
+                            {item.color && (
+                              <div className="flex items-center mt-1">
+                                <span className="text-xs text-muted-foreground mr-1">Boja:</span>
+                                <div 
+                                  className="w-3 h-3 rounded-full mr-1 border"
+                                  style={{ backgroundColor: item.color.hexValue }}
+                                ></div>
+                                <span className="text-xs font-medium">{item.color.name}</span>
+                              </div>
+                            )}
                           </div>
                         </div>
                         <div className="text-right">
