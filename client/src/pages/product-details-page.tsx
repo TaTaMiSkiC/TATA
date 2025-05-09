@@ -240,7 +240,7 @@ export default function ProductDetailsPage() {
             
             {/* Product info */}
             <div className="w-full md:w-1/2">
-              <h1 className="heading text-3xl font-bold text-text-dark mb-2">{product.name}</h1>
+              <h1 className="heading text-3xl font-bold text-foreground mb-2">{product.name}</h1>
               
               {/* Ratings */}
               <div className="flex items-center mb-4">
@@ -255,7 +255,7 @@ export default function ProductDetailsPage() {
                     }
                   })}
                 </div>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-muted-foreground">
                   {averageRating.toFixed(1)} ({reviews?.length || 0} recenzija)
                 </span>
               </div>
@@ -266,7 +266,7 @@ export default function ProductDetailsPage() {
               </div>
               
               {/* Short description */}
-              <p className="text-gray-600 mb-6">{product.description}</p>
+              <p className="text-muted-foreground mb-6">{product.description}</p>
               
               {/* Product attributes */}
               <div className="grid grid-cols-2 gap-4 mb-6">
@@ -276,8 +276,8 @@ export default function ProductDetailsPage() {
                       <Flame size={18} className="text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Miris</p>
-                      <p className="font-medium">{product.scent}</p>
+                      <p className="text-sm text-muted-foreground">Miris</p>
+                      <p className="font-medium text-foreground">{product.scent}</p>
                     </div>
                   </div>
                 )}
@@ -291,8 +291,8 @@ export default function ProductDetailsPage() {
                       ></div>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Boja</p>
-                      <p className="font-medium">{product.color}</p>
+                      <p className="text-sm text-muted-foreground">Boja</p>
+                      <p className="font-medium text-foreground">{product.color}</p>
                     </div>
                   </div>
                 )}
@@ -303,8 +303,8 @@ export default function ProductDetailsPage() {
                       <Clock size={18} className="text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Trajanje</p>
-                      <p className="font-medium">{product.burnTime}</p>
+                      <p className="text-sm text-muted-foreground">Trajanje</p>
+                      <p className="font-medium text-foreground">{product.burnTime}</p>
                     </div>
                   </div>
                 )}
@@ -314,8 +314,8 @@ export default function ProductDetailsPage() {
                     <PackageCheck size={18} className="text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Dostupnost</p>
-                    <p className="font-medium">
+                    <p className="text-sm text-muted-foreground">Dostupnost</p>
+                    <p className="font-medium text-foreground">
                       {product.stock > 0 ? (
                         product.stock > 10 ? (
                           <span className="text-success">Na zalihi</span>
@@ -333,10 +333,10 @@ export default function ProductDetailsPage() {
               {/* Add to cart */}
               <div className="flex flex-col space-y-4">
                 <div className="flex items-center">
-                  <div className="flex border border-gray-300 rounded-md overflow-hidden mr-4">
+                  <div className="flex border border-input rounded-md overflow-hidden mr-4">
                     <button 
                       type="button" 
-                      className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
+                      className="px-3 py-2 bg-muted hover:bg-muted/80 transition"
                       onClick={decrementQuantity}
                       disabled={quantity <= 1}
                     >
@@ -344,7 +344,7 @@ export default function ProductDetailsPage() {
                     </button>
                     <input 
                       type="number" 
-                      className="w-12 text-center border-none focus:ring-0"
+                      className="w-12 text-center border-none focus:ring-0 bg-background"
                       value={quantity}
                       onChange={(e) => {
                         const val = parseInt(e.target.value);
@@ -357,7 +357,7 @@ export default function ProductDetailsPage() {
                     />
                     <button 
                       type="button" 
-                      className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
+                      className="px-3 py-2 bg-muted hover:bg-muted/80 transition"
                       onClick={incrementQuantity}
                       disabled={quantity >= product.stock}
                     >
@@ -388,14 +388,14 @@ export default function ProductDetailsPage() {
               </div>
               
               {/* Shipping info */}
-              <div className="mt-8 pt-6 border-t border-gray-200">
+              <div className="mt-8 pt-6 border-t border-input">
                 <div className="flex items-center mb-3">
                   <Truck size={18} className="text-primary mr-2" />
-                  <span className="text-sm">Besplatna dostava za narudžbe iznad 50€</span>
+                  <span className="text-sm text-muted-foreground">Besplatna dostava za narudžbe iznad 50€</span>
                 </div>
                 <div className="flex items-center">
                   <RefreshCw size={18} className="text-primary mr-2" />
-                  <span className="text-sm">Povrat u roku od 14 dana</span>
+                  <span className="text-sm text-muted-foreground">Povrat u roku od 14 dana</span>
                 </div>
               </div>
             </div>
