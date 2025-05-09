@@ -173,11 +173,27 @@ export class DatabaseStorage implements IStorage {
     
     // Dohvati detalje za svaki proizvod
     const result = await Promise.all(items.map(async (item) => {
+      // Pokušaj dohvatiti proizvod
       const [product] = await db.select().from(products).where(eq(products.id, item.productId));
+      
+      // Ako proizvod nije pronađen, stvori zamjenski proizvod s osnovnim informacijama
+      const resolvedProduct = product || {
+        id: item.productId,
+        name: `Proizvod ${item.productId}`,
+        createdAt: new Date(),
+        description: "Proizvod nije pronađen",
+        price: item.price,
+        imageUrl: null,
+        categoryId: null,
+        stock: 0,
+        burnTime: null,
+        featured: false,
+        hasColorOptions: false
+      };
       
       return {
         ...item,
-        product
+        product: resolvedProduct
       };
     }));
     
