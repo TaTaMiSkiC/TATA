@@ -216,12 +216,18 @@ export class MemStorage implements IStorage {
 
   private async createDefaultAdmin() {
     try {
+      // Koristeći hashPassword funkciju iz auth.ts ovdje nije moguće
+      // pa koristimo već pripremljenu hash+salt kombinaciju koja je ručno generirana
+      // Format je "hash.salt"
+      const hashedPassword = "5871a59177a1d761c2f1d28d8992e392f66a4f1759ea6b347b691e2f9c8ca2b30c3d6ebce20135a6c5af952bcc5b69dc8992247c31bfbc73cd95a15922e88c8e.e8fcc87bbef1c544e95149b3d64c187a";
+      
       await this.createUser({
         username: "admin",
-        password: "$2b$10$XvW9hOgLPhZvRO3BrnWGfOpUCFGqkS/VPOn2rJHX8jF3JWVyOYSbm", // "admin123"
+        password: hashedPassword, // "admin123"
         email: "admin@kerzenwelt.hr",
         isAdmin: true
       });
+      console.log("Admin korisnik uspješno kreiran");
     } catch (error) {
       console.error("Failed to create admin user:", error);
     }
