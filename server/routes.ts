@@ -18,6 +18,7 @@ import {
   insertSettingSchema,
   insertScentSchema,
   insertColorSchema,
+  insertCollectionSchema,
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
