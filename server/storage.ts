@@ -185,7 +185,7 @@ export class DatabaseStorage implements IStorage {
       console.log("Inicijalizacija pomoćnih tablica za veze između entiteta...");
       
       // Kreiraj tablicu product_scents ako ne postoji
-      await db.execute(`
+      await pool.query(`
         CREATE TABLE IF NOT EXISTS product_scents (
           id SERIAL PRIMARY KEY,
           product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
@@ -195,7 +195,7 @@ export class DatabaseStorage implements IStorage {
       `);
       
       // Kreiraj tablicu product_colors ako ne postoji
-      await db.execute(`
+      await pool.query(`
         CREATE TABLE IF NOT EXISTS product_colors (
           id SERIAL PRIMARY KEY,
           product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
@@ -207,6 +207,24 @@ export class DatabaseStorage implements IStorage {
       console.log("Inicijalizacija pomoćnih tablica završena.");
     } catch (error) {
       console.error("Greška pri inicijalizaciji pomoćnih tablica:", error);
+    }
+  }
+  
+  // Funkcija koja provjerava postojanje tablice u bazi podataka
+  private async tableExists(tableName: string): Promise<boolean> {
+    try {
+      const result = await pool.query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_schema = 'public' 
+          AND table_name = $1
+        )
+      `, [tableName]);
+      
+      return result.rows[0].exists;
+    } catch (error) {
+      console.error(`Greška pri provjeri postojanja tablice ${tableName}:`, error);
+      return false;
     }
   }
 
@@ -383,16 +401,31 @@ export class DatabaseStorage implements IStorage {
 
   async getProductScents(productId: number): Promise<Scent[]> {
     try {
+      // Provjeri postoji li tablica product_scents
+      const tableExists = await this.tableExists('product_scents');
+      if (!tableExists) {
+        console.log("Kreiranje tablice product_scents jer ne postoji...");
+        await this.initializeRelationTables();
+        return []; // Vrati prazno polje jer tablica upravo kreirana i nema podataka
+      }
+    
       // Direktno povezani upit koji dohvaća mirise povezane s proizvodom
-      const result = await db.execute(
-        `SELECT s.id, s.name, s.description, s.active 
-         FROM product_scents ps 
-         JOIN scents s ON ps.scent_id = s.id 
-         WHERE ps.product_id = $1`,
-        [productId]
-      );
-      
-      return result.rows as Scent[];
+      try {
+        const result = await pool.query(
+          `SELECT s.id, s.name, s.description, s.active 
+           FROM product_scents ps 
+           JOIN scents s ON ps.scent_id = s.id 
+           WHERE ps.product_id = $1`,
+          [productId]
+        );
+        
+        return result.rows as Scent[];
+      } catch (sqlError) {
+        console.error("SQL Error:", sqlError);
+        // Još jednom inicijaliziraj tablice u slučaju da je došlo do problema s parametrima
+        await this.initializeRelationTables();
+        return [];
+      }
     } catch (error) {
       console.error("Error in getProductScents:", error);
       return [];
@@ -402,9 +435,16 @@ export class DatabaseStorage implements IStorage {
   async addScentToProduct(productId: number, scentId: number): Promise<ProductScent> {
     console.log(`Attempting to add scent ${scentId} to product ${productId}`);
     try {
-      // Prvo provjeri postojeću vezu direktnim SQL upitom
+      // Prvo provjeri postojanje tablice
+      const tableExists = await this.tableExists('product_scents');
+      if (!tableExists) {
+        console.log("Kreiranje tablice product_scents jer ne postoji...");
+        await this.initializeRelationTables();
+      }
+    
+      // Provjeri postojeću vezu direktnim SQL upitom
       console.log("Checking for existing product-scent link...");
-      const checkResult = await db.execute(
+      const checkResult = await pool.query(
         `SELECT product_id, scent_id FROM product_scents 
          WHERE product_id = $1 AND scent_id = $2`,
         [productId, scentId]
@@ -419,7 +459,7 @@ export class DatabaseStorage implements IStorage {
       console.log("Creating new product-scent link...");
       console.log("Values:", { productId, scentId });
       
-      const insertResult = await db.execute(
+      const insertResult = await pool.query(
         `INSERT INTO product_scents (product_id, scent_id) 
          VALUES ($1, $2) 
          RETURNING product_id, scent_id`,
@@ -445,7 +485,14 @@ export class DatabaseStorage implements IStorage {
 
   async removeScentFromProduct(productId: number, scentId: number): Promise<void> {
     try {
-      await db.execute(
+      // Provjeri postojanje tablice
+      const tableExists = await this.tableExists('product_scents');
+      if (!tableExists) {
+        console.log("Tablica product_scents ne postoji, ništa za ukloniti");
+        return;
+      }
+      
+      await pool.query(
         `DELETE FROM product_scents 
          WHERE product_id = $1 AND scent_id = $2`,
         [productId, scentId]
@@ -458,7 +505,14 @@ export class DatabaseStorage implements IStorage {
   
   async removeAllScentsFromProduct(productId: number): Promise<void> {
     try {
-      await db.execute(
+      // Provjeri postojanje tablice
+      const tableExists = await this.tableExists('product_scents');
+      if (!tableExists) {
+        console.log("Tablica product_scents ne postoji, ništa za ukloniti");
+        return;
+      }
+      
+      await pool.query(
         `DELETE FROM product_scents WHERE product_id = $1`,
         [productId]
       );
@@ -506,16 +560,31 @@ export class DatabaseStorage implements IStorage {
 
   async getProductColors(productId: number): Promise<Color[]> {
     try {
+      // Provjeri postoji li tablica product_colors
+      const tableExists = await this.tableExists('product_colors');
+      if (!tableExists) {
+        console.log("Kreiranje tablice product_colors jer ne postoji...");
+        await this.initializeRelationTables();
+        return []; // Vrati prazno polje jer tablica upravo kreirana i nema podataka
+      }
+    
       // Direktno povezani upit koji dohvaća boje povezane s proizvodom
-      const result = await db.execute(
-        `SELECT c.id, c.name, c.hex_value as "hexValue", c.active 
-         FROM product_colors pc 
-         JOIN colors c ON pc.color_id = c.id 
-         WHERE pc.product_id = $1`,
-        [productId]
-      );
-      
-      return result.rows as Color[];
+      try {
+        const result = await pool.query(
+          `SELECT c.id, c.name, c.hex_value as "hexValue", c.active 
+           FROM product_colors pc 
+           JOIN colors c ON pc.color_id = c.id 
+           WHERE pc.product_id = $1`,
+          [productId]
+        );
+        
+        return result.rows as Color[];
+      } catch (sqlError) {
+        console.error("SQL Error:", sqlError);
+        // Još jednom inicijaliziraj tablice u slučaju da je došlo do problema s parametrima
+        await this.initializeRelationTables();
+        return [];
+      }
     } catch (error) {
       console.error("Error in getProductColors:", error);
       return [];
@@ -525,9 +594,16 @@ export class DatabaseStorage implements IStorage {
   async addColorToProduct(productId: number, colorId: number): Promise<ProductColor> {
     console.log(`Attempting to add color ${colorId} to product ${productId}`);
     try {
-      // Prvo provjeri postojeću vezu direktnim SQL upitom
+      // Prvo provjeri postojanje tablice
+      const tableExists = await this.tableExists('product_colors');
+      if (!tableExists) {
+        console.log("Kreiranje tablice product_colors jer ne postoji...");
+        await this.initializeRelationTables();
+      }
+    
+      // Provjeri postojeću vezu direktnim SQL upitom
       console.log("Checking for existing product-color link...");
-      const checkResult = await db.execute(
+      const checkResult = await pool.query(
         `SELECT product_id, color_id FROM product_colors 
          WHERE product_id = $1 AND color_id = $2`,
         [productId, colorId]
@@ -542,7 +618,7 @@ export class DatabaseStorage implements IStorage {
       console.log("Creating new product-color link...");
       console.log("Values:", { productId, colorId });
       
-      const insertResult = await db.execute(
+      const insertResult = await pool.query(
         `INSERT INTO product_colors (product_id, color_id) 
          VALUES ($1, $2) 
          RETURNING product_id, color_id`,
@@ -568,7 +644,14 @@ export class DatabaseStorage implements IStorage {
 
   async removeColorFromProduct(productId: number, colorId: number): Promise<void> {
     try {
-      await db.execute(
+      // Provjeri postojanje tablice
+      const tableExists = await this.tableExists('product_colors');
+      if (!tableExists) {
+        console.log("Tablica product_colors ne postoji, ništa za ukloniti");
+        return;
+      }
+      
+      await pool.query(
         `DELETE FROM product_colors 
          WHERE product_id = $1 AND color_id = $2`,
         [productId, colorId]
@@ -581,7 +664,14 @@ export class DatabaseStorage implements IStorage {
   
   async removeAllColorsFromProduct(productId: number): Promise<void> {
     try {
-      await db.execute(
+      // Provjeri postojanje tablice
+      const tableExists = await this.tableExists('product_colors');
+      if (!tableExists) {
+        console.log("Tablica product_colors ne postoji, ništa za ukloniti");
+        return;
+      }
+      
+      await pool.query(
         `DELETE FROM product_colors WHERE product_id = $1`,
         [productId]
       );
