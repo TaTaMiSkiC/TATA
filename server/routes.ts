@@ -332,6 +332,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/orders/:id/items", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const id = parseInt(req.params.id);
+      const order = await storage.getOrder(id);
+      
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+      
+      if (!req.user.isAdmin && order.userId !== req.user.id) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const orderItems = await storage.getOrderItems(id);
+      res.json(orderItems);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch order items" });
+    }
+  });
+
   app.post("/api/orders", async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
