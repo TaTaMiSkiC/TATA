@@ -404,10 +404,10 @@ export default function ProductDetailsPage() {
       </section>
       
       {/* Product tabs section */}
-      <section className="bg-neutral py-12">
+      <section className="bg-muted/30 py-12">
         <div className="container mx-auto px-4">
           <Tabs defaultValue="description">
-            <TabsList className="w-full flex mb-8 bg-white">
+            <TabsList className="w-full flex mb-8 bg-card">
               <TabsTrigger value="description" className="flex-1 py-3">Opis</TabsTrigger>
               <TabsTrigger value="details" className="flex-1 py-3">Detalji</TabsTrigger>
               <TabsTrigger value="reviews" className="flex-1 py-3">
@@ -415,7 +415,7 @@ export default function ProductDetailsPage() {
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="description" className="bg-white p-6 rounded-lg shadow-sm">
+            <TabsContent value="description" className="bg-card p-6 rounded-lg shadow-sm">
               <h2 className="heading text-xl font-semibold mb-4">Opis proizvoda</h2>
               <div className="prose max-w-none">
                 <p>{product.description}</p>
@@ -431,7 +431,7 @@ export default function ProductDetailsPage() {
               </div>
             </TabsContent>
             
-            <TabsContent value="details" className="bg-white p-6 rounded-lg shadow-sm">
+            <TabsContent value="details" className="bg-card p-6 rounded-lg shadow-sm">
               <h2 className="heading text-xl font-semibold mb-4">Specifikacije proizvoda</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -439,7 +439,7 @@ export default function ProductDetailsPage() {
                     <AccordionItem value="dimensions">
                       <AccordionTrigger>Dimenzije i težina</AccordionTrigger>
                       <AccordionContent>
-                        <ul className="space-y-2 list-disc list-inside text-gray-600">
+                        <ul className="space-y-2 list-disc list-inside text-muted-foreground">
                           <li>Visina: 10 cm</li>
                           <li>Promjer: 8 cm</li>
                           <li>Težina: 350 g</li>
@@ -449,7 +449,7 @@ export default function ProductDetailsPage() {
                     <AccordionItem value="materials">
                       <AccordionTrigger>Materijali</AccordionTrigger>
                       <AccordionContent>
-                        <ul className="space-y-2 list-disc list-inside text-gray-600">
+                        <ul className="space-y-2 list-disc list-inside text-muted-foreground">
                           <li>100% prirodni sojin vosak</li>
                           <li>Pamučni fitilj</li>
                           <li>Esencijalna ulja</li>
@@ -464,7 +464,7 @@ export default function ProductDetailsPage() {
                     <AccordionItem value="usage">
                       <AccordionTrigger>Upute za korištenje</AccordionTrigger>
                       <AccordionContent>
-                        <ol className="space-y-2 list-decimal list-inside text-gray-600">
+                        <ol className="space-y-2 list-decimal list-inside text-muted-foreground">
                           <li>Prije prvog paljenja, odrežite fitilj na 5-7 mm</li>
                           <li>Neka svijeća gori najmanje 2 sata pri prvom korištenju</li>
                           <li>Uvijek postavite svijeću na vatrostalno postolje</li>
@@ -475,7 +475,7 @@ export default function ProductDetailsPage() {
                     <AccordionItem value="care">
                       <AccordionTrigger>Održavanje</AccordionTrigger>
                       <AccordionContent>
-                        <ul className="space-y-2 list-disc list-inside text-gray-600">
+                        <ul className="space-y-2 list-disc list-inside text-muted-foreground">
                           <li>Redovito režite fitilj na 5-7 mm</li>
                           <li>Izbjegavajte propuh u blizini svijeće</li>
                           <li>Preostali vosak možete koristiti u aroma lampicama</li>
@@ -488,7 +488,7 @@ export default function ProductDetailsPage() {
               </div>
             </TabsContent>
             
-            <TabsContent value="reviews" className="bg-white p-6 rounded-lg shadow-sm">
+            <TabsContent value="reviews" className="bg-card p-6 rounded-lg shadow-sm">
               <h2 className="heading text-xl font-semibold mb-4">Recenzije kupaca</h2>
               
               {/* Reviews list */}
@@ -508,7 +508,7 @@ export default function ProductDetailsPage() {
                                 />
                               ))}
                             </div>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-muted-foreground">
                               {new Date(review.createdAt).toLocaleDateString()}
                             </p>
                           </div>
@@ -516,18 +516,18 @@ export default function ProductDetailsPage() {
                             {review.userId.toString().substring(0, 2)}
                           </div>
                         </div>
-                        <p className="text-gray-700">{review.comment}</p>
+                        <p className="text-foreground">{review.comment}</p>
                       </CardContent>
                     </Card>
                   ))}
                 </div>
               ) : reviewsLoading ? (
                 <div className="text-center py-8">
-                  <p className="text-gray-500">Učitavanje recenzija...</p>
+                  <p className="text-muted-foreground">Učitavanje recenzija...</p>
                 </div>
               ) : (
                 <div className="text-center py-8 mb-8">
-                  <p className="text-gray-500">Još nema recenzija za ovaj proizvod.</p>
+                  <p className="text-muted-foreground">Još nema recenzija za ovaj proizvod.</p>
                 </div>
               )}
               
@@ -592,7 +592,7 @@ export default function ProductDetailsPage() {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <p className="text-gray-500 mb-4">Prijavite se kako biste mogli napisati recenziju.</p>
+                  <p className="text-muted-foreground mb-4">Prijavite se kako biste mogli napisati recenziju.</p>
                   <Button asChild>
                     <Link href="/auth">Prijava / Registracija</Link>
                   </Button>
