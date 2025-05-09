@@ -70,13 +70,7 @@ export default function Footer() {
                   </div>
                 </Link>
               </li>
-              <li>
-                <Link href="/faq">
-                  <div className="text-gray-400 hover:text-white transition cursor-pointer">
-                    Često postavljana pitanja
-                  </div>
-                </Link>
-              </li>
+
               <li>
                 <Link href="/contact">
                   <div className="text-gray-400 hover:text-white transition cursor-pointer">
