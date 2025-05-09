@@ -106,6 +106,7 @@ export const orderItems = pgTable("order_items", {
   id: serial("id").primaryKey(),
   orderId: integer("order_id").notNull(),
   productId: integer("product_id").notNull(),
+  productName: text("product_name"),  // Dodajemo ime proizvoda za prikaz
   quantity: integer("quantity").notNull(),
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
 });
