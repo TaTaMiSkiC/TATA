@@ -350,33 +350,16 @@ export class DatabaseStorage implements IStorage {
 
   async getProductScents(productId: number): Promise<Scent[]> {
     try {
-      // Dohvati sve veze između proizvoda i mirisa
-      const relations = await db
-        .select()
-        .from(productScents)
-        .where(eq(productScents.productId, productId));
+      // Direktno povezani upit koji dohvaća mirise povezane s proizvodom
+      const result = await db.execute(
+        `SELECT s.id, s.name, s.description, s.active 
+         FROM product_scents ps 
+         JOIN scents s ON ps.scent_id = s.id 
+         WHERE ps.product_id = $1`,
+        [productId]
+      );
       
-      if (relations.length === 0) {
-        return [];
-      }
-      
-      // Izvuci ID-jeve mirisa
-      const scentIds = relations.map(rel => rel.scentId);
-      
-      // Dohvati mirise po njihovim ID-jevima kroz više pojedinačnih upita
-      const result: Scent[] = [];
-      for (const scentId of scentIds) {
-        const [scent] = await db
-          .select()
-          .from(scents)
-          .where(eq(scents.id, scentId));
-        
-        if (scent) {
-          result.push(scent);
-        }
-      }
-      
-      return result;
+      return result.rows as Scent[];
     } catch (error) {
       console.error("Error in getProductScents:", error);
       return [];
@@ -386,45 +369,40 @@ export class DatabaseStorage implements IStorage {
   async addScentToProduct(productId: number, scentId: number): Promise<ProductScent> {
     console.log(`Attempting to add scent ${scentId} to product ${productId}`);
     try {
-      // Provjeri postoji li već ta veza
+      // Prvo provjeri postojeću vezu direktnim SQL upitom
       console.log("Checking for existing product-scent link...");
-      const [existingLink] = await db
-        .select()
-        .from(productScents)
-        .where(
-          and(
-            eq(productScents.productId, productId),
-            eq(productScents.scentId, scentId)
-          )
-        );
+      const checkResult = await db.execute(
+        `SELECT product_id, scent_id FROM product_scents 
+         WHERE product_id = $1 AND scent_id = $2`,
+        [productId, scentId]
+      );
       
-      if (existingLink) {
-        console.log("Found existing link, returning it:", existingLink);
-        return existingLink;
+      if (checkResult.rows.length > 0) {
+        console.log("Found existing link, returning it:", checkResult.rows[0]);
+        return checkResult.rows[0] as ProductScent;
       }
       
       // Dodaj novu vezu
       console.log("Creating new product-scent link...");
       console.log("Values:", { productId, scentId });
       
-      const insertResult = await db
-        .insert(productScents)
-        .values({
-          productId,
-          scentId
-        })
-        .returning();
+      const insertResult = await db.execute(
+        `INSERT INTO product_scents (product_id, scent_id) 
+         VALUES ($1, $2) 
+         RETURNING product_id, scent_id`,
+        [productId, scentId]
+      );
       
       console.log("Insert result:", insertResult);
       
-      if (!insertResult || insertResult.length === 0) {
+      if (!insertResult.rows || insertResult.rows.length === 0) {
         throw new Error("Insert returned empty result");
       }
       
-      const [link] = insertResult;
+      const link = insertResult.rows[0];
       console.log("Successfully added scent to product:", link);
       
-      return link;
+      return link as ProductScent;
     } catch (error) {
       console.error("Error in addScentToProduct:", error);
       console.error("Stack trace:", error instanceof Error ? error.stack : "No stack trace");
@@ -434,16 +412,26 @@ export class DatabaseStorage implements IStorage {
 
   async removeScentFromProduct(productId: number, scentId: number): Promise<void> {
     try {
-      await db
-        .delete(productScents)
-        .where(
-          and(
-            eq(productScents.productId, productId),
-            eq(productScents.scentId, scentId)
-          )
-        );
+      await db.execute(
+        `DELETE FROM product_scents 
+         WHERE product_id = $1 AND scent_id = $2`,
+        [productId, scentId]
+      );
     } catch (error) {
       console.error("Error in removeScentFromProduct:", error);
+      throw new Error(`Failed to remove scent from product: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+  
+  async removeAllScentsFromProduct(productId: number): Promise<void> {
+    try {
+      await db.execute(
+        `DELETE FROM product_scents WHERE product_id = $1`,
+        [productId]
+      );
+    } catch (error) {
+      console.error("Error in removeAllScentsFromProduct:", error);
+      throw new Error(`Failed to remove all scents from product: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -485,33 +473,16 @@ export class DatabaseStorage implements IStorage {
 
   async getProductColors(productId: number): Promise<Color[]> {
     try {
-      // Dohvati sve veze između proizvoda i boja
-      const relations = await db
-        .select()
-        .from(productColors)
-        .where(eq(productColors.productId, productId));
+      // Direktno povezani upit koji dohvaća boje povezane s proizvodom
+      const result = await db.execute(
+        `SELECT c.id, c.name, c.hexValue, c.active 
+         FROM product_colors pc 
+         JOIN colors c ON pc.color_id = c.id 
+         WHERE pc.product_id = $1`,
+        [productId]
+      );
       
-      if (relations.length === 0) {
-        return [];
-      }
-      
-      // Izvuci ID-jeve boja
-      const colorIds = relations.map(rel => rel.colorId);
-      
-      // Dohvati boje po njihovim ID-jevima kroz više pojedinačnih upita
-      const result: Color[] = [];
-      for (const colorId of colorIds) {
-        const [color] = await db
-          .select()
-          .from(colors)
-          .where(eq(colors.id, colorId));
-        
-        if (color) {
-          result.push(color);
-        }
-      }
-      
-      return result;
+      return result.rows as Color[];
     } catch (error) {
       console.error("Error in getProductColors:", error);
       return [];
@@ -521,45 +492,40 @@ export class DatabaseStorage implements IStorage {
   async addColorToProduct(productId: number, colorId: number): Promise<ProductColor> {
     console.log(`Attempting to add color ${colorId} to product ${productId}`);
     try {
-      // Provjeri postoji li već ta veza
+      // Prvo provjeri postojeću vezu direktnim SQL upitom
       console.log("Checking for existing product-color link...");
-      const [existingLink] = await db
-        .select()
-        .from(productColors)
-        .where(
-          and(
-            eq(productColors.productId, productId),
-            eq(productColors.colorId, colorId)
-          )
-        );
+      const checkResult = await db.execute(
+        `SELECT product_id, color_id FROM product_colors 
+         WHERE product_id = $1 AND color_id = $2`,
+        [productId, colorId]
+      );
       
-      if (existingLink) {
-        console.log("Found existing link, returning it:", existingLink);
-        return existingLink;
+      if (checkResult.rows.length > 0) {
+        console.log("Found existing link, returning it:", checkResult.rows[0]);
+        return checkResult.rows[0] as ProductColor;
       }
       
       // Dodaj novu vezu
       console.log("Creating new product-color link...");
       console.log("Values:", { productId, colorId });
       
-      const insertResult = await db
-        .insert(productColors)
-        .values({
-          productId,
-          colorId
-        })
-        .returning();
+      const insertResult = await db.execute(
+        `INSERT INTO product_colors (product_id, color_id) 
+         VALUES ($1, $2) 
+         RETURNING product_id, color_id`,
+        [productId, colorId]
+      );
       
       console.log("Insert result:", insertResult);
       
-      if (!insertResult || insertResult.length === 0) {
+      if (!insertResult.rows || insertResult.rows.length === 0) {
         throw new Error("Insert returned empty result");
       }
       
-      const [link] = insertResult;
+      const link = insertResult.rows[0];
       console.log("Successfully added color to product:", link);
       
-      return link;
+      return link as ProductColor;
     } catch (error) {
       console.error("Error in addColorToProduct:", error);
       console.error("Stack trace:", error instanceof Error ? error.stack : "No stack trace");
@@ -569,16 +535,26 @@ export class DatabaseStorage implements IStorage {
 
   async removeColorFromProduct(productId: number, colorId: number): Promise<void> {
     try {
-      await db
-        .delete(productColors)
-        .where(
-          and(
-            eq(productColors.productId, productId),
-            eq(productColors.colorId, colorId)
-          )
-        );
+      await db.execute(
+        `DELETE FROM product_colors 
+         WHERE product_id = $1 AND color_id = $2`,
+        [productId, colorId]
+      );
     } catch (error) {
       console.error("Error in removeColorFromProduct:", error);
+      throw new Error(`Failed to remove color from product: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+  
+  async removeAllColorsFromProduct(productId: number): Promise<void> {
+    try {
+      await db.execute(
+        `DELETE FROM product_colors WHERE product_id = $1`,
+        [productId]
+      );
+    } catch (error) {
+      console.error("Error in removeAllColorsFromProduct:", error);
+      throw new Error(`Failed to remove all colors from product: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 

@@ -657,13 +657,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const productId = parseInt(req.params.id);
       
-      // Dohvatimo sve mirise proizvoda
-      const scents = await storage.getProductScents(productId);
-      
-      // Brišemo sve mirise jednog po jednog
-      for (const scent of scents) {
-        await storage.removeScentFromProduct(productId, scent.id);
-      }
+      // Brišemo sve mirise odjednom
+      await storage.removeAllScentsFromProduct(productId);
       
       res.status(204).send();
     } catch (error) {
@@ -727,16 +722,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const productId = parseInt(req.params.id);
       
-      // Dohvati sve boje proizvoda
-      const colors = await storage.getProductColors(productId);
-      
-      // Obriši svaku boju
-      for (const color of colors) {
-        await storage.removeColorFromProduct(productId, color.id);
-      }
+      // Brišemo sve boje odjednom
+      await storage.removeAllColorsFromProduct(productId);
       
       res.status(204).send();
     } catch (error) {
+      console.error("Error removing colors from product:", error);
       res.status(500).json({ message: "Failed to remove all colors from product" });
     }
   });
