@@ -115,13 +115,6 @@ export default function Header() {
             </div>
             
             <div 
-              className={`font-body hover:text-primary transition cursor-pointer ${location === '/shipping-returns' ? 'text-primary' : 'text-text-dark'}`}
-              onClick={() => window.location.href = '/shipping-returns'}
-            >
-              Dostava i povrat
-            </div>
-            
-            <div 
               className={`font-body hover:text-primary transition cursor-pointer ${location === '/contact' ? 'text-primary' : 'text-text-dark'}`}
               onClick={() => window.location.href = '/contact'}
             >

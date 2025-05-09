@@ -84,11 +84,6 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
       path: "/admin/delivery-settings",
       icon: <Truck size={20} />
     },
-    {
-      name: "Dostava i povrat",
-      path: "/admin/shipping-returns-settings",
-      icon: <RefreshCw size={20} />
-    },
   ];
 
   return (

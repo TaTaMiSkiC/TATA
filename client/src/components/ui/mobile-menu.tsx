@@ -96,11 +96,6 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 Slike
               </a>
             </Link>
-            <Link href="/shipping-returns">
-              <a className="font-body text-text-dark py-2 hover:text-primary" onClick={onClose}>
-                Dostava i povrat
-              </a>
-            </Link>
             <Link href="/contact">
               <a className="font-body text-text-dark py-2 hover:text-primary" onClick={onClose}>
                 Kontakt
