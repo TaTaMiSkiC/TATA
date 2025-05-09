@@ -66,12 +66,11 @@ export default function AboutUs() {
               </div>
             </div>
             
-            <Button 
-              size="lg" 
-              onClick={() => window.location.href = '/about'}
-            >
-              Saznajte više o nama
-            </Button>
+            <Link href="/about">
+              <Button size="lg">
+                Saznajte više o nama
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

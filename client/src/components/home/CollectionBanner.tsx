@@ -31,12 +31,11 @@ export default function CollectionBanner() {
               <span>Vanilla Patchouli</span>
             </li>
           </ul>
-          <Button 
-            size="lg" 
-            onClick={() => window.location.href = '/products?collection=autumn'}
-          >
-            Pregledaj kolekciju
-          </Button>
+          <Link href="/products?collection=autumn">
+            <Button size="lg">
+              Pregledaj kolekciju
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
