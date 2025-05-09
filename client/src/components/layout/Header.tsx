@@ -35,60 +35,56 @@ export default function Header() {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <Link href="/">
-            <a className="text-primary heading text-2xl md:text-3xl font-bold">Kerzenwelt</a>
-          </Link>
+          <div className="text-primary heading text-2xl md:text-3xl font-bold cursor-pointer">
+            <Link href="/">Kerzenwelt</Link>
+          </div>
           
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/">
-              <a className={`font-body hover:text-primary transition ${location === '/' ? 'text-primary' : 'text-text-dark'}`}>
-                Početna
-              </a>
-            </Link>
+            <div className={`font-body hover:text-primary transition cursor-pointer ${location === '/' ? 'text-primary' : 'text-text-dark'}`}>
+              <Link href="/">Početna</Link>
+            </div>
+            
             <DropdownMenu>
               <DropdownMenuTrigger className="font-body text-text-dark hover:text-primary transition flex items-center gap-1 outline-none">
                 Proizvodi
                 <ChevronDown size={14} />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-48">
-                <DropdownMenuItem asChild>
-                  <Link href="/products?category=1">
-                    <a className="w-full cursor-pointer">Mirisne svijeće</a>
-                  </Link>
+                <DropdownMenuItem>
+                  <div className="w-full cursor-pointer" onClick={() => window.location.href = '/products?category=1'}>
+                    Mirisne svijeće
+                  </div>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/products?category=2">
-                    <a className="w-full cursor-pointer">Dekorativne svijeće</a>
-                  </Link>
+                <DropdownMenuItem>
+                  <div className="w-full cursor-pointer" onClick={() => window.location.href = '/products?category=2'}>
+                    Dekorativne svijeće
+                  </div>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/products?category=3">
-                    <a className="w-full cursor-pointer">Personalizirane svijeće</a>
-                  </Link>
+                <DropdownMenuItem>
+                  <div className="w-full cursor-pointer" onClick={() => window.location.href = '/products?category=3'}>
+                    Personalizirane svijeće
+                  </div>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/products">
-                    <a className="w-full cursor-pointer">Posebne ponude</a>
-                  </Link>
+                <DropdownMenuItem>
+                  <div className="w-full cursor-pointer" onClick={() => window.location.href = '/products'}>
+                    Posebne ponude
+                  </div>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Link href="/about">
-              <a className={`font-body hover:text-primary transition ${location === '/about' ? 'text-primary' : 'text-text-dark'}`}>
-                O nama
-              </a>
-            </Link>
-            <Link href="/blog">
-              <a className={`font-body hover:text-primary transition ${location === '/blog' ? 'text-primary' : 'text-text-dark'}`}>
-                Blog
-              </a>
-            </Link>
-            <Link href="/contact">
-              <a className={`font-body hover:text-primary transition ${location === '/contact' ? 'text-primary' : 'text-text-dark'}`}>
-                Kontakt
-              </a>
-            </Link>
+            
+            <div className={`font-body hover:text-primary transition cursor-pointer ${location === '/about' ? 'text-primary' : 'text-text-dark'}`}>
+              <Link href="/about">O nama</Link>
+            </div>
+            
+            <div className={`font-body hover:text-primary transition cursor-pointer ${location === '/blog' ? 'text-primary' : 'text-text-dark'}`}>
+              <Link href="/blog">Blog</Link>
+            </div>
+            
+            <div className={`font-body hover:text-primary transition cursor-pointer ${location === '/contact' ? 'text-primary' : 'text-text-dark'}`}>
+              <Link href="/contact">Kontakt</Link>
+            </div>
           </nav>
           
           {/* User actions */}
@@ -106,21 +102,21 @@ export default function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {user.isAdmin && (
-                    <DropdownMenuItem asChild>
-                      <Link href="/admin">
-                        <a className="cursor-pointer w-full">Admin Panel</a>
-                      </Link>
+                    <DropdownMenuItem>
+                      <div className="cursor-pointer w-full" onClick={() => window.location.href = '/admin'}>
+                        Admin Panel
+                      </div>
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile">
-                      <a className="cursor-pointer w-full">Moj profil</a>
-                    </Link>
+                  <DropdownMenuItem>
+                    <div className="cursor-pointer w-full" onClick={() => window.location.href = '/profile'}>
+                      Moj profil
+                    </div>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/orders">
-                      <a className="cursor-pointer w-full">Moje narudžbe</a>
-                    </Link>
+                  <DropdownMenuItem>
+                    <div className="cursor-pointer w-full" onClick={() => window.location.href = '/orders'}>
+                      Moje narudžbe
+                    </div>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>
                     Odjava
@@ -128,23 +124,19 @@ export default function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link href="/auth">
-                <a className="text-text-dark hover:text-primary transition">
-                  <User size={20} />
-                </a>
-              </Link>
+              <div className="text-text-dark hover:text-primary transition cursor-pointer" onClick={() => window.location.href = '/auth'}>
+                <User size={20} />
+              </div>
             )}
             
-            <Link href="/cart">
-              <a className="text-text-dark hover:text-primary transition relative">
-                <ShoppingBag size={20} />
-                {cartItemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
-                    {cartItemCount}
-                  </span>
-                )}
-              </a>
-            </Link>
+            <div className="text-text-dark hover:text-primary transition relative cursor-pointer" onClick={() => window.location.href = '/cart'}>
+              <ShoppingBag size={20} />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-primary text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                  {cartItemCount}
+                </span>
+              )}
+            </div>
             
             {/* Mobile menu toggle */}
             <Button 

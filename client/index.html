@@ -1,8 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <!-- Skript za inicijalizaciju teme prije učitavanja Reacta -->
+    <script>
+      (function() {
+        // Dohvaćanje teme iz lokalnog spremnika
+        const storedTheme = localStorage.getItem('theme');
+        const theme = storedTheme ? storedTheme : 'system';
+        
+        // Dohvati jezik iz lokalnog spremnika
+        const storedLang = localStorage.getItem('language');
+        if (storedLang) {
+          document.documentElement.lang = storedLang;
+        }
+        
+        // Postavljanje teme na HTML element
+        const root = document.documentElement;
+        root.classList.remove('light', 'dark');
+        
+        if (theme === 'system') {
+          const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          root.classList.add(systemTheme);
+        } else {
+          root.classList.add(theme);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
