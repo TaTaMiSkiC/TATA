@@ -64,31 +64,30 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
       {/* Navigation */}
       <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
         {menuItems.map((item) => (
-          <Link key={item.path} href={item.path}>
-            <a
-              className={`flex items-center px-4 py-3 rounded-md transition-colors ${
-                isActive(item.path)
-                  ? "bg-white/10 text-white"
-                  : "text-primary-foreground/70 hover:bg-white/5 hover:text-white"
-              }`}
-              onClick={onItemClick}
-            >
-              <span className="mr-3">{item.icon}</span>
-              <span>{item.name}</span>
-            </a>
+          <Link 
+            key={item.path} 
+            href={item.path}
+            onClick={onItemClick}
+            className={`flex items-center px-4 py-3 rounded-md transition-colors ${
+              isActive(item.path)
+                ? "bg-white/10 text-white"
+                : "text-primary-foreground/70 hover:bg-white/5 hover:text-white"
+            }`}
+          >
+            <span className="mr-3">{item.icon}</span>
+            <span>{item.name}</span>
           </Link>
         ))}
       </nav>
       
       {/* Footer */}
       <div className="p-4 border-t border-primary-foreground/10">
-        <Link href="/">
-          <a 
-            className="flex items-center text-sm text-primary-foreground/70 hover:text-white"
-            onClick={onItemClick}
-          >
-            ← Povratak na trgovinu
-          </a>
+        <Link 
+          href="/"
+          className="flex items-center text-sm text-primary-foreground/70 hover:text-white"
+          onClick={onItemClick}
+        >
+          ← Povratak na trgovinu
         </Link>
       </div>
     </div>

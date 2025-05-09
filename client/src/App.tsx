@@ -14,6 +14,7 @@ import AdminDashboard from "@/pages/admin/admin-dashboard";
 import AdminProducts from "@/pages/admin/admin-products";
 import AdminOrders from "@/pages/admin/admin-orders";
 import AdminUsers from "@/pages/admin/admin-users";
+import AdminSettings from "@/pages/admin/admin-settings-page";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "./hooks/use-auth";
 import { CartProvider } from "./hooks/use-cart";
@@ -32,6 +33,7 @@ function Router() {
       <ProtectedRoute path="/admin/products" component={AdminProducts} />
       <ProtectedRoute path="/admin/orders" component={AdminOrders} />
       <ProtectedRoute path="/admin/users" component={AdminUsers} />
+      <ProtectedRoute path="/admin/settings" component={AdminSettings} />
       <Route component={NotFound} />
     </Switch>
   );

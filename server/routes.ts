@@ -386,6 +386,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch users" });
     }
   });
+  
+  // Change password
+  app.put("/api/users/:id/password", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const id = parseInt(req.params.id);
+      
+      // Ensure users can only change their own password (unless admin)
+      if (id !== req.user.id && !req.user.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const { currentPassword, newPassword } = req.body;
+      
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+      
+      // Import the auth functions
+      const { comparePasswords, hashPassword } = require("./auth");
+      
+      // Get the user
+      const user = await storage.getUser(id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Verify current password
+      const isPasswordValid = await comparePasswords(currentPassword, user.password);
+      if (!isPasswordValid) {
+        return res.status(400).json({ message: "Current password is incorrect" });
+      }
+      
+      // Hash the new password
+      const hashedPassword = await hashPassword(newPassword);
+      
+      // Update user with new password
+      const updatedUser = await storage.updateUser(id, { password: hashedPassword });
+      
+      res.json({ message: "Password updated successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update password" });
+    }
+  });
 
   // Create HTTP server
   const httpServer = createServer(app);
