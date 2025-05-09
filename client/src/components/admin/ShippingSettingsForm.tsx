@@ -31,8 +31,12 @@ export default function ShippingSettingsForm() {
   const { toast } = useToast();
   
   // Dohvaćamo trenutne postavke iz API-ja
-  const { data: settings, isLoading: isLoadingSettings } = useQuery({
+  const { data: settings, isLoading: isLoadingSettings, refetch } = useQuery({
     queryKey: ["/api/settings"],
+    // Uvijek dohvati svježe podatke, ne koristimo cache
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
     select: (data) => {
       // Pretvaranje liste postavki u objekt
       const settingsObj: Record<string, string> = {};
@@ -100,8 +104,13 @@ export default function ShippingSettingsForm() {
       return results;
     },
     onSuccess: () => {
-      // Osvježavamo podatke nakon uspješnog spremanja
+      // Osvježavamo podatke nakon uspješnog spremanja - ovo pokreće novi zahtjev
       queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
+      
+      // Eksplicitno ručno osvježavanje
+      setTimeout(() => {
+        refetch();
+      }, 500);  // Mala odgoda da server ima vremena osvježiti podatke
       
       toast({
         title: "Uspjeh",
@@ -122,6 +131,21 @@ export default function ShippingSettingsForm() {
   const onSubmit = async (data: ShippingFormValues) => {
     try {
       await saveAllSettingsMutation.mutateAsync(data);
+      
+      // Pričekaj malo i zatim ručno osvježi formu vrijednostima iz baze
+      setTimeout(() => {
+        // Eksplicitno ručno osvježavanje s poslužitelja
+        refetch().then(refreshResult => {
+          if (refreshResult.data) {
+            console.log("Osvježeni podaci nakon spremanja:", refreshResult.data);
+            form.reset({
+              freeShippingThreshold: refreshResult.data.freeShippingThreshold || "0",
+              standardShippingRate: refreshResult.data.standardShippingRate || "0",
+              expressShippingRate: refreshResult.data.expressShippingRate || "0"
+            });
+          }
+        });
+      }, 1000); // Veća odgoda za sigurno osvježavanje podataka
     } catch (error) {
       console.error("Greška pri spremanju postavki:", error);
     }
