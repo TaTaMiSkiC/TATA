@@ -13,6 +13,7 @@ import CheckoutPage from "@/pages/checkout-page";
 import OrderSuccessPage from "@/pages/order-success-page";
 import AdminDashboard from "@/pages/admin/admin-dashboard";
 import AdminProducts from "@/pages/admin/admin-products";
+import AdminCategories from "@/pages/admin/admin-categories";
 import AdminOrders from "@/pages/admin/admin-orders";
 import AdminUsers from "@/pages/admin/admin-users";
 import AdminSettings from "@/pages/admin/admin-settings-page";
@@ -35,6 +36,7 @@ function Router() {
       <ProtectedRoute path="/order-success" component={OrderSuccessPage} />
       <ProtectedRoute path="/admin" component={AdminDashboard} />
       <ProtectedRoute path="/admin/products" component={AdminProducts} />
+      <ProtectedRoute path="/admin/categories" component={AdminCategories} />
       <ProtectedRoute path="/admin/orders" component={AdminOrders} />
       <ProtectedRoute path="/admin/users" component={AdminUsers} />
       <ProtectedRoute path="/admin/settings" component={AdminSettings} />

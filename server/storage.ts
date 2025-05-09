@@ -13,7 +13,7 @@ import {
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import { db, pool } from "./db";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, count } from "drizzle-orm";
 import connectPg from "connect-pg-simple";
 
 const MemoryStore = createMemoryStore(session);
@@ -43,6 +43,8 @@ export interface IStorage {
   getCategory(id: number): Promise<Category | undefined>;
   getAllCategories(): Promise<Category[]>;
   createCategory(category: InsertCategory): Promise<Category>;
+  updateCategory(id: number, category: InsertCategory): Promise<Category | undefined>;
+  deleteCategory(id: number): Promise<void>;
   getProductsByCategory(categoryId: number): Promise<Product[]>;
   
   // Order methods

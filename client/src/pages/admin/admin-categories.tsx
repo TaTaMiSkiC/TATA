@@ -161,7 +161,7 @@ export default function AdminCategories() {
   const handleEditCategory = (category: Category) => {
     form.reset({
       name: category.name,
-      description: category.description,
+      description: category.description || "",
     });
     setCurrentCategory(category);
     setIsFormOpen(true);
