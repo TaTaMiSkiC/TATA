@@ -24,6 +24,8 @@ export function useSettings() {
     return useQuery<Setting>({
       queryKey: ["/api/settings", key],
       enabled: !!key,
+      staleTime: 0, // Uvijek dohvaćaj svježe podatke
+      refetchOnWindowFocus: true, // Osvježi podatke kada se prozor fokusira
     });
   };
 

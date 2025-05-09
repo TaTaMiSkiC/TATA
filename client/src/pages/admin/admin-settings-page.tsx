@@ -109,9 +109,9 @@ export default function AdminSettingsPage() {
   const shippingSettingsForm = useForm<ShippingSettingsFormValues>({
     resolver: zodResolver(shippingSettingsSchema),
     defaultValues: {
-      freeShippingThreshold: "50",
-      standardShippingRate: "5",
-      expressShippingRate: "15",
+      freeShippingThreshold: freeShippingThresholdSetting?.value || "50",
+      standardShippingRate: standardShippingRateSetting?.value || "5",
+      expressShippingRate: expressShippingRateSetting?.value || "15",
     },
   });
 
@@ -173,23 +173,36 @@ export default function AdminSettingsPage() {
     }
   };
 
-  // Učitavanje podataka iz API-ja u formu - samo kad se prvo učitaju
-  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
-  
+  // Učitavanje podataka iz API-ja u formu - samo kad se učitaju API podaci, a nisu još u formi
   useEffect(() => {
     const isLoadingAny = isLoadingFreeShipping || isLoadingStandardShipping || isLoadingExpressShipping;
     
-    // Provjeri je li inicijalno učitavanje
-    if (!isLoadingAny && !initialDataLoaded) {
-      // Postavi vrijednosti forme iz dohvaćenih postavki
-      shippingSettingsForm.reset({
-        freeShippingThreshold: freeShippingThresholdSetting?.value || "50",
-        standardShippingRate: standardShippingRateSetting?.value || "5",
-        expressShippingRate: expressShippingRateSetting?.value || "15"
-      });
+    // Provjeri jesu li svi podaci učitani i postavi u formu
+    if (!isLoadingAny && 
+        freeShippingThresholdSetting && 
+        standardShippingRateSetting && 
+        expressShippingRateSetting) {
       
-      // Označi da su podaci učitani da se ne bi ponovno postavljali
-      setInitialDataLoaded(true);
+      // Dohvati trenutne vrijednosti forme
+      const formValues = shippingSettingsForm.getValues();
+      
+      // Samo ako se trenutne vrijednosti forme razlikuju od API vrijednosti, ažuriraj ih
+      // Ovo sprječava resetiranje forme tijekom tipkanja
+      const apiValues = {
+        freeShippingThreshold: freeShippingThresholdSetting.value,
+        standardShippingRate: standardShippingRateSetting.value,
+        expressShippingRate: expressShippingRateSetting.value
+      };
+      
+      // Usporedba trenutnih vrijednosti forme s API vrijednostima
+      const needsUpdate = 
+        formValues.freeShippingThreshold === "" || 
+        formValues.standardShippingRate === "" || 
+        formValues.expressShippingRate === "";
+      
+      if (needsUpdate) {
+        shippingSettingsForm.reset(apiValues, { keepDefaultValues: false });
+      }
     }
   }, [
     isLoadingFreeShipping, 
@@ -198,8 +211,7 @@ export default function AdminSettingsPage() {
     freeShippingThresholdSetting,
     standardShippingRateSetting,
     expressShippingRateSetting,
-    shippingSettingsForm,
-    initialDataLoaded
+    shippingSettingsForm
   ]);
 
   // Handler za postavke dostave
