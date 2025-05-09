@@ -7,7 +7,8 @@ import {
   ChevronDown, 
   Menu,
   Sun,
-  Moon
+  Moon,
+  Instagram
 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { 
@@ -123,6 +124,18 @@ export default function Header() {
           
           {/* User actions */}
           <div className="flex items-center space-x-4">
+            <div className="hidden md:flex items-center gap-1 mr-2">
+              <span className="text-foreground text-sm font-medium">Pratite nas:</span>
+              <a 
+                href="https://www.instagram.com/kerzenwelt_by_dani/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-text-dark hover:text-primary transition ml-1"
+              >
+                <Instagram size={20} />
+              </a>
+            </div>
+            
             <Button variant="ghost" size="icon" className="text-text-dark hover:text-primary hover:bg-transparent" onClick={toggleTheme}>
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </Button>

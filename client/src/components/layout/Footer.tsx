@@ -31,6 +31,19 @@ export default function Footer() {
             <p className="text-gray-400 mb-6">
               Ručno izrađene svijeće od prirodnih sastojaka. Od naše obitelji do vašeg doma.
             </p>
+            
+            <div className="flex items-center mb-4">
+              <span className="text-white mr-2 font-medium">Pratite nas:</span>
+              <a 
+                href="https://www.instagram.com/kerzenwelt_by_dani/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-secondary hover:text-white transition-colors"
+              >
+                <Instagram size={20} />
+              </a>
+            </div>
+            
             <div className="flex space-x-4">
               <a 
                 href="https://facebook.com" 
@@ -41,7 +54,7 @@ export default function Footer() {
                 <Facebook size={18} />
               </a>
               <a 
-                href="https://instagram.com" 
+                href="https://instagram.com/kerzenwelt_by_dani" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition"

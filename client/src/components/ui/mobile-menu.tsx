@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Link } from "wouter";
-import { X, ChevronRight } from "lucide-react";
+import { X, ChevronRight, Instagram } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -101,6 +101,21 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 Kontakt
               </a>
             </Link>
+            
+            <Separator className="my-4" />
+            
+            <div className="flex items-center py-2">
+              <span className="font-body text-text-dark mr-2">Pratite nas:</span>
+              <a 
+                href="https://www.instagram.com/kerzenwelt_by_dani/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-text-dark hover:text-primary transition"
+                onClick={onClose}
+              >
+                <Instagram size={20} />
+              </a>
+            </div>
             
             <Separator className="my-4" />
             
