@@ -873,6 +873,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Opće postavke - moraju biti prije generičke rute za :key
+  app.get("/api/settings/general", async (req, res) => {
+    try {
+      // Dohvati sve opće postavke
+      const storeName = await storage.getSetting("store_name");
+      const storeDescription = await storage.getSetting("store_description");
+      const storeOwner = await storage.getSetting("store_owner");
+      const storeLegalName = await storage.getSetting("store_legal_name");
+      const storeTaxId = await storage.getSetting("store_tax_id");
+      
+      res.json({
+        store_name: storeName?.value || "",
+        store_description: storeDescription?.value || "",
+        store_owner: storeOwner?.value || "",
+        store_legal_name: storeLegalName?.value || "",
+        store_tax_id: storeTaxId?.value || "",
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch general settings" });
+    }
+  });
+  
   // Kontakt postavke - moraju biti prije generičke rute za :key
   app.get("/api/settings/contact", async (req, res) => {
     try {
@@ -909,6 +931,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(setting);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch setting" });
+    }
+  });
+  
+  app.post("/api/settings/general", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const { store_name, store_description, store_owner, store_legal_name, store_tax_id } = req.body;
+      
+      // Ažuriraj ili kreiraj opće postavke
+      await Promise.all([
+        storage.updateSetting("store_name", store_name),
+        storage.updateSetting("store_description", store_description),
+        storage.updateSetting("store_owner", store_owner),
+        storage.updateSetting("store_legal_name", store_legal_name),
+        storage.updateSetting("store_tax_id", store_tax_id),
+      ]);
+      
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update general settings" });
     }
   });
   

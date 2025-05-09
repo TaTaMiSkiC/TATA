@@ -37,6 +37,12 @@ export async function initializeDatabase() {
     await createDefaultContactSettings();
   }
   
+  // Provjeri postojanje općih postavki
+  const generalSettingsExist = await checkGeneralSettingsExist();
+  if (!generalSettingsExist) {
+    await createDefaultGeneralSettings();
+  }
+  
   console.log("Inicijalizacija baze podataka završena");
 }
 
@@ -221,4 +227,40 @@ async function createDefaultContactSettings() {
   ]);
   
   console.log("Kontakt postavke uspješno kreirane");
+}
+
+// Funkcija za provjeru postojanja općih postavki
+async function checkGeneralSettingsExist() {
+  const [setting] = await db.select().from(settings).where(eq(settings.key, "store_name"));
+  return !!setting;
+}
+
+// Funkcija za stvaranje zadanih općih postavki
+async function createDefaultGeneralSettings() {
+  console.log("Kreiranje općih postavki...");
+  
+  await db.insert(settings).values([
+    {
+      key: "store_name",
+      value: "Kerzenwelt"
+    },
+    {
+      key: "store_description",
+      value: "Ručno izrađene svijeće od prirodnih sastojaka. Od naše obitelji do vašeg doma."
+    },
+    {
+      key: "store_owner",
+      value: "Dani"
+    },
+    {
+      key: "store_legal_name",
+      value: "Kerzenwelt d.o.o."
+    },
+    {
+      key: "store_tax_id",
+      value: "HR12345678901"
+    }
+  ]);
+  
+  console.log("Opće postavke uspješno kreirane");
 }
