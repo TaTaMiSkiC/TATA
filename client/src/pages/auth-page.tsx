@@ -98,7 +98,7 @@ export default function AuthPage() {
         <meta name="description" content="Prijavite se ili registrirajte kako biste kupovali ručno izrađene svijeće, pratili svoje narudžbe i uživali u posebnim ponudama." />
       </Helmet>
       
-      <div className="py-16 bg-neutral">
+      <div className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             {/* Left side - Auth forms */}
@@ -274,7 +274,7 @@ export default function AuthPage() {
             </div>
             
             {/* Right side - Hero content */}
-            <div className="bg-primary p-10 rounded-lg text-white">
+            <div className="bg-primary p-10 rounded-lg text-primary-foreground">
               <h2 className="heading text-3xl md:text-4xl font-bold mb-6">
                 Dobrodošli u Kerzenwelt svijet
               </h2>
@@ -285,29 +285,29 @@ export default function AuthPage() {
               
               <div className="space-y-4 mb-8">
                 <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-4">
+                  <div className="w-10 h-10 rounded-full bg-primary-foreground bg-opacity-20 flex items-center justify-center mr-4">
                     <span className="text-xl font-bold">1</span>
                   </div>
                   <p>Stvorite svoj račun i započnite kupovinu</p>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-4">
+                  <div className="w-10 h-10 rounded-full bg-primary-foreground bg-opacity-20 flex items-center justify-center mr-4">
                     <span className="text-xl font-bold">2</span>
                   </div>
                   <p>Otkrijte široki asortiman ručno izrađenih svijeća</p>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-4">
+                  <div className="w-10 h-10 rounded-full bg-primary-foreground bg-opacity-20 flex items-center justify-center mr-4">
                     <span className="text-xl font-bold">3</span>
                   </div>
                   <p>Pratite svoje narudžbe i uživajte u posebnim pogodnostima</p>
                 </div>
               </div>
               
-              <p className="text-sm text-white text-opacity-80 italic">
+              <p className="text-sm text-primary-foreground opacity-80 italic">
                 "Svaka svijeća koja napusti našu radionicu nosi djelić naše duše i strasti prema ovom zanatu."
               </p>
-              <p className="text-sm font-medium mt-2">- Dani, osnivačica</p>
+              <p className="text-sm font-medium mt-2 text-primary-foreground">- Dani, osnivačica</p>
             </div>
           </div>
         </div>

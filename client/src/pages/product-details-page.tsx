@@ -207,9 +207,9 @@ export default function ProductDetailsPage() {
       </Helmet>
       
       {/* Breadcrumbs */}
-      <div className="bg-neutral py-3">
+      <div className="bg-muted/30 py-3">
         <div className="container mx-auto px-4">
-          <div className="flex items-center text-sm text-gray-500">
+          <div className="flex items-center text-sm text-muted-foreground">
             <Link href="/">
               <a className="hover:text-primary">Početna</a>
             </Link>
@@ -218,13 +218,13 @@ export default function ProductDetailsPage() {
               <a className="hover:text-primary">Proizvodi</a>
             </Link>
             <ChevronRight size={14} className="mx-2" />
-            <span className="text-gray-800 font-medium">{product.name}</span>
+            <span className="text-foreground font-medium">{product.name}</span>
           </div>
         </div>
       </div>
       
       {/* Product details section */}
-      <section className="bg-white py-12">
+      <section className="bg-background py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-8 items-start">
             {/* Product image */}

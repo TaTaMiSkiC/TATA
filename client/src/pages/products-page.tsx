@@ -119,12 +119,12 @@ export default function ProductsPage() {
         <meta name="description" content="Otkrijte našu kolekciju ručno izrađenih svijeća - mirisne, dekorativne i personalizirane svijeće za svaki dom i prigodu." />
       </Helmet>
       
-      <div className="bg-white py-8 px-4 sm:px-6 lg:px-8">
+      <div className="bg-background py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-screen-xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div>
-              <h1 className="heading text-3xl font-bold text-text-dark">{getCategoryName()}</h1>
-              <p className="text-gray-600 mt-1">
+              <h1 className="heading text-3xl font-bold text-foreground">{getCategoryName()}</h1>
+              <p className="text-muted-foreground mt-1">
                 {sortedProducts.length} {sortedProducts.length === 1 ? 'proizvod' : 
                  sortedProducts.length % 10 >= 2 && sortedProducts.length % 10 <= 4 ? 'proizvoda' : 'proizvoda'}
               </p>
@@ -160,9 +160,9 @@ export default function ProductsPage() {
           <div className="flex flex-col md:flex-row gap-8">
             {/* Filters sidebar - Desktop */}
             <div className="hidden md:block w-64 shrink-0">
-              <div className="bg-accent bg-opacity-20 rounded-lg p-5">
+              <div className="bg-card rounded-lg p-5">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="font-heading font-semibold text-lg">Filteri</h2>
+                  <h2 className="font-heading font-semibold text-lg text-foreground">Filteri</h2>
                   {(filters.category !== "all" || filters.search || filters.priceRange[0] > 0 || filters.priceRange[1] < maxPrice) && (
                     <Button variant="ghost" size="sm" onClick={clearFilters}>
                       <X size={16} className="mr-1" /> Očisti
@@ -175,9 +175,9 @@ export default function ProductsPage() {
                 <div className="space-y-6">
                   {/* Search */}
                   <div>
-                    <h3 className="font-medium mb-2">Pretraga</h3>
+                    <h3 className="font-medium mb-2 text-foreground">Pretraga</h3>
                     <div className="relative">
-                      <Search size={18} className="absolute left-2.5 top-2.5 text-gray-400" />
+                      <Search size={18} className="absolute left-2.5 top-2.5 text-muted-foreground" />
                       <Input
                         type="text"
                         placeholder="Traži proizvode..."
@@ -190,7 +190,7 @@ export default function ProductsPage() {
                   
                   {/* Categories */}
                   <div>
-                    <h3 className="font-medium mb-2">Kategorije</h3>
+                    <h3 className="font-medium mb-2 text-foreground">Kategorije</h3>
                     <Select 
                       value={filters.category}
                       onValueChange={(value) => setFilters({ ...filters, category: value })}
@@ -212,8 +212,8 @@ export default function ProductsPage() {
                   {/* Price range */}
                   <div>
                     <div className="flex justify-between mb-2">
-                      <h3 className="font-medium">Cijena</h3>
-                      <span className="text-sm text-gray-500">
+                      <h3 className="font-medium text-foreground">Cijena</h3>
+                      <span className="text-sm text-muted-foreground">
                         {filters.priceRange[0]}€ - {filters.priceRange[1]}€
                       </span>
                     </div>
@@ -226,7 +226,7 @@ export default function ProductsPage() {
                       onValueChange={(value) => setFilters({ ...filters, priceRange: value })}
                       className="my-4"
                     />
-                    <div className="flex justify-between text-sm text-gray-500">
+                    <div className="flex justify-between text-sm text-muted-foreground">
                       <span>0€</span>
                       <span>{maxPrice}€</span>
                     </div>
@@ -238,10 +238,10 @@ export default function ProductsPage() {
             {/* Mobile Filters */}
             {mobileFiltersOpen && (
               <div className="fixed inset-0 z-50 bg-black bg-opacity-50 md:hidden">
-                <div className="absolute inset-y-0 right-0 w-[300px] bg-white h-full overflow-y-auto">
+                <div className="absolute inset-y-0 right-0 w-[300px] bg-background h-full overflow-y-auto">
                   <div className="p-5">
                     <div className="flex justify-between items-center mb-4">
-                      <h2 className="font-heading font-semibold text-lg">Filteri</h2>
+                      <h2 className="font-heading font-semibold text-lg text-foreground">Filteri</h2>
                       <Button variant="ghost" size="sm" onClick={() => setMobileFiltersOpen(false)}>
                         <X size={18} />
                       </Button>
@@ -252,9 +252,9 @@ export default function ProductsPage() {
                     <div className="space-y-6">
                       {/* Search */}
                       <div>
-                        <h3 className="font-medium mb-2">Pretraga</h3>
+                        <h3 className="font-medium mb-2 text-foreground">Pretraga</h3>
                         <div className="relative">
-                          <Search size={18} className="absolute left-2.5 top-2.5 text-gray-400" />
+                          <Search size={18} className="absolute left-2.5 top-2.5 text-muted-foreground" />
                           <Input
                             type="text"
                             placeholder="Traži proizvode..."
@@ -267,7 +267,7 @@ export default function ProductsPage() {
                       
                       {/* Categories */}
                       <div>
-                        <h3 className="font-medium mb-2">Kategorije</h3>
+                        <h3 className="font-medium mb-2 text-foreground">Kategorije</h3>
                         <Select 
                           value={filters.category}
                           onValueChange={(value) => setFilters({ ...filters, category: value })}
@@ -289,8 +289,8 @@ export default function ProductsPage() {
                       {/* Price range */}
                       <div>
                         <div className="flex justify-between mb-2">
-                          <h3 className="font-medium">Cijena</h3>
-                          <span className="text-sm text-gray-500">
+                          <h3 className="font-medium text-foreground">Cijena</h3>
+                          <span className="text-sm text-muted-foreground">
                             {filters.priceRange[0]}€ - {filters.priceRange[1]}€
                           </span>
                         </div>
@@ -303,7 +303,7 @@ export default function ProductsPage() {
                           onValueChange={(value) => setFilters({ ...filters, priceRange: value })}
                           className="my-4"
                         />
-                        <div className="flex justify-between text-sm text-gray-500">
+                        <div className="flex justify-between text-sm text-muted-foreground">
                           <span>0€</span>
                           <span>{maxPrice}€</span>
                         </div>
@@ -339,9 +339,9 @@ export default function ProductsPage() {
               {productsLoading ? (
                 <ProductGrid products={[]} isLoading={true} />
               ) : sortedProducts.length === 0 ? (
-                <div className="bg-white rounded-lg p-8 text-center">
+                <div className="bg-card rounded-lg p-8 text-center">
                   <h3 className="heading text-xl font-semibold mb-2">Nema pronađenih proizvoda</h3>
-                  <p className="text-gray-500 mb-4">Pokušajte s drugačijim filterima ili pogledajte našu cjelokupnu ponudu.</p>
+                  <p className="text-muted-foreground mb-4">Pokušajte s drugačijim filterima ili pogledajte našu cjelokupnu ponudu.</p>
                   <Button onClick={clearFilters}>Prikaži sve proizvode</Button>
                 </div>
               ) : (
