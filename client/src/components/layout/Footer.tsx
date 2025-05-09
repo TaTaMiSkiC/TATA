@@ -98,27 +98,7 @@ export default function Footer() {
                   </div>
                 </Link>
               </li>
-              <li>
-                <Link href="/shipping-returns">
-                  <div className="text-gray-400 hover:text-white transition cursor-pointer">
-                    Dostava i povrat
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms">
-                  <div className="text-gray-400 hover:text-white transition cursor-pointer">
-                    Uvjeti korištenja
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy">
-                  <div className="text-gray-400 hover:text-white transition cursor-pointer">
-                    Politika privatnosti
-                  </div>
-                </Link>
-              </li>
+
               <li>
                 <Link href="/payment">
                   <div className="text-gray-400 hover:text-white transition cursor-pointer">
