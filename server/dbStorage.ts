@@ -14,8 +14,10 @@ import {
   type Page, type InsertPage,
   type ProductScent,
   type ProductColor,
+  type Collection, type InsertCollection,
+  type ProductCollection,
   users, products, categories, orders, orderItems, cartItems, reviews, settings,
-  scents, colors, pages, productScents, productColors
+  scents, colors, pages, productScents, productColors, collections, productCollections
 } from "@shared/schema";
 import { db, pool } from "./db";
 import { eq, and, desc, sql, isNull } from "drizzle-orm";
@@ -84,6 +86,38 @@ export class DatabaseStorage implements IStorage {
             content TEXT NOT NULL,
             created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+          )
+        `);
+      }
+      
+      // Provjeri postoji li tablica collections
+      const collectionsTableExists = await this.tableExists('collections');
+      if (!collectionsTableExists) {
+        console.log("Kreiranje tablice collections jer ne postoji...");
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS collections (
+            id SERIAL PRIMARY KEY,
+            name TEXT NOT NULL,
+            description TEXT NOT NULL,
+            image_url TEXT,
+            featured_on_home BOOLEAN NOT NULL DEFAULT FALSE,
+            active BOOLEAN NOT NULL DEFAULT TRUE,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+          )
+        `);
+      }
+      
+      // Provjeri postoji li tablica product_collections
+      const productCollectionsTableExists = await this.tableExists('product_collections');
+      if (!productCollectionsTableExists) {
+        console.log("Kreiranje tablice product_collections jer ne postoji...");
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS product_collections (
+            id SERIAL PRIMARY KEY,
+            product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+            collection_id INTEGER NOT NULL REFERENCES collections(id) ON DELETE CASCADE,
+            UNIQUE(product_id, collection_id)
           )
         `);
       }

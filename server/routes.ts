@@ -1472,6 +1472,160 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===== API rute za kolekcije =====
+  
+  // Dohvati sve kolekcije
+  app.get("/api/collections", async (req, res) => {
+    try {
+      const collections = await storage.getAllCollections();
+      res.json(collections);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch collections" });
+    }
+  });
+  
+  // Dohvati samo aktivne kolekcije
+  app.get("/api/collections/active", async (req, res) => {
+    try {
+      const collections = await storage.getActiveCollections();
+      res.json(collections);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch active collections" });
+    }
+  });
+  
+  // Dohvati kolekcije koje se prikazuju na početnoj stranici
+  app.get("/api/collections/featured", async (req, res) => {
+    try {
+      const collections = await storage.getFeaturedCollections();
+      res.json(collections);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch featured collections" });
+    }
+  });
+  
+  // Dohvati pojedinačnu kolekciju
+  app.get("/api/collections/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const collection = await storage.getCollection(id);
+      
+      if (!collection) {
+        return res.status(404).json({ message: "Collection not found" });
+      }
+      
+      res.json(collection);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch collection" });
+    }
+  });
+  
+  // Kreiraj novu kolekciju
+  app.post("/api/collections", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const validatedData = insertCollectionSchema.parse(req.body);
+      const collection = await storage.createCollection(validatedData);
+      res.status(201).json(collection);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create collection" });
+    }
+  });
+  
+  // Ažuriraj postojeću kolekciju
+  app.put("/api/collections/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const id = parseInt(req.params.id);
+      const validatedData = insertCollectionSchema.parse(req.body);
+      const collection = await storage.updateCollection(id, validatedData);
+      
+      if (!collection) {
+        return res.status(404).json({ message: "Collection not found" });
+      }
+      
+      res.json(collection);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update collection" });
+    }
+  });
+  
+  // Obriši kolekciju
+  app.delete("/api/collections/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const id = parseInt(req.params.id);
+      await storage.deleteCollection(id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete collection" });
+    }
+  });
+  
+  // Dohvati proizvode u kolekciji
+  app.get("/api/collections/:id/products", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const products = await storage.getCollectionProducts(id);
+      res.json(products);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch collection products" });
+    }
+  });
+  
+  // Dodaj proizvod u kolekciju
+  app.post("/api/collections/:id/products", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const collectionId = parseInt(req.params.id);
+      const { productId } = req.body;
+      
+      if (!productId) {
+        return res.status(400).json({ message: "Product ID is required" });
+      }
+      
+      const relation = await storage.addProductToCollection(productId, collectionId);
+      res.status(201).json(relation);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to add product to collection" });
+    }
+  });
+  
+  // Ukloni proizvod iz kolekcije
+  app.delete("/api/collections/:id/products/:productId", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const collectionId = parseInt(req.params.id);
+      const productId = parseInt(req.params.productId);
+      
+      await storage.removeProductFromCollection(productId, collectionId);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove product from collection" });
+    }
+  });
+
   // Create HTTP server
   const httpServer = createServer(app);
   return httpServer;
