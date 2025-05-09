@@ -980,7 +980,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Ove rute su već definirane iznad - duplikati
+  // Product Scents
+  app.get("/api/products/:id/scents", async (req, res) => {
+    try {
+      const productId = parseInt(req.params.id);
+      const scents = await storage.getProductScents(productId);
+      res.json(scents);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch product scents" });
+    }
+  });
+
+  app.post("/api/products/:id/scents/:scentId", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const productId = parseInt(req.params.id);
+      const scentId = parseInt(req.params.scentId);
+      
+      const productScent = await storage.addScentToProduct(productId, scentId);
+      res.status(201).json(productScent);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to add scent to product" });
+    }
+  });
+
+  app.delete("/api/products/:id/scents/:scentId", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const productId = parseInt(req.params.id);
+      const scentId = parseInt(req.params.scentId);
+      
+      await storage.removeScentFromProduct(productId, scentId);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove scent from product" });
+    }
+  });
 
   // Colors
   app.get("/api/colors", async (req, res) => {
