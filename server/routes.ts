@@ -914,6 +914,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Ruta za obradu POST i PUT zahtjeva za stranice
+  // POST /api/pages - Kreira novu stranicu
+  app.post("/api/pages", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const { type, title, content } = req.body;
+      
+      if (!type || !title || !content) {
+        return res.status(400).json({ message: "Type, title, and content are required" });
+      }
+      
+      // Provjeri postoji li stranica
+      const existingPage = await storage.getPageByType(type);
+      
+      if (existingPage) {
+        return res.status(400).json({ message: "Page with this type already exists" });
+      }
+      
+      // Kreiraj novu stranicu
+      const page = await storage.createPage({
+        title,
+        content,
+        type
+      });
+      
+      res.status(201).json(page);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create page" });
+    }
+  });
+  
+  // PUT /api/pages - Ažurira postojeću stranicu
+  app.put("/api/pages", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const { id, type, title, content } = req.body;
+      
+      if (!id || !type || !title || !content) {
+        return res.status(400).json({ message: "ID, type, title, and content are required" });
+      }
+      
+      // Provjeri postoji li stranica
+      const existingPage = await storage.getPage(id);
+      
+      if (!existingPage) {
+        return res.status(404).json({ message: "Page not found" });
+      }
+      
+      // Ažuriraj postojeću stranicu
+      const page = await storage.updatePage(id, {
+        title,
+        content,
+        type
+      });
+      
+      res.json(page);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update page" });
+    }
+  });
+  
+  // Zadržavamo postojeću rutu za nazad kompatibilnost
   app.post("/api/pages/:type", async (req, res) => {
     try {
       if (!req.isAuthenticated() || !req.user?.isAdmin) {

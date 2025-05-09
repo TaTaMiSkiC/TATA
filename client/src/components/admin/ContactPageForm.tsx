@@ -57,14 +57,12 @@ export default function ContactPageForm({ initialData }: ContactPageFormProps) {
   // Mutacija za spremanje podataka
   const mutation = useMutation({
     mutationFn: async (values: FormValues) => {
+      // Odredi odgovarajuću metodu i URL
+      const method = values.id ? "PUT" : "POST";
       const url = "/api/pages";
       
       try {
-        const response = await apiRequest(
-          values.id ? "PUT" : "POST",
-          url,
-          values
-        );
+        const response = await apiRequest(method, url, values);
         
         if (!response.ok) {
           throw new Error("Neuspješno spremanje podataka");
