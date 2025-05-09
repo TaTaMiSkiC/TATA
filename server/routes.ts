@@ -934,23 +934,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.post("/api/settings/general", async (req, res) => {
     try {
+      console.log("Primljeni zahtjev za ažuriranje općih postavki:", req.body);
+      
       if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        console.log("Zahtjev odbijen - korisnik nije prijavljen ili nije admin");
         return res.status(403).json({ message: "Unauthorized" });
       }
       
       const { store_name, store_email, store_phone, store_address } = req.body;
       
-      // Ažuriraj ili kreiraj opće postavke
-      await Promise.all([
-        storage.updateSetting("store_name", store_name),
-        storage.updateSetting("store_email", store_email),
-        storage.updateSetting("store_phone", store_phone),
-        storage.updateSetting("store_address", store_address),
-      ]);
+      console.log("Parsiran zahtjev:", { store_name, store_email, store_phone, store_address });
       
-      res.json({ success: true });
+      // Ažuriraj ili kreiraj opće postavke
+      try {
+        await Promise.all([
+          storage.updateSetting("store_name", store_name),
+          storage.updateSetting("store_email", store_email),
+          storage.updateSetting("store_phone", store_phone),
+          storage.updateSetting("store_address", store_address),
+        ]);
+        console.log("Postavke uspješno ažurirane");
+        res.json({ success: true });
+      } catch (updateError) {
+        console.error("Greška pri ažuriranju postavki:", updateError);
+        throw updateError;
+      }
     } catch (error) {
-      res.status(500).json({ message: "Failed to update general settings" });
+      console.error("Greška pri ažuriranju općih postavki:", error);
+      res.status(500).json({ message: "Failed to update general settings", error: String(error) });
     }
   });
   

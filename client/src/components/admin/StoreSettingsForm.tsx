@@ -37,11 +37,15 @@ export default function StoreSettingsForm() {
   const { data: storeSettings, isLoading } = useQuery({
     queryKey: ["/api/settings/general"],
     queryFn: async () => {
+      console.log("Dohvaćam postavke trgovine...");
       const res = await fetch("/api/settings/general");
       if (!res.ok) {
+        console.error("Greška kod dohvaćanja postavki", await res.text());
         throw new Error("Neuspješno dohvaćanje postavki trgovine");
       }
-      return await res.json();
+      const data = await res.json();
+      console.log("Dohvaćene postavke trgovine:", data);
+      return data;
     },
   });
 
@@ -60,11 +64,15 @@ export default function StoreSettingsForm() {
   // Mutacija za ažuriranje postavki
   const updateSettingsMutation = useMutation({
     mutationFn: async (data: StoreSettingsFormValues) => {
+      console.log("Šaljem podatke:", data);
       const res = await apiRequest("POST", "/api/settings/general", data);
       if (!res.ok) {
+        console.error("Greška pri slanju:", await res.text());
         throw new Error("Neuspješno ažuriranje postavki trgovine");
       }
-      return await res.json();
+      const result = await res.json();
+      console.log("Primljen odgovor:", result);
+      return result;
     },
     onSuccess: () => {
       toast({
@@ -75,6 +83,7 @@ export default function StoreSettingsForm() {
       queryClient.invalidateQueries({ queryKey: ["/api/settings/general"] });
     },
     onError: (error: Error) => {
+      console.error("Greška u mutaciji:", error);
       toast({
         title: "Greška",
         description: error.message,
