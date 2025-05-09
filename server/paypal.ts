@@ -19,10 +19,9 @@ import { Request, Response } from "express";
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET } = process.env;
 
-// PRIVREMENO RJEŠENJE: dozvoli aplikaciji da se pokrene bez PayPal kredencijala
-// Ove placeholdere treba zamijeniti pravim kredencijalima za produkciju
-const paypalClientId = PAYPAL_CLIENT_ID || "PAYPAL_CLIENT_ID_PLACEHOLDER";
-const paypalClientSecret = PAYPAL_CLIENT_SECRET || "PAYPAL_CLIENT_SECRET_PLACEHOLDER";
+// Koristi prave PayPal kredencijale
+const paypalClientId = PAYPAL_CLIENT_ID;
+const paypalClientSecret = PAYPAL_CLIENT_SECRET;
 
 let client: Client;
 try {
@@ -68,10 +67,9 @@ try {
 /* Token generation helpers */
 
 export async function getClientToken() {
-  // Ako koristimo placeholder kredencijale, odmah vrati placeholder token
-  if (paypalClientId === "PAYPAL_CLIENT_ID_PLACEHOLDER" || 
-      paypalClientSecret === "PAYPAL_CLIENT_SECRET_PLACEHOLDER") {
-    console.log("Using placeholder PayPal credentials, returning development token");
+  // Provjeri imamo li valjane PayPal kredencijale
+  if (!paypalClientId || !paypalClientSecret) {
+    console.log("Missing PayPal credentials, returning development token");
     return "dev-sandbox-token-placeholder";
   }
 
@@ -127,10 +125,8 @@ export async function createPaypalOrder(req: Request, res: Response) {
         .json({ error: "Invalid intent. Intent is required." });
     }
 
-    // Check if we're running with placeholders or if controllers are not properly initialized
-    if (paypalClientId === "PAYPAL_CLIENT_ID_PLACEHOLDER" || 
-        paypalClientSecret === "PAYPAL_CLIENT_SECRET_PLACEHOLDER" ||
-        !ordersController.createOrder) {
+    // Check if we have valid credentials or if controllers are not properly initialized
+    if (!paypalClientId || !paypalClientSecret || !ordersController.createOrder) {
       console.log("Using mock PayPal order response (credentials missing or invalid)");
       // Return a mock order for development purposes
       return res.status(200).json({
@@ -214,10 +210,8 @@ export async function capturePaypalOrder(req: Request, res: Response) {
   try {
     const { orderID } = req.params;
     
-    // Check if we're running with placeholders or if controllers are not properly initialized
-    if (paypalClientId === "PAYPAL_CLIENT_ID_PLACEHOLDER" || 
-        paypalClientSecret === "PAYPAL_CLIENT_SECRET_PLACEHOLDER" ||
-        !ordersController.captureOrder) {
+    // Check if we have valid credentials or if controllers are not properly initialized
+    if (!paypalClientId || !paypalClientSecret || !ordersController.captureOrder) {
       console.log("Using mock PayPal capture response (credentials missing or invalid)");
       // Return a mock capture response for development purposes
       return res.status(200).json({
