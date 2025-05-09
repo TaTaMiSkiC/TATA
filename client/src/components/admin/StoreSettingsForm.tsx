@@ -94,6 +94,8 @@ export default function StoreSettingsForm() {
 
   // Slanje forme
   function onSubmit(data: StoreSettingsFormValues) {
+    console.log("Podaci forme za slanje:", data);
+    console.log("Trenutno stanje forme:", form.getValues());
     updateSettingsMutation.mutate(data);
   }
 

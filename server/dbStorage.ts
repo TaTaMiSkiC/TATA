@@ -584,29 +584,46 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateSetting(key: string, value: string): Promise<Setting | undefined> {
+    console.log(`Pokušaj ažuriranja postavke "${key}" s vrijednosti "${value}"`);
+    
     // First check if the setting exists
     const existingSetting = await this.getSetting(key);
+    console.log(`Postojeća postavka "${key}":`, existingSetting);
     
     if (existingSetting) {
       // Update the existing setting
-      const [updatedSetting] = await db
-        .update(settings)
-        .set({ 
-          value,
-          updatedAt: new Date()
-        })
-        .where(eq(settings.key, key))
-        .returning();
-      
-      return updatedSetting;
+      try {
+        console.log(`Ažuriranje postojeće postavke "${key}" s novom vrijednosti "${value}"`);
+        const [updatedSetting] = await db
+          .update(settings)
+          .set({ 
+            value,
+            updatedAt: new Date()
+          })
+          .where(eq(settings.key, key))
+          .returning();
+        
+        console.log(`Postavka "${key}" uspješno ažurirana:`, updatedSetting);
+        return updatedSetting;
+      } catch (error) {
+        console.error(`Greška pri ažuriranju postavke "${key}":`, error);
+        throw error;
+      }
     } else {
       // Create a new setting if it doesn't exist
-      const newSetting = await this.createSetting({
-        key,
-        value
-      });
-      
-      return newSetting;
+      try {
+        console.log(`Stvaranje nove postavke "${key}" s vrijednosti "${value}" jer ne postoji`);
+        const newSetting = await this.createSetting({
+          key,
+          value
+        });
+        
+        console.log(`Nova postavka "${key}" uspješno kreirana:`, newSetting);
+        return newSetting;
+      } catch (error) {
+        console.error(`Greška pri stvaranju nove postavke "${key}":`, error);
+        throw error;
+      }
     }
   }
 
