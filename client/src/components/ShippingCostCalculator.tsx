@@ -29,6 +29,16 @@ export function ShippingCostCalculator({ subtotal }: ShippingCostCalculatorProps
   const freeShippingThreshold = parseFloat(freeShippingThresholdSetting?.value || "50");
   const standardShippingRate = parseFloat(standardShippingRateSetting?.value || "5");
   
+  // Ako je standardShippingRate postavljen na 0, dostava je uvijek besplatna
+  if (standardShippingRate === 0) {
+    return (
+      <div className="flex justify-between py-2">
+        <span className="text-muted-foreground">Dostava:</span>
+        <span className="font-medium text-green-600 dark:text-green-500">Besplatno</span>
+      </div>
+    );
+  }
+  
   const isFreeShipping = subtotal >= freeShippingThreshold && freeShippingThreshold > 0;
   const shippingCost = isFreeShipping ? 0 : standardShippingRate;
   
@@ -50,17 +60,22 @@ export function ShippingCostCalculator({ subtotal }: ShippingCostCalculatorProps
 export function FreeShippingProgress({ subtotal }: ShippingCostCalculatorProps) {
   const { getSetting } = useSettings();
   
-  // Dohvati postavku praga za besplatnu dostavu
-  const { data: freeShippingThresholdSetting, isLoading } = getSetting("freeShippingThreshold");
+  // Dohvati postavke za besplatnu dostavu
+  const { data: freeShippingThresholdSetting, isLoading: isLoadingFreeThreshold } = getSetting("freeShippingThreshold");
+  const { data: standardShippingRateSetting, isLoading: isLoadingShippingRate } = getSetting("standardShippingRate");
+  
+  const isLoading = isLoadingFreeThreshold || isLoadingShippingRate;
   
   if (isLoading) {
     return null;
   }
   
   const freeShippingThreshold = parseFloat(freeShippingThresholdSetting?.value || "50");
+  const standardShippingRate = parseFloat(standardShippingRateSetting?.value || "5");
   
-  // Ako je prag za besplatnu dostavu 0 ili je već dosegnut prag, ne prikazuj komponentu
-  if (freeShippingThreshold <= 0 || subtotal >= freeShippingThreshold) {
+  // Ako je standardShippingRate 0, dostava je uvijek besplatna, pa ne prikazujemo informaciju
+  // Također, ako je prag za besplatnu dostavu 0 ili je već dosegnut prag, ne prikazujemo komponentu
+  if (standardShippingRate === 0 || freeShippingThreshold <= 0 || subtotal >= freeShippingThreshold) {
     return null;
   }
   
