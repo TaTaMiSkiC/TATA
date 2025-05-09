@@ -72,7 +72,7 @@ export default function CheckoutPage() {
   return (
     <Layout>
       <Helmet>
-        <title>Plaćanje | Kerzenwelt by Dani</title>
+        <title>Plaćanje | Kerzenwelt</title>
         <meta name="description" content="Dovršite svoju narudžbu ručno izrađenih svijeća i unesite podatke za plaćanje i dostavu." />
       </Helmet>
       

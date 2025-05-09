@@ -160,7 +160,7 @@ export default function Footer() {
         <Separator className="bg-gray-800 mb-8" />
         
         <div className="flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-500 text-sm mb-4 md:mb-0">&copy; 2023 Kerzenwelt by Dani. Sva prava pridržana.</p>
+          <p className="text-gray-500 text-sm mb-4 md:mb-0">&copy; 2023 Kerzenwelt. Sva prava pridržana.</p>
           <div className="flex items-center space-x-4">
             <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" className="h-6" />
             <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-6" />

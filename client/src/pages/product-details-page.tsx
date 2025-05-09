@@ -255,9 +255,9 @@ export default function ProductDetailsPage() {
   return (
     <Layout>
       <Helmet>
-        <title>{`${product.name} | Kerzenwelt by Dani`}</title>
+        <title>{`${product.name} | Kerzenwelt`}</title>
         <meta name="description" content={product.description} />
-        <meta property="og:title" content={`${product.name} | Kerzenwelt by Dani`} />
+        <meta property="og:title" content={`${product.name} | Kerzenwelt`} />
         <meta property="og:description" content={product.description} />
         <meta property="og:image" content={product.imageUrl || ''} />
       </Helmet>

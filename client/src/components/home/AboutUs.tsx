@@ -17,9 +17,8 @@ export default function AboutUs() {
           <div>
             <h2 className="heading text-3xl md:text-4xl font-bold text-foreground mb-6">Naša priča</h2>
             <p className="text-muted-foreground mb-4">
-              Kerzenwelt by Dani je obiteljski obrt s dugom tradicijom izrade ručno rađenih svijeća. 
-              Već više od 15 godina stvaramo mirisne i dekorativne svijeće koristeći samo najbolje 
-              sastojke i održive materijale.
+              Svijeće izrađene s pažnjom i ljubavlju, od prirodnih materijala i premium sastojaka.
+              Naša strast je stvoriti proizvode koji donose toplinu i ugođaj u vaš dom.
             </p>
             <p className="text-muted-foreground mb-6">
               Svaka naša svijeća je izrađena s pažnjom i ljubavlju, pazeći na svaki detalj - od odabira 
