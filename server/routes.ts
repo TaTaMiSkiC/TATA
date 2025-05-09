@@ -977,6 +977,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Instagram API rute
+  app.get("/api/instagram/manual", async (req, res) => {
+    try {
+      // Dohvaća ručno dodane slike iz settings tabele
+      const instagramImages = await storage.getSetting("instagram_images");
+      if (!instagramImages) {
+        return res.json([]);
+      }
+      
+      try {
+        const images = JSON.parse(instagramImages.value);
+        res.json(images);
+      } catch (parseError) {
+        console.error("Greška pri parsiranju Instagram slika:", parseError);
+        res.json([]);
+      }
+    } catch (error) {
+      console.error("Greška pri dohvaćanju Instagram slika:", error);
+      res.status(500).json({ message: "Failed to fetch Instagram images" });
+    }
+  });
+  
+  app.post("/api/instagram/manual", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const { images } = req.body;
+      
+      if (!images || !Array.isArray(images)) {
+        return res.status(400).json({ message: "Invalid image data" });
+      }
+      
+      // Spremi slike u settings tablicu
+      await storage.updateSetting("instagram_images", JSON.stringify(images));
+      
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error("Greška pri spremanju Instagram slika:", error);
+      res.status(500).json({ message: "Failed to save Instagram images" });
+    }
+  });
+  
+  app.post("/api/instagram/token", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const { token } = req.body;
+      
+      if (!token) {
+        return res.status(400).json({ message: "Token is required" });
+      }
+      
+      // Spremi token u settings tablicu
+      await storage.updateSetting("instagram_token", token);
+      
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error("Greška pri spremanju Instagram tokena:", error);
+      res.status(500).json({ message: "Failed to save Instagram token" });
+    }
+  });
+  
   // Zadržavamo postojeću rutu za nazad kompatibilnost
   app.post("/api/pages/:type", async (req, res) => {
     try {
