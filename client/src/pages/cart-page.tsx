@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { useCart } from "@/hooks/use-cart";
 import { useAuth } from "@/hooks/use-auth";
 import { useSettings } from "@/hooks/use-settings-api";
+import { queryClient } from "@/lib/queryClient";
 import { Helmet } from 'react-helmet';
 import Layout from "@/components/layout/Layout";
 import CartItem from "@/components/cart/CartItem";
@@ -40,9 +41,45 @@ export default function CartPage() {
   const { data: freeShippingThresholdSetting, isLoading: isLoadingFreeThreshold } = getSetting("freeShippingThreshold");
   const { data: standardShippingRateSetting, isLoading: isLoadingStandardRate } = getSetting("standardShippingRate");
   
+  // Direktni pristup API-ju za najsvježije podatke
+  // Dohvati vrijednosti direktno s API-ja (bez keširanja)
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const freeThresholdResponse = await fetch("/api/settings/freeShippingThreshold");
+        const freeThresholdData = await freeThresholdResponse.json();
+        
+        const standardRateResponse = await fetch("/api/settings/standardShippingRate");
+        const standardRateData = await standardRateResponse.json();
+        
+        console.log("Direktno dohvaćene postavke:", {
+          freeShippingThreshold: freeThresholdData.value,
+          standardShippingRate: standardRateData.value
+        });
+        
+        // Ažuriraj localStorage s najnovijim vrijednostima
+        localStorage.setItem('freeShippingThreshold', freeThresholdData.value);
+        localStorage.setItem('standardShippingRate', standardRateData.value);
+        
+        // Prisili osvježavanje React Query keša
+        queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/settings", "freeShippingThreshold"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/settings", "standardShippingRate"] });
+      } catch (error) {
+        console.error("Greška pri dohvaćanju postavki:", error);
+      }
+    };
+    
+    fetchSettings();
+  }, []);
+  
   // Izračunaj troškove dostave za prikaz ukupnog iznosa
-  const standardShippingRate = parseFloat(standardShippingRateSetting?.value || "5");
-  const freeShippingThreshold = parseFloat(freeShippingThresholdSetting?.value || "50");
+  // Prvo koristi localStorage vrijednosti koje smo upravo ažurirali, kao fallback koristi API podatke
+  const localFreeShippingThreshold = typeof window !== 'undefined' ? localStorage.getItem('freeShippingThreshold') : null;
+  const localStandardShippingRate = typeof window !== 'undefined' ? localStorage.getItem('standardShippingRate') : null;
+  
+  const standardShippingRate = parseFloat(localStandardShippingRate || standardShippingRateSetting?.value || "5");
+  const freeShippingThreshold = parseFloat(localFreeShippingThreshold || freeShippingThresholdSetting?.value || "50");
   
   // Ako je standardShippingRate 0, dostava je uvijek besplatna
   // Inače, dostava je besplatna ako je ukupan iznos veći od praga za besplatnu dostavu

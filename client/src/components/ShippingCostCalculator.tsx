@@ -1,5 +1,7 @@
 import { useSettings } from "@/hooks/use-settings-api";
 import { Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { queryClient } from "@/lib/queryClient";
 
 interface ShippingCostCalculatorProps {
   subtotal: number;
@@ -7,14 +9,60 @@ interface ShippingCostCalculatorProps {
 
 export function ShippingCostCalculator({ subtotal }: ShippingCostCalculatorProps) {
   const { getSetting } = useSettings();
+  const [directValues, setDirectValues] = useState<{
+    freeShippingThreshold: string;
+    standardShippingRate: string;
+  } | null>(null);
+  const [isDirectlyLoading, setIsDirectlyLoading] = useState(true);
   
-  // Dohvati postavke troškova dostave
+  // Direktan pristup API-ju za zaobilaženje React Query keša
+  useEffect(() => {
+    const fetchDirectData = async () => {
+      try {
+        setIsDirectlyLoading(true);
+        const freeThresholdResponse = await fetch("/api/settings/freeShippingThreshold");
+        const freeThresholdData = await freeThresholdResponse.json();
+        
+        const standardRateResponse = await fetch("/api/settings/standardShippingRate");
+        const standardRateData = await standardRateResponse.json();
+        
+        console.log("Učitane postavke iz API-ja:", {
+          freeShippingThreshold: freeThresholdData.value,
+          standardShippingRate: standardRateData.value,
+          expressShippingRate: standardRateData.value,
+        });
+        
+        // Spremi najsvježije podatke u state
+        setDirectValues({
+          freeShippingThreshold: freeThresholdData.value,
+          standardShippingRate: standardRateData.value,
+        });
+        
+        // Ažuriraj i localStorage
+        localStorage.setItem('freeShippingThreshold', freeThresholdData.value);
+        localStorage.setItem('standardShippingRate', standardRateData.value);
+        
+        // Invalidiate React Query keš za automatsko osvježavanje
+        queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/settings", "freeShippingThreshold"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/settings", "standardShippingRate"] });
+      } catch (error) {
+        console.error("Greška pri dohvaćanju postavki:", error);
+      } finally {
+        setIsDirectlyLoading(false);
+      }
+    };
+    
+    fetchDirectData();
+  }, []);
+  
+  // Dohvati postavke troškova dostave preko React Query-ja (kao fallback)
   const { data: freeShippingThresholdSetting, isLoading: isLoadingFreeShippingThreshold } = 
     getSetting("freeShippingThreshold");
   const { data: standardShippingRateSetting, isLoading: isLoadingStandardShippingRate } = 
     getSetting("standardShippingRate");
   
-  const isLoading = isLoadingFreeShippingThreshold || isLoadingStandardShippingRate;
+  const isLoading = (isLoadingFreeShippingThreshold || isLoadingStandardShippingRate) && isDirectlyLoading;
   
   if (isLoading) {
     return (
@@ -25,18 +73,9 @@ export function ShippingCostCalculator({ subtotal }: ShippingCostCalculatorProps
     );
   }
   
-  // Prioritiziraj API vrijednosti i ažuriraj localStorage kad god se dohvate nove vrijednosti
-  const apiThreshold = freeShippingThresholdSetting?.value || "50";
-  const apiRate = standardShippingRateSetting?.value || "5";
-  
-  // Ako imamo vrijednosti iz API-ja, spremi ih u localStorage
-  if (typeof window !== 'undefined' && freeShippingThresholdSetting?.value) {
-    localStorage.setItem('freeShippingThreshold', freeShippingThresholdSetting.value);
-  }
-  
-  if (typeof window !== 'undefined' && standardShippingRateSetting?.value) {
-    localStorage.setItem('standardShippingRate', standardShippingRateSetting.value);
-  }
+  // Prioritiziraj direktno dohvaćene vrijednosti, zatim React Query vrijednosti, pa fallback
+  const apiThreshold = directValues?.freeShippingThreshold || freeShippingThresholdSetting?.value || "50";
+  const apiRate = directValues?.standardShippingRate || standardShippingRateSetting?.value || "5";
   
   // Koristi vrijednosti iz API-ja
   const freeShippingThreshold = parseFloat(apiThreshold);

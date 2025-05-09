@@ -26,6 +26,8 @@ export function useSettings() {
       enabled: !!key,
       staleTime: 0, // Uvijek dohvaćaj svježe podatke
       refetchOnWindowFocus: true, // Osvježi podatke kada se prozor fokusira
+      refetchOnMount: true, // Osvježi pri svakom mountanju komponente
+      refetchInterval: 2000, // Osvježi svakih 2 sekunde (dok je razvoj)
     });
   };
 
