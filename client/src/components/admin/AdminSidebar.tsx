@@ -13,7 +13,9 @@ import {
   Truck,
   Mail,
   FileText,
-  RefreshCw
+  RefreshCw,
+  Grid,
+  Layers
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -52,6 +54,11 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
       name: "Boje",
       path: "/admin/colors",
       icon: <Palette size={20} />
+    },
+    {
+      name: "Kolekcije",
+      path: "/admin/collections",
+      icon: <Layers size={20} />
     },
     {
       name: "Narudžbe",
