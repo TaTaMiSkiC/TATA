@@ -119,11 +119,17 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
                   className="grid grid-cols-1 gap-2"
                 >
                   {productScents.map((scent) => (
-                    <div key={scent.id} className="flex items-center space-x-2 border border-input rounded-md p-2 transition-colors hover:bg-muted/50">
-                      <RadioGroupItem value={scent.id.toString()} id={`modal-scent-${scent.id}`} />
+                    <div key={scent.id} 
+                      className={`flex items-center border rounded-md p-3 transition-colors cursor-pointer
+                        ${selectedScentId === scent.id 
+                          ? 'border-primary bg-primary/5 text-primary' 
+                          : 'border-input hover:border-primary/50 hover:bg-muted/30'}`}
+                      onClick={() => setSelectedScentId(scent.id)}
+                    >
+                      <RadioGroupItem value={scent.id.toString()} id={`modal-scent-${scent.id}`} className="mr-2" />
                       <Label
                         htmlFor={`modal-scent-${scent.id}`}
-                        className="cursor-pointer text-sm"
+                        className="cursor-pointer flex-1 text-sm"
                       >
                         {scent.name}
                       </Label>
@@ -140,21 +146,29 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
                 <RadioGroup 
                   value={selectedColorId?.toString()} 
                   onValueChange={(value) => setSelectedColorId(parseInt(value))}
-                  className="grid grid-cols-2 gap-2"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-2"
                 >
                   {productColors.map((color) => (
-                    <div key={color.id} className="flex items-center space-x-2 border border-input rounded-md p-2 transition-colors hover:bg-muted/50">
+                    <div 
+                      key={color.id} 
+                      className={`flex items-center border rounded-md p-3 transition-colors cursor-pointer
+                        ${selectedColorId === color.id 
+                          ? 'border-primary bg-primary/5 text-primary' 
+                          : 'border-input hover:border-primary/50 hover:bg-muted/30'}`}
+                      onClick={() => setSelectedColorId(color.id)}
+                    >
                       <div 
-                        className={`w-6 h-6 rounded-full border ${selectedColorId === color.id ? 'border-primary ring-2 ring-primary/50' : 'border-input'}`}
+                        className={`w-6 h-6 mr-2 rounded-full border-2 ${selectedColorId === color.id ? 'border-primary' : 'border-muted'}`}
                         style={{ backgroundColor: color.hexValue }}
                       ></div>
                       <RadioGroupItem 
                         value={color.id.toString()} 
-                        id={`modal-color-${color.id}`} 
+                        id={`modal-color-${color.id}`}
+                        className="mr-2" 
                       />
                       <Label
                         htmlFor={`modal-color-${color.id}`}
-                        className="cursor-pointer text-sm"
+                        className="cursor-pointer flex-1 text-sm"
                       >
                         {color.name}
                       </Label>
@@ -170,16 +184,16 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
               <div className="flex items-center border border-input rounded-md w-[120px]">
                 <button 
                   type="button" 
-                  className="px-3 py-2 bg-muted hover:bg-muted/80 transition"
+                  className="w-10 h-10 flex items-center justify-center bg-muted hover:bg-muted/80 transition"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   disabled={quantity <= 1}
                 >
                   <span className="sr-only">Smanji</span>
-                  <span>-</span>
+                  <span className="font-medium">-</span>
                 </button>
                 <input 
                   type="number" 
-                  className="w-12 text-center border-x border-input focus:ring-0 bg-transparent"
+                  className="w-12 h-10 text-center border-x border-input focus:outline-none focus:ring-0 bg-transparent"
                   value={quantity}
                   onChange={(e) => {
                     const val = parseInt(e.target.value);
@@ -192,33 +206,38 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
                 />
                 <button 
                   type="button" 
-                  className="px-3 py-2 bg-muted hover:bg-muted/80 transition"
+                  className="w-10 h-10 flex items-center justify-center bg-muted hover:bg-muted/80 transition"
                   onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
                   disabled={quantity >= product.stock}
                 >
                   <span className="sr-only">Povećaj</span>
-                  <span>+</span>
+                  <span className="font-medium">+</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
         
-        <DialogFooter className="sm:justify-start">
+        <DialogFooter className="sm:justify-start mt-4">
           {addedToCart ? (
-            <Button className="w-full" variant="default" disabled>
-              <CheckCircle size={18} className="mr-2" />
+            <Button className="w-full py-6 text-base" variant="default" disabled>
+              <CheckCircle size={20} className="mr-2" />
               Dodano u košaricu
             </Button>
           ) : (
             <Button 
-              className="w-full" 
+              className="w-full py-6 text-base font-medium" 
               onClick={handleAddToCart} 
               disabled={!canAddToCart || addToCart.isPending}
             >
-              <ShoppingBag size={18} className="mr-2" />
+              <ShoppingBag size={20} className="mr-2" />
               {addToCart.isPending ? "Dodavanje..." : "Dodaj u košaricu"}
             </Button>
+          )}
+          {!canAddToCart && !addedToCart && (
+            <p className="text-xs text-destructive text-center w-full mt-2">
+              Molimo odaberite sve obavezne opcije prije dodavanja u košaricu
+            </p>
           )}
         </DialogFooter>
       </DialogContent>
