@@ -27,13 +27,25 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
   // Fetch product scents
   const { data: productScents = [] } = useQuery<Scent[]>({
     queryKey: ['/api/products', product.id, 'scents'],
-    enabled: isOpen
+    enabled: isOpen,
+    // Ispravljeno - zahtjev mora biti potpun path sa /, inače Vite server pogrešno interpretira
+    queryFn: async () => {
+      const res = await fetch(`/api/products/${product.id}/scents`);
+      if (!res.ok) throw new Error('Failed to fetch scents');
+      return res.json();
+    }
   });
 
   // Fetch product colors
   const { data: productColors = [] } = useQuery<Color[]>({
     queryKey: ['/api/products', product.id, 'colors'],
-    enabled: isOpen && product.hasColorOptions
+    enabled: isOpen && product.hasColorOptions,
+    // Ispravljeno - zahtjev mora biti potpun path sa /, inače Vite server pogrešno interpretira
+    queryFn: async () => {
+      const res = await fetch(`/api/products/${product.id}/colors`);
+      if (!res.ok) throw new Error('Failed to fetch colors');
+      return res.json();
+    }
   });
 
   // Reset selections when modal is opened
