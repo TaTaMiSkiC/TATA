@@ -28,14 +28,21 @@ export default function Testimonials() {
   const { user } = useAuth();
   
   // Dohvati sve recenzije
-  const { data: reviews, isLoading } = useQuery<ReviewWithUser[]>({
+  const { data: reviews, isLoading, isError } = useQuery<ReviewWithUser[]>({
     queryKey: ["/api/reviews"],
+    retry: 3,
+    staleTime: 60000,
   });
   
+  // Log za debugiranje
+  console.log('Reviews loaded:', reviews);
+  
   // Filtriraj recenzije s tekstom i ograniči na 6 najnovijih
-  const recentReviews = reviews?.filter(review => review.comment && review.comment.length > 10)
+  const recentReviews = reviews?.filter(review => review.comment && review.comment.length > 0)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 6);
+    
+  console.log('Recent reviews:', recentReviews);
 
   // Stvaranje inicijala iz imena korisnika
   const getInitials = (review: ReviewWithUser) => {
