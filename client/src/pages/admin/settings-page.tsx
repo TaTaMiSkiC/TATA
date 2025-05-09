@@ -23,7 +23,7 @@ export default function SettingsPage() {
         <TabsList>
           <TabsTrigger value="general" className="flex items-center">
             <Settings className="mr-2 h-4 w-4" />
-            Općenito
+            Postavke trgovine
           </TabsTrigger>
           <TabsTrigger value="contact" className="flex items-center">
             <MapPin className="mr-2 h-4 w-4" />

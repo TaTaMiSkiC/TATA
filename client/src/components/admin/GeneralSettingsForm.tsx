@@ -111,7 +111,7 @@ export default function GeneralSettingsForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Opće postavke</CardTitle>
+        <CardTitle>Postavke trgovine</CardTitle>
         <CardDescription>
           Konfigurirajte osnovne podatke o vašoj trgovini
         </CardDescription>
