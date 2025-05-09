@@ -216,11 +216,7 @@ export default function CartPage() {
                     </Button>
                   </div>
                 </CardContent>
-                <CardFooter className="flex-col">
-                  <div className="flex items-center text-sm text-gray-500 mb-2">
-                    <RefreshCw size={14} className="mr-2" />
-                    <span>Besplatan povrat u roku od 14 dana</span>
-                  </div>
+                <CardFooter>
                   <div className="flex items-center text-sm text-gray-500">
                     <Truck size={14} className="mr-2" />
                     <span>
@@ -277,19 +273,7 @@ export default function CartPage() {
                       </ul>
                     </AccordionContent>
                   </AccordionItem>
-                  <AccordionItem value="returns">
-                    <AccordionTrigger className="text-sm">
-                      <div className="flex items-center">
-                        <AlertTriangle size={16} className="mr-2" />
-                        Politika povrata
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="text-sm text-gray-500">
-                      <p className="mb-2">Pravo na povrat robe imate u roku od 14 dana od primitka narudžbe.</p>
-                      <p className="mb-2">Proizvod mora biti u originalnom, neoštećenom pakiranju.</p>
-                      <p>Za povrat ili reklamaciju, molimo kontaktirajte našu korisničku podršku na info@kerzenwelt.hr.</p>
-                    </AccordionContent>
-                  </AccordionItem>
+
                 </Accordion>
               </div>
             </div>
