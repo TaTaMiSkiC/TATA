@@ -1,14 +1,14 @@
 import React from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,17 +16,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
 
-// Definicija sheme za validaciju forme
+// Validacijska shema za obrazac
 const pageFormSchema = z.object({
-  title: z.string().min(1, { message: "Naslov je obavezan" }),
-  content: z.string().min(1, { message: "Sadržaj je obavezan" }),
+  title: z.string().min(2, {
+    message: "Naslov mora imati najmanje 2 znaka.",
+  }),
+  content: z.string().min(10, {
+    message: "Sadržaj mora imati najmanje 10 znakova.",
+  }),
 });
 
 type PageFormValues = z.infer<typeof pageFormSchema>;
 
+// Props za PageSettingsForm komponentu
 interface PageSettingsFormProps {
   pageType: string;
   title: string;
@@ -35,136 +40,132 @@ interface PageSettingsFormProps {
 
 export default function PageSettingsForm({ pageType, title, description }: PageSettingsFormProps) {
   const { toast } = useToast();
-  
-  // Dohvaćanje trenutnih postavki
+  const queryClient = useQueryClient();
+
+  // Dohvati postojeće postavke stranice
   const { data: pageData, isLoading } = useQuery({
     queryKey: [`/api/pages/${pageType}`],
     queryFn: async () => {
-      const res = await fetch(`/api/pages/${pageType}`);
-      if (!res.ok) {
-        if (res.status === 404) {
-          return { title: "", content: "" };
+      try {
+        // Pokušaj dohvatiti stranicu, a ako ne postoji vrati undefined
+        const response = await fetch(`/api/pages/${pageType}`);
+        if (response.status === 404) {
+          return undefined;
         }
-        throw new Error(`Neuspješno dohvaćanje podataka stranice ${pageType}`);
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Error fetching page:", error);
+        return undefined;
       }
-      return await res.json();
     },
   });
-  
-  // Definicija forme
-  const form = useForm<PageFormValues>({
-    resolver: zodResolver(pageFormSchema),
-    defaultValues: {
-      title: "",
-      content: "",
-    },
-  });
-  
-  // Ažuriranje podataka forme kada se dohvate podaci
-  React.useEffect(() => {
-    if (pageData) {
-      form.reset({
-        title: pageData.title || "",
-        content: pageData.content || "",
-      });
-    }
-  }, [pageData, form]);
-  
-  // Mutacija za ažuriranje postavki
-  const updateMutation = useMutation({
+
+  // Mutacija za spremanje postavki stranice
+  const mutation = useMutation({
     mutationFn: async (data: PageFormValues) => {
-      const response = await apiRequest(
-        "POST",
-        `/api/pages/${pageType}`,
-        data
-      );
-      if (!response.ok) {
-        throw new Error(`Neuspješno ažuriranje stranice ${pageType}`);
-      }
+      const response = await apiRequest("POST", `/api/pages/${pageType}`, data);
       return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/pages/${pageType}`] });
       toast({
-        title: "Uspješno spremljeno",
-        description: `Stranica "${title}" je uspješno ažurirana.`,
+        title: "Postavke spremljene",
+        description: "Postavke stranice su uspješno spremljene.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Greška",
-        description: `Neuspješno ažuriranje: ${error.message}`,
+        title: "Greška pri spremanju",
+        description: error.message || "Došlo je do greške pri spremanju postavki.",
         variant: "destructive",
       });
     },
   });
-  
-  // Submit handler
+
+  // Inicijaliziraj form s react-hook-form
+  const form = useForm<PageFormValues>({
+    resolver: zodResolver(pageFormSchema),
+    defaultValues: {
+      title: pageData?.title || "",
+      content: pageData?.content || "",
+    },
+    values: pageData ? {
+      title: pageData.title,
+      content: pageData.content,
+    } : undefined,
+  });
+
+  // Funkcija za spremanje podataka
   const onSubmit = (data: PageFormValues) => {
-    updateMutation.mutate(data);
+    mutation.mutate(data);
   };
-  
+
+  // Ako se podaci još učitavaju, prikaži loading stanje
   if (isLoading) {
     return (
-      <div className="flex justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
-  
+
   return (
-    <div>
-      <h2 className="text-lg font-semibold mb-2">{title}</h2>
-      <p className="text-muted-foreground mb-4">{description}</p>
-      
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Naslov stranice</FormLabel>
-                <FormControl>
-                  <Input placeholder="Unesite naslov stranice" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={form.control}
-            name="content"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Sadržaj stranice</FormLabel>
-                <FormControl>
-                  <Textarea 
-                    placeholder="Unesite sadržaj stranice" 
-                    className="min-h-[300px]" 
-                    {...field} 
-                  />
-                </FormControl>
-                <FormDescription>
-                  Podržava osnovni HTML format za formatiranje teksta.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <Button 
-            type="submit" 
-            disabled={updateMutation.isPending}
-          >
-            {updateMutation.isPending && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            )}
-            Spremi promjene
-          </Button>
-        </form>
-      </Form>
-    </div>
+    <Card>
+      <CardContent className="pt-6">
+        <div className="mb-5">
+          <h3 className="text-xl font-bold">{title}</h3>
+          <p className="text-gray-500">{description}</p>
+        </div>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Naslov</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Unesite naslov stranice" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="content"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sadržaj</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Unesite sadržaj stranice"
+                      className="min-h-[200px] resize-y"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button 
+              type="submit" 
+              disabled={mutation.isPending}
+              className="w-full"
+            >
+              {mutation.isPending ? "Spremanje..." : "Spremi postavke"}
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }

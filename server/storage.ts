@@ -7,13 +7,14 @@ import {
   type CartItem, type InsertCartItem,
   type Review, type InsertReview,
   type Setting, type InsertSetting,
+  type Page, type InsertPage,
   type CartItemWithProduct,
   type OrderItemWithProduct,
   type Scent, type InsertScent,
   type Color, type InsertColor,
   type ProductScent, type InsertProductScent,
   type ProductColor, type InsertProductColor,
-  users, products, categories, orders, orderItems, cartItems, reviews, settings,
+  users, products, categories, orders, orderItems, cartItems, reviews, settings, pages,
   scents, colors, productScents, productColors
 } from "@shared/schema";
 import session from "express-session";
@@ -872,6 +873,42 @@ export class DatabaseStorage implements IStorage {
 
   async deleteSetting(key: string): Promise<void> {
     await db.delete(settings).where(eq(settings.key, key));
+  }
+  
+  // Page methods
+  async getPage(id: number): Promise<Page | undefined> {
+    const [page] = await db.select().from(pages).where(eq(pages.id, id));
+    return page;
+  }
+  
+  async getPageByType(type: string): Promise<Page | undefined> {
+    const [page] = await db.select().from(pages).where(eq(pages.type, type));
+    return page;
+  }
+  
+  async getAllPages(): Promise<Page[]> {
+    return await db.select().from(pages);
+  }
+  
+  async createPage(pageData: InsertPage): Promise<Page> {
+    const [page] = await db.insert(pages).values(pageData).returning();
+    return page;
+  }
+  
+  async updatePage(id: number, pageData: Partial<InsertPage>): Promise<Page | undefined> {
+    const [updatedPage] = await db
+      .update(pages)
+      .set({ 
+        ...pageData,
+        updatedAt: new Date()
+      })
+      .where(eq(pages.id, id))
+      .returning();
+    return updatedPage;
+  }
+  
+  async deletePage(id: number): Promise<void> {
+    await db.delete(pages).where(eq(pages.id, id));
   }
 }
 
