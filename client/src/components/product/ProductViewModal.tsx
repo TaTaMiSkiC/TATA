@@ -36,10 +36,10 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
     }
   });
 
-  // Fetch product colors
+  // Fetch product colors - uvijek dohvaćamo boje, neovisno o hasColorOptions
   const { data: productColors = [] } = useQuery<Color[]>({
     queryKey: ['/api/products', product.id, 'colors'],
-    enabled: isOpen && product.hasColorOptions,
+    enabled: isOpen, // Uklonjeno product.hasColorOptions, uvijek dohvaćamo boje
     // Ispravljeno - zahtjev mora biti potpun path sa /, inače Vite server pogrešno interpretira
     queryFn: async () => {
       const res = await fetch(`/api/products/${product.id}/colors`);
@@ -58,7 +58,8 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
     }
   }, [isOpen]);
 
-  const isColorSelectionRequired = product.hasColorOptions && productColors && productColors.length > 0;
+  // Isključivo se oslanjamo na postojanje boja, zanemarujemo hasColorOptions
+  const isColorSelectionRequired = productColors && productColors.length > 0;
   const isScentSelectionRequired = productScents && productScents.length > 0;
 
   // Za debugging - logiraj podatke o mirisima
