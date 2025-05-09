@@ -169,35 +169,60 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getOrderItems(orderId: number): Promise<OrderItemWithProduct[]> {
-    const items = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId));
-    
-    // Dohvati detalje za svaki proizvod
-    const result = await Promise.all(items.map(async (item) => {
-      // Pokušaj dohvatiti proizvod
-      const [product] = await db.select().from(products).where(eq(products.id, item.productId));
+    try {
+      console.log(`Dohvaćanje stavki za narudžbu ${orderId}`);
+      const items = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId));
+      console.log(`Pronađeno ${items.length} stavki za narudžbu ${orderId}`);
       
-      // Ako proizvod nije pronađen, stvori zamjenski proizvod s osnovnim informacijama
-      const resolvedProduct = product || {
-        id: item.productId,
-        name: `Proizvod ${item.productId}`,
-        createdAt: new Date(),
-        description: "Proizvod nije pronađen",
-        price: item.price,
-        imageUrl: null,
-        categoryId: null,
-        stock: 0,
-        burnTime: null,
-        featured: false,
-        hasColorOptions: false
-      };
+      // Dohvaćanje svih ID-jeva proizvoda
+      const productIds = items.map(item => item.productId);
+      console.log(`ID-jevi proizvoda za dohvaćanje: ${productIds.join(', ')}`);
       
-      return {
-        ...item,
-        product: resolvedProduct
-      };
-    }));
-    
-    return result;
+      // Dohvaćanje svih proizvoda u jednom upitu
+      const allProducts = await db.select().from(products).where(
+        productIds.length > 0 ? 
+          sql`${products.id} IN (${productIds.join(',')})` : 
+          sql`FALSE`
+      );
+      
+      console.log(`Pronađeno ${allProducts.length} proizvoda iz baze`);
+      
+      // Mapiranje proizvoda po ID-ju za brži pristup
+      const productsMap = new Map(allProducts.map(product => [product.id, product]));
+      
+      // Dohvati detalje za svaki proizvod
+      const result = items.map((item) => {
+        // Pronađi proizvod u mapi
+        const product = productsMap.get(item.productId);
+        
+        console.log(`Stavka ${item.id}, Proizvod ID ${item.productId}, Pronađen: ${!!product}`);
+        
+        // Ako proizvod nije pronađen, stvori zamjenski proizvod s osnovnim informacijama
+        const resolvedProduct = product || {
+          id: item.productId,
+          name: `Proizvod (ID: ${item.productId})`,
+          createdAt: new Date(),
+          description: "Proizvod nije pronađen",
+          price: item.price,
+          imageUrl: null,
+          categoryId: null,
+          stock: 0,
+          burnTime: null,
+          featured: false,
+          hasColorOptions: false
+        };
+        
+        return {
+          ...item,
+          product: resolvedProduct
+        };
+      });
+      
+      return result;
+    } catch (error) {
+      console.error("Greška prilikom dohvaćanja stavki narudžbe:", error);
+      throw error;
+    }
   }
 
   // Cart methods
