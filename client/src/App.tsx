@@ -14,6 +14,8 @@ import OrderSuccessPage from "@/pages/order-success-page";
 import AdminDashboard from "@/pages/admin/admin-dashboard";
 import AdminProducts from "@/pages/admin/admin-products";
 import AdminCategories from "@/pages/admin/admin-categories";
+import AdminScents from "@/pages/admin/admin-scents";
+import AdminColors from "@/pages/admin/admin-colors";
 import AdminOrders from "@/pages/admin/admin-orders";
 import AdminUsers from "@/pages/admin/admin-users";
 import AdminSettings from "@/pages/admin/admin-settings-page";

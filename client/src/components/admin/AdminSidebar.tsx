@@ -7,7 +7,9 @@ import {
   Settings,
   CreditCard,
   Flame,
-  TagsIcon
+  TagsIcon,
+  Sparkles,
+  Palette
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -36,6 +38,16 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
       name: "Kategorije",
       path: "/admin/categories",
       icon: <TagsIcon size={20} />
+    },
+    {
+      name: "Mirisi",
+      path: "/admin/scents",
+      icon: <Sparkles size={20} />
+    },
+    {
+      name: "Boje",
+      path: "/admin/colors",
+      icon: <Palette size={20} />
     },
     {
       name: "Narudžbe",

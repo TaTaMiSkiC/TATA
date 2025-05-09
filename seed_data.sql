@@ -40,19 +40,48 @@ BEGIN
 END $$;
 
 -- Dodavanje osnovnih boja za svijeće
-INSERT INTO colors (name, hex_value, active) VALUES
-('Bijela', '#FFFFFF', true),
-('Bež', '#F5F5DC', true),
-('Zlatna', '#FFD700', true),
-('Srebrna', '#C0C0C0', true),
-('Crvena', '#FF0000', true),
-('Zelena', '#008000', true),
-('Plava', '#0000FF', true),
-('Žuta', '#FFFF00', true),
-('Ljubičasta', '#800080', true),
-('Ružičasta', '#FFC0CB', true),
-('Crna', '#000000', true),
-('Narančasta', '#FFA500', true),
-('Smeđa', '#A52A2A', true),
-('Tirkizna', '#40E0D0', true)
-ON CONFLICT (name) DO NOTHING;
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Bijela') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Bijela', '#FFFFFF', true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Bež') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Bež', '#F5F5DC', true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Zlatna') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Zlatna', '#FFD700', true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Srebrna') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Srebrna', '#C0C0C0', true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Crvena') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Crvena', '#FF0000', true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Zelena') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Zelena', '#008000', true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Plava') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Plava', '#0000FF', true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Žuta') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Žuta', '#FFFF00', true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Ljubičasta') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Ljubičasta', '#800080', true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Ružičasta') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Ružičasta', '#FFC0CB', true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Crna') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Crna', '#000000', true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Narančasta') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Narančasta', '#FFA500', true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Smeđa') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Smeđa', '#A52A2A', true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM colors WHERE name = 'Tirkizna') THEN
+    INSERT INTO colors (name, hex_value, active) VALUES ('Tirkizna', '#40E0D0', true);
+  END IF;
+END $$;
