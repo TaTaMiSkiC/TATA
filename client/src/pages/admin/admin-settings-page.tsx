@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useTheme } from "@/hooks/use-theme";
 import { useLanguage } from "@/hooks/use-language";
+import { useSettings } from "@/hooks/use-settings-api";
 import { useLocation } from "wouter";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -96,6 +97,14 @@ export default function AdminSettingsPage() {
     },
   });
 
+  // Dohvati postavke hook
+  const { getSetting, updateSetting } = useSettings();
+  
+  // Dohvaćanje postavki dostave
+  const { data: freeShippingThresholdSetting, isLoading: isLoadingFreeShipping } = getSetting("freeShippingThreshold");
+  const { data: standardShippingRateSetting, isLoading: isLoadingStandardShipping } = getSetting("standardShippingRate");
+  const { data: expressShippingRateSetting, isLoading: isLoadingExpressShipping } = getSetting("expressShippingRate");
+  
   // Shipping settings form
   const shippingSettingsForm = useForm<ShippingSettingsFormValues>({
     resolver: zodResolver(shippingSettingsSchema),
@@ -164,18 +173,52 @@ export default function AdminSettingsPage() {
     }
   };
 
+  // Učitavanje podataka iz API-ja u formu
+  useEffect(() => {
+    const isLoadingAny = isLoadingFreeShipping || isLoadingStandardShipping || isLoadingExpressShipping;
+    
+    if (!isLoadingAny) {
+      // Postavi vrijednosti forme iz dohvaćenih postavki
+      shippingSettingsForm.reset({
+        freeShippingThreshold: freeShippingThresholdSetting?.value || "50",
+        standardShippingRate: standardShippingRateSetting?.value || "5",
+        expressShippingRate: expressShippingRateSetting?.value || "15"
+      });
+    }
+  }, [
+    isLoadingFreeShipping, 
+    isLoadingStandardShipping, 
+    isLoadingExpressShipping,
+    freeShippingThresholdSetting,
+    standardShippingRateSetting,
+    expressShippingRateSetting,
+    shippingSettingsForm
+  ]);
+
   // Handler za postavke dostave
   const onShippingSettingsSubmit = async (data: ShippingSettingsFormValues) => {
     setIsSubmitting(true);
     
     try {
-      // Simuliramo spremanje postavki dostave
-      // U pravoj implementaciji bi poslali zahtjev na API
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Spremanje postavki u bazu podataka
+      await updateSetting.mutateAsync({
+        key: "freeShippingThreshold",
+        value: data.freeShippingThreshold
+      });
+      
+      await updateSetting.mutateAsync({
+        key: "standardShippingRate",
+        value: data.standardShippingRate
+      });
+      
+      await updateSetting.mutateAsync({
+        key: "expressShippingRate",
+        value: data.expressShippingRate
+      });
       
       toast({
         title: "Postavke dostave spremljene",
-        description: "Postavke dostave su uspješno ažurirane.",
+        description: "Postavke dostave su uspješno ažurirane i primijenjene na cijeloj stranici.",
       });
     } catch (error: any) {
       toast({

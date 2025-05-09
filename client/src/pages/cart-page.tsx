@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Helmet } from 'react-helmet';
 import Layout from "@/components/layout/Layout";
 import CartItem from "@/components/cart/CartItem";
+import { ShippingCostCalculator, FreeShippingProgress } from "@/components/ShippingCostCalculator";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -30,11 +31,8 @@ export default function CartPage() {
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   
-  // Calculate shipping
-  const shipping = cartTotal > 50 ? 0 : 5;
-  
-  // Calculate final total
-  const total = cartTotal - discount + shipping;
+  // Total after discount (shipping will be calculated dynamically by ShippingCostCalculator)
+  const totalAfterDiscount = cartTotal - discount;
   
   const handleApplyCoupon = () => {
     if (couponCode.toLowerCase() === "dobrodosli") {
@@ -152,16 +150,18 @@ export default function CartPage() {
                       </div>
                     )}
                     
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Dostava</span>
-                      <span>{shipping === 0 ? "Besplatno" : `${shipping.toFixed(2)} €`}</span>
-                    </div>
+                    {/* Dinamički izračun dostave */}
+                    <ShippingCostCalculator subtotal={totalAfterDiscount} />
                     
                     <Separator />
                     
+                    {/* Traka napretka do besplatne dostave */}
+                    <FreeShippingProgress subtotal={totalAfterDiscount} />
+                    
+                    {/* Ukupno - izračunat će se nakon što se učitaju podaci o dostavi */}
                     <div className="flex justify-between font-bold text-lg">
                       <span>Ukupno</span>
-                      <span>{total.toFixed(2)} €</span>
+                      <span>{totalAfterDiscount.toFixed(2)} €</span>
                     </div>
                     
                     {/* Coupon code input */}
