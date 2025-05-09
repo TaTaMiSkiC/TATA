@@ -31,6 +31,12 @@ export async function initializeDatabase() {
     await createDefaultSettings();
   }
   
+  // Provjeri postojanje kontakt postavki
+  const contactSettingsExist = await checkContactSettingsExist();
+  if (!contactSettingsExist) {
+    await createDefaultContactSettings();
+  }
+  
   console.log("Inicijalizacija baze podataka završena");
 }
 
@@ -175,4 +181,44 @@ async function createDefaultSettings() {
   ]);
   
   console.log("Postavke dostave uspješno kreirane");
+}
+
+// Funkcija za provjeru postojanja kontakt postavki
+async function checkContactSettingsExist() {
+  const [setting] = await db.select().from(settings).where(eq(settings.key, "contact_address"));
+  return !!setting;
+}
+
+// Funkcija za stvaranje zadanih kontakt postavki
+async function createDefaultContactSettings() {
+  console.log("Kreiranje kontakt postavki...");
+  
+  await db.insert(settings).values([
+    {
+      key: "contact_address",
+      value: "Ulica grada Vukovara 224"
+    },
+    {
+      key: "contact_city",
+      value: "Zagreb"
+    },
+    {
+      key: "contact_postal_code",
+      value: "10000"
+    },
+    {
+      key: "contact_phone",
+      value: "+385 1 234 5678"
+    },
+    {
+      key: "contact_email",
+      value: "info@kerzenwelt.hr"
+    },
+    {
+      key: "contact_working_hours",
+      value: "Pon - Pet: 9:00 - 17:00"
+    }
+  ]);
+  
+  console.log("Kontakt postavke uspješno kreirane");
 }

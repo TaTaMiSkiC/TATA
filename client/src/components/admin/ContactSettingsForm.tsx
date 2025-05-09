@@ -1,44 +1,55 @@
-import React, { useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { queryClient, apiRequest } from "@/lib/queryClient";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
-// Schema za validaciju
-const ContactSchema = z.object({
-  address: z.string().min(3, "Adresa je obavezna"),
-  city: z.string().min(2, "Grad je obavezan"),
-  postalCode: z.string().min(2, "Poštanski broj je obavezan"),
-  phone: z.string().min(5, "Telefonski broj je obavezan"),
-  email: z.string().email("Unesite ispravnu email adresu"),
-  workingHours: z.string().min(2, "Radno vrijeme je obavezno"),
+// Shema za validaciju kontakt podataka
+const contactSettingsSchema = z.object({
+  address: z.string().min(3, "Adresa mora imati barem 3 znaka"),
+  city: z.string().min(2, "Grad mora imati barem 2 znaka"),
+  postalCode: z.string().min(2, "Poštanski broj mora imati barem 2 znaka"),
+  phone: z.string().min(5, "Telefonski broj mora imati barem 5 znakova"),
+  email: z.string().email("Unesite valjanu email adresu"),
+  workingHours: z.string().min(3, "Radno vrijeme mora imati barem 3 znaka"),
 });
 
-type ContactFormValues = z.infer<typeof ContactSchema>;
+type ContactSettingsFormValues = z.infer<typeof contactSettingsSchema>;
 
 export default function ContactSettingsForm() {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  // Dohvati postojeće postavke
-  const { data: contactSettings, isLoading: isLoadingSettings } = useQuery({
+  // Dohvaćanje trenutnih postavki
+  const { data: contactSettings, isLoading } = useQuery({
     queryKey: ["/api/settings/contact"],
     queryFn: async () => {
-      const res = await apiRequest("GET", "/api/settings/contact");
+      const res = await fetch("/api/settings/contact");
+      if (!res.ok) {
+        throw new Error("Neuspješno dohvaćanje kontakt podataka");
+      }
       return await res.json();
     },
   });
 
   // Inicijalizacija forme
-  const form = useForm<ContactFormValues>({
-    resolver: zodResolver(ContactSchema),
+  const form = useForm<ContactSettingsFormValues>({
+    resolver: zodResolver(contactSettingsSchema),
     defaultValues: {
       address: "",
       city: "",
@@ -47,63 +58,62 @@ export default function ContactSettingsForm() {
       email: "",
       workingHours: "",
     },
+    values: contactSettings,
   });
 
-  // Kada se učitaju podaci, postavi ih u formu
-  useEffect(() => {
-    if (contactSettings) {
-      form.reset({
-        address: contactSettings.address || "",
-        city: contactSettings.city || "",
-        postalCode: contactSettings.postalCode || "",
-        phone: contactSettings.phone || "",
-        email: contactSettings.email || "",
-        workingHours: contactSettings.workingHours || "",
-      });
-    }
-  }, [contactSettings, form]);
-
-  // Mutacija za spremanje postavki
+  // Mutacija za ažuriranje postavki
   const updateContactMutation = useMutation({
-    mutationFn: async (data: ContactFormValues) => {
+    mutationFn: async (data: ContactSettingsFormValues) => {
       const res = await apiRequest("POST", "/api/settings/contact", data);
+      if (!res.ok) {
+        throw new Error("Neuspješno ažuriranje kontakt podataka");
+      }
       return await res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/contact"] });
       toast({
-        title: "Postavke spremljene",
+        title: "Uspješno ažurirano",
         description: "Kontakt podaci su uspješno ažurirani.",
       });
+      // Osvježavanje podataka
+      queryClient.invalidateQueries({ queryKey: ["/api/settings/contact"] });
     },
     onError: (error: Error) => {
       toast({
         title: "Greška",
-        description: `Došlo je do greške: ${error.message}`,
+        description: error.message,
         variant: "destructive",
       });
     },
   });
 
-  // Submit handler
-  const onSubmit = (data: ContactFormValues) => {
+  // Slanje forme
+  function onSubmit(data: ContactSettingsFormValues) {
     updateContactMutation.mutate(data);
-  };
+  }
 
-  if (isLoadingSettings) {
+  if (isLoading) {
     return (
-      <div className="flex justify-center p-6">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Kontakt postavke</CardTitle>
+          <CardDescription>
+            Učitavanje kontakt podataka...
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex justify-center py-6">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </CardContent>
+      </Card>
     );
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Kontakt podaci</CardTitle>
+        <CardTitle>Kontakt postavke</CardTitle>
         <CardDescription>
-          Uredite kontakt podatke koji se prikazuju na web stranici
+          Upravljajte kontakt podacima koji se prikazuju na stranici
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -117,7 +127,7 @@ export default function ContactSettingsForm() {
                   <FormItem>
                     <FormLabel>Adresa</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ulica i broj" {...field} />
+                      <Input placeholder="Unesite adresu" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -132,7 +142,7 @@ export default function ContactSettingsForm() {
                     <FormItem>
                       <FormLabel>Grad</FormLabel>
                       <FormControl>
-                        <Input placeholder="Grad" {...field} />
+                        <Input placeholder="Unesite grad" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -146,26 +156,22 @@ export default function ContactSettingsForm() {
                     <FormItem>
                       <FormLabel>Poštanski broj</FormLabel>
                       <FormControl>
-                        <Input placeholder="Poštanski broj" {...field} />
+                        <Input placeholder="Unesite poštanski broj" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-            </div>
-            
-            <Separator />
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
               <FormField
                 control={form.control}
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Telefonski broj</FormLabel>
+                    <FormLabel>Telefon</FormLabel>
                     <FormControl>
-                      <Input placeholder="+385 1 234 5678" {...field} />
+                      <Input placeholder="Unesite telefon" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -177,9 +183,23 @@ export default function ContactSettingsForm() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email adresa</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="info@kerzenwelt.hr" {...field} />
+                      <Input placeholder="Unesite email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="workingHours"
+                render={({ field }) => (
+                  <FormItem className="col-span-full">
+                    <FormLabel>Radno vrijeme</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Npr. Pon - Pet: 9:00 - 17:00" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -187,29 +207,15 @@ export default function ContactSettingsForm() {
               />
             </div>
             
-            <FormField
-              control={form.control}
-              name="workingHours"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Radno vrijeme</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Pon - Pet: 9:00 - 17:00" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
             <Button 
               type="submit" 
-              className="w-full md:w-auto"
               disabled={updateContactMutation.isPending}
+              className="w-full md:w-auto"
             >
               {updateContactMutation.isPending && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Spremi postavke
+              Spremi promjene
             </Button>
           </form>
         </Form>
