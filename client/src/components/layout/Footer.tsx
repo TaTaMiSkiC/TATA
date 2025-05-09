@@ -43,41 +43,6 @@ export default function Footer() {
                 <Instagram size={20} />
               </a>
             </div>
-            
-            <div className="flex space-x-4">
-              <a 
-                href="https://facebook.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition"
-              >
-                <Facebook size={18} />
-              </a>
-              <a 
-                href="https://instagram.com/kerzenwelt_by_dani" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition"
-              >
-                <Instagram size={18} />
-              </a>
-              <a 
-                href="https://pinterest.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition"
-              >
-                <Linkedin size={18} />
-              </a>
-              <a 
-                href="https://tiktok.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition"
-              >
-                <MessageCircle size={18} />
-              </a>
-            </div>
           </div>
           
           {/* Column 2: Quick Links */}
