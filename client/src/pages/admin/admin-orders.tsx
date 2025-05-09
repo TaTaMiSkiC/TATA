@@ -436,7 +436,7 @@ export default function AdminOrders() {
                         <TableBody>
                           {orderItems.map((item) => (
                             <TableRow key={item.id}>
-                              <TableCell>{item.product.name}</TableCell>
+                              <TableCell>{item.product?.name || `Proizvod #${item.productId}`}</TableCell>
                               <TableCell>{item.quantity}</TableCell>
                               <TableCell>{parseFloat(item.price).toFixed(2)} €</TableCell>
                               <TableCell>
