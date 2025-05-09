@@ -51,6 +51,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 const categorySchema = z.object({
   name: z.string().min(2, "Naziv kategorije mora imati barem 2 znaka"),
   description: z.string().min(10, "Opis mora imati barem 10 znakova"),
+  imageUrl: z.string().optional(),
 });
 
 type CategoryFormValues = z.infer<typeof categorySchema>;
@@ -72,6 +73,7 @@ export default function AdminCategories() {
     defaultValues: {
       name: "",
       description: "",
+      imageUrl: "",
     },
   });
   
@@ -152,6 +154,7 @@ export default function AdminCategories() {
     form.reset({
       name: "",
       description: "",
+      imageUrl: "",
     });
     setCurrentCategory(null);
     setIsFormOpen(true);
@@ -162,6 +165,7 @@ export default function AdminCategories() {
     form.reset({
       name: category.name,
       description: category.description || "",
+      imageUrl: category.imageUrl || "",
     });
     setCurrentCategory(category);
     setIsFormOpen(true);
@@ -238,7 +242,8 @@ export default function AdminCategories() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[100px]">ID</TableHead>
+                      <TableHead className="w-[80px]">ID</TableHead>
+                      <TableHead className="w-[80px]">Slika</TableHead>
                       <TableHead>Naziv</TableHead>
                       <TableHead className="hidden md:table-cell">Opis</TableHead>
                       <TableHead className="w-[150px] text-right">Akcije</TableHead>
@@ -331,6 +336,38 @@ export default function AdminCategories() {
                       Opišite kategoriju kako bi kupci imali više informacija.
                     </FormDescription>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>URL slike kategorije</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Unesite URL slike kategorije" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Dodajte URL slike koja najbolje predstavlja ovu kategoriju.
+                    </FormDescription>
+                    <FormMessage />
+                    {field.value && (
+                      <div className="mt-2">
+                        <p className="text-sm mb-2">Pregled slike:</p>
+                        <div className="rounded-md overflow-hidden w-full max-w-[200px] h-[120px] bg-secondary">
+                          <img
+                            src={field.value}
+                            alt="Pregled slike kategorije"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = "https://via.placeholder.com/200x120?text=Slika+nije+dostupna";
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </FormItem>
                 )}
               />

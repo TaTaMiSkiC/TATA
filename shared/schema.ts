@@ -34,10 +34,9 @@ export const products = pgTable("products", {
   imageUrl: text("image_url"),
   categoryId: integer("category_id"),
   stock: integer("stock").default(0).notNull(),
-  scent: text("scent"),
-  color: text("color"),
   burnTime: text("burn_time"),
   featured: boolean("featured").default(false).notNull(),
+  hasColorOptions: boolean("has_color_options").default(true).notNull(),  // Treba li proizvod imati opcije boja
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -55,6 +54,30 @@ export const categories = pgTable("categories", {
 });
 
 export const insertCategorySchema = createInsertSchema(categories).omit({
+  id: true,
+});
+
+// Scents table (mirisi)
+export const scents = pgTable("scents", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  active: boolean("active").default(true).notNull(),
+});
+
+export const insertScentSchema = createInsertSchema(scents).omit({
+  id: true,
+});
+
+// Colors table (boje)
+export const colors = pgTable("colors", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  hexValue: text("hex_value").notNull(),
+  active: boolean("active").default(true).notNull(),
+});
+
+export const insertColorSchema = createInsertSchema(colors).omit({
   id: true,
 });
 
@@ -97,11 +120,66 @@ export const cartItems = pgTable("cart_items", {
   userId: integer("user_id").notNull(),
   productId: integer("product_id").notNull(),
   quantity: integer("quantity").notNull(),
+  scentId: integer("scent_id"),
+  colorId: integer("color_id"),
 });
 
 export const insertCartItemSchema = createInsertSchema(cartItems).omit({
   id: true,
 });
+
+// Product-Scent relations table
+export const productScents = pgTable("product_scents", {
+  id: serial("id").primaryKey(),
+  productId: integer("product_id").notNull(),
+  scentId: integer("scent_id").notNull(),
+});
+
+export const insertProductScentSchema = createInsertSchema(productScents).omit({
+  id: true,
+});
+
+// Product-Color relations table
+export const productColors = pgTable("product_colors", {
+  id: serial("id").primaryKey(),
+  productId: integer("product_id").notNull(),
+  colorId: integer("color_id").notNull(),
+});
+
+export const insertProductColorSchema = createInsertSchema(productColors).omit({
+  id: true,
+});
+
+// Relations for product scents and colors
+export const productScentsRelations = relations(productScents, ({ one }) => ({
+  product: one(products, {
+    fields: [productScents.productId],
+    references: [products.id],
+  }),
+  scent: one(scents, {
+    fields: [productScents.scentId],
+    references: [scents.id],
+  }),
+}));
+
+export const productColorsRelations = relations(productColors, ({ one }) => ({
+  product: one(products, {
+    fields: [productColors.productId],
+    references: [products.id],
+  }),
+  color: one(colors, {
+    fields: [productColors.colorId],
+    references: [colors.id],
+  }),
+}));
+
+export const scentsRelations = relations(scents, ({ many }) => ({
+  productScents: many(productScents),
+}));
+
+export const colorsRelations = relations(colors, ({ many }) => ({
+  productColors: many(productColors),
+}));
 
 // Reviews table
 export const reviews = pgTable("reviews", {
@@ -128,6 +206,12 @@ export type InsertProduct = z.infer<typeof insertProductSchema>;
 export type Category = typeof categories.$inferSelect;
 export type InsertCategory = z.infer<typeof insertCategorySchema>;
 
+export type Scent = typeof scents.$inferSelect;
+export type InsertScent = z.infer<typeof insertScentSchema>;
+
+export type Color = typeof colors.$inferSelect;
+export type InsertColor = z.infer<typeof insertColorSchema>;
+
 export type Order = typeof orders.$inferSelect;
 export type InsertOrder = z.infer<typeof insertOrderSchema>;
 
@@ -140,6 +224,12 @@ export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
 export type Review = typeof reviews.$inferSelect;
 export type InsertReview = z.infer<typeof insertReviewSchema>;
 
+export type ProductScent = typeof productScents.$inferSelect;
+export type InsertProductScent = z.infer<typeof insertProductScentSchema>;
+
+export type ProductColor = typeof productColors.$inferSelect;
+export type InsertProductColor = z.infer<typeof insertProductColorSchema>;
+
 // Define relationships between tables
 export const productsRelations = relations(products, ({ one, many }) => ({
   category: one(categories, {
@@ -149,6 +239,8 @@ export const productsRelations = relations(products, ({ one, many }) => ({
   orderItems: many(orderItems),
   cartItems: many(cartItems),
   reviews: many(reviews),
+  productScents: many(productScents),
+  productColors: many(productColors),
 }));
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
@@ -178,6 +270,14 @@ export const cartItemsRelations = relations(cartItems, ({ one }) => ({
   user: one(users, {
     fields: [cartItems.userId],
     references: [users.id],
+  }),
+  scent: one(scents, {
+    fields: [cartItems.scentId],
+    references: [scents.id],
+  }),
+  color: one(colors, {
+    fields: [cartItems.colorId],
+    references: [colors.id],
   }),
 }));
 
@@ -213,4 +313,6 @@ export type InsertSetting = z.infer<typeof insertSettingSchema>;
 
 export type CartItemWithProduct = CartItem & {
   product: Product;
+  scent?: Scent;
+  color?: Color;
 };
