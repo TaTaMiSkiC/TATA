@@ -37,16 +37,23 @@ export default function StoreSettingsForm() {
   const { data: storeSettings, isLoading } = useQuery({
     queryKey: ["/api/settings/general"],
     queryFn: async () => {
-      console.log("Dohvaćam postavke trgovine...");
-      const res = await fetch("/api/settings/general");
-      if (!res.ok) {
-        console.error("Greška kod dohvaćanja postavki", await res.text());
-        throw new Error("Neuspješno dohvaćanje postavki trgovine");
+      try {
+        console.log("Dohvaćam postavke trgovine...");
+        const res = await fetch("/api/settings/general");
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error("Greška kod dohvaćanja postavki", errorText);
+          throw new Error("Neuspješno dohvaćanje postavki trgovine");
+        }
+        const data = await res.json();
+        console.log("Dohvaćene postavke trgovine:", data);
+        return data;
+      } catch (error) {
+        console.error("Greška kod dohvaćanja postavki:", error);
+        throw error;
       }
-      const data = await res.json();
-      console.log("Dohvaćene postavke trgovine:", data);
-      return data;
     },
+    retry: 1,
   });
 
   // Inicijalizacija forme
@@ -64,15 +71,39 @@ export default function StoreSettingsForm() {
   // Mutacija za ažuriranje postavki
   const updateSettingsMutation = useMutation({
     mutationFn: async (data: StoreSettingsFormValues) => {
-      console.log("Šaljem podatke:", data);
-      const res = await apiRequest("POST", "/api/settings/general", data);
-      if (!res.ok) {
-        console.error("Greška pri slanju:", await res.text());
-        throw new Error("Neuspješno ažuriranje postavki trgovine");
+      try {
+        console.log("Šaljem podatke:", data);
+        // Izravno koristimo fetch umjesto apiRequest za više detalja o grešci
+        const res = await fetch("/api/settings/general", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        
+        const responseText = await res.text();
+        console.log("Odgovor od servera (tekst):", responseText);
+        
+        if (!res.ok) {
+          console.error("Greška pri slanju:", responseText);
+          throw new Error("Neuspješno ažuriranje postavki trgovine");
+        }
+        
+        let result;
+        try {
+          result = JSON.parse(responseText);
+        } catch (e) {
+          console.log("Nije moguće parsirati odgovor kao JSON");
+          result = { success: true };
+        }
+        
+        console.log("Primljen odgovor:", result);
+        return result;
+      } catch (error) {
+        console.error("Uhvaćena greška:", error);
+        throw error;
       }
-      const result = await res.json();
-      console.log("Primljen odgovor:", result);
-      return result;
     },
     onSuccess: () => {
       toast({
