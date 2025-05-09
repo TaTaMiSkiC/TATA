@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { InsertProduct, Product, Category } from "@shared/schema";
+import { InsertProduct, Product, Category, Scent, Color } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import {
@@ -66,6 +66,16 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
   // Fetch categories for the select dropdown
   const { data: categories, isLoading: categoriesLoading } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
+  });
+  
+  // Fetch scents (mirisi)
+  const { data: scents, isLoading: scentsLoading } = useQuery<Scent[]>({
+    queryKey: ["/api/scents"],
+  });
+  
+  // Fetch colors (boje)
+  const { data: colors, isLoading: colorsLoading } = useQuery<Color[]>({
+    queryKey: ["/api/colors"],
   });
   
   // Initialize form with product data or defaults
@@ -300,13 +310,33 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Miris</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Npr. Vanilija, Lavanda" 
-                        {...field} 
-                        value={field.value || ""}
-                      />
-                    </FormControl>
+                    <Select
+                      onValueChange={(value) => field.onChange(value)}
+                      value={field.value || ""}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Odaberite miris" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {scentsLoading ? (
+                          <div className="py-2 text-center">Učitavanje...</div>
+                        ) : (
+                          <>
+                            <SelectItem value="">Bez mirisa</SelectItem>
+                            {scents?.map((scent) => (
+                              <SelectItem 
+                                key={scent.id} 
+                                value={scent.name}
+                              >
+                                {scent.name}
+                              </SelectItem>
+                            ))}
+                          </>
+                        )}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -319,13 +349,39 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Boja</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Npr. Bijela, Krem" 
-                        {...field} 
-                        value={field.value || ""}
-                      />
-                    </FormControl>
+                    <Select
+                      onValueChange={(value) => field.onChange(value)}
+                      value={field.value || ""}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Odaberite boju" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {colorsLoading ? (
+                          <div className="py-2 text-center">Učitavanje...</div>
+                        ) : (
+                          <>
+                            <SelectItem value="">Bez boje</SelectItem>
+                            {colors?.map((color) => (
+                              <SelectItem 
+                                key={color.id} 
+                                value={color.name}
+                              >
+                                <div className="flex items-center">
+                                  <span 
+                                    className="w-4 h-4 rounded-full mr-2" 
+                                    style={{ backgroundColor: color.hexValue }}
+                                  ></span>
+                                  {color.name}
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </>
+                        )}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
