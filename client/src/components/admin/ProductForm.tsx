@@ -78,6 +78,10 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
     queryKey: ["/api/colors"],
   });
   
+  // State za čuvanje odabranih mirisa i boja (za povezivanje proizvoda s više mirisa/boja)
+  const [selectedScents, setSelectedScents] = useState<number[]>([]);
+  const [selectedColors, setSelectedColors] = useState<number[]>([]);
+  
   // Initialize form with product data or defaults
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -88,12 +92,39 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
       imageUrl: product?.imageUrl || "",
       categoryId: product?.categoryId || 0,
       stock: product?.stock || 0,
-      scent: product?.scent || "_none_",
-      color: product?.color || "_none_",
+      scent: product?.scent || "_none_", // Ovo će postati samo default/primarni miris
+      color: product?.color || "_none_", // Ovo će postati samo default/primarna boja
       burnTime: product?.burnTime || "",
       featured: product?.featured || false,
     },
   });
+  
+  // Učitaj postojeće mirise i boje proizvoda ako ažuriramo postojeći proizvod
+  useEffect(() => {
+    const loadProductScentsAndColors = async () => {
+      if (product?.id) {
+        try {
+          // Dohvati mirise proizvoda
+          const scentsResponse = await fetch(`/api/products/${product.id}/scents`);
+          if (scentsResponse.ok) {
+            const scentData = await scentsResponse.json();
+            setSelectedScents(scentData.map((s: Scent) => s.id));
+          }
+          
+          // Dohvati boje proizvoda
+          const colorsResponse = await fetch(`/api/products/${product.id}/colors`);
+          if (colorsResponse.ok) {
+            const colorData = await colorsResponse.json();
+            setSelectedColors(colorData.map((c: Color) => c.id));
+          }
+        } catch (error) {
+          console.error("Greška pri dohvaćanju mirisa i boja proizvoda:", error);
+        }
+      }
+    };
+    
+    loadProductScentsAndColors();
+  }, [product?.id]);
   
   // Update form when product prop changes
   useEffect(() => {
@@ -126,21 +157,50 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
         color: data.color === "_none_" ? "" : data.color,
       };
       
+      let productId: number;
+      
       if (product) {
         // Update existing product
-        await apiRequest("PUT", `/api/products/${product.id}`, productData);
+        const response = await apiRequest("PUT", `/api/products/${product.id}`, productData);
+        productId = product.id;
         toast({
           title: "Proizvod ažuriran",
           description: `${data.name} je uspješno ažuriran.`,
         });
       } else {
         // Create new product
-        await apiRequest("POST", "/api/products", productData);
+        const response = await apiRequest("POST", "/api/products", productData);
+        const responseData = await response.json();
+        productId = responseData.id;
         toast({
           title: "Proizvod kreiran",
           description: `${data.name} je uspješno kreiran.`,
         });
         form.reset(); // Clear form after successful creation
+      }
+      
+      // Nakon što smo spremili proizvod, ažuriramo njegove boje i mirise
+      if (productId) {
+        // Prvo obrišemo sve postojeće veze proizvoda s bojama i mirisima
+        if (product) {
+          await apiRequest("DELETE", `/api/products/${productId}/scents`);
+          await apiRequest("DELETE", `/api/products/${productId}/colors`);
+        }
+        
+        // Dodajemo odabrane mirise
+        for (const scentId of selectedScents) {
+          await apiRequest("POST", `/api/products/${productId}/scents`, { scentId });
+        }
+        
+        // Dodajemo odabrane boje
+        for (const colorId of selectedColors) {
+          await apiRequest("POST", `/api/products/${productId}/colors`, { colorId });
+        }
+        
+        toast({
+          title: "Opcije proizvoda ažurirane",
+          description: `Mirise i boje za ${data.name} su uspješno ažurirane.`,
+        });
       }
       
       // Invalidate products query to refresh data
@@ -408,6 +468,84 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                   </FormItem>
                 )}
               />
+              
+              {/* Dostupni mirisi */}
+              <div className="col-span-full">
+                <FormLabel>Dostupni mirisi</FormLabel>
+                <div className="mt-2 border rounded-md p-4">
+                  <div className="text-sm text-gray-500 mb-3">
+                    Odaberite sve mirise koji su dostupni za ovaj proizvod:
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {scentsLoading ? (
+                      <div>Učitavanje mirisa...</div>
+                    ) : (
+                      scents?.map((scent) => (
+                        <div key={scent.id} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`scent-${scent.id}`}
+                            checked={selectedScents.includes(scent.id)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedScents([...selectedScents, scent.id]);
+                              } else {
+                                setSelectedScents(selectedScents.filter(id => id !== scent.id));
+                              }
+                            }}
+                          />
+                          <label
+                            htmlFor={`scent-${scent.id}`}
+                            className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            {scent.name}
+                          </label>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Dostupne boje */}
+              <div className="col-span-full">
+                <FormLabel>Dostupne boje</FormLabel>
+                <div className="mt-2 border rounded-md p-4">
+                  <div className="text-sm text-gray-500 mb-3">
+                    Odaberite sve boje koje su dostupne za ovaj proizvod:
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {colorsLoading ? (
+                      <div>Učitavanje boja...</div>
+                    ) : (
+                      colors?.map((color) => (
+                        <div key={color.id} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`color-${color.id}`}
+                            checked={selectedColors.includes(color.id)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedColors([...selectedColors, color.id]);
+                              } else {
+                                setSelectedColors(selectedColors.filter(id => id !== color.id));
+                              }
+                            }}
+                          />
+                          <label
+                            htmlFor={`color-${color.id}`}
+                            className="flex items-center text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            <span 
+                              className="w-4 h-4 rounded-full mr-2" 
+                              style={{ backgroundColor: color.hexValue }}
+                            ></span>
+                            {color.name}
+                          </label>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
               
               {/* Featured */}
               <FormField

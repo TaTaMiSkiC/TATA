@@ -643,6 +643,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to remove scent from product" });
     }
   });
+  
+  // Ruta za brisanje svih mirisa s proizvoda
+  app.delete("/api/products/:id/scents", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const productId = parseInt(req.params.id);
+      
+      // Dohvati sve mirise proizvoda
+      const scents = await storage.getProductScents(productId);
+      
+      // Obriši svaki miris
+      for (const scent of scents) {
+        await storage.removeScentFromProduct(productId, scent.id);
+      }
+      
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove all scents from product" });
+    }
+  });
 
   app.get("/api/products/:id/colors", async (req, res) => {
     try {
