@@ -6,8 +6,9 @@ import {
   type OrderItem, type InsertOrderItem,
   type CartItem, type InsertCartItem,
   type Review, type InsertReview,
+  type Setting, type InsertSetting,
   type CartItemWithProduct,
-  users, products, categories, orders, orderItems, cartItems, reviews
+  users, products, categories, orders, orderItems, cartItems, reviews, settings
 } from "@shared/schema";
 import { db, pool } from "./db";
 import { eq, and, desc, sql } from "drizzle-orm";
@@ -250,5 +251,51 @@ export class DatabaseStorage implements IStorage {
   async createReview(reviewData: InsertReview): Promise<Review> {
     const [review] = await db.insert(reviews).values(reviewData).returning();
     return review;
+  }
+
+  // Settings methods
+  async getSetting(key: string): Promise<Setting | undefined> {
+    const [setting] = await db.select().from(settings).where(eq(settings.key, key));
+    return setting;
+  }
+
+  async getAllSettings(): Promise<Setting[]> {
+    return await db.select().from(settings);
+  }
+
+  async createSetting(settingData: InsertSetting): Promise<Setting> {
+    const [setting] = await db.insert(settings).values(settingData).returning();
+    return setting;
+  }
+
+  async updateSetting(key: string, value: string): Promise<Setting | undefined> {
+    // First check if the setting exists
+    const existingSetting = await this.getSetting(key);
+    
+    if (existingSetting) {
+      // Update the existing setting
+      const [updatedSetting] = await db
+        .update(settings)
+        .set({ 
+          value,
+          updatedAt: new Date()
+        })
+        .where(eq(settings.key, key))
+        .returning();
+      
+      return updatedSetting;
+    } else {
+      // Create a new setting if it doesn't exist
+      const newSetting = await this.createSetting({
+        key,
+        value
+      });
+      
+      return newSetting;
+    }
+  }
+
+  async deleteSetting(key: string): Promise<void> {
+    await db.delete(settings).where(eq(settings.key, key));
   }
 }
