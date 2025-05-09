@@ -32,17 +32,15 @@ export default function CartPage() {
   const { user } = useAuth();
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [shippingSettings, setShippingSettings] = useState<{
+    freeShippingThreshold: string;
+    standardShippingRate: string;
+  } | null>(null);
   
   // Total after discount (shipping will be calculated dynamically by ShippingCostCalculator)
   const totalAfterDiscount = cartTotal - discount;
   
-  // Koristi useSettings hook umjesto lokalnog storagea
-  const { getSetting } = useSettings();
-  const { data: freeShippingThresholdSetting, isLoading: isLoadingFreeThreshold } = getSetting("freeShippingThreshold");
-  const { data: standardShippingRateSetting, isLoading: isLoadingStandardRate } = getSetting("standardShippingRate");
-  
-  // Direktni pristup API-ju za najsvježije podatke
-  // Dohvati vrijednosti direktno s API-ja (bez keširanja)
+  // Direktni pristup API-ju za najsvježije podatke bez keširanja
   useEffect(() => {
     const fetchSettings = async () => {
       try {
@@ -52,7 +50,13 @@ export default function CartPage() {
         const standardRateResponse = await fetch("/api/settings/standardShippingRate");
         const standardRateData = await standardRateResponse.json();
         
-        console.log("Direktno dohvaćene postavke:", {
+        console.log("Direktno dohvaćene postavke u cart-page:", {
+          freeShippingThreshold: freeThresholdData.value,
+          standardShippingRate: standardRateData.value
+        });
+        
+        // Ažuriraj state i localStorage
+        setShippingSettings({
           freeShippingThreshold: freeThresholdData.value,
           standardShippingRate: standardRateData.value
         });
@@ -70,8 +74,20 @@ export default function CartPage() {
       }
     };
     
+    // Odmah dohvati podatke pri učitavanju komponente
     fetchSettings();
+    
+    // Osvježavaj podatke svakih 10 sekundi dok je košarica otvorena
+    const intervalId = setInterval(fetchSettings, 10000);
+    
+    // Očisti interval kad se komponenta unmount-a
+    return () => clearInterval(intervalId);
   }, []);
+  
+  // Koristi useSettings hook kao fallback
+  const { getSetting } = useSettings();
+  const { data: freeShippingThresholdSetting, isLoading: isLoadingFreeThreshold } = getSetting("freeShippingThreshold");
+  const { data: standardShippingRateSetting, isLoading: isLoadingStandardRate } = getSetting("standardShippingRate");
   
   // Izračunaj troškove dostave za prikaz ukupnog iznosa
   // Prvo koristi localStorage vrijednosti koje smo upravo ažurirali, kao fallback koristi API podatke
