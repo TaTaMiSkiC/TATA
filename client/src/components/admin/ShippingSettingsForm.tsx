@@ -2,9 +2,8 @@ import React, { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useSettings } from "@/hooks/use-settings-api";
 
 import {
   Form,
@@ -30,29 +29,11 @@ type ShippingFormValues = z.infer<typeof shippingFormSchema>;
 export default function ShippingSettingsForm() {
   const { toast } = useToast();
   
-  // Dohvaćamo trenutne postavke iz API-ja
-  const { data: settings, isLoading: isLoadingSettings, refetch } = useQuery({
-    queryKey: ["/api/settings"],
-    // Uvijek dohvati svježe podatke, ne koristimo cache
-    staleTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    select: (data) => {
-      // Pretvaranje liste postavki u objekt
-      const settingsObj: Record<string, string> = {};
-      data.forEach((setting: { key: string; value: string }) => {
-        settingsObj[setting.key] = setting.value;
-      });
-      
-      console.log("Učitane postavke iz API-ja:", {
-        freeShippingThreshold: settingsObj.freeShippingThreshold || "nije učitano",
-        standardShippingRate: settingsObj.standardShippingRate || "nije učitano",
-        expressShippingRate: settingsObj.expressShippingRate || "nije učitano"
-      });
-      
-      return settingsObj;
-    }
-  });
+  // Koristimo useSettings hook umjesto direktnih upita
+  const { 
+    allSettings, 
+    updateSetting 
+  } = useSettings();
 
   // Postavke forme
   const form = useForm<ShippingFormValues>({
@@ -64,90 +45,70 @@ export default function ShippingSettingsForm() {
     },
   });
   
-  // Kad se učitaju postavke, ažuriramo formu
+  // Izvlačimo postavke iz allSettings upita
   useEffect(() => {
-    if (settings) {
-      console.log("Učitane lokalne postavke:", {
-        freeShippingThreshold: settings.freeShippingThreshold || "0",
-        standardShippingRate: settings.standardShippingRate || "0",
-        expressShippingRate: settings.expressShippingRate || "0"
+    if (allSettings.data && allSettings.data.length > 0) {
+      // Transformiramo listu u objekt
+      const settingsMap = allSettings.data.reduce((acc, setting) => {
+        acc[setting.key] = setting.value;
+        return acc;
+      }, {} as Record<string, string>);
+      
+      // Izvlačimo specifične postavke za dostavu
+      const freeThreshold = settingsMap.freeShippingThreshold || "0";
+      const standardRate = settingsMap.standardShippingRate || "0";
+      const expressRate = settingsMap.expressShippingRate || "0";
+      
+      console.log("Učitane postavke iz API-ja:", {
+        freeShippingThreshold: freeThreshold,
+        standardShippingRate: standardRate,
+        expressShippingRate: expressRate
       });
       
+      // Ažuriramo formu s dohvaćenim vrijednostima
       form.reset({
-        freeShippingThreshold: settings.freeShippingThreshold || "0",
-        standardShippingRate: settings.standardShippingRate || "0",
-        expressShippingRate: settings.expressShippingRate || "0"
+        freeShippingThreshold: freeThreshold,
+        standardShippingRate: standardRate,
+        expressShippingRate: expressRate
       });
     }
-  }, [settings, form]);
+  }, [allSettings.data, form]);
 
-  // Akcija za spremanje svih postavki odjednom
-  const saveAllSettingsMutation = useMutation({
-    mutationFn: async (data: ShippingFormValues) => {
-      const results = [];
+  // Spremanje svih postavki
+  const onSubmit = async (data: ShippingFormValues) => {
+    try {
+      // Postavka 1: Prag za besplatnu dostavu
+      await updateSetting.mutateAsync({
+        key: "freeShippingThreshold",
+        value: data.freeShippingThreshold
+      });
       
-      // Spremamo svaku postavku u nizu
-      for (const [key, value] of Object.entries(data)) {
-        console.log(`Spremanje postavke: ${key} = ${value}`);
-        // Prvo provjeravamo postoji li postavka
-        const res = await apiRequest("GET", `/api/settings/${key}`);
-        
-        if (res.ok) {
-          // Ako postoji, ažuriramo - koristimo PUT jer server koristi tu metodu
-          results.push(await apiRequest("PUT", `/api/settings/${key}`, { value }));
-        } else {
-          // Ako ne postoji, kreiramo novu
-          results.push(await apiRequest("POST", "/api/settings", { key, value }));
-        }
-      }
+      // Postavka 2: Cijena standardne dostave
+      await updateSetting.mutateAsync({
+        key: "standardShippingRate",
+        value: data.standardShippingRate
+      });
       
-      return results;
-    },
-    onSuccess: () => {
-      // Osvježavamo podatke nakon uspješnog spremanja - ovo pokreće novi zahtjev
-      queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
+      // Postavka 3: Cijena ekspresne dostave
+      await updateSetting.mutateAsync({
+        key: "expressShippingRate",
+        value: data.expressShippingRate
+      });
       
-      // Eksplicitno ručno osvježavanje
-      setTimeout(() => {
-        refetch();
-      }, 500);  // Mala odgoda da server ima vremena osvježiti podatke
+      // Osvježavamo podatke nakon spremanja
+      allSettings.refetch();
       
       toast({
         title: "Uspjeh",
         description: "Postavke dostave su uspješno spremljene.",
       });
-    },
-    onError: (error) => {
+    } catch (error) {
       console.error("Greška pri spremanju postavki:", error);
       toast({
         title: "Greška",
         description: "Došlo je do greške prilikom spremanja postavki.",
         variant: "destructive",
       });
-    },
-  });
-
-  // Spremanje svih postavki
-  const onSubmit = async (data: ShippingFormValues) => {
-    try {
-      await saveAllSettingsMutation.mutateAsync(data);
-      
-      // Pričekaj malo i zatim ručno osvježi formu vrijednostima iz baze
-      setTimeout(() => {
-        // Eksplicitno ručno osvježavanje s poslužitelja
-        refetch().then(refreshResult => {
-          if (refreshResult.data) {
-            console.log("Osvježeni podaci nakon spremanja:", refreshResult.data);
-            form.reset({
-              freeShippingThreshold: refreshResult.data.freeShippingThreshold || "0",
-              standardShippingRate: refreshResult.data.standardShippingRate || "0",
-              expressShippingRate: refreshResult.data.expressShippingRate || "0"
-            });
-          }
-        });
-      }, 1000); // Veća odgoda za sigurno osvježavanje podataka
-    } catch (error) {
-      console.error("Greška pri spremanju postavki:", error);
     }
   };
 
@@ -198,8 +159,8 @@ export default function ShippingSettingsForm() {
           />
         </div>
         
-        <Button type="submit" disabled={isLoadingSettings || saveAllSettingsMutation.isPending}>
-          {saveAllSettingsMutation.isPending ? (
+        <Button type="submit" disabled={allSettings.isLoading || updateSetting.isPending}>
+          {updateSetting.isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Spremanje...
