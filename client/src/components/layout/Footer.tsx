@@ -1,8 +1,26 @@
 import { Link } from "wouter";
-import { Facebook, Instagram, Linkedin, MessageCircle, MapPin, Phone, Mail, Clock } from "lucide-react";
+import { Facebook, Instagram, Linkedin, MessageCircle, MapPin, Phone, Mail, Clock, Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Footer() {
+  // Dohvaćanje kontakt podataka iz API-ja
+  const { data: contactData, isLoading } = useQuery({
+    queryKey: ["/api/settings/contact"],
+    queryFn: async () => {
+      const res = await fetch("/api/settings/contact");
+      if (!res.ok) {
+        throw new Error("Neuspješno dohvaćanje kontakt podataka");
+      }
+      return await res.json();
+    },
+  });
+
+  // Sastavljanje pune adrese ako su podaci dostupni
+  const fullAddress = contactData ? 
+    `${contactData.address}, ${contactData.postalCode} ${contactData.city}` : 
+    "Ulica grada Vukovara 224, 10000 Zagreb";
+
   return (
     <footer className="bg-text-dark text-white pt-16 pb-8">
       <div className="container mx-auto px-4">
@@ -136,24 +154,31 @@ export default function Footer() {
           {/* Column 4: Contact */}
           <div>
             <h3 className="heading text-xl font-semibold mb-4">Kontakt</h3>
-            <ul className="space-y-3">
-              <li className="flex items-start">
-                <MapPin size={18} className="mt-1 mr-3 text-secondary" />
-                <span className="text-gray-400">Ulica grada Vukovara 224, 10000 Zagreb</span>
-              </li>
-              <li className="flex items-start">
-                <Phone size={18} className="mt-1 mr-3 text-secondary" />
-                <span className="text-gray-400">+385 1 234 5678</span>
-              </li>
-              <li className="flex items-start">
-                <Mail size={18} className="mt-1 mr-3 text-secondary" />
-                <span className="text-gray-400">info@kerzenwelt.hr</span>
-              </li>
-              <li className="flex items-start">
-                <Clock size={18} className="mt-1 mr-3 text-secondary" />
-                <span className="text-gray-400">Pon - Pet: 9:00 - 17:00</span>
-              </li>
-            </ul>
+            
+            {isLoading ? (
+              <div className="flex justify-center py-4">
+                <Loader2 className="h-6 w-6 animate-spin text-secondary" />
+              </div>
+            ) : (
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <MapPin size={18} className="mt-1 mr-3 text-secondary" />
+                  <span className="text-gray-400">{fullAddress}</span>
+                </li>
+                <li className="flex items-start">
+                  <Phone size={18} className="mt-1 mr-3 text-secondary" />
+                  <span className="text-gray-400">{contactData?.phone || "+385 1 234 5678"}</span>
+                </li>
+                <li className="flex items-start">
+                  <Mail size={18} className="mt-1 mr-3 text-secondary" />
+                  <span className="text-gray-400">{contactData?.email || "info@kerzenwelt.hr"}</span>
+                </li>
+                <li className="flex items-start">
+                  <Clock size={18} className="mt-1 mr-3 text-secondary" />
+                  <span className="text-gray-400">{contactData?.workingHours || "Pon - Pet: 9:00 - 17:00"}</span>
+                </li>
+              </ul>
+            )}
           </div>
         </div>
         

@@ -887,6 +887,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch setting" });
     }
   });
+  
+  // Kontakt postavke
+  app.get("/api/settings/contact", async (req, res) => {
+    try {
+      // Dohvati sve postavke koje se tiču kontakta
+      const address = await storage.getSetting("contact_address") || { value: "" };
+      const city = await storage.getSetting("contact_city") || { value: "" };
+      const postalCode = await storage.getSetting("contact_postal_code") || { value: "" };
+      const phone = await storage.getSetting("contact_phone") || { value: "" };
+      const email = await storage.getSetting("contact_email") || { value: "" };
+      const workingHours = await storage.getSetting("contact_working_hours") || { value: "" };
+      
+      res.json({
+        address: address.value,
+        city: city.value,
+        postalCode: postalCode.value,
+        phone: phone.value,
+        email: email.value,
+        workingHours: workingHours.value,
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch contact settings" });
+    }
+  });
+  
+  app.post("/api/settings/contact", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const { address, city, postalCode, phone, email, workingHours } = req.body;
+      
+      // Ažuriraj ili kreiraj postavke za kontakt
+      await Promise.all([
+        storage.updateSetting("contact_address", address),
+        storage.updateSetting("contact_city", city),
+        storage.updateSetting("contact_postal_code", postalCode),
+        storage.updateSetting("contact_phone", phone),
+        storage.updateSetting("contact_email", email),
+        storage.updateSetting("contact_working_hours", workingHours),
+      ]);
+      
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update contact settings" });
+    }
+  });
 
   app.post("/api/settings", async (req, res) => {
     try {

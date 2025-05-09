@@ -2,13 +2,14 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import AdminLayout from "@/components/admin/AdminLayout";
 import ShippingSettingsForm from "@/components/admin/ShippingSettingsForm";
+import ContactSettingsForm from "@/components/admin/ContactSettingsForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings, Truck, CreditCard, Globe } from "lucide-react";
+import { Settings, Truck, CreditCard, Globe, MapPin } from "lucide-react";
 
 export default function SettingsPage() {
   return (
-    <AdminLayout>
+    <AdminLayout title="Postavke">
       <Helmet>
         <title>Postavke | Admin Panel</title>
       </Helmet>
@@ -26,6 +27,10 @@ export default function SettingsPage() {
           <TabsTrigger value="payment" className="flex items-center">
             <CreditCard className="mr-2 h-4 w-4" />
             Plaćanje
+          </TabsTrigger>
+          <TabsTrigger value="contact" className="flex items-center">
+            <MapPin className="mr-2 h-4 w-4" />
+            Kontakt
           </TabsTrigger>
           <TabsTrigger value="general" className="flex items-center">
             <Settings className="mr-2 h-4 w-4" />
@@ -55,6 +60,10 @@ export default function SettingsPage() {
               </p>
             </CardContent>
           </Card>
+        </TabsContent>
+        
+        <TabsContent value="contact" className="space-y-4">
+          <ContactSettingsForm />
         </TabsContent>
         
         <TabsContent value="general" className="space-y-4">
