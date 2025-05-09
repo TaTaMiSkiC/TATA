@@ -20,6 +20,8 @@ import AdminOrders from "@/pages/admin/admin-orders";
 import AdminUsers from "@/pages/admin/admin-users";
 import DeliverySettingsPage from "@/pages/admin/delivery-settings-page";
 import AdminSettings from "@/pages/admin/settings-page";
+import PageSettingsPage from "@/pages/admin/page-settings";
+import ContactSettingsPage from "@/pages/admin/contact-settings";
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "./hooks/use-auth";
 import { CartProvider } from "./hooks/use-cart";
@@ -46,6 +48,8 @@ function Router() {
       <ProtectedRoute path="/admin/users" component={AdminUsers} />
       <ProtectedRoute path="/admin/delivery-settings" component={DeliverySettingsPage} />
       <ProtectedRoute path="/admin/settings" component={AdminSettings} />
+      <ProtectedRoute path="/admin/page-settings" component={PageSettingsPage} />
+      <ProtectedRoute path="/admin/contact-settings" component={ContactSettingsPage} />
       <Route component={NotFound} />
     </Switch>
   );
