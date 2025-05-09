@@ -28,7 +28,14 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="left" className="w-[300px] sm:w-[350px] p-0">
         <SheetHeader className="p-6 text-left border-b">
-          <SheetTitle className="heading text-2xl font-bold text-primary">Kerzenwelt</SheetTitle>
+          <div className="flex items-center gap-3">
+            <img 
+              src="/images/logo.png" 
+              alt="Kerzenwelt Logo" 
+              className="h-10 w-auto" 
+            />
+            <SheetTitle className="heading text-xl font-bold text-primary">Kerzenwelt by Dani</SheetTitle>
+          </div>
         </SheetHeader>
         
         <div className="py-6 px-6">
