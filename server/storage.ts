@@ -14,8 +14,10 @@ import {
   type Color, type InsertColor,
   type ProductScent, type InsertProductScent,
   type ProductColor, type InsertProductColor,
+  type Collection, type InsertCollection,
+  type ProductCollection,
   users, products, categories, orders, orderItems, cartItems, reviews, settings, pages,
-  scents, colors, productScents, productColors
+  scents, colors, productScents, productColors, collections, productCollections
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
