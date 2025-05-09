@@ -19,9 +19,9 @@ import { Request, Response } from "express";
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET } = process.env;
 
-// Koristi prave PayPal kredencijale
-const paypalClientId = PAYPAL_CLIENT_ID;
-const paypalClientSecret = PAYPAL_CLIENT_SECRET;
+// Koristi prave PayPal kredencijale i osiguraj da nisu undefined
+const paypalClientId = PAYPAL_CLIENT_ID || '';
+const paypalClientSecret = PAYPAL_CLIENT_SECRET || '';
 
 let client: Client;
 try {
