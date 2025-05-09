@@ -97,6 +97,17 @@ export default function CheckoutForm() {
       return;
     }
     
+    // Ako je odabran PayPal kao način plaćanja, provjeri je li plaćanje izvršeno
+    if (data.paymentMethod === "paypal" && !paypalOrderComplete) {
+      toast({
+        title: "Plaćanje nije izvršeno",
+        description: "Morate završiti plaćanje putem PayPal-a prije potvrde narudžbe.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
@@ -590,7 +601,11 @@ export default function CheckoutForm() {
             type="submit" 
             className="w-full mt-6" 
             size="lg"
-            disabled={isSubmitting || !form.getValues("sameAsBilling")}
+            disabled={
+              isSubmitting || 
+              !form.getValues("sameAsBilling") || 
+              (watchPaymentMethod === 'paypal' && !paypalOrderComplete)
+            }
           >
             {isSubmitting ? (
               <>
