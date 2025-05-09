@@ -10,6 +10,7 @@ import ProductsPage from "@/pages/products-page";
 import ProductDetailsPage from "@/pages/product-details-page";
 import CartPage from "@/pages/cart-page";
 import CheckoutPage from "@/pages/checkout-page";
+import OrderSuccessPage from "@/pages/order-success-page";
 import AdminDashboard from "@/pages/admin/admin-dashboard";
 import AdminProducts from "@/pages/admin/admin-products";
 import AdminOrders from "@/pages/admin/admin-orders";
