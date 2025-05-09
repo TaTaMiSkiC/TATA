@@ -173,17 +173,23 @@ export default function AdminSettingsPage() {
     }
   };
 
-  // Učitavanje podataka iz API-ja u formu
+  // Učitavanje podataka iz API-ja u formu - samo kad se prvo učitaju
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+  
   useEffect(() => {
     const isLoadingAny = isLoadingFreeShipping || isLoadingStandardShipping || isLoadingExpressShipping;
     
-    if (!isLoadingAny) {
+    // Provjeri je li inicijalno učitavanje
+    if (!isLoadingAny && !initialDataLoaded) {
       // Postavi vrijednosti forme iz dohvaćenih postavki
       shippingSettingsForm.reset({
         freeShippingThreshold: freeShippingThresholdSetting?.value || "50",
         standardShippingRate: standardShippingRateSetting?.value || "5",
         expressShippingRate: expressShippingRateSetting?.value || "15"
       });
+      
+      // Označi da su podaci učitani da se ne bi ponovno postavljali
+      setInitialDataLoaded(true);
     }
   }, [
     isLoadingFreeShipping, 
@@ -192,7 +198,8 @@ export default function AdminSettingsPage() {
     freeShippingThresholdSetting,
     standardShippingRateSetting,
     expressShippingRateSetting,
-    shippingSettingsForm
+    shippingSettingsForm,
+    initialDataLoaded
   ]);
 
   // Handler za postavke dostave
