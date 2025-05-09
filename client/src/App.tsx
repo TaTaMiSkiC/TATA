@@ -39,6 +39,8 @@ function Router() {
       <ProtectedRoute path="/admin" component={AdminDashboard} />
       <ProtectedRoute path="/admin/products" component={AdminProducts} />
       <ProtectedRoute path="/admin/categories" component={AdminCategories} />
+      <ProtectedRoute path="/admin/scents" component={AdminScents} />
+      <ProtectedRoute path="/admin/colors" component={AdminColors} />
       <ProtectedRoute path="/admin/orders" component={AdminOrders} />
       <ProtectedRoute path="/admin/users" component={AdminUsers} />
       <ProtectedRoute path="/admin/settings" component={AdminSettings} />
