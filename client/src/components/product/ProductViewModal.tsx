@@ -90,14 +90,6 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Odaberite opcije</DialogTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-4 top-4"
-            onClick={onClose}
-          >
-            <X className="h-4 w-4" />
-          </Button>
         </DialogHeader>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -124,15 +116,14 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
                 <RadioGroup 
                   value={selectedScentId?.toString()} 
                   onValueChange={(value) => setSelectedScentId(parseInt(value))}
-                  className="flex flex-wrap gap-2"
+                  className="grid grid-cols-1 gap-2"
                 >
                   {productScents.map((scent) => (
-                    <div key={scent.id} className="flex items-center space-x-2">
+                    <div key={scent.id} className="flex items-center space-x-2 border border-input rounded-md p-2 transition-colors hover:bg-muted/50">
                       <RadioGroupItem value={scent.id.toString()} id={`modal-scent-${scent.id}`} />
                       <Label
                         htmlFor={`modal-scent-${scent.id}`}
-                        className={`px-3 py-2 rounded-md text-sm cursor-pointer transition-colors
-                          ${selectedScentId === scent.id ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80'}`}
+                        className="cursor-pointer text-sm"
                       >
                         {scent.name}
                       </Label>
@@ -149,22 +140,24 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
                 <RadioGroup 
                   value={selectedColorId?.toString()} 
                   onValueChange={(value) => setSelectedColorId(parseInt(value))}
-                  className="flex flex-wrap gap-3"
+                  className="grid grid-cols-2 gap-2"
                 >
                   {productColors.map((color) => (
-                    <div key={color.id} className="flex flex-col items-center">
+                    <div key={color.id} className="flex items-center space-x-2 border border-input rounded-md p-2 transition-colors hover:bg-muted/50">
+                      <div 
+                        className={`w-6 h-6 rounded-full border ${selectedColorId === color.id ? 'border-primary ring-2 ring-primary/50' : 'border-input'}`}
+                        style={{ backgroundColor: color.hexValue }}
+                      ></div>
                       <RadioGroupItem 
                         value={color.id.toString()} 
                         id={`modal-color-${color.id}`} 
-                        className="sr-only"
                       />
                       <Label
                         htmlFor={`modal-color-${color.id}`}
-                        className={`w-10 h-10 rounded-full border-2 cursor-pointer transition-all
-                          ${selectedColorId === color.id ? 'border-primary ring-2 ring-primary ring-offset-2' : 'border-input hover:border-primary/50'}`}
-                        style={{ backgroundColor: color.hexValue }}
-                      ></Label>
-                      <span className="text-xs mt-1">{color.name}</span>
+                        className="cursor-pointer text-sm"
+                      >
+                        {color.name}
+                      </Label>
                     </div>
                   ))}
                 </RadioGroup>
