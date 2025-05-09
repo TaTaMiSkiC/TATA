@@ -1,0 +1,413 @@
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { InsertProduct, Product, Category } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { LoaderCircle } from "lucide-react";
+
+// Extend the product schema for form validation
+const productSchema = z.object({
+  name: z.string().min(3, "Naziv mora imati barem 3 znaka"),
+  description: z.string().min(10, "Opis mora imati barem 10 znakova"),
+  price: z.string().min(1, "Cijena je obavezna").refine(val => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
+    message: "Cijena mora biti pozitivan broj"
+  }),
+  imageUrl: z.string().url("Molimo unesite valjani URL slike"),
+  categoryId: z.coerce.number().int().positive("Odaberite kategoriju"),
+  stock: z.coerce.number().int().min(0, "Zaliha ne može biti negativna"),
+  scent: z.string().optional(),
+  color: z.string().optional(),
+  burnTime: z.string().optional(),
+  featured: z.boolean().default(false),
+});
+
+type ProductFormValues = z.infer<typeof productSchema>;
+
+interface ProductFormProps {
+  product?: Product;
+  onSuccess?: () => void;
+}
+
+export default function ProductForm({ product, onSuccess }: ProductFormProps) {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Fetch categories for the select dropdown
+  const { data: categories, isLoading: categoriesLoading } = useQuery<Category[]>({
+    queryKey: ["/api/categories"],
+  });
+  
+  // Initialize form with product data or defaults
+  const form = useForm<ProductFormValues>({
+    resolver: zodResolver(productSchema),
+    defaultValues: {
+      name: product?.name || "",
+      description: product?.description || "",
+      price: product?.price.toString() || "",
+      imageUrl: product?.imageUrl || "",
+      categoryId: product?.categoryId || 0,
+      stock: product?.stock || 0,
+      scent: product?.scent || "",
+      color: product?.color || "",
+      burnTime: product?.burnTime || "",
+      featured: product?.featured || false,
+    },
+  });
+  
+  // Update form when product prop changes
+  useEffect(() => {
+    if (product) {
+      form.reset({
+        name: product.name,
+        description: product.description,
+        price: product.price.toString(),
+        imageUrl: product.imageUrl || "",
+        categoryId: product.categoryId || 0,
+        stock: product.stock,
+        scent: product.scent || "",
+        color: product.color || "",
+        burnTime: product.burnTime || "",
+        featured: product.featured,
+      });
+    }
+  }, [product, form]);
+  
+  const onSubmit = async (data: ProductFormValues) => {
+    setIsSubmitting(true);
+    
+    try {
+      // Format data for API
+      const productData: InsertProduct = {
+        ...data,
+        price: data.price,
+      };
+      
+      if (product) {
+        // Update existing product
+        await apiRequest("PUT", `/api/products/${product.id}`, productData);
+        toast({
+          title: "Proizvod ažuriran",
+          description: `${data.name} je uspješno ažuriran.`,
+        });
+      } else {
+        // Create new product
+        await apiRequest("POST", "/api/products", productData);
+        toast({
+          title: "Proizvod kreiran",
+          description: `${data.name} je uspješno kreiran.`,
+        });
+        form.reset(); // Clear form after successful creation
+      }
+      
+      // Invalidate products query to refresh data
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+      
+      // Call onSuccess callback if provided
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (error) {
+      toast({
+        title: "Greška",
+        description: "Došlo je do greške prilikom spremanja proizvoda.",
+        variant: "destructive",
+      });
+      console.error("Error saving product:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{product ? "Uredi proizvod" : "Novi proizvod"}</CardTitle>
+        <CardDescription>
+          {product 
+            ? "Uredite detalje postojećeg proizvoda" 
+            : "Ispunite obrazac za kreiranje novog proizvoda"}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Name */}
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Naziv proizvoda *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Npr. Vanilla Dreams" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              {/* Category */}
+              <FormField
+                control={form.control}
+                name="categoryId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kategorija *</FormLabel>
+                    <Select
+                      onValueChange={(value) => field.onChange(parseInt(value))}
+                      defaultValue={field.value?.toString()}
+                      value={field.value?.toString()}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Odaberite kategoriju" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categoriesLoading ? (
+                          <div className="py-2 text-center">Učitavanje...</div>
+                        ) : (
+                          categories?.map((category) => (
+                            <SelectItem 
+                              key={category.id} 
+                              value={category.id.toString()}
+                            >
+                              {category.name}
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              {/* Price */}
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cijena (€) *</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Npr. 24.99" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              {/* Stock */}
+              <FormField
+                control={form.control}
+                name="stock"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Zaliha *</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0" 
+                        placeholder="Npr. 50" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              {/* Image URL */}
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem className="col-span-full">
+                    <FormLabel>URL slike *</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="https://example.com/image.jpg" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      URL do slike proizvoda. Preporučene dimenzije: 800x800px.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              {/* Description */}
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem className="col-span-full">
+                    <FormLabel>Opis *</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Opišite proizvod..." 
+                        className="min-h-32" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              {/* Scent */}
+              <FormField
+                control={form.control}
+                name="scent"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Miris</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Npr. Vanilija, Lavanda" 
+                        {...field} 
+                        value={field.value || ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              {/* Color */}
+              <FormField
+                control={form.control}
+                name="color"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Boja</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Npr. Bijela, Krem" 
+                        {...field} 
+                        value={field.value || ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              {/* Burn time */}
+              <FormField
+                control={form.control}
+                name="burnTime"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Vrijeme gorenja</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Npr. 40-45 sati" 
+                        {...field} 
+                        value={field.value || ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              {/* Featured */}
+              <FormField
+                control={form.control}
+                name="featured"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 col-span-full mt-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>Istaknuti proizvod</FormLabel>
+                      <FormDescription>
+                        Istaknuti proizvodi prikazuju se na početnoj stranici
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            {/* Image preview */}
+            {form.watch("imageUrl") && (
+              <div className="mt-4">
+                <div className="border rounded-md p-2 max-w-xs">
+                  <p className="text-sm text-gray-500 mb-2">Pregled slike:</p>
+                  <img 
+                    src={form.watch("imageUrl")} 
+                    alt="Preview" 
+                    className="max-h-48 rounded-md object-contain mx-auto"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "https://placehold.co/400x400/gray/white?text=Greška+pri+učitavanju";
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+            
+            <div className="flex justify-end space-x-4">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => form.reset()}
+                disabled={isSubmitting}
+              >
+                Poništi
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                {product ? "Spremi promjene" : "Kreiraj proizvod"}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
+  );
+}
