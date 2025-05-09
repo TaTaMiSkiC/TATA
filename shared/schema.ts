@@ -325,3 +325,22 @@ export type OrderItemWithProduct = OrderItem & {
   scent?: Scent;
   color?: Color;
 };
+
+// Definiranje tablice za stranice (O nama, Kontakt, Blog)
+export const pages = pgTable("pages", {
+  id: serial("id").primaryKey(),
+  type: text("type").notNull().unique(), // "about", "contact", "blog"
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertPageSchema = createInsertSchema(pages).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type Page = typeof pages.$inferSelect;
+export type InsertPage = z.infer<typeof insertPageSchema>;

@@ -101,6 +101,14 @@ export interface IStorage {
   updateSetting(key: string, value: string): Promise<Setting | undefined>;
   deleteSetting(key: string): Promise<void>;
   
+  // Page methods
+  getPage(id: number): Promise<Page | undefined>;
+  getPageByType(type: string): Promise<Page | undefined>;
+  getAllPages(): Promise<Page[]>;
+  createPage(page: InsertPage): Promise<Page>;
+  updatePage(id: number, page: Partial<InsertPage>): Promise<Page | undefined>;
+  deletePage(id: number): Promise<void>;
+  
   // Session store
   sessionStore: SessionStore;
 }

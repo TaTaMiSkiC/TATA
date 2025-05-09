@@ -898,6 +898,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // API rute za upravljanje sadržajem stranica
+  app.get("/api/pages/:type", async (req, res) => {
+    try {
+      const { type } = req.params;
+      const page = await storage.getPageByType(type);
+      
+      if (!page) {
+        return res.status(404).json({ message: "Page not found" });
+      }
+      
+      res.json(page);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch page" });
+    }
+  });
+  
+  app.post("/api/pages/:type", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const { type } = req.params;
+      const { title, content } = req.body;
+      
+      if (!title || !content) {
+        return res.status(400).json({ message: "Title and content are required" });
+      }
+      
+      // Provjeri postoji li stranica
+      const existingPage = await storage.getPageByType(type);
+      
+      let page;
+      if (existingPage) {
+        // Ažuriraj postojeću stranicu
+        page = await storage.updatePage(existingPage.id, {
+          title,
+          content,
+          type
+        });
+      } else {
+        // Kreiraj novu stranicu
+        page = await storage.createPage({
+          title,
+          content,
+          type
+        });
+      }
+      
+      res.json(page);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update page" });
+    }
+  });
+  
   app.get("/api/settings/:key", async (req, res) => {
     try {
       const key = req.params.key;
