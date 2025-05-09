@@ -19,6 +19,7 @@ import AdminProducts from "@/pages/admin/admin-products";
 import AdminCategories from "@/pages/admin/admin-categories";
 import AdminScents from "@/pages/admin/admin-scents";
 import AdminColors from "@/pages/admin/admin-colors";
+import AdminCollections from "@/pages/admin/admin-collections";
 import AdminOrders from "@/pages/admin/admin-orders";
 import AdminUsers from "@/pages/admin/admin-users";
 import DeliverySettingsPage from "@/pages/admin/delivery-settings-page";
@@ -51,6 +52,7 @@ function Router() {
       <ProtectedRoute path="/admin/categories" component={AdminCategories} />
       <ProtectedRoute path="/admin/scents" component={AdminScents} />
       <ProtectedRoute path="/admin/colors" component={AdminColors} />
+      <ProtectedRoute path="/admin/collections" component={AdminCollections} />
       <ProtectedRoute path="/admin/orders" component={AdminOrders} />
       <ProtectedRoute path="/admin/users" component={AdminUsers} />
       <ProtectedRoute path="/admin/delivery-settings" component={DeliverySettingsPage} />
