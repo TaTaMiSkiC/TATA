@@ -89,8 +89,8 @@ export default function ShippingSettingsForm() {
         const res = await apiRequest("GET", `/api/settings/${key}`);
         
         if (res.ok) {
-          // Ako postoji, ažuriramo
-          results.push(await apiRequest("PATCH", `/api/settings/${key}`, { value }));
+          // Ako postoji, ažuriramo - koristimo PUT jer server koristi tu metodu
+          results.push(await apiRequest("PUT", `/api/settings/${key}`, { value }));
         } else {
           // Ako ne postoji, kreiramo novu
           results.push(await apiRequest("POST", "/api/settings", { key, value }));
