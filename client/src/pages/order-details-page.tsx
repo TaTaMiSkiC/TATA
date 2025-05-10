@@ -296,8 +296,23 @@ export default function OrderDetailsPage() {
       for (const item of orderWithItems.items) {
         const itemTotal = parseFloat(item.price) * item.quantity;
         subtotal += itemTotal;
+        
+        // Dodaj informacije o proizvodu, uključujući miris i boju
+        let productName = item.product?.name || 'Nepoznati proizvod';
+        if (item.selectedScent || item.selectedColor) {
+          productName += " (";
+          if (item.selectedScent) {
+            productName += item.selectedScent;
+            if (item.selectedColor) productName += ", ";
+          }
+          if (item.selectedColor) {
+            productName += item.selectedColor;
+          }
+          productName += ")";
+        }
+        
         tableRows.push([
-          item.product?.name || 'Nepoznati proizvod',
+          productName,
           item.quantity,
           `${parseFloat(item.price).toFixed(2)} €`,
           `${itemTotal.toFixed(2)} €`

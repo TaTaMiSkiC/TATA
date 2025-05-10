@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from 'react-helmet';
 import AdminLayout from "@/components/admin/AdminLayout";
@@ -217,25 +217,79 @@ function ProductSelector({
   onRemoveProduct: (index: number) => void;
 }) {
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  const [selectedScent, setSelectedScent] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  
+  // Dohvati mirise i boje za odabrani proizvod
+  const { data: scents, isLoading: isLoadingScents } = useQuery<any[]>({
+    queryKey: ['/api/scents', selectedProductId],
+    enabled: !!selectedProductId
+  });
+  
+  const { data: colors, isLoading: isLoadingColors } = useQuery<any[]>({
+    queryKey: ['/api/colors', selectedProductId],
+    enabled: !!selectedProductId
+  });
+  
+  // Dohvati mirise i boje za specifični proizvod
+  const { data: productScents, isLoading: isLoadingProductScents } = useQuery<any[]>({
+    queryKey: ['/api/products', selectedProductId, 'scents'],
+    enabled: !!selectedProductId
+  });
+  
+  const { data: productColors, isLoading: isLoadingProductColors } = useQuery<any[]>({
+    queryKey: ['/api/products', selectedProductId, 'colors'],
+    enabled: !!selectedProductId
+  });
+  
+  // Resetiraj odabire kad se promijeni proizvod
+  useEffect(() => {
+    setSelectedScent(null);
+    setSelectedColor(null);
+  }, [selectedProductId]);
   
   const handleAddProduct = () => {
     const product = products.find(p => p.id === selectedProductId);
     if (product) {
+      const hasScents = productScents && productScents.length > 0;
+      const hasColors = productColors && productColors.length > 0;
+      
+      // Ako proizvod ima mirise ili boje, moraju biti odabrani
+      if ((hasScents && !selectedScent) || (hasColors && !selectedColor)) {
+        return;
+      }
+      
       onAddProduct({
         productId: product.id,
         productName: product.name,
+        selectedScent: selectedScent,
+        selectedColor: selectedColor,
         quantity: 1,
         price: product.price
       });
+      
+      // Resetiraj odabire nakon dodavanja
       setSelectedProductId(null);
+      setSelectedScent(null);
+      setSelectedColor(null);
     }
   };
   
+  // Provjeri ima li proizvod mirise i boje
+  const selectedProduct = products?.find(p => p.id === selectedProductId);
+  const hasScents = productScents && productScents.length > 0;
+  const hasColors = productColors && productColors.length > 0;
+  
+  // Provjeri je li gumb za dodavanje omogućen
+  const isAddButtonDisabled = !selectedProductId || 
+                           (hasScents && !selectedScent) || 
+                           (hasColors && !selectedColor);
+  
   return (
     <div className="space-y-4">
-      <div className="flex items-end gap-2">
-        <div className="flex-1">
-          <FormLabel>Dodaj proizvod</FormLabel>
+      <div className="grid gap-4">
+        <div>
+          <FormLabel>Odaberite proizvod</FormLabel>
           <Select 
             value={selectedProductId?.toString() || ""}
             onValueChange={(value) => setSelectedProductId(parseInt(value))}
@@ -252,14 +306,62 @@ function ProductSelector({
             </SelectContent>
           </Select>
         </div>
-        <Button 
-          type="button" 
-          disabled={!selectedProductId}
-          onClick={handleAddProduct}
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Dodaj
-        </Button>
+        
+        {/* Odabir mirisa ako proizvod ima mirise */}
+        {selectedProductId && hasScents && (
+          <div>
+            <FormLabel>Odaberite miris</FormLabel>
+            <Select 
+              value={selectedScent || ""}
+              onValueChange={setSelectedScent}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Odaberite miris" />
+              </SelectTrigger>
+              <SelectContent>
+                {productScents.map((scent) => (
+                  <SelectItem key={scent.id} value={scent.name}>
+                    {scent.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+        
+        {/* Odabir boje ako proizvod ima boje */}
+        {selectedProductId && hasColors && (
+          <div>
+            <FormLabel>Odaberite boju</FormLabel>
+            <Select 
+              value={selectedColor || ""}
+              onValueChange={setSelectedColor}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Odaberite boju" />
+              </SelectTrigger>
+              <SelectContent>
+                {productColors.map((color) => (
+                  <SelectItem key={color.id} value={color.name}>
+                    {color.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+        
+        <div className="mt-2">
+          <Button 
+            type="button" 
+            disabled={isAddButtonDisabled}
+            onClick={handleAddProduct}
+            className="w-full"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Dodaj proizvod
+          </Button>
+        </div>
       </div>
       
       {selectedProducts.length > 0 ? (
@@ -268,6 +370,7 @@ function ProductSelector({
             <TableHeader>
               <TableRow>
                 <TableHead>Proizvod</TableHead>
+                <TableHead>Miris/Boja</TableHead>
                 <TableHead>Cijena (€)</TableHead>
                 <TableHead>Količina</TableHead>
                 <TableHead>Ukupno (€)</TableHead>
@@ -279,6 +382,23 @@ function ProductSelector({
                 <TableRow key={`${product.productId}-${index}`}>
                   <TableCell>
                     {products.find(p => p.id === product.productId)?.name || 'Nepoznati proizvod'}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col gap-1 text-xs">
+                      {product.selectedScent && (
+                        <div className="flex items-center">
+                          <span className="font-medium mr-1">Miris:</span> {product.selectedScent}
+                        </div>
+                      )}
+                      {product.selectedColor && (
+                        <div className="flex items-center">
+                          <span className="font-medium mr-1">Boja:</span> {product.selectedColor}
+                        </div>
+                      )}
+                      {!product.selectedScent && !product.selectedColor && (
+                        <span className="text-muted-foreground">-</span>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell>
                     <Input 
@@ -602,8 +722,23 @@ export default function AdminInvoices() {
       for (const item of invoiceData.items) {
         const itemTotal = parseFloat(item.price) * item.quantity;
         subtotal += itemTotal;
+        
+        // Dodaj informacije o proizvodu, uključujući miris i boju
+        let productName = item.productName;
+        if (item.selectedScent || item.selectedColor) {
+          productName += " (";
+          if (item.selectedScent) {
+            productName += item.selectedScent;
+            if (item.selectedColor) productName += ", ";
+          }
+          if (item.selectedColor) {
+            productName += item.selectedColor;
+          }
+          productName += ")";
+        }
+        
         tableRows.push([
-          item.productName,
+          productName,
           item.quantity,
           `${parseFloat(item.price).toFixed(2)} €`,
           `${itemTotal.toFixed(2)} €`
