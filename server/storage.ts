@@ -129,13 +129,21 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private products: Map<number, Product>;
-  private categories: Map<number, Category>;
-  private orders: Map<number, Order>;
-  private orderItems: Map<number, OrderItem>;
-  private cartItems: Map<number, CartItem>;
-  private reviews: Map<number, Review>;
+  private users: Map<number, User> = new Map();
+  private products: Map<number, Product> = new Map();
+  private categories: Map<number, Category> = new Map();
+  private orders: Map<number, Order> = new Map();
+  private orderItems: Map<number, OrderItem> = new Map();
+  private cartItems: Map<number, CartItem> = new Map();
+  private reviews: Map<number, Review> = new Map();
+  private settings: Map<string, Setting> = new Map();
+  private pages: Map<number, Page> = new Map();
+  private scents: Map<number, Scent> = new Map();
+  private colors: Map<number, Color> = new Map();
+  private productScents: ProductScent[] = [];
+  private productColors: ProductColor[] = [];
+  private collections: Map<number, Collection> = new Map();
+  private productCollections: ProductCollection[] = [];
   
   private userIdCounter: number;
   private productIdCounter: number;
@@ -144,6 +152,13 @@ export class MemStorage implements IStorage {
   private orderItemIdCounter: number;
   private cartItemIdCounter: number;
   private reviewIdCounter: number;
+  private pageIdCounter: number;
+  private scentIdCounter: number;
+  private colorIdCounter: number;
+  private collectionIdCounter: number;
+  private productScentIdCounter: number;
+  private productColorIdCounter: number;
+  private productCollectionIdCounter: number;
   
   sessionStore: SessionStore;
   
@@ -155,6 +170,14 @@ export class MemStorage implements IStorage {
     this.orderItems = new Map();
     this.cartItems = new Map();
     this.reviews = new Map();
+    this.settings = new Map();
+    this.pages = new Map();
+    this.scents = new Map();
+    this.colors = new Map();
+    this.collections = new Map();
+    this.productScents = [];
+    this.productColors = [];
+    this.productCollections = [];
     
     this.userIdCounter = 1;
     this.productIdCounter = 1;
@@ -163,6 +186,13 @@ export class MemStorage implements IStorage {
     this.orderItemIdCounter = 1;
     this.cartItemIdCounter = 1;
     this.reviewIdCounter = 1;
+    this.pageIdCounter = 1;
+    this.scentIdCounter = 1;
+    this.colorIdCounter = 1;
+    this.collectionIdCounter = 1;
+    this.productScentIdCounter = 1;
+    this.productColorIdCounter = 1;
+    this.productCollectionIdCounter = 1;
     
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000, // prune expired entries every 24h
@@ -171,6 +201,145 @@ export class MemStorage implements IStorage {
     this.initializeCategories();
     this.initializeProducts();
     this.createDefaultAdmin();
+  }
+  
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+  
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    for (const user of this.users.values()) {
+      if (user.username === username) {
+        return user;
+      }
+    }
+    return undefined;
+  }
+  
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    for (const user of this.users.values()) {
+      if (user.email === email) {
+        return user;
+      }
+    }
+    return undefined;
+  }
+  
+  async createUser(userData: InsertUser): Promise<User> {
+    const id = this.userIdCounter++;
+    const now = new Date();
+    const user: User = {
+      ...userData,
+      id,
+      createdAt: now,
+      updatedAt: now
+    };
+    this.users.set(id, user);
+    return user;
+  }
+  
+  async getAllUsers(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
+  
+  async updateUser(id: number, userData: Partial<User>): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+    
+    const updatedUser: User = {
+      ...user,
+      ...userData,
+      updatedAt: new Date()
+    };
+    
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+  
+  // Collection methods
+  async getCollection(id: number): Promise<Collection | undefined> {
+    return this.collections.get(id);
+  }
+
+  async getAllCollections(): Promise<Collection[]> {
+    return Array.from(this.collections.values());
+  }
+
+  async getActiveCollections(): Promise<Collection[]> {
+    return Array.from(this.collections.values()).filter(c => c.active);
+  }
+
+  async getFeaturedCollections(): Promise<Collection[]> {
+    return Array.from(this.collections.values()).filter(c => c.active && c.featuredOnHome);
+  }
+
+  async createCollection(collectionData: InsertCollection): Promise<Collection> {
+    const id = this.collectionIdCounter++;
+    const now = new Date();
+    const collection: Collection = {
+      ...collectionData,
+      id,
+      createdAt: now,
+      updatedAt: now
+    };
+    this.collections.set(id, collection);
+    return collection;
+  }
+
+  async updateCollection(id: number, collectionData: Partial<InsertCollection>): Promise<Collection | undefined> {
+    const collection = this.collections.get(id);
+    if (!collection) return undefined;
+    
+    const updatedCollection: Collection = {
+      ...collection,
+      ...collectionData,
+      updatedAt: new Date()
+    };
+    
+    this.collections.set(id, updatedCollection);
+    return updatedCollection;
+  }
+
+  async deleteCollection(id: number): Promise<void> {
+    this.collections.delete(id);
+    this.productCollections = this.productCollections.filter(pc => pc.collectionId !== id);
+  }
+
+  async getCollectionProducts(collectionId: number): Promise<Product[]> {
+    const productIds = this.productCollections
+      .filter(pc => pc.collectionId === collectionId)
+      .map(pc => pc.productId);
+    
+    return Array.from(this.products.values())
+      .filter(product => productIds.includes(product.id));
+  }
+
+  async addProductToCollection(productId: number, collectionId: number): Promise<ProductCollection> {
+    // Check if relation already exists
+    const existingRelation = this.productCollections.find(pc => 
+      pc.productId === productId && pc.collectionId === collectionId
+    );
+    
+    if (existingRelation) {
+      return existingRelation;
+    }
+    
+    const id = this.productCollectionIdCounter++;
+    const relation: ProductCollection = {
+      id,
+      productId,
+      collectionId
+    };
+    
+    this.productCollections.push(relation);
+    return relation;
+  }
+
+  async removeProductFromCollection(productId: number, collectionId: number): Promise<void> {
+    this.productCollections = this.productCollections.filter(pc => 
+      !(pc.productId === productId && pc.collectionId === collectionId)
+    );
   }
   
   // ... rest of MemStorage implementation
@@ -203,6 +372,117 @@ export class DatabaseStorage implements IStorage {
     this.initializeRelationTables();
   }
   
+  // Collection methods
+  async getCollection(id: number): Promise<Collection | undefined> {
+    const [collection] = await db.select().from(collections).where(eq(collections.id, id));
+    return collection;
+  }
+
+  async getAllCollections(): Promise<Collection[]> {
+    return await db.select().from(collections);
+  }
+
+  async getActiveCollections(): Promise<Collection[]> {
+    return await db.select().from(collections).where(eq(collections.active, true));
+  }
+
+  async getFeaturedCollections(): Promise<Collection[]> {
+    return await db.select().from(collections).where(and(
+      eq(collections.active, true),
+      eq(collections.featuredOnHome, true)
+    ));
+  }
+
+  async createCollection(collectionData: InsertCollection): Promise<Collection> {
+    const [collection] = await db
+      .insert(collections)
+      .values(collectionData)
+      .returning();
+    return collection;
+  }
+
+  async updateCollection(id: number, collectionData: Partial<InsertCollection>): Promise<Collection | undefined> {
+    const [updatedCollection] = await db
+      .update(collections)
+      .set(collectionData)
+      .where(eq(collections.id, id))
+      .returning();
+    return updatedCollection;
+  }
+
+  async deleteCollection(id: number): Promise<void> {
+    // Prvo ukloni sve proizvode iz kolekcije
+    await db.delete(productCollections).where(eq(productCollections.collectionId, id));
+    
+    // Zatim izbriši kolekciju
+    await db.delete(collections).where(eq(collections.id, id));
+  }
+
+  async getCollectionProducts(collectionId: number): Promise<Product[]> {
+    try {
+      const result = await pool.query(
+        `SELECT p.* 
+         FROM product_collections pc 
+         JOIN products p ON pc.product_id = p.id 
+         WHERE pc.collection_id = $1`,
+        [collectionId]
+      );
+      
+      return result.rows as Product[];
+    } catch (error) {
+      console.error("Error in getCollectionProducts:", error);
+      return [];
+    }
+  }
+
+  async addProductToCollection(productId: number, collectionId: number): Promise<ProductCollection> {
+    try {
+      // Provjeri postoji li tablica product_collections
+      const tableExists = await this.tableExists('product_collections');
+      if (!tableExists) {
+        console.log("Kreiranje tablice product_collections jer ne postoji...");
+        await this.initializeRelationTables();
+      }
+      
+      // Provjeri postojeću vezu
+      const checkResult = await pool.query(
+        `SELECT product_id, collection_id FROM product_collections 
+         WHERE product_id = $1 AND collection_id = $2`,
+        [productId, collectionId]
+      );
+      
+      if (checkResult.rows.length > 0) {
+        return checkResult.rows[0] as ProductCollection;
+      }
+      
+      // Dodaj novu vezu
+      const result = await pool.query(
+        `INSERT INTO product_collections (product_id, collection_id) 
+         VALUES ($1, $2) 
+         RETURNING id, product_id, collection_id`,
+        [productId, collectionId]
+      );
+      
+      return result.rows[0] as ProductCollection;
+    } catch (error) {
+      console.error("Error in addProductToCollection:", error);
+      throw error;
+    }
+  }
+
+  async removeProductFromCollection(productId: number, collectionId: number): Promise<void> {
+    try {
+      await pool.query(
+        `DELETE FROM product_collections 
+         WHERE product_id = $1 AND collection_id = $2`,
+        [productId, collectionId]
+      );
+    } catch (error) {
+      console.error("Error in removeProductFromCollection:", error);
+      throw error;
+    }
+  }
+  
   private async initializeRelationTables() {
     try {
       console.log("Inicijalizacija pomoćnih tablica za veze između entiteta...");
@@ -224,6 +504,16 @@ export class DatabaseStorage implements IStorage {
           product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
           color_id INTEGER NOT NULL REFERENCES colors(id) ON DELETE CASCADE,
           UNIQUE(product_id, color_id)
+        )
+      `);
+      
+      // Kreiraj tablicu product_collections ako ne postoji
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS product_collections (
+          id SERIAL PRIMARY KEY,
+          product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+          collection_id INTEGER NOT NULL REFERENCES collections(id) ON DELETE CASCADE,
+          UNIQUE(product_id, collection_id)
         )
       `);
       
