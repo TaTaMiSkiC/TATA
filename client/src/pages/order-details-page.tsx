@@ -76,10 +76,10 @@ interface OrderWithItems {
   shippingPostalCode?: string | null;
   shippingCountry?: string | null;
   // Dodatna polja koja možda nisu u originalnom Order tipu
-  taxAmount?: string | undefined;
-  shippingFullName?: string | undefined;
-  shippingPhone?: string | undefined;
-  transactionId?: string | undefined;
+  taxAmount?: string | null;
+  shippingFullName?: string | null;
+  shippingPhone?: string | null;
+  transactionId?: string | null;
 }
 
 // Komponenta za prikaz statusnih ikona
@@ -187,6 +187,20 @@ export default function OrderDetailsPage() {
     
   const isLoading = isLoadingOrder || isLoadingItems || isLoadingProducts;
   const error = orderError || itemsError;
+  
+  // Funkcija za prevođenje načina plaćanja
+  const getPaymentMethodText = (method: string, lang: string) => {
+    switch(method) {
+      case 'cash': 
+        return lang === 'hr' ? 'Gotovina' : 'Cash';
+      case 'bank_transfer': 
+        return lang === 'hr' ? 'Bankovni transfer' : 'Bank Transfer';
+      case 'paypal': 
+        return 'PayPal';
+      default:
+        return method; // ako je nepoznati tip, vrati originalni tekst
+    }
+  };
   
   // Funkcija za generiranje PDF računa
   const generateInvoice = () => {
@@ -397,15 +411,21 @@ export default function OrderDetailsPage() {
       
       // Dodajemo način plaćanja - provjerimo najprije postoji li podatak
       doc.setFontSize(10);
+      
+      // Dodajmo dodatno logiranje za dijagnostiku
+      console.log("PDF generiranje - način plaćanja:", orderWithItems.paymentMethod);
+      
       try {
         // Sigurna provjera da postoji orderWithItems.paymentMethod
-        const paymentMethod = orderWithItems.paymentMethod || 'cash';
+        const paymentMethod = orderWithItems.paymentMethod || 'bank_transfer';
+        
+        // Koristimo funkciju koju smo definirali izvan ovog bloka
         const paymentMethodText = getPaymentMethodText(paymentMethod, selectedLanguage);
         doc.text(`${t.paymentMethod}: ${paymentMethodText}`, 20, finalY + 15);
       } catch (error) {
         console.error("Greška pri dohvaćanju načina plaćanja:", error);
         // Postavimo defaultni način plaćanja 
-        doc.text(`${t.paymentMethod}: ${getPaymentMethodText('cash', selectedLanguage)}`, 20, finalY + 15);
+        doc.text(`${t.paymentMethod}: ${selectedLanguage === 'hr' ? 'Bankovni transfer' : 'Bank Transfer'}`, 20, finalY + 15);
       }
       
       doc.setFontSize(10);
