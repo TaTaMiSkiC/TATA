@@ -133,13 +133,13 @@ function ProductSelector({
   
   // Dohvati mirise za odabrani proizvod
   const { data: productScents = [] } = useQuery<Scent[]>({
-    queryKey: ['/api/products', selectedProductId, 'scents'],
+    queryKey: [`/api/products/${selectedProductId}/scents`],
     enabled: !!selectedProductId,
   });
   
   // Dohvati boje za odabrani proizvod
   const { data: productColors = [] } = useQuery<Color[]>({
-    queryKey: ['/api/products', selectedProductId, 'colors'],
+    queryKey: [`/api/products/${selectedProductId}/colors`],
     enabled: !!selectedProductId,
   });
   
