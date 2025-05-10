@@ -233,12 +233,12 @@ function ProductSelector({
   
   // Dohvati mirise i boje za specifični proizvod
   const { data: productScents, isLoading: isLoadingProductScents } = useQuery<any[]>({
-    queryKey: ['/api/products', selectedProductId, 'scents'],
+    queryKey: [`/api/products/${selectedProductId}/scents`],
     enabled: !!selectedProductId
   });
   
   const { data: productColors, isLoading: isLoadingProductColors } = useQuery<any[]>({
-    queryKey: ['/api/products', selectedProductId, 'colors'],
+    queryKey: [`/api/products/${selectedProductId}/colors`],
     enabled: !!selectedProductId
   });
   
@@ -277,6 +277,16 @@ function ProductSelector({
   
   // Provjeri ima li proizvod mirise i boje
   const selectedProduct = products?.find(p => p.id === selectedProductId);
+  
+  // Dodajmo console.log za debugging
+  useEffect(() => {
+    if (selectedProductId) {
+      console.log("Odabrani proizvod ID:", selectedProductId);
+      console.log("Dohvaćeni mirisi:", productScents);
+      console.log("Dohvaćene boje:", productColors);
+    }
+  }, [selectedProductId, productScents, productColors]);
+  
   const hasScents = productScents && productScents.length > 0;
   const hasColors = productColors && productColors.length > 0;
   
