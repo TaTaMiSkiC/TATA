@@ -813,7 +813,7 @@ export default function AdminInvoices() {
         subtotal: total,
         tax: "0.00",
         total: total,
-        language: data.language
+        language: data.language || "hr"
       },
       items: selectedProducts.map(product => ({
         productId: product.productId,
@@ -824,6 +824,8 @@ export default function AdminInvoices() {
         selectedColor: product.selectedColor || null
       }))
     };
+    
+    console.log("Šaljem na API:", invoiceData);
     
     // Pošalji podatke na API
     apiRequest('POST', '/api/invoices', invoiceData)
@@ -859,9 +861,17 @@ export default function AdminInvoices() {
       })
       .catch(error => {
         console.error("Greška pri kreiranju računa:", error);
+        
+        // Detaljnija poruka o grešci za lakše debugiranje
+        let errorMessage = "Došlo je do greške prilikom spremanja računa";
+        
+        if (error.message) {
+          errorMessage += `: ${error.message}`;
+        }
+        
         toast({
           title: "Greška",
-          description: "Došlo je do greške prilikom spremanja računa",
+          description: errorMessage,
           variant: "destructive"
         });
       });
