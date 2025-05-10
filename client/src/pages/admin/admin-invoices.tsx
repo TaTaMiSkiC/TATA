@@ -599,11 +599,19 @@ export default function AdminInvoices() {
       
       // Prikaz međuzbroja, dostave i ukupnog iznosa s desne strane
       doc.setFontSize(10);
-      doc.text(`${t.subtotal}:`, 120, finalY);
+      if (lang === 'hr') {
+        doc.text("Međuzbroj:", 120, finalY);
+      } else {
+        doc.text(`${t.subtotal}:`, 120, finalY);
+      }
       doc.text(`${subtotal} €`, 190, finalY, { align: "right" });
       
       // Dostava
-      doc.text("Dostava:", 120, finalY + 5);
+      if (lang === 'hr') {
+        doc.text("Dostava:", 120, finalY + 5);
+      } else {
+        doc.text("Dostava:", 120, finalY + 5);
+      }
       doc.text("0.00 €", 190, finalY + 5, { align: "right" });
       
       // Ukupan iznos - podebljan
@@ -615,24 +623,41 @@ export default function AdminInvoices() {
       doc.roundedRect(120, finalY + 7, 70, 10, 1, 1, 'F');
       
       doc.setFontSize(11);
-      doc.text(`${t.totalAmount}:`, 125, finalY + 14);
+      if (lang === 'hr') {
+        doc.text("UKUPNO:", 125, finalY + 14);
+      } else {
+        doc.text(`${t.totalAmount}:`, 125, finalY + 14);
+      }
       doc.text(`${total} €`, 185, finalY + 14, { align: "right" });
       
       // Informacije o plaćanju
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
-      doc.text(`${t.paymentInfo}:`, 20, finalY + 25);
+      if (lang === 'hr') {
+        doc.text("Informacije o plaćanju:", 20, finalY + 25);
+      } else {
+        doc.text(`${t.paymentInfo}:`, 20, finalY + 25);
+      }
       doc.line(20, finalY + 27, 190, finalY + 27);
       
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
-      doc.text(`${t.paymentMethod}: ${t.cash}`, 20, finalY + 32);
-      doc.text(`${t.paymentStatus}: ${t.paid}`, 20, finalY + 37);
+      if (lang === 'hr') {
+        doc.text(`Način plaćanja: Gotovina`, 20, finalY + 32);
+        doc.text(`Status plaćanja: Plaćeno`, 20, finalY + 37);
+      } else {
+        doc.text(`${t.paymentMethod}: ${t.cash}`, 20, finalY + 32);
+        doc.text(`${t.paymentStatus}: ${t.paid}`, 20, finalY + 37);
+      }
       
       // Zahvala i napomena o automatskom generiranju
       doc.setFontSize(10);
       doc.setFont("helvetica", "bold");
-      doc.text(t.thankYou + "!", 105, finalY + 50, { align: "center" });
+      if (lang === 'hr') {
+        doc.text("Hvala Vam na narudžbi!", 105, finalY + 50, { align: "center" });
+      } else {
+        doc.text(t.thankYou + "!", 105, finalY + 50, { align: "center" });
+      }
       
       // Podnožje s kontakt informacijama
       doc.setFontSize(8);
@@ -641,7 +666,11 @@ export default function AdminInvoices() {
       // Napomena o automatskom generiranju
       doc.setFontSize(8);
       doc.setFont("helvetica", "normal");
-      doc.text(t.generatedNote + ".", 105, finalY + 65, { align: "center" });
+      if (lang === 'hr') {
+        doc.text("Ovo je automatski generirani račun i valjan je bez potpisa i pečata.", 105, finalY + 65, { align: "center" });
+      } else {
+        doc.text(t.generatedNote + ".", 105, finalY + 65, { align: "center" });
+      }
       
       // Porezni broj i napomena o oslobođenju
       doc.text("Steuer nummer: 61 154/7175", 105, finalY + 70, { align: "center" });
@@ -651,7 +680,7 @@ export default function AdminInvoices() {
       } else if (lang === "en") {
         doc.text("According to § 6 para. 1 no. 27 of the Austrian VAT Act (small business regulation), no VAT is calculated.", 105, finalY + 75, { align: "center" });
       } else {
-        doc.text("Prema § 6 st. 1 br. 27 austrijskog Zakona o PDV-u (propis o malim poduzetnicima), PDV se ne obračunava.", 105, finalY + 75, { align: "center" });
+        doc.text("Prema § 6 st. 1 br. 27 austrijskog Zakona o PDV-u (propis o malim poduzetnicima), PDV nije obračunat.", 105, finalY + 75, { align: "center" });
       }
       
       // Spremanje PDF-a
