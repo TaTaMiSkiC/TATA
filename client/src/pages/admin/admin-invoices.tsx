@@ -590,6 +590,8 @@ export default function AdminInvoices() {
   // Kreiranje i preuzimanje PDF računa
   const generatePdf = (invoiceData: any) => {
     try {
+      console.log("PDF generiranje započinje...", invoiceData);
+      
       // Odabir jezika za ispis računa
       const translations = {
         hr: {
@@ -763,15 +765,25 @@ export default function AdminInvoices() {
       doc.setFontSize(8);
       doc.text(t.footer, 105, 280, { align: "center" });
       
-      // Preuzimanje PDF-a
-      doc.save(`Racun-${invoiceData.invoiceNumber}.pdf`);
-      
-      return true;
+      try {
+        // Preuzimanje PDF-a
+        doc.save(`Racun-${invoiceData.invoiceNumber}.pdf`);
+        console.log("PDF uspješno generiran i preuzet");
+        return true;
+      } catch (pdfError) {
+        console.error("Greška pri preuzimanju PDF-a:", pdfError);
+        toast({
+          title: "Greška pri preuzimanju PDF-a",
+          description: pdfError?.toString() || "Nepoznata greška pri preuzimanju",
+          variant: "destructive",
+        });
+        return false;
+      }
     } catch (error) {
-      console.error("Error generating PDF:", error);
+      console.error("Greška pri generiranju PDF-a:", error);
       toast({
         title: "Greška",
-        description: "Došlo je do pogreške prilikom generiranja PDF-a",
+        description: error?.toString() || "Došlo je do pogreške prilikom generiranja PDF-a",
         variant: "destructive",
       });
       return false;
@@ -836,12 +848,22 @@ export default function AdminInvoices() {
         return response.json();
       })
       .then(() => {
-        // Generiranje PDF-a
-        generatePdf({
-          ...data,
-          items: selectedProducts,
-          createdAt: new Date()
-        });
+        try {
+          // Generiranje PDF-a
+          console.log("Generiram PDF s podacima:", {
+            ...data,
+            items: selectedProducts,
+            createdAt: new Date()
+          });
+          
+          generatePdf({
+            ...data,
+            items: selectedProducts,
+            createdAt: new Date()
+          });
+        } catch (error) {
+          console.error("Greška pri generiranju PDF-a:", error);
+        }
         
         toast({
           title: "Uspješno kreiran račun",
