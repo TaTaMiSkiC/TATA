@@ -22,7 +22,7 @@ import { MobileMenu } from "@/components/ui/mobile-menu";
 import { SearchDialog } from "@/components/layout/SearchDialog";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
-import logoImage from "@/assets/logo.png";
+import logoImage from "@/assets/new-logo.png";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -51,16 +51,8 @@ export default function Header() {
             <img 
               src={logoImage} 
               alt="Kerzenwelt Logo" 
-              className="h-10 md:h-12 w-auto" 
+              className="h-12 md:h-16 w-auto" 
             />
-            <div className="flex items-baseline">
-              <span className="text-primary heading text-2xl md:text-3xl font-bold">
-                Kerzenwelt
-              </span>
-              <span className="text-foreground text-lg md:text-xl ml-1 font-bold mt-1 md:mt-0">
-                by Dani
-              </span>
-            </div>
           </div>
           
           {/* Navigation - Desktop */}
