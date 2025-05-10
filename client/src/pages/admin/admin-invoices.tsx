@@ -835,27 +835,27 @@ export default function AdminInvoices() {
       })
       .then(() => {
         // Generiranje PDF-a
-        if (generatePdf({
+        generatePdf({
           ...data,
           items: selectedProducts,
           createdAt: new Date()
-        })) {
-          toast({
-            title: "Uspješno kreiran račun",
-            description: `Račun ${data.invoiceNumber} je uspješno kreiran i preuzet`,
-          });
-          
-          // Osvježi popis računa
-          refetchInvoices();
-          
-          // Reset forme
-          form.reset();
-          setSelectedProducts([]);
-          setSelectedOrder(null);
-          
-          // Prebaci na karticu s postojećim računima
-          setActiveTab("existing");
-        }
+        });
+        
+        toast({
+          title: "Uspješno kreiran račun",
+          description: `Račun ${data.invoiceNumber} je uspješno kreiran i preuzet`,
+        });
+        
+        // Osvježi popis računa
+        refetchInvoices();
+        
+        // Reset forme
+        form.reset();
+        setSelectedProducts([]);
+        setSelectedOrder(null);
+        
+        // Prebaci na karticu s postojećim računima
+        setActiveTab("existing");
       })
       .catch(error => {
         console.error("Greška pri kreiranju računa:", error);
