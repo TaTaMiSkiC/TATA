@@ -49,6 +49,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -840,7 +841,7 @@ export default function AdminInvoices() {
                     </div>
                   </div>
                   
-                  <Separator />
+                  <div className="border-t my-6"></div>
                   
                   {/* Forma za kreiranje računa */}
                   <Form {...form}>
@@ -1036,7 +1037,7 @@ export default function AdminInvoices() {
                         />
                       </div>
                       
-                      <Separator />
+                      <div className="border-t my-6"></div>
                       
                       {/* Odabir proizvoda */}
                       <div className="space-y-4">

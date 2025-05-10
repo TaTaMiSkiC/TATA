@@ -63,10 +63,11 @@ interface OrderWithItems extends Omit<Order, 'subtotal' | 'discountAmount' | 'sh
   subtotal?: string | null;
   discountAmount?: string | null;
   shippingCost?: string | null;
-  taxAmount?: string;
-  shippingFullName?: string;
-  shippingPhone?: string;
-  transactionId?: string;
+  // Dodatna polja koja možda nisu u originalnom Order tipu
+  taxAmount?: string | undefined;
+  shippingFullName?: string | undefined;
+  shippingPhone?: string | undefined;
+  transactionId?: string | undefined;
 }
 
 // Komponenta za prikaz statusnih ikona
