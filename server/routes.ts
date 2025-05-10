@@ -353,24 +353,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/orders/:id/items", async (req, res) => {
     try {
+      console.log("Dohvaćanje stavki narudžbe:", req.params.id);
+      
       if (!req.isAuthenticated()) {
+        console.log("Korisnik nije autentificiran");
         return res.status(401).json({ message: "Unauthorized" });
       }
+      
+      console.log("Autentificirani korisnik:", req.user.id);
       
       const id = parseInt(req.params.id);
       const order = await storage.getOrder(id);
       
       if (!order) {
+        console.log("Narudžba nije pronađena:", id);
         return res.status(404).json({ message: "Order not found" });
       }
       
+      console.log("Pronađena narudžba:", order.id, "Korisnik narudžbe:", order.userId);
+      
       if (!req.user.isAdmin && order.userId !== req.user.id) {
+        console.log("Korisnik nema pristup:", req.user.id, "Korisnik narudžbe:", order.userId);
         return res.status(403).json({ message: "Unauthorized" });
       }
       
       const orderItems = await storage.getOrderItems(id);
+      console.log("Dohvaćeno stavki:", orderItems.length);
+      console.log("Prvi proizvod:", orderItems[0]?.product);
+      
       res.json(orderItems);
     } catch (error) {
+      console.error("Greška pri dohvaćanju stavki narudžbe:", error);
       res.status(500).json({ message: "Failed to fetch order items" });
     }
   });
