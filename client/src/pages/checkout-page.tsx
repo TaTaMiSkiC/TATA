@@ -30,10 +30,24 @@ export default function CheckoutPage() {
   const freeShippingThreshold = parseFloat(localFreeShippingThreshold || freeShippingThresholdSetting?.value || "50");
   const standardShippingRate = parseFloat(localStandardShippingRate || standardShippingRateSetting?.value || "5");
   
+  // Check if user has a valid discount
+  const hasDiscount = user && 
+    user.discountAmount && 
+    parseFloat(user.discountAmount) > 0 && 
+    user.discountExpiryDate && 
+    new Date(user.discountExpiryDate) > new Date();
+  
+  // Check if order meets minimum requirement for discount
+  const meetsMinimumOrder = !user?.discountMinimumOrder || 
+    parseFloat(user.discountMinimumOrder || "0") <= cartTotal;
+  
+  // Apply discount if valid
+  const discountAmount = (hasDiscount && meetsMinimumOrder) ? parseFloat(user.discountAmount || "0") : 0;
+  
   // Calculate shipping and total
   const isFreeShipping = standardShippingRate === 0 || (cartTotal >= freeShippingThreshold && freeShippingThreshold > 0);
   const shipping = isFreeShipping ? 0 : standardShippingRate;
-  const total = cartTotal + shipping;
+  const total = Math.max(0, cartTotal + shipping - discountAmount);
   
   // Redirect to cart if cart is empty
   useEffect(() => {
@@ -163,12 +177,63 @@ export default function CheckoutPage() {
                       <span className="text-gray-600">Dostava</span>
                       <span>{shipping === 0 ? "Besplatno" : `${shipping.toFixed(2)} €`}</span>
                     </div>
+                    
+                    {discountAmount > 0 && (
+                      <div className="flex justify-between text-green-600">
+                        <span className="font-medium">Popust</span>
+                        <span className="font-medium">-{discountAmount.toFixed(2)} €</span>
+                      </div>
+                    )}
+                    
                     <Separator />
                     <div className="flex justify-between font-bold text-lg">
                       <span>Ukupno</span>
                       <span>{total.toFixed(2)} €</span>
                     </div>
                   </div>
+                  
+                  {/* Discount info */}
+                  {hasDiscount && (
+                    <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
+                      {meetsMinimumOrder ? (
+                        <p className="text-sm text-green-700 flex items-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 mr-1.5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                          Primijenjen je popust od {discountAmount.toFixed(2)} € na ovu narudžbu!
+                        </p>
+                      ) : (
+                        <p className="text-sm text-amber-700 flex items-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 mr-1.5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          Ostvarite popust od {user?.discountAmount} € za narudžbe iznad {parseFloat(user?.discountMinimumOrder || "0").toFixed(2)} €!
+                        </p>
+                      )}
+                    </div>
+                  )}
                   
                   {/* Security note */}
                   <div className="mt-6 pt-4 border-t text-sm text-gray-500">
