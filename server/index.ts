@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeDatabase } from "./initDb";
+import { initDatabase } from "./db";
 
 const app = express();
 app.use(express.json());
@@ -41,6 +42,8 @@ app.use((req, res, next) => {
   // Inicijaliziraj bazu podataka prije registriranja ruta
   try {
     await initializeDatabase();
+    // Također inicijaliziraj i tablice za račune
+    await initDatabase();
     console.log("Baza podataka je uspješno inicijalizirana");
   } catch (error) {
     console.error("Greška prilikom inicijalizacije baze podataka:", error);
