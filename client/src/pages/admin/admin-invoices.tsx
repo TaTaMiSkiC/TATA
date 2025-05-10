@@ -616,25 +616,70 @@ export default function AdminInvoices() {
       
       // Zahvala i napomena o automatskom generiranju
       doc.setFontSize(10);
-      doc.text(t.thankYou + "!", 105, finalY + 50, { align: "center" });
+      doc.text(t.thankYou + "!", 105, finalY + 45, { align: "center" });
+      doc.text(`Mit freundlichen Grüßen`, 105, finalY + 50, { align: "center" });
+      doc.text(`${customerName}`, 105, finalY + 55, { align: "center" });
       
-      // Podnožje s kontakt informacijama
+      // Crvena linija s ikonama u podnožju
+      doc.setDrawColor(255, 0, 0);
+      doc.setLineWidth(0.5);
+      doc.line(25, finalY + 65, 185, finalY + 65);
+      
+      // Kružići s ikonama
+      doc.setFillColor(255, 255, 255);
+      doc.setDrawColor(0, 0, 0);
+      
+      // Kružić 1 - Adresa (kućica)
+      doc.circle(40, finalY + 65, 8, 'F');
+      doc.setFontSize(10);
+      doc.text("⌂", 40, finalY + 67, { align: "center" });
+      
+      // Kružić 2 - Kontakt (lista)
+      doc.circle(85, finalY + 65, 8, 'F');
+      doc.text("≡", 85, finalY + 67, { align: "center" });
+      
+      // Kružić 3 - Bankovni podaci (euro)
+      doc.circle(130, finalY + 65, 8, 'F');
+      doc.text("€", 130, finalY + 67, { align: "center" });
+      
+      // Kružić 4 - ID podaci
+      doc.circle(175, finalY + 65, 8, 'F');
+      doc.text("ID", 175, finalY + 67, { align: "center" });
+      
+      // Informacije ispod kružića
       doc.setFontSize(8);
-      doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 0043660387821", 105, finalY + 60, { align: "center" });
+      
+      // Kolona 1 - Adresa
+      doc.text("Kerzenwelt by Dani", 40, finalY + 75, { align: "center" });
+      doc.text("Ossiacher Zeile 30", 40, finalY + 80, { align: "center" });
+      doc.text("9500 Villach", 40, finalY + 85, { align: "center" });
+      
+      // Kolona 2 - Kontakt
+      doc.text("Kontakt", 85, finalY + 75, { align: "center" });
+      doc.text("+43 660 3878212", 85, finalY + 80, { align: "center" });
+      doc.text("daniela.svoboda2@gmail.com", 85, finalY + 85, { align: "center" });
+      
+      // Kolona 3 - Bankovni podaci
+      doc.text("Steuernummer", 130, finalY + 75, { align: "center" });
+      doc.text("61 154/7175", 130, finalY + 80, { align: "center" });
+      doc.text("UID: ATU---", 130, finalY + 85, { align: "center" });
+      
+      // Kolona 4 - ID podaci
+      doc.text("Ust. ID:", 175, finalY + 75, { align: "center" });
+      doc.text("Firmenführer:", 175, finalY + 80, { align: "center" });
+      doc.text(`${customerName}`, 175, finalY + 85, { align: "center" });
       
       // Napomena o automatskom generiranju
       doc.setFontSize(7);
-      doc.text(t.generatedNote + ".", 105, finalY + 65, { align: "center" });
+      doc.text(t.generatedNote + ".", 105, finalY + 95, { align: "center" });
       
-      // Porezni broj i napomena o oslobođenju
-      doc.text("Steuer nummer: 61 154/7175", 105, finalY + 70, { align: "center" });
-      
+      // Porezna napomena o oslobođenju
       if (lang === "de") {
-        doc.text("Gemäß § 6 Abs. 1 Z 27 UStG. (Kleinunternehmerregelung) wird keine Umsatzsteuer berechnet.", 105, finalY + 75, { align: "center" });
+        doc.text("Gemäß § 6 Abs. 1 Z 27 UStG. (Kleinunternehmerregelung) wird keine Umsatzsteuer berechnet.", 105, finalY + 100, { align: "center" });
       } else if (lang === "en") {
-        doc.text("According to § 6 para. 1 no. 27 of the Austrian VAT Act (small business regulation), no VAT is calculated.", 105, finalY + 75, { align: "center" });
+        doc.text("According to § 6 para. 1 no. 27 of the Austrian VAT Act (small business regulation), no VAT is calculated.", 105, finalY + 100, { align: "center" });
       } else {
-        doc.text("Prema § 6 st. 1 br. 27 austrijskog Zakona o PDV-u (propis o malim poduzetnicima), PDV se ne obračunava.", 105, finalY + 75, { align: "center" });
+        doc.text("Prema § 6 st. 1 br. 27 austrijskog Zakona o PDV-u (propis o malim poduzetnicima), PDV se ne obračunava.", 105, finalY + 100, { align: "center" });
       }
       
       // Spremanje PDF-a
