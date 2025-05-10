@@ -40,31 +40,81 @@ import CookieConsent from "./components/CookieConsent";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={HomePage} />
-      <Route path="/auth" component={AuthPage} />
-      <Route path="/products" component={ProductsPage} />
-      <Route path="/products/:id" component={ProductDetailsPage} />
-      <Route path="/cart" component={CartPage} />
-      <Route path="/about" component={AboutPage} />
-      <Route path="/contact" component={ContactPage} />
-      <Route path="/blog" component={BlogPage} />
-      <ProtectedRoute path="/profile" component={ProfilePage} />
-      <ProtectedRoute path="/orders" component={OrdersPage} />
-      <ProtectedRoute path="/orders/:id" component={OrderDetailsPage} />
-      <ProtectedRoute path="/checkout" component={CheckoutPage} />
-      <ProtectedRoute path="/order-success" component={OrderSuccessPage} />
-      <ProtectedRoute path="/admin" component={AdminDashboard} />
-      <ProtectedRoute path="/admin/products" component={AdminProducts} />
-      <ProtectedRoute path="/admin/categories" component={AdminCategories} />
-      <ProtectedRoute path="/admin/scents" component={AdminScents} />
-      <ProtectedRoute path="/admin/colors" component={AdminColors} />
-      <ProtectedRoute path="/admin/collections" component={AdminCollections} />
-      <ProtectedRoute path="/admin/orders" component={AdminOrders} />
-      <ProtectedRoute path="/admin/users" component={AdminUsers} />
-      <ProtectedRoute path="/admin/delivery-settings" component={DeliverySettingsPage} />
-      <ProtectedRoute path="/admin/settings" component={AdminSettings} />
-      <ProtectedRoute path="/admin/page-settings" component={PageSettingsPage} />
-      <ProtectedRoute path="/admin/contact-settings" component={ContactSettingsPage} />
+      <Route path="/">
+        <HomePage />
+      </Route>
+      <Route path="/auth">
+        <AuthPage />
+      </Route>
+      <Route path="/products">
+        <ProductsPage />
+      </Route>
+      <Route path="/products/:id">
+        <ProductDetailsPage />
+      </Route>
+      <Route path="/cart">
+        <CartPage />
+      </Route>
+      <Route path="/about">
+        <AboutPage />
+      </Route>
+      <Route path="/contact">
+        <ContactPage />
+      </Route>
+      <Route path="/blog">
+        <BlogPage />
+      </Route>
+      <Route path="/profile">
+        <ProtectedRoute path="/profile" component={ProfilePage} />
+      </Route>
+      <Route path="/orders">
+        <ProtectedRoute path="/orders" component={OrdersPage} />
+      </Route>
+      <Route path="/orders/:id">
+        <ProtectedRoute path="/orders/:id" component={OrderDetailsPage} />
+      </Route>
+      <Route path="/checkout">
+        <ProtectedRoute path="/checkout" component={CheckoutPage} />
+      </Route>
+      <Route path="/order-success">
+        <ProtectedRoute path="/order-success" component={OrderSuccessPage} />
+      </Route>
+      <Route path="/admin">
+        <ProtectedRoute path="/admin" component={AdminDashboard} />
+      </Route>
+      <Route path="/admin/products">
+        <ProtectedRoute path="/admin/products" component={AdminProducts} />
+      </Route>
+      <Route path="/admin/categories">
+        <ProtectedRoute path="/admin/categories" component={AdminCategories} />
+      </Route>
+      <Route path="/admin/scents">
+        <ProtectedRoute path="/admin/scents" component={AdminScents} />
+      </Route>
+      <Route path="/admin/colors">
+        <ProtectedRoute path="/admin/colors" component={AdminColors} />
+      </Route>
+      <Route path="/admin/collections">
+        <ProtectedRoute path="/admin/collections" component={AdminCollections} />
+      </Route>
+      <Route path="/admin/orders">
+        <ProtectedRoute path="/admin/orders" component={AdminOrders} />
+      </Route>
+      <Route path="/admin/users">
+        <ProtectedRoute path="/admin/users" component={AdminUsers} />
+      </Route>
+      <Route path="/admin/delivery-settings">
+        <ProtectedRoute path="/admin/delivery-settings" component={DeliverySettingsPage} />
+      </Route>
+      <Route path="/admin/settings">
+        <ProtectedRoute path="/admin/settings" component={AdminSettings} />
+      </Route>
+      <Route path="/admin/page-settings">
+        <ProtectedRoute path="/admin/page-settings" component={PageSettingsPage} />
+      </Route>
+      <Route path="/admin/contact-settings">
+        <ProtectedRoute path="/admin/contact-settings" component={ContactSettingsPage} />
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );
