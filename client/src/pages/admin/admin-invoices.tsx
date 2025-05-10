@@ -334,31 +334,31 @@ export default function AdminInvoices() {
       // Definiranje prijevoda za PDF
       const translations: Record<string, Record<string, string>> = {
         hr: {
-          title: "RAČUN",
-          date: "Datum računa",
-          invoiceNo: "Broj računa",
+          title: "RACUN",
+          date: "Datum racuna",
+          invoiceNo: "Broj racuna",
           buyer: "Podaci o kupcu",
           seller: "Prodavatelj",
           item: "Proizvod",
-          quantity: "Količina",
+          quantity: "Kolicina",
           price: "Cijena/kom",
           total: "Ukupno",
-          subtotal: "Međuzbroj",
+          subtotal: "Meduzboj",
           tax: "PDV (0%)",
           totalAmount: "UKUPNO",
-          paymentInfo: "Informacije o plaćanju",
-          paymentMethod: "Način plaćanja",
-          paymentStatus: "Status plaćanja",
+          paymentInfo: "Informacije o placanju",
+          paymentMethod: "Nacin placanja",
+          paymentStatus: "Status placanja",
           cash: "Gotovina",
           bankTransfer: "Bankovni prijenos",
-          paid: "Plaćeno",
+          paid: "Placeno",
           unpaid: "U obradi",
           deliveryAddress: "Adresa za dostavu",
-          handInvoice: "Ručni račun",
-          thankYou: "Hvala Vam na narudžbi",
-          generatedNote: "Ovo je automatski generirani račun i valjan je bez potpisa i pečata",
-          exemptionNote: "Poduzetnik nije u sustavu PDV-a, PDV nije obračunat temeljem odredbi posebnog postupka oporezivanja za male porezne obveznike.",
-          orderItems: "Stavke narudžbe"
+          handInvoice: "Rucni racun",
+          thankYou: "Hvala Vam na narudzbi",
+          generatedNote: "Ovo je automatski generirani racun i valjan je bez potpisa i pecata",
+          exemptionNote: "Poduzetnik nije u sustavu PDV-a, PDV nije obracunat temeljem odredbi posebnog postupka oporezivanja za male porezne obveznike.",
+          orderItems: "Stavke narudzbe"
         },
         en: {
           title: "INVOICE",
@@ -470,7 +470,37 @@ export default function AdminInvoices() {
       doc.setFont("helvetica", "normal");
       
       let customerY = 62;
-      doc.text(`${data.firstName} ${data.lastName}`, 20, customerY);
+      // Filtriraj hrvatske znakove u imenu i prezimenu ako je jezik hrvatski
+      let firstName = data.firstName;
+      let lastName = data.lastName;
+      
+      if (lang === "hr") {
+        firstName = firstName
+          .replace(/č/g, "c")
+          .replace(/Č/g, "C")
+          .replace(/ć/g, "c")
+          .replace(/Ć/g, "C")
+          .replace(/đ/g, "d")
+          .replace(/Đ/g, "D")
+          .replace(/š/g, "s")
+          .replace(/Š/g, "S")
+          .replace(/ž/g, "z")
+          .replace(/Ž/g, "Z");
+        
+        lastName = lastName
+          .replace(/č/g, "c")
+          .replace(/Č/g, "C")
+          .replace(/ć/g, "c")
+          .replace(/Ć/g, "C")
+          .replace(/đ/g, "d")
+          .replace(/Đ/g, "D")
+          .replace(/š/g, "s")
+          .replace(/Š/g, "S")
+          .replace(/ž/g, "z")
+          .replace(/Ž/g, "Z");
+      }
+      
+      doc.text(`${firstName} ${lastName}`, 20, customerY);
       customerY += 5;
       
       if (data.email) {
@@ -479,23 +509,70 @@ export default function AdminInvoices() {
       }
       
       if (data.address) {
-        if (lang === 'hr') {
-          doc.text(`Adresa za dostavu: ${data.address}`, 20, customerY);
+        let address = data.address;
+        // Filtriraj hrvatske znakove u adresi ako je jezik hrvatski
+        if (lang === "hr") {
+          address = address
+            .replace(/č/g, "c")
+            .replace(/Č/g, "C")
+            .replace(/ć/g, "c")
+            .replace(/Ć/g, "C")
+            .replace(/đ/g, "d")
+            .replace(/Đ/g, "D")
+            .replace(/š/g, "s")
+            .replace(/Š/g, "S")
+            .replace(/ž/g, "z")
+            .replace(/Ž/g, "Z");
+          doc.text(`Adresa za dostavu: ${address}`, 20, customerY);
         } else {
-          doc.text(`${t.deliveryAddress}: ${data.address}`, 20, customerY);
+          doc.text(`${t.deliveryAddress}: ${address}`, 20, customerY);
         }
         customerY += 5;
         
-        if (data.city && data.postalCode) {
-          doc.text(`${data.postalCode} ${data.city}`, 20, customerY);
+        let city = data.city;
+        let country = data.country;
+        
+        if (lang === "hr") {
+          // Filtriraj hrvatske znakove u gradu i zemlji
+          if (city) {
+            city = city
+              .replace(/č/g, "c")
+              .replace(/Č/g, "C")
+              .replace(/ć/g, "c")
+              .replace(/Ć/g, "C")
+              .replace(/đ/g, "d")
+              .replace(/Đ/g, "D")
+              .replace(/š/g, "s")
+              .replace(/Š/g, "S")
+              .replace(/ž/g, "z")
+              .replace(/Ž/g, "Z");
+          }
+          
+          if (country) {
+            country = country
+              .replace(/č/g, "c")
+              .replace(/Č/g, "C")
+              .replace(/ć/g, "c")
+              .replace(/Ć/g, "C")
+              .replace(/đ/g, "d")
+              .replace(/Đ/g, "D")
+              .replace(/š/g, "s")
+              .replace(/Š/g, "S")
+              .replace(/ž/g, "z")
+              .replace(/Ž/g, "Z");
+          }
+        }
+        
+        if (city && data.postalCode) {
+          doc.text(`${data.postalCode} ${city}`, 20, customerY);
           customerY += 5;
-        } else if (data.city) {
-          doc.text(data.city, 20, customerY);
+        } else if (city) {
+          doc.text(city, 20, customerY);
           customerY += 5;
         }
         
-        if (data.country) {
-          doc.text(data.country, 20, customerY);
+        if (country) {
+          doc.text(country, 20, customerY);
           customerY += 5;
         }
       } else {
@@ -667,20 +744,20 @@ export default function AdminInvoices() {
       doc.setFontSize(8);
       doc.setFont("helvetica", "normal");
       if (lang === 'hr') {
-        doc.text("Ovo je automatski generirani račun i valjan je bez potpisa i pečata.", 105, finalY + 65, { align: "center" });
+        doc.text("Ovo je automatski generirani racun i valjan je bez potpisa i pecata.", 105, finalY + 65, { align: "center" });
       } else {
         doc.text(t.generatedNote + ".", 105, finalY + 65, { align: "center" });
       }
       
       // Porezni broj i napomena o oslobođenju
-      doc.text("Steuer nummer: 61 154/7175", 105, finalY + 70, { align: "center" });
+      doc.text("Steuernummer: 61 154/7175", 105, finalY + 70, { align: "center" });
       
       if (lang === "de") {
-        doc.text("Gemäß § 6 Abs. 1 Z 27 UStG. (Kleinunternehmerregelung) wird keine Umsatzsteuer berechnet.", 105, finalY + 75, { align: "center" });
+        doc.text("Gemass § 6 Abs. 1 Z 27 UStG. (Kleinunternehmerregelung) wird keine Umsatzsteuer berechnet.", 105, finalY + 75, { align: "center" });
       } else if (lang === "en") {
         doc.text("According to § 6 para. 1 no. 27 of the Austrian VAT Act (small business regulation), no VAT is calculated.", 105, finalY + 75, { align: "center" });
       } else {
-        doc.text("Prema § 6 st. 1 br. 27 austrijskog Zakona o PDV-u (propis o malim poduzetnicima), PDV nije obračunat.", 105, finalY + 75, { align: "center" });
+        doc.text("Prema § 6 st. 1 br. 27 austrijskog Zakona o PDV-u (propis o malim poduzetnicima), PDV nije obracunat.", 105, finalY + 75, { align: "center" });
       }
       
       // Spremanje PDF-a
