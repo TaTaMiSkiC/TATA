@@ -190,30 +190,30 @@ export default function OrderDetailsPage() {
           <Card className="md:col-span-3">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-2xl">Narudžba #{order.id}</CardTitle>
+                <CardTitle className="text-2xl">Narudžba #{orderWithItems.id}</CardTitle>
                 <CardDescription>
-                  Naručeno {order.createdAt 
-                    ? format(new Date(order.createdAt), 'dd.MM.yyyy u HH:mm')
+                  Naručeno {orderWithItems.createdAt 
+                    ? format(new Date(orderWithItems.createdAt), 'dd.MM.yyyy u HH:mm')
                     : 'N/A'}
                 </CardDescription>
               </div>
               <div className="flex items-center gap-3">
-                <OrderStatusIcon status={order.status} />
+                <OrderStatusIcon status={orderWithItems.status} />
                 <div>
                   <p className="text-sm font-medium">Status</p>
-                  <OrderStatusBadge status={order.status} />
+                  <OrderStatusBadge status={orderWithItems.status} />
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <div className="bg-muted/50 rounded-lg p-4 mb-6">
-                <h3 className="text-lg font-medium mb-2">{getStatusText(order.status)}</h3>
+                <h3 className="text-lg font-medium mb-2">{getStatusText(orderWithItems.status)}</h3>
                 <p className="text-muted-foreground">
-                  {order.status === 'pending' && 'Vaša narudžba je zaprimljena i čeka obradu.'}
-                  {order.status === 'processing' && 'Vaša narudžba se trenutno obrađuje i priprema za slanje.'}
-                  {order.status === 'shipped' && 'Vaša narudžba je poslana i uskoro će biti isporučena.'}
-                  {order.status === 'completed' && 'Vaša narudžba je uspješno isporučena. Hvala na povjerenju!'}
-                  {order.status === 'cancelled' && 'Vaša narudžba je otkazana. Za više informacija kontaktirajte nas.'}
+                  {orderWithItems.status === 'pending' && 'Vaša narudžba je zaprimljena i čeka obradu.'}
+                  {orderWithItems.status === 'processing' && 'Vaša narudžba se trenutno obrađuje i priprema za slanje.'}
+                  {orderWithItems.status === 'shipped' && 'Vaša narudžba je poslana i uskoro će biti isporučena.'}
+                  {orderWithItems.status === 'completed' && 'Vaša narudžba je uspješno isporučena. Hvala na povjerenju!'}
+                  {orderWithItems.status === 'cancelled' && 'Vaša narudžba je otkazana. Za više informacija kontaktirajte nas.'}
                 </p>
               </div>
               
@@ -221,16 +221,16 @@ export default function OrderDetailsPage() {
                 <div>
                   <h3 className="font-medium mb-2">Podaci o narudžbi</h3>
                   <div className="text-sm space-y-1">
-                    <p><span className="text-muted-foreground">Datum narudžbe:</span> {order.createdAt 
-                      ? format(new Date(order.createdAt), 'dd.MM.yyyy HH:mm')
+                    <p><span className="text-muted-foreground">Datum narudžbe:</span> {orderWithItems.createdAt 
+                      ? format(new Date(orderWithItems.createdAt), 'dd.MM.yyyy HH:mm')
                       : 'N/A'}</p>
-                    <p><span className="text-muted-foreground">Način plaćanja:</span> {order.paymentMethod === 'bank_transfer' 
+                    <p><span className="text-muted-foreground">Način plaćanja:</span> {orderWithItems.paymentMethod === 'bank_transfer' 
                       ? 'Bankovni transfer' 
-                      : order.paymentMethod === 'paypal' 
+                      : orderWithItems.paymentMethod === 'paypal' 
                         ? 'PayPal' 
-                        : order.paymentMethod}</p>
-                    {order.transactionId && (
-                      <p><span className="text-muted-foreground">ID transakcije:</span> {order.transactionId}</p>
+                        : orderWithItems.paymentMethod}</p>
+                    {orderWithItems.transactionId && (
+                      <p><span className="text-muted-foreground">ID transakcije:</span> {orderWithItems.transactionId}</p>
                     )}
                   </div>
                 </div>
@@ -238,14 +238,14 @@ export default function OrderDetailsPage() {
                 <div>
                   <h3 className="font-medium mb-2">Podaci o dostavi</h3>
                   <div className="text-sm space-y-1">
-                    {order.shippingFullName && (
-                      <p><span className="text-muted-foreground">Ime i prezime:</span> {order.shippingFullName}</p>
+                    {orderWithItems.shippingFullName && (
+                      <p><span className="text-muted-foreground">Ime i prezime:</span> {orderWithItems.shippingFullName}</p>
                     )}
-                    <p><span className="text-muted-foreground">Adresa:</span> {order.shippingAddress || 'Nije navedeno'}</p>
-                    <p><span className="text-muted-foreground">Grad:</span> {order.shippingCity || 'Nije navedeno'}{order.shippingPostalCode ? `, ${order.shippingPostalCode}` : ''}</p>
-                    <p><span className="text-muted-foreground">Država:</span> {order.shippingCountry || 'Nije navedeno'}</p>
-                    {order.shippingPhone && (
-                      <p><span className="text-muted-foreground">Telefon:</span> {order.shippingPhone}</p>
+                    <p><span className="text-muted-foreground">Adresa:</span> {orderWithItems.shippingAddress || 'Nije navedeno'}</p>
+                    <p><span className="text-muted-foreground">Grad:</span> {orderWithItems.shippingCity || 'Nije navedeno'}{orderWithItems.shippingPostalCode ? `, ${orderWithItems.shippingPostalCode}` : ''}</p>
+                    <p><span className="text-muted-foreground">Država:</span> {orderWithItems.shippingCountry || 'Nije navedeno'}</p>
+                    {orderWithItems.shippingPhone && (
+                      <p><span className="text-muted-foreground">Telefon:</span> {orderWithItems.shippingPhone}</p>
                     )}
                   </div>
                 </div>
@@ -263,35 +263,43 @@ export default function OrderDetailsPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {order.items.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-muted rounded-md overflow-hidden">
-                              {item.product.imageUrl ? (
-                                <img 
-                                  src={item.product.imageUrl} 
-                                  alt={item.product.name} 
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full bg-primary/10"></div>
-                              )}
+                    {orderWithItems.items && orderWithItems.items.length > 0 ? (
+                      orderWithItems.items.map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <div className="w-12 h-12 bg-muted rounded-md overflow-hidden">
+                                {item.product && item.product.imageUrl ? (
+                                  <img 
+                                    src={item.product.imageUrl} 
+                                    alt={item.product.name} 
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full bg-primary/10"></div>
+                                )}
+                              </div>
+                              <div>
+                                <p className="font-medium">{item.product ? item.product.name : 'Proizvod'}</p>
+                                {item.selectedScent && <p className="text-xs">Miris: {item.selectedScent}</p>}
+                                {item.selectedColor && <p className="text-xs">Boja: {item.selectedColor}</p>}
+                              </div>
                             </div>
-                            <div>
-                              <p className="font-medium">{item.product.name}</p>
-                              {item.selectedScent && <p className="text-xs">Miris: {item.selectedScent}</p>}
-                              {item.selectedColor && <p className="text-xs">Boja: {item.selectedColor}</p>}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>{parseFloat(String(item.price)).toFixed(2)} €</TableCell>
-                        <TableCell>{item.quantity}</TableCell>
-                        <TableCell className="text-right">
-                          {(parseFloat(String(item.price)) * item.quantity).toFixed(2)} €
+                          </TableCell>
+                          <TableCell>{parseFloat(String(item.price)).toFixed(2)} €</TableCell>
+                          <TableCell>{item.quantity}</TableCell>
+                          <TableCell className="text-right">
+                            {(parseFloat(String(item.price)) * item.quantity).toFixed(2)} €
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-4">
+                          Nema stavki narudžbe
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )}
                   </TableBody>
                 </Table>
               </div>
@@ -300,22 +308,22 @@ export default function OrderDetailsPage() {
               <div className="space-y-2 text-right min-w-[200px]">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Međuzbroj:</span>
-                  <span>{parseFloat(String(order.subtotalAmount || order.total)).toFixed(2)} €</span>
+                  <span>{parseFloat(String(orderWithItems.subtotalAmount || orderWithItems.total)).toFixed(2)} €</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Dostava:</span>
-                  <span>{parseFloat(String(order.shippingAmount || "0")).toFixed(2)} €</span>
+                  <span>{parseFloat(String(orderWithItems.shippingAmount || "0")).toFixed(2)} €</span>
                 </div>
-                {order.taxAmount && (
+                {orderWithItems.taxAmount && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">PDV:</span>
-                    <span>{parseFloat(String(order.taxAmount)).toFixed(2)} €</span>
+                    <span>{parseFloat(String(orderWithItems.taxAmount)).toFixed(2)} €</span>
                   </div>
                 )}
                 <Separator />
                 <div className="flex justify-between font-medium text-lg">
                   <span>Ukupno:</span>
-                  <span>{parseFloat(String(order.total)).toFixed(2)} €</span>
+                  <span>{parseFloat(String(orderWithItems.total)).toFixed(2)} €</span>
                 </div>
               </div>
             </CardFooter>

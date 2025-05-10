@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Search, Loader2, X } from "lucide-react";
-import { useDebounce } from "@/hooks/use-debounce";
 import { Product } from "@shared/schema";
 import {
   Dialog,
@@ -12,6 +11,23 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+
+// Custom debounce hook
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 interface SearchDialogProps {
   trigger?: React.ReactNode;
@@ -37,7 +53,7 @@ export function SearchDialog({ trigger }: SearchDialogProps) {
     const productDescription = product.description.toLowerCase();
     
     // Proizvod se podudara ako sadrži sve pojmove pretrage
-    return searchTerms.every(term => 
+    return searchTerms.every((term: string) => 
       productName.includes(term) || productDescription.includes(term)
     );
   });
