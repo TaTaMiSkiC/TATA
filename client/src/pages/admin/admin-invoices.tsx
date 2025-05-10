@@ -606,6 +606,7 @@ export default function AdminInvoices() {
       
       // Informacije o plaćanju
       doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
       doc.text(`${t.paymentInfo}:`, 20, finalY + 25);
       doc.line(20, finalY + 27, 190, finalY + 27);
       
@@ -616,6 +617,7 @@ export default function AdminInvoices() {
       
       // Zahvala i napomena o automatskom generiranju
       doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
       doc.text(t.thankYou + "!", 105, finalY + 50, { align: "center" });
       
       // Podnožje s kontakt informacijama
@@ -623,7 +625,8 @@ export default function AdminInvoices() {
       doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 0043660387821", 105, finalY + 60, { align: "center" });
       
       // Napomena o automatskom generiranju
-      doc.setFontSize(7);
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "normal");
       doc.text(t.generatedNote + ".", 105, finalY + 65, { align: "center" });
       
       // Porezni broj i napomena o oslobođenju
