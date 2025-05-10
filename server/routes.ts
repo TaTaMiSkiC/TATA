@@ -379,7 +379,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const orderItems = await storage.getOrderItems(id);
       console.log("Dohvaćeno stavki:", orderItems.length);
-      console.log("Prvi proizvod:", orderItems[0]?.product);
+      console.log("Prvi proizvod:", JSON.stringify(orderItems[0]?.product));
+      console.log("Cijeli item:", JSON.stringify(orderItems[0]));
       
       res.json(orderItems);
     } catch (error) {
