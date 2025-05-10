@@ -26,6 +26,7 @@ import AdminCollections from "@/pages/admin/admin-collections";
 import AdminOrders from "@/pages/admin/admin-orders";
 import AdminUsers from "@/pages/admin/admin-users";
 import AdminInvoices from "@/pages/admin/admin-invoices";
+import AdminPayments from "@/pages/admin/admin-payments";
 import DeliverySettingsPage from "@/pages/admin/delivery-settings-page";
 import AdminSettings from "@/pages/admin/settings-page";
 import PageSettingsPage from "@/pages/admin/page-settings";
@@ -106,6 +107,9 @@ function Router() {
       </Route>
       <Route path="/admin/users">
         <ProtectedRoute path="/admin/users" component={AdminUsers} />
+      </Route>
+      <Route path="/admin/payments">
+        <ProtectedRoute path="/admin/payments" component={AdminPayments} />
       </Route>
       <Route path="/admin/delivery-settings">
         <ProtectedRoute path="/admin/delivery-settings" component={DeliverySettingsPage} />
