@@ -843,6 +843,8 @@ export default function AdminInvoices() {
       console.log("Šaljem na API:", invoiceData);
       
       // Direktno pozivam API bez apiRequest da vidim što se događa
+      console.log("Šaljem createInvoice fetch zahtjev...");
+      
       fetch('/api/invoices', {
         method: 'POST',
         headers: {

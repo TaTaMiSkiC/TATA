@@ -1843,6 +1843,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { invoice, items } = req.body;
       
+      console.log("Request body:", req.body);
+      
       if (!invoice || !items) {
         console.error("Nedostaje invoice ili items u zahtjevu");
         return res.status(400).json({ message: "Invalid request format - missing invoice or items" });
