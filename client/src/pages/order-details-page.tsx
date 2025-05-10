@@ -63,6 +63,7 @@ interface OrderWithItems extends Omit<Order, 'subtotal' | 'discountAmount' | 'sh
   subtotal?: string | null;
   discountAmount?: string | null;
   shippingCost?: string | null;
+  paymentMethod?: string;
   // Dodatna polja koja možda nisu u originalnom Order tipu
   taxAmount?: string | undefined;
   shippingFullName?: string | undefined;
@@ -379,10 +380,18 @@ export default function OrderDetailsPage() {
       // Dodavanje podnožja
       const finalY = (doc as any).lastAutoTable.finalY || 120;
       
-      // Dodajemo način plaćanja
+      // Dodajemo način plaćanja - provjerimo najprije postoji li podatak
       doc.setFontSize(10);
-      const paymentMethodText = getPaymentMethodText(orderWithItems.paymentMethod || 'cash', selectedLanguage);
-      doc.text(`${t.paymentMethod}: ${paymentMethodText}`, 20, finalY + 15);
+      try {
+        // Sigurna provjera da postoji orderWithItems.paymentMethod
+        const paymentMethod = orderWithItems.paymentMethod || 'cash';
+        const paymentMethodText = getPaymentMethodText(paymentMethod, selectedLanguage);
+        doc.text(`${t.paymentMethod}: ${paymentMethodText}`, 20, finalY + 15);
+      } catch (error) {
+        console.error("Greška pri dohvaćanju načina plaćanja:", error);
+        // Postavimo defaultni način plaćanja 
+        doc.text(`${t.paymentMethod}: ${getPaymentMethodText('cash', selectedLanguage)}`, 20, finalY + 15);
+      }
       
       doc.setFontSize(10);
       doc.text(t.thankYou, 105, finalY + 25, { align: "center" });
