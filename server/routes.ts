@@ -379,12 +379,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized" });
       }
       
+      // Dohvati stavke narudžbe
       const orderItems = await storage.getOrderItems(id);
       console.log("Dohvaćeno stavki:", orderItems.length);
-      console.log("Prvi proizvod:", JSON.stringify(orderItems[0]?.product));
       console.log("Cijeli item:", JSON.stringify(orderItems[0]));
       
-      res.json(orderItems);
+      // Potrebno je dodati product podatke na svaku stavku
+      const enhancedItems = [];
+      for (const item of orderItems) {
+        try {
+          const product = await storage.getProduct(item.productId);
+          // Dodajemo podatke o proizvodu na stavku
+          const enhancedItem = {
+            ...item,
+            product: product || {
+              id: item.productId,
+              name: item.productName || `Proizvod #${item.productId}`,
+              price: item.price,
+              description: '',
+              imageUrl: null,
+              categoryId: null,
+              stock: 0,
+              scent: null,
+              color: null,
+              burnTime: null,
+              featured: false,
+              hasColorOptions: false,
+              createdAt: new Date()
+            }
+          };
+          enhancedItems.push(enhancedItem);
+        } catch (err) {
+          console.error(`Greška pri dohvaćanju proizvoda ${item.productId}:`, err);
+          // Dodajemo stavku i bez proizvoda ako dođe do greške
+          enhancedItems.push({
+            ...item,
+            product: {
+              id: item.productId,
+              name: item.productName || `Proizvod #${item.productId}`,
+              price: item.price,
+              description: '',
+              imageUrl: null,
+              categoryId: null,
+              stock: 0,
+              scent: null,
+              color: null,
+              burnTime: null,
+              featured: false,
+              hasColorOptions: false,
+              createdAt: new Date()
+            }
+          });
+        }
+      }
+      
+      console.log("Obogaćene stavke:", enhancedItems.length);
+      res.json(enhancedItems);
     } catch (error) {
       console.error("Greška pri dohvaćanju stavki narudžbe:", error);
       res.status(500).json({ message: "Failed to fetch order items" });

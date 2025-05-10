@@ -197,8 +197,14 @@ export default function OrderDetailsPage() {
         return lang === 'hr' ? 'Bankovni transfer' : 'Bank Transfer';
       case 'paypal': 
         return 'PayPal';
+      case 'credit_card':
+        return lang === 'hr' ? 'Kreditna kartica' : 'Credit Card';
       default:
-        return method; // ako je nepoznati tip, vrati originalni tekst
+        // Za nepoznati tip, vrati formatiran tekst
+        const formattedMethod = method
+          .replace(/_/g, ' ')
+          .replace(/\b\w/g, (l) => l.toUpperCase());
+        return formattedMethod;
     }
   };
   
@@ -211,6 +217,18 @@ export default function OrderDetailsPage() {
     // Dodajmo dodatno logiranje
     console.log("Podaci o narudžbi:", JSON.stringify(orderWithItems));
     console.log("Način plaćanja:", orderWithItems.paymentMethod || 'Nije definirano');
+    
+    // Sigurna provjera stavki narudžbe
+    if (!orderWithItems.items || !Array.isArray(orderWithItems.items) || orderWithItems.items.length === 0) {
+      console.error("Nema stavki narudžbe ili nije ispravan format:", orderWithItems.items);
+      toast({
+        title: "Greška pri generiranju PDF-a",
+        description: "Nije moguće generirati račun jer nema stavki narudžbe.",
+        variant: "destructive",
+      });
+      setGeneratingInvoice(false);
+      return;
+    }
     
     try {
       // Odabir jezika za ispis računa
@@ -358,7 +376,18 @@ export default function OrderDetailsPage() {
         subtotal += itemTotal;
         
         // Dodaj informacije o proizvodu, uključujući miris i boju
-        let productName = item.product?.name || 'Nepoznati proizvod';
+        let productName = '';
+        
+        // Provjera postoji li product objekt
+        if (item.product && typeof item.product === 'object' && item.product?.name) {
+          productName = item.product.name;
+        } else if (item.productName) {
+          productName = item.productName;
+        } else {
+          productName = `Proizvod #${item.productId}`;
+        }
+        
+        // Dodaj informacije o mirisu i boji ako postoje
         if (item.selectedScent || item.selectedColor) {
           productName += " (";
           if (item.selectedScent) {
@@ -406,8 +435,8 @@ export default function OrderDetailsPage() {
         }
       });
       
-      // Dodavanje podnožja
-      const finalY = (doc as any).lastAutoTable.finalY || 120;
+      // Dodavanje podnožja - sigurna provjera za lastAutoTable
+      const finalY = (doc as any).lastAutoTable ? (doc as any).lastAutoTable.finalY || 120 : 120;
       
       // Dodajemo način plaćanja - provjerimo najprije postoji li podatak
       doc.setFontSize(10);
