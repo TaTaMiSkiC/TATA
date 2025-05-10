@@ -66,6 +66,11 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
       icon: <ShoppingCart size={20} />
     },
     {
+      name: "Računi",
+      path: "/admin/invoices",
+      icon: <FileText size={20} />
+    },
+    {
       name: "Korisnici",
       path: "/admin/users",
       icon: <Users size={20} />
