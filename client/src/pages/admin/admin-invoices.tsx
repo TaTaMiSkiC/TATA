@@ -73,6 +73,7 @@ interface Invoice {
   subtotal: string;
   tax: string;
   language: string;
+  paymentMethod: string;
   createdAt: Date;
   items: InvoiceItem[];
 }
@@ -879,7 +880,8 @@ export default function AdminInvoices() {
           subtotal: total,
           tax: "0.00",
           total: total,
-          language: data.language || "hr"
+          language: data.language || "hr",
+          paymentMethod: data.paymentMethod || "cash"
         },
         items: selectedProducts.map(product => ({
           productId: product.productId,
@@ -914,6 +916,7 @@ export default function AdminInvoices() {
               country: form.getValues("country"),
               email: form.getValues("email"),
               phone: form.getValues("phone"),
+              paymentMethod: form.getValues("paymentMethod") || "cash",
               items: selectedProducts,  // Ključni dio - koristimo stvarno odabrane proizvode
               createdAt: data.createdAt || new Date()
             };
@@ -1013,7 +1016,8 @@ export default function AdminInvoices() {
           email: invoice.customerEmail || "",
           phone: invoice.customerPhone || "",
           items: data.items || [], // Koristimo stavke dohvaćene sa servera
-          language: invoice.language
+          language: invoice.language,
+          paymentMethod: invoice.paymentMethod || "cash" // Koristimo način plaćanja iz postojećeg računa
         };
         
         console.log("Priprema podataka za PDF:", invoiceData);
