@@ -1,9 +1,10 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
+import candleBackground from "@/assets/candle-background.jpg";
 
 export default function Hero() {
   return (
-    <section className="relative h-[70vh] md:h-[80vh] bg-cover bg-center" style={{ backgroundImage: "url('/candle-background.jpg')" }}>
+    <section className="relative h-[70vh] md:h-[80vh] bg-cover bg-center" style={{ backgroundImage: `url(${candleBackground})` }}>
       <div className="absolute inset-0 bg-black bg-opacity-40"></div>
       <div className="container mx-auto px-4 h-full flex items-center relative z-10">
         <div className="max-w-xl">
