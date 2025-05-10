@@ -497,36 +497,44 @@ export class DatabaseStorage implements IStorage {
 
   async getOrderItems(orderId: number): Promise<OrderItemWithProduct[]> {
     try {
-      console.log(`Dohvaćanje stavki za narudžbu ${orderId}`);
-      const items = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId));
-      console.log(`Pronađeno ${items.length} stavki za narudžbu ${orderId}`);
+      // Koristi Drizzle's relations API za dohvaćanje stavki s proizvodima
+      const result = await db.query.orderItems.findMany({
+        where: eq(orderItems.orderId, orderId),
+        with: {
+          product: true
+        }
+      });
       
-      // Dohvaćanje svih ID-jeva proizvoda
-      const productIds = items.map(item => item.productId);
-      console.log(`ID-jevi proizvoda za dohvaćanje: ${productIds.join(', ')}`);
-      
-      // Dohvaćanje svih proizvoda u jednom upitu
-      const allProducts = await db.select().from(products).where(
-        productIds.length > 0 ? 
-          sql`${products.id} IN (${productIds.join(',')})` : 
-          sql`FALSE`
-      );
-      
-      console.log(`Pronađeno ${allProducts.length} proizvoda iz baze`);
-      
-      // Mapiranje proizvoda po ID-ju za brži pristup
-      const productsMap = new Map(allProducts.map(product => [product.id, product]));
-      
-      // Dohvati detalje za svaki proizvod
-      const result = items.map((item) => {
-        // Pronađi proizvod u mapi
-        const product = productsMap.get(item.productId);
+      // Vraćamo stavke koje imaju i informacije o proizvodu ili kreiramo osnovni objekt proizvoda ako ne postoji
+      return result.map(item => {
+        // Ako proizvoda više nema, stvori osnovne podatke iz informacija u narudžbi
+        let productData = item.product;
+        if (!productData) {
+          productData = {
+            id: item.productId,
+            name: item.productName || "Proizvod nije dostupan",
+            description: "",
+            price: "0",
+            categoryId: 0,
+            imageUrl: null,
+            featured: false,
+            inventory: 0,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          };
+        }
         
-        console.log(`Stavka ${item.id}, Proizvod ID ${item.productId}, Pronađen: ${!!product}, Naziv iz narudžbe: ${item.productName}`);
-        
-        // Ako proizvod nije pronađen, stvori zamjenski proizvod s osnovnim informacijama
-        // Koristi naziv proizvoda iz narudžbe ako postoji
-        const resolvedProduct = product || {
+        return {
+          ...item,
+          product: productData,
+          selectedScent: item.scentName,
+          selectedColor: item.colorName
+        };
+      });
+    } catch (error) {
+      console.error(`Greška prilikom dohvaćanja stavki narudžbe: ${error}`);
+      return [];
+    }st resolvedProduct = product || {
           id: item.productId,
           name: item.productName || `Proizvod (ID: ${item.productId})`,
           createdAt: new Date(),
