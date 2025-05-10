@@ -49,7 +49,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import jsPDF from "jspdf";
-import 'jspdf-autotable';
+import autoTable from "jspdf-autotable";
 import { format } from "date-fns";
 
 interface OrderItemWithProduct extends OrderItemType {
@@ -412,8 +412,8 @@ export default function OrderDetailsPage() {
       const tax = subtotal * 0.25;
       const total = subtotal + tax;
       
-      // Dodavanje tablice u PDF
-      (doc as any).autoTable({
+      // Dodavanje tablice u PDF koristeći autoTable umjesto (doc as any).autoTable
+      autoTable(doc, {
         head: [tableColumn],
         body: tableRows,
         startY: 85,
