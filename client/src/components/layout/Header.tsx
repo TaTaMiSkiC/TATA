@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MobileMenu } from "@/components/ui/mobile-menu";
+import { SearchDialog } from "@/components/layout/SearchDialog";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
 import logoImage from "@/assets/logo.png";
@@ -140,9 +141,7 @@ export default function Header() {
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </Button>
             
-            <Button variant="ghost" size="icon" className="text-text-dark hover:text-primary hover:bg-transparent">
-              <Search size={20} />
-            </Button>
+            <SearchDialog />
             
             {user ? (
               <DropdownMenu>
