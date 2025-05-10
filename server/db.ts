@@ -25,10 +25,10 @@ export async function initDatabase() {
       SELECT EXISTS (
         SELECT FROM information_schema.tables 
         WHERE table_name = 'invoices'
-      );
+      ) AS "exists";
     `);
     
-    if (!checkInvoices[0].exists) {
+    if (!checkInvoices.rows[0]?.exists) {
       console.log("Kreiranje tablice invoices...");
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS invoices (
@@ -57,10 +57,10 @@ export async function initDatabase() {
       SELECT EXISTS (
         SELECT FROM information_schema.tables 
         WHERE table_name = 'invoice_items'
-      );
+      ) AS "exists";
     `);
     
-    if (!checkInvoiceItems[0].exists) {
+    if (!checkInvoiceItems.rows[0]?.exists) {
       console.log("Kreiranje tablice invoice_items...");
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS invoice_items (
