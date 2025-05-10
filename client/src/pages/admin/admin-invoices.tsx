@@ -837,23 +837,39 @@ export default function AdminInvoices() {
   
   // Preuzimanje PDF-a za postojeći račun
   const handleDownloadInvoice = (invoice: Invoice) => {
-    // Pripremi podatke za PDF
-    const invoiceData = {
-      invoiceNumber: invoice.invoiceNumber,
-      createdAt: invoice.createdAt,
-      firstName: invoice.customerName.split(' ')[0],
-      lastName: invoice.customerName.split(' ').slice(1).join(' '),
-      address: invoice.customerAddress || "Adresa kupca",
-      city: invoice.customerCity || "Grad kupca",
-      postalCode: invoice.customerPostalCode || "12345",
-      country: invoice.customerCountry || "Hrvatska",
-      email: invoice.customerEmail || "",
-      phone: invoice.customerPhone || "",
-      items: invoice.items,
-      language: invoice.language
-    };
-    
-    generatePdf(invoiceData);
+    // Dohvati stavke računa sa servera
+    apiRequest('GET', `/api/invoices/${invoice.id}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log("Dohvaćeni podaci za PDF računa:", data);
+        
+        // Pripremi podatke za PDF
+        const invoiceData = {
+          invoiceNumber: invoice.invoiceNumber,
+          createdAt: invoice.createdAt,
+          firstName: invoice.customerName.split(' ')[0],
+          lastName: invoice.customerName.split(' ').slice(1).join(' '),
+          address: invoice.customerAddress || "Adresa kupca",
+          city: invoice.customerCity || "Grad kupca",
+          postalCode: invoice.customerPostalCode || "12345",
+          country: invoice.customerCountry || "Hrvatska",
+          email: invoice.customerEmail || "",
+          phone: invoice.customerPhone || "",
+          items: data.items || [], // Koristimo stavke dohvaćene sa servera
+          language: invoice.language
+        };
+        
+        console.log("Priprema podataka za PDF:", invoiceData);
+        generatePdf(invoiceData);
+      })
+      .catch(error => {
+        console.error("Greška kod dohvaćanja stavki računa:", error);
+        toast({
+          title: "Greška",
+          description: "Nije moguće dohvatiti stavke računa",
+          variant: "destructive"
+        });
+      });
   };
   
   return (
