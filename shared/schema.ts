@@ -417,6 +417,7 @@ export const invoices = pgTable("invoices", {
   customerPostalCode: text("customer_postal_code"),
   customerCountry: text("customer_country"),
   customerPhone: text("customer_phone"),
+  paymentMethod: text("payment_method").default("cash").notNull(),
   total: decimal("total", { precision: 10, scale: 2 }).notNull(),
   subtotal: decimal("subtotal", { precision: 10, scale: 2 }).notNull(),
   tax: decimal("tax", { precision: 10, scale: 2 }).notNull(),

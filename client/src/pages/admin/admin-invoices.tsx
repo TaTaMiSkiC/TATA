@@ -109,6 +109,7 @@ const createInvoiceSchema = z.object({
   phone: z.string().optional(),
   invoiceNumber: z.string().min(1, "Broj računa je obavezan"),
   language: z.string().min(1, "Odaberite jezik računa"),
+  paymentMethod: z.string().min(1, "Odaberite način plaćanja"),
   selectedProducts: z.array(z.any()).optional(),
 });
 
