@@ -1834,6 +1834,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create a new invoice
   app.post("/api/invoices", async (req, res) => {
     try {
+      console.log("Primljen zahtjev za kreiranje računa, body:", req.body);
       // Privremeno uklonjena provjera autentifikacije zbog problema s klijentom
       // Samo administratori mogu pristupiti admin stranicama iz kojih se poziva ova API ruta
       /*if (!req.isAuthenticated() || !req.user?.isAdmin) {
@@ -1841,6 +1842,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }*/
       
       const { invoice, items } = req.body;
+      
+      if (!invoice || !items) {
+        console.error("Nedostaje invoice ili items u zahtjevu");
+        return res.status(400).json({ message: "Invalid request format - missing invoice or items" });
+      }
       
       // Dodaj userId hardkodirano za admina (id=1) ako nemamo korisnika u sesiji
       if (req.user) {
@@ -1851,13 +1857,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("Creating invoice with data:", { invoice, items });
       
-      // Validate the invoice data
-      const validatedInvoice = insertInvoiceSchema.parse(invoice);
-      
-      // Create the invoice with its items
-      const newInvoice = await storage.createInvoice(validatedInvoice, items);
-      
-      res.status(201).json(newInvoice);
+      try {
+        // Validate the invoice data
+        const validatedInvoice = insertInvoiceSchema.parse(invoice);
+        
+        // Create the invoice with its items
+        const newInvoice = await storage.createInvoice(validatedInvoice, items);
+        
+        console.log("Uspješno kreiran račun:", newInvoice);
+        res.status(201).json(newInvoice);
+      } catch (validationError) {
+        console.error("Validacija nije uspjela:", validationError);
+        res.status(400).json({ 
+          message: "Validation error", 
+          errors: validationError instanceof z.ZodError ? validationError.errors : [{ message: validationError.message }] 
+        });
+      }
     } catch (error) {
       console.error("Error creating invoice:", error);
       if (error instanceof z.ZodError) {

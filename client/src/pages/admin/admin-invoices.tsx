@@ -792,62 +792,79 @@ export default function AdminInvoices() {
   
   // Kreiranje novog računa
   const handleCreateInvoice = (data: CreateInvoiceFormValues) => {
-    // Ažuriraj form podatke sa odabranim proizvodima
-    data.selectedProducts = selectedProducts;
+    console.log("handleCreateInvoice pokrenut");
     
-    if (selectedProducts.length === 0) {
-      toast({
-        title: "Greška",
-        description: "Morate dodati barem jedan proizvod",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    // Izračunaj ukupni iznos
-    const total = selectedProducts.reduce(
-      (sum, product) => sum + parseFloat(product.price) * product.quantity, 
-      0
-    ).toFixed(2);
-    
-    // Pripremi podatke za API
-    const invoiceData = {
-      invoice: {
-        orderId: selectedOrder?.id || null,
-        invoiceNumber: data.invoiceNumber,
-        customerName: `${data.firstName} ${data.lastName}`,
-        customerEmail: data.email || null,
-        customerAddress: data.address || null,
-        customerCity: data.city || null,
-        customerPostalCode: data.postalCode || null,
-        customerCountry: data.country || null,
-        customerPhone: data.phone || null,
-        subtotal: total,
-        tax: "0.00",
-        total: total,
-        language: data.language || "hr"
-      },
-      items: selectedProducts.map(product => ({
-        productId: product.productId,
-        productName: product.productName,
-        quantity: product.quantity,
-        price: product.price,
-        selectedScent: product.selectedScent || null,
-        selectedColor: product.selectedColor || null
-      }))
-    };
-    
-    console.log("Šaljem na API:", invoiceData);
-    
-    // Pošalji podatke na API
-    apiRequest('POST', '/api/invoices', invoiceData)
+    try {
+      // Ažuriraj form podatke sa odabranim proizvodima
+      data.selectedProducts = selectedProducts;
+      
+      if (selectedProducts.length === 0) {
+        toast({
+          title: "Greška",
+          description: "Morate dodati barem jedan proizvod",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Izračunaj ukupni iznos
+      const total = selectedProducts.reduce(
+        (sum, product) => sum + parseFloat(product.price) * product.quantity, 
+        0
+      ).toFixed(2);
+      
+      // Pripremi podatke za API
+      const invoiceData = {
+        invoice: {
+          orderId: selectedOrder?.id || null,
+          invoiceNumber: data.invoiceNumber,
+          customerName: `${data.firstName} ${data.lastName}`,
+          customerEmail: data.email || null,
+          customerAddress: data.address || null,
+          customerCity: data.city || null,
+          customerPostalCode: data.postalCode || null,
+          customerCountry: data.country || null,
+          customerPhone: data.phone || null,
+          subtotal: total,
+          tax: "0.00",
+          total: total,
+          language: data.language || "hr"
+        },
+        items: selectedProducts.map(product => ({
+          productId: product.productId,
+          productName: product.productName,
+          quantity: product.quantity,
+          price: product.price,
+          selectedScent: product.selectedScent || null,
+          selectedColor: product.selectedColor || null
+        }))
+      };
+      
+      console.log("Šaljem na API:", invoiceData);
+      
+      // Direktno pozivam API bez apiRequest da vidim što se događa
+      fetch('/api/invoices', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(invoiceData),
+        credentials: 'include'
+      })
       .then(response => {
+        console.log("API odgovor status:", response.status);
         if (!response.ok) {
-          throw new Error("Greška prilikom spremanja računa u bazu");
+          return response.text().then(text => {
+            console.error("API odgovor error:", text);
+            throw new Error(`Greška prilikom spremanja računa u bazu (${response.status}): ${text}`);
+          });
         }
         return response.json();
       })
-      .then(() => {
+      .then((data) => {
+        console.log("API odgovor uspješan:", data);
+        
         try {
           // Generiranje PDF-a
           console.log("Generiram PDF s podacima:", {
@@ -897,6 +914,14 @@ export default function AdminInvoices() {
           variant: "destructive"
         });
       });
+    } catch (e) {
+      console.error("Neočekivana greška:", e);
+      toast({
+        title: "Neočekivana greška",
+        description: e?.toString() || "Došlo je do neočekivane greške",
+        variant: "destructive"
+      });
+    }
   };
   
   // Brisanje računa
