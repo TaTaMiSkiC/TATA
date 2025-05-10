@@ -34,6 +34,7 @@ import {
   SelectTrigger,
   SelectValue 
 } from "@/components/ui/select";
+import Header from "@/components/layout/Header";
 import { 
   Loader2, 
   ArrowLeft, 
@@ -620,6 +621,8 @@ export default function OrderDetailsPage() {
         <title>{`Narudžba #${orderWithItems.id} | Kerzenwelt by Dani`}</title>
         <meta name="description" content={`Detalji narudžbe #${orderWithItems.id} - Kerzenwelt by Dani`} />
       </Helmet>
+      
+      <Header />
       
       <div className="container mx-auto py-8">
         <div className="flex justify-between items-center mb-6">
