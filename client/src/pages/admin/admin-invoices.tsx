@@ -618,7 +618,10 @@ export default function AdminInvoices() {
       doc.setFontSize(10);
       doc.text(t.thankYou + "!", 105, finalY + 45, { align: "center" });
       doc.text(`Mit freundlichen Grüßen`, 105, finalY + 50, { align: "center" });
-      doc.text(`${customerName}`, 105, finalY + 55, { align: "center" });
+      
+      // Koristimo ime i prezime iz podataka koje sigurno imamo
+      const fullName = `${data.firstName} ${data.lastName}`;
+      doc.text(fullName, 105, finalY + 55, { align: "center" });
       
       // Crvena linija s ikonama u podnožju
       doc.setDrawColor(255, 0, 0);
@@ -667,7 +670,7 @@ export default function AdminInvoices() {
       // Kolona 4 - ID podaci
       doc.text("Ust. ID:", 175, finalY + 75, { align: "center" });
       doc.text("Firmenführer:", 175, finalY + 80, { align: "center" });
-      doc.text(`${customerName}`, 175, finalY + 85, { align: "center" });
+      doc.text(fullName, 175, finalY + 85, { align: "center" });
       
       // Napomena o automatskom generiranju
       doc.setFontSize(7);
