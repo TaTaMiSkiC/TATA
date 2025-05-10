@@ -491,8 +491,12 @@ export default function AdminInvoices() {
       // Priprema podataka za tablicu
       let items = [];
       
+      console.log("Generiram stavke za PDF s podacima:", data);
+      
       if (data.items && Array.isArray(data.items)) {
+        console.log("PDF Items:", data.items);
         items = data.items.map((item: any) => {
+          console.log("Processing item:", item);
           const itemName = item.productName || '';
           let details = '';
           
@@ -509,8 +513,14 @@ export default function AdminInvoices() {
           const price = parseFloat(item.price).toFixed(2);
           const total = (parseFloat(item.price) * item.quantity).toFixed(2);
           
+          console.log("Formatted item:", [fullName, item.quantity, `${price} €`, `${total} €`]);
           return [fullName, item.quantity, `${price} €`, `${total} €`];
         });
+      } else {
+        console.log("No items found in data or items is not an array:", data);
+        
+        // Dodajemo ručno barem jednu stavku ako nema podataka
+        items = [["Proizvod nije specificiran", 1, "0.00 €", "0.00 €"]];
       }
       
       // Dodavanje tablice
@@ -569,8 +579,13 @@ export default function AdminInvoices() {
       // Ukupan iznos - podebljan
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
-      doc.text(`${t.totalAmount}:`, 150, finalY + 12);
-      doc.text(`${total} €`, 190, finalY + 12, { align: "right" });
+      
+      // Dodajemo box za ukupan iznos
+      doc.setFillColor(245, 245, 245);
+      doc.rect(150, finalY + 7, 40, 10, 'F');
+      
+      doc.text(`${t.totalAmount}:`, 150, finalY + 14);
+      doc.text(`${total} €`, 190, finalY + 14, { align: "right" });
       
       // Informacije o plaćanju
       doc.setFontSize(11);
@@ -716,18 +731,24 @@ export default function AdminInvoices() {
           console.log("API odgovor uspješan:", data);
           
           try {
-            // Generiranje PDF-a
-            console.log("Generiram PDF s podacima:", {
+            // Generiranje PDF-a s dodatnim informacijama
+            const pdfData = {
               ...data,
-              items: selectedProducts,
-              createdAt: new Date()
-            });
+              firstName: form.getValues("firstName"),
+              lastName: form.getValues("lastName"),
+              address: form.getValues("address"),
+              city: form.getValues("city"),
+              postalCode: form.getValues("postalCode"),
+              country: form.getValues("country"),
+              email: form.getValues("email"),
+              phone: form.getValues("phone"),
+              items: selectedProducts,  // Ključni dio - koristimo stvarno odabrane proizvode
+              createdAt: data.createdAt || new Date()
+            };
             
-            generatePdf({
-              ...data,
-              items: selectedProducts,
-              createdAt: new Date()
-            });
+            console.log("Generiram PDF s podacima:", pdfData);
+            
+            generatePdf(pdfData);
             
             toast({
               title: "Uspješno kreiran račun",
