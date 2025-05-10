@@ -197,13 +197,13 @@ export default function OrderDetailsPage() {
   const getPaymentMethodText = (method: string, lang: string) => {
     switch(method) {
       case 'cash': 
-        return lang === 'hr' ? 'Gotovina' : 'Cash';
+        return lang === 'hr' ? 'Gotovina' : lang === 'de' ? 'Barzahlung' : 'Cash';
       case 'bank_transfer': 
-        return lang === 'hr' ? 'Bankovni transfer' : 'Bank Transfer';
+        return lang === 'hr' ? 'Bankovni transfer' : lang === 'de' ? 'Banküberweisung' : 'Bank Transfer';
       case 'paypal': 
         return 'PayPal';
       case 'credit_card':
-        return lang === 'hr' ? 'Kreditna kartica' : 'Credit Card';
+        return lang === 'hr' ? 'Kreditna kartica' : lang === 'de' ? 'Kreditkarte' : 'Credit Card';
       default:
         // Za nepoznati tip, vrati formatiran tekst
         const formattedMethod = method
@@ -213,7 +213,7 @@ export default function OrderDetailsPage() {
     }
   };
   
-  // Funkcija za generiranje PDF računa
+  // Funkcija za generiranje računa
   const generateInvoice = () => {
     if (!orderWithItems || !user) return;
     
@@ -236,62 +236,161 @@ export default function OrderDetailsPage() {
     }
     
     try {
-      // Pripremamo za preuzimanje HTML fakturu umjesto PDF-a
-      // Ovo je privremeno rješenje dok ne popravimo probleme s PDF generiranjem
-      const orderDate = new Date(orderWithItems.createdAt).toLocaleDateString();
+      // Pripremamo za preuzimanje HTML fakturu prema priloženom primjeru
+      const currentDate = new Date();
+      const orderDate = format(currentDate, 'dd.MM.yyyy'); // Format datuma: dd.mm.yyyy
+      const invoiceNumber = `${currentDate.getFullYear()}-${orderWithItems.id.toString().padStart(4, '0')}`;
       
-      // Stvaramo HTML sadržaj
+      // Stvaramo HTML sadržaj prema zadanom formatu
       let htmlContent = `
+        <!DOCTYPE html>
         <html>
         <head>
-          <title>Račun #${orderWithItems.id}</title>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Rechnung ${invoiceNumber}</title>
           <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            .header { text-align: center; margin-bottom: 30px; }
-            .info-section { margin-bottom: 20px; }
-            .info-section h3 { margin-bottom: 5px; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background-color: #f2f2f2; }
-            .totals { text-align: right; margin-top: 20px; }
-            .footer { margin-top: 30px; text-align: center; font-size: 12px; }
-            .company-info { margin-top: 50px; font-size: 12px; }
+            body {
+              font-family: Arial, sans-serif;
+              margin: 0;
+              padding: 20px;
+              color: #333;
+              line-height: 1.5;
+            }
+            .container {
+              max-width: 800px;
+              margin: 0 auto;
+            }
+            .header {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 20px;
+            }
+            .logo-container {
+              display: flex;
+              align-items: center;
+            }
+            .logo {
+              font-size: 40px;
+              color: #D4AF37;
+              font-family: serif;
+              margin-right: 10px;
+            }
+            .company-name {
+              font-size: 24px;
+              color: #D4AF37;
+              font-weight: bold;
+            }
+            .company-info {
+              font-size: 12px;
+              line-height: 1.4;
+            }
+            .invoice-details {
+              text-align: right;
+            }
+            .invoice-title {
+              font-size: 24px;
+              font-weight: bold;
+              margin-bottom: 10px;
+            }
+            .divider {
+              border-top: 1px solid #ddd;
+              margin: 20px 0;
+            }
+            .section-title {
+              font-weight: bold;
+              margin-bottom: 10px;
+            }
+            .customer-info {
+              margin-bottom: 20px;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin: 20px 0;
+            }
+            th, td {
+              padding: 10px;
+              text-align: left;
+            }
+            thead {
+              background-color: #f5f5f5;
+            }
+            .amount-summary {
+              margin-top: 20px;
+              text-align: right;
+            }
+            .total-row {
+              font-weight: bold;
+              background-color: #f5f5f5;
+              padding: 10px;
+              text-align: right;
+            }
+            .payment-info {
+              margin-top: 30px;
+            }
+            .thank-you {
+              text-align: center;
+              margin: 40px 0 20px;
+              font-weight: bold;
+            }
+            .footer {
+              text-align: center;
+              font-size: 11px;
+              color: #666;
+              margin-top: 40px;
+              line-height: 1.4;
+            }
           </style>
         </head>
         <body>
-          <div class="header">
-            <h1>RAČUN</h1>
-            <p>Broj računa: INV-${orderWithItems.id}</p>
-            <p>Datum: ${orderDate}</p>
-          </div>
-          
-          <div class="info-section">
-            <h3>Prodavatelj:</h3>
-            <p>Kerzenwelt by Dani</p>
-            <p>Ossiacher Zeile 30/3</p>
-            <p>9500 Villach, Austrija</p>
-          </div>
-          
-          <div class="info-section">
-            <h3>Kupac:</h3>
-            <p>${user.firstName || ''} ${user.lastName || ''}</p>
-            <p>${user.address || ''}</p>
-            <p>${user.postalCode || ''} ${user.city || ''}</p>
-            <p>${user.country || ''}</p>
-            ${user.email ? `<p>Email: ${user.email}</p>` : ''}
-            ${user.phone ? `<p>Telefon: ${user.phone}</p>` : ''}
-          </div>
-          
-          <table>
-            <thead>
-              <tr>
-                <th>Stavka</th>
-                <th>Količina</th>
-                <th>Cijena</th>
-                <th>Ukupno</th>
-              </tr>
-            </thead>
-            <tbody>
+          <div class="container">
+            <div class="header">
+              <div class="logo-section">
+                <div class="logo-container">
+                  <div class="logo">K</div>
+                  <div>
+                    <div class="company-name">Kerzenwelt by Dani</div>
+                    <div class="company-info">
+                      Ossiacher Zeile 30, 9500 Villach, Österreich<br>
+                      Email: daniela.svoboda2@gmail.com
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="invoice-details">
+                <div class="invoice-title">RECHNUNG</div>
+                <div>Rechnungsnummer: ${invoiceNumber}</div>
+                <div>Rechnungsdatum: ${orderDate}</div>
+              </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="customer-info">
+              <div class="section-title">Käuferinformationen:</div>
+              <div>${user.firstName || ''} ${user.lastName || ''}</div>
+              <div>Email: ${user.email || ''}</div>
+              <div>Lieferadresse: ${orderWithItems.shippingAddress || user.address || ''}</div>
+              <div>${orderWithItems.shippingPostalCode || user.postalCode || ''} ${orderWithItems.shippingCity || user.city || ''}</div>
+              <div>${orderWithItems.shippingCountry || user.country || 'Österreich'}</div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="section-title">Bestellpositionen:</div>
+            
+            <table>
+              <thead>
+                <tr>
+                  <th>Produkt</th>
+                  <th>Menge</th>
+                  <th>Preis/Stück</th>
+                  <th>Gesamt</th>
+                </tr>
+              </thead>
+              <tbody>
       `;
       
       // Dodajemo stavke
@@ -312,50 +411,58 @@ export default function OrderDetailsPage() {
         
         // Dodajemo opcije ako postoje
         if (item.selectedScent || item.selectedColor) {
-          productName += " (";
+          productName += " ";
           if (item.selectedScent) {
             productName += item.selectedScent;
-            if (item.selectedColor) productName += ", ";
           }
           if (item.selectedColor) {
-            productName += item.selectedColor;
+            productName += " - " + item.selectedColor;
           }
-          productName += ")";
         }
         
         htmlContent += `
-          <tr>
-            <td>${productName}</td>
-            <td>${item.quantity}</td>
-            <td>${parseFloat(item.price).toFixed(2)} €</td>
-            <td>${itemTotal.toFixed(2)} €</td>
-          </tr>
+                <tr>
+                  <td>${productName}</td>
+                  <td>${item.quantity}</td>
+                  <td>${parseFloat(item.price).toFixed(2)} €</td>
+                  <td>${itemTotal.toFixed(2)} €</td>
+                </tr>
         `;
       }
       
-      // Izračun PDV-a i ukupnog iznosa
-      const tax = subtotal * 0.25;
-      const total = subtotal + tax;
-      
       // Dodajemo ukupne iznose i završavamo HTML
+      // Shippingcost
+      const shippingCost = orderWithItems.shippingCost ? parseFloat(orderWithItems.shippingCost) : 0.00;
+      const total = parseFloat(orderWithItems.total) || subtotal + shippingCost;
+      
       htmlContent += `
-            </tbody>
-          </table>
-          
-          <div class="totals">
-            <p>Međuzbroj: ${subtotal.toFixed(2)} €</p>
-            <p>PDV (25%): ${tax.toFixed(2)} €</p>
-            <p><strong>UKUPNO: ${total.toFixed(2)} €</strong></p>
-            <p>Način plaćanja: ${orderWithItems.paymentMethod ? getPaymentMethodText(orderWithItems.paymentMethod, 'hr') : 'Bankovni transfer'}</p>
-          </div>
-          
-          <div class="company-info">
-            <p>Steuernummer: 61 154/7175</p>
-            <p>Poslovanje prema regulaciji malog biznisa u Austriji.</p>
-          </div>
-          
-          <div class="footer">
-            <p>Hvala na kupnji!</p>
+              </tbody>
+            </table>
+            
+            <div class="amount-summary">
+              <div>Zwischensumme: ${subtotal.toFixed(2)} €</div>
+              <div>Dostava: ${shippingCost.toFixed(2)} €</div>
+              <div class="total-row">GESAMTBETRAG: ${total.toFixed(2)} €</div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="payment-info">
+              <div class="section-title">Zahlungsinformationen:</div>
+              <div>Zahlungsmethode: ${getPaymentMethodText(orderWithItems.paymentMethod || 'bank_transfer', 'de')}</div>
+              <div>Zahlungsstatus: ${orderWithItems.paymentStatus === 'completed' ? 'Bezahlt' : 'Ausstehend'}</div>
+            </div>
+            
+            <div class="thank-you">
+              Vielen Dank für Ihre Bestellung!
+            </div>
+            
+            <div class="footer">
+              Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 004366038787621<br>
+              Dies ist eine automatisch generierte Rechnung und ist ohne Unterschrift und Stempel gültig.<br>
+              Steuernummer: 61 154/7175<br>
+              Gemäss § 6 Abs. 1 Z 27 UStG. (Kleinunternehmerregelung) wird keine Umsatzsteuer berechnet.
+            </div>
           </div>
         </body>
         </html>
