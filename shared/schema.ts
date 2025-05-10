@@ -403,3 +403,75 @@ export const productCollectionsRelations = relations(productCollections, ({ one 
     references: [collections.id],
   }),
 }));
+
+// Tablica za račune
+export const invoices = pgTable("invoices", {
+  id: serial("id").primaryKey(),
+  invoiceNumber: text("invoice_number").notNull(),
+  orderId: integer("order_id"),
+  userId: integer("user_id").notNull(),
+  customerName: text("customer_name").notNull(),
+  customerEmail: text("customer_email"),
+  customerAddress: text("customer_address"),
+  customerCity: text("customer_city"),
+  customerPostalCode: text("customer_postal_code"),
+  customerCountry: text("customer_country"),
+  customerPhone: text("customer_phone"),
+  total: decimal("total", { precision: 10, scale: 2 }).notNull(),
+  subtotal: decimal("subtotal", { precision: 10, scale: 2 }).notNull(),
+  tax: decimal("tax", { precision: 10, scale: 2 }).notNull(),
+  language: text("language").default("hr").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertInvoiceSchema = createInsertSchema(invoices).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Tablica za stavke računa
+export const invoiceItems = pgTable("invoice_items", {
+  id: serial("id").primaryKey(),
+  invoiceId: integer("invoice_id").notNull(),
+  productId: integer("product_id").notNull(),
+  productName: text("product_name").notNull(),
+  quantity: integer("quantity").notNull(),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  selectedScent: text("selected_scent"),
+  selectedColor: text("selected_color"),
+});
+
+export const insertInvoiceItemSchema = createInsertSchema(invoiceItems).omit({
+  id: true,
+});
+
+// Definiranje tipova za račune
+export type Invoice = typeof invoices.$inferSelect;
+export type InsertInvoice = z.infer<typeof insertInvoiceSchema>;
+
+export type InvoiceItem = typeof invoiceItems.$inferSelect;
+export type InsertInvoiceItem = z.infer<typeof insertInvoiceItemSchema>;
+
+// Relacije za račune
+export const invoicesRelations = relations(invoices, ({ one, many }) => ({
+  order: one(orders, {
+    fields: [invoices.orderId],
+    references: [orders.id],
+  }),
+  user: one(users, {
+    fields: [invoices.userId],
+    references: [users.id],
+  }),
+  items: many(invoiceItems),
+}));
+
+export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
+  invoice: one(invoices, {
+    fields: [invoiceItems.invoiceId],
+    references: [invoices.id],
+  }),
+  product: one(products, {
+    fields: [invoiceItems.productId],
+    references: [products.id],
+  }),
+}));

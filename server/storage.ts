@@ -16,8 +16,11 @@ import {
   type ProductColor, type InsertProductColor,
   type Collection, type InsertCollection,
   type ProductCollection,
+  type Invoice, type InsertInvoice,
+  type InvoiceItem, type InsertInvoiceItem,
   users, products, categories, orders, orderItems, cartItems, reviews, settings, pages,
-  scents, colors, productScents, productColors, collections, productCollections
+  scents, colors, productScents, productColors, collections, productCollections, 
+  invoices, invoiceItems
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -123,6 +126,15 @@ export interface IStorage {
   getCollectionProducts(collectionId: number): Promise<Product[]>;
   addProductToCollection(productId: number, collectionId: number): Promise<ProductCollection>;
   removeProductFromCollection(productId: number, collectionId: number): Promise<void>;
+  
+  // Invoice methods
+  getInvoice(id: number): Promise<Invoice | undefined>;
+  getInvoiceByNumber(invoiceNumber: string): Promise<Invoice | undefined>;
+  getAllInvoices(): Promise<Invoice[]>;
+  getUserInvoices(userId: number): Promise<Invoice[]>;
+  createInvoice(invoice: InsertInvoice, items: InsertInvoiceItem[]): Promise<Invoice>;
+  getInvoiceItems(invoiceId: number): Promise<InvoiceItem[]>;
+  deleteInvoice(id: number): Promise<void>;
   
   // Session store
   sessionStore: SessionStore;
