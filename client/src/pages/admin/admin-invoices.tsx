@@ -460,7 +460,11 @@ export default function AdminInvoices() {
       // Podaci o kupcu
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
-      doc.text(`${t.buyer}:`, 20, 55);
+      if (lang === 'hr') {
+        doc.text("Podaci o kupcu:", 20, 55);
+      } else {
+        doc.text(`${t.buyer}:`, 20, 55);
+      }
       doc.setDrawColor(200, 200, 200);
       doc.line(20, 57, 190, 57);
       doc.setFont("helvetica", "normal");
@@ -475,7 +479,11 @@ export default function AdminInvoices() {
       }
       
       if (data.address) {
-        doc.text(`${t.deliveryAddress}: ${data.address}`, 20, customerY);
+        if (lang === 'hr') {
+          doc.text(`Adresa za dostavu: ${data.address}`, 20, customerY);
+        } else {
+          doc.text(`${t.deliveryAddress}: ${data.address}`, 20, customerY);
+        }
         customerY += 5;
         
         if (data.city && data.postalCode) {
@@ -499,7 +507,11 @@ export default function AdminInvoices() {
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
       // Koristi prijevod za naslov ovisno o jeziku
-      doc.text(t.orderItems + ":", 20, customerY + 5);
+      if (lang === 'hr') {
+        doc.text("Stavke narudžbe:", 20, customerY + 5);
+      } else {
+        doc.text(t.orderItems + ":", 20, customerY + 5);
+      }
       doc.setDrawColor(200, 200, 200);
       doc.line(20, customerY + 7, 190, customerY + 7);
       
@@ -540,7 +552,9 @@ export default function AdminInvoices() {
       
       // Dodavanje tablice
       autoTable(doc, {
-        head: [[t.item, t.quantity, t.price, t.total]],
+        head: lang === 'hr' 
+          ? [["Proizvod", "Količina", "Cijena/kom", "Ukupno"]] 
+          : [[t.item, t.quantity, t.price, t.total]],
         body: items,
         startY: customerY + 10,
         margin: { left: 20, right: 20 },
