@@ -50,7 +50,11 @@ import type {
   Page,
   InsertPage,
   Setting,
-  InsertSetting
+  InsertSetting,
+  Invoice,
+  InsertInvoice,
+  InvoiceItem, 
+  InsertInvoiceItem
 } from "@shared/schema";
 
 import connectPg from "connect-pg-simple";
