@@ -71,7 +71,7 @@ export default function AdminUsers() {
   });
   
   // Fetch user statistics when a user is selected
-  const { data: userStats, isLoading: isLoadingStats } = useQuery({
+  const { data: userStats, isLoading: isLoadingStats } = useQuery<{totalSpent: string, orderCount: number}>({
     queryKey: [`/api/users/${selectedUser?.id}/stats`],
     enabled: !!selectedUser,
   });
@@ -277,6 +277,10 @@ export default function AdminUsers() {
                                     <ShieldCheck className="mr-2 h-4 w-4" /> Dodaj admin prava
                                   </DropdownMenuItem>
                                 )}
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => openDiscountModal(user)}>
+                                  <PercentCircle className="mr-2 h-4 w-4" /> Postavi popust
+                                </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>
