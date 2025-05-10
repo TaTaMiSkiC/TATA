@@ -357,7 +357,8 @@ export default function AdminInvoices() {
           handInvoice: "Ručni račun",
           thankYou: "Hvala Vam na narudžbi",
           generatedNote: "Ovo je automatski generirani račun i valjan je bez potpisa i pečata",
-          exemptionNote: "Poduzetnik nije u sustavu PDV-a, PDV nije obračunat temeljem odredbi posebnog postupka oporezivanja za male porezne obveznike."
+          exemptionNote: "Poduzetnik nije u sustavu PDV-a, PDV nije obračunat temeljem odredbi posebnog postupka oporezivanja za male porezne obveznike.",
+          orderItems: "Stavke narudžbe"
         },
         en: {
           title: "INVOICE",
@@ -383,7 +384,8 @@ export default function AdminInvoices() {
           handInvoice: "Hand invoice",
           thankYou: "Thank you for your order",
           generatedNote: "This is an automatically generated invoice and is valid without signature or stamp",
-          exemptionNote: "The entrepreneur is not in the VAT system, VAT is not calculated based on the provisions of the special taxation procedure for small taxpayers."
+          exemptionNote: "The entrepreneur is not in the VAT system, VAT is not calculated based on the provisions of the special taxation procedure for small taxpayers.",
+          orderItems: "Order items"
         },
         de: {
           title: "RECHNUNG",
@@ -409,7 +411,8 @@ export default function AdminInvoices() {
           handInvoice: "Handrechnung",
           thankYou: "Vielen Dank für Ihre Bestellung",
           generatedNote: "Dies ist eine automatisch generierte Rechnung und ist ohne Unterschrift und Stempel gültig",
-          exemptionNote: "Der Unternehmer ist nicht im Mehrwertsteuersystem, MwSt. wird nicht berechnet gemäß den Bestimmungen des Kleinunternehmerregelung."
+          exemptionNote: "Der Unternehmer ist nicht im Mehrwertsteuersystem, MwSt. wird nicht berechnet gemäß den Bestimmungen des Kleinunternehmerregelung.",
+          orderItems: "Bestellpositionen"
         }
       };
 
@@ -495,7 +498,8 @@ export default function AdminInvoices() {
       // Stavke narudžbe
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
-      doc.text("Stavke narudžbe:", 20, customerY + 5);
+      // Koristi prijevod za naslov ovisno o jeziku
+      doc.text(t.orderItems + ":", 20, customerY + 5);
       doc.setDrawColor(200, 200, 200);
       doc.line(20, customerY + 7, 190, customerY + 7);
       
@@ -580,11 +584,11 @@ export default function AdminInvoices() {
       doc.setFont("helvetica", "normal");
       
       // Prikaz međuzbroja, dostave i ukupnog iznosa s desne strane
-      doc.text(`${t.subtotal}:`, 150, finalY);
+      doc.text(`${t.subtotal}:`, 140, finalY);
       doc.text(`${subtotal} €`, 190, finalY, { align: "right" });
       
       // Dostava
-      doc.text("Dostava:", 150, finalY + 5);
+      doc.text("Dostava:", 140, finalY + 5);
       doc.text("0.00 €", 190, finalY + 5, { align: "right" });
       
       // Ukupan iznos - podebljan
@@ -593,10 +597,10 @@ export default function AdminInvoices() {
       
       // Dodajemo box za ukupan iznos
       doc.setFillColor(245, 245, 245);
-      doc.rect(150, finalY + 7, 40, 10, 'F');
+      doc.roundedRect(140, finalY + 7, 50, 10, 1, 1, 'F');
       
-      doc.text(`${t.totalAmount}:`, 150, finalY + 14);
-      doc.text(`${total} €`, 190, finalY + 14, { align: "right" });
+      doc.text(`${t.totalAmount}:`, 145, finalY + 14);
+      doc.text(`${total} €`, 185, finalY + 14, { align: "right" });
       
       // Informacije o plaćanju
       doc.setFontSize(11);
