@@ -58,12 +58,23 @@ interface OrderItemWithProduct extends OrderItemType {
   selectedColor?: string;
 }
 
-interface OrderWithItems extends Omit<Order, 'subtotal' | 'discountAmount' | 'shippingCost'> {
+// Odvojeni interface bez nasljeđivanja za rješavanje tipova
+interface OrderWithItems {
+  id: number;
+  userId: number;
+  status: string;
+  total: string;
+  createdAt: Date;
   items: OrderItemWithProduct[];
   subtotal?: string | null;
   discountAmount?: string | null;
   shippingCost?: string | null;
   paymentMethod?: string;
+  paymentStatus?: string;
+  shippingAddress?: string | null;
+  shippingCity?: string | null;
+  shippingPostalCode?: string | null;
+  shippingCountry?: string | null;
   // Dodatna polja koja možda nisu u originalnom Order tipu
   taxAmount?: string | undefined;
   shippingFullName?: string | undefined;
@@ -182,6 +193,10 @@ export default function OrderDetailsPage() {
     if (!orderWithItems || !user) return;
     
     setGeneratingInvoice(true);
+    
+    // Dodajmo dodatno logiranje
+    console.log("Podaci o narudžbi:", JSON.stringify(orderWithItems));
+    console.log("Način plaćanja:", orderWithItems.paymentMethod || 'Nije definirano');
     
     try {
       // Odabir jezika za ispis računa
