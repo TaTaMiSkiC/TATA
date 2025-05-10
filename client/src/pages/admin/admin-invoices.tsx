@@ -720,8 +720,8 @@ export default function AdminInvoices() {
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
       if (lang === 'hr') {
-        doc.text(`Način plaćanja: Gotovina`, 20, finalY + 32);
-        doc.text(`Status plaćanja: Plaćeno`, 20, finalY + 37);
+        doc.text(`Nacin placanja: Gotovina`, 20, finalY + 32);
+        doc.text(`Status placanja: Placeno`, 20, finalY + 37);
       } else {
         doc.text(`${t.paymentMethod}: ${t.cash}`, 20, finalY + 32);
         doc.text(`${t.paymentStatus}: ${t.paid}`, 20, finalY + 37);
@@ -731,14 +731,14 @@ export default function AdminInvoices() {
       doc.setFontSize(10);
       doc.setFont("helvetica", "bold");
       if (lang === 'hr') {
-        doc.text("Hvala Vam na narudžbi!", 105, finalY + 50, { align: "center" });
+        doc.text("Hvala Vam na narudzbi!", 105, finalY + 50, { align: "center" });
       } else {
         doc.text(t.thankYou + "!", 105, finalY + 50, { align: "center" });
       }
       
       // Podnožje s kontakt informacijama
       doc.setFontSize(8);
-      doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 0043660387821", 105, finalY + 60, { align: "center" });
+      doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Osterreich | Email: daniela.svoboda2@gmail.com | Telefon: 0043660387821", 105, finalY + 60, { align: "center" });
       
       // Napomena o automatskom generiranju
       doc.setFontSize(8);
