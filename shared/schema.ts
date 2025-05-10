@@ -17,6 +17,9 @@ export const users = pgTable("users", {
   country: text("country"),
   phone: text("phone"),
   isAdmin: boolean("is_admin").default(false).notNull(),
+  discountAmount: decimal("discount_amount", { precision: 10, scale: 2 }).default("0"),
+  discountMinimumOrder: decimal("discount_minimum_order", { precision: 10, scale: 2 }).default("0"),
+  discountExpiryDate: timestamp("discount_expiry_date"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
