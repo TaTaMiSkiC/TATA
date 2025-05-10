@@ -15,6 +15,8 @@ import AboutPage from "@/pages/about-page";
 import ContactPage from "@/pages/contact-page";
 import BlogPage from "@/pages/blog-page";
 import ProfilePage from "@/pages/profile-page";
+import OrdersPage from "@/pages/orders-page";
+import OrderDetailsPage from "@/pages/order-details-page";
 import AdminDashboard from "@/pages/admin/admin-dashboard";
 import AdminProducts from "@/pages/admin/admin-products";
 import AdminCategories from "@/pages/admin/admin-categories";
@@ -47,6 +49,8 @@ function Router() {
       <Route path="/contact" component={ContactPage} />
       <Route path="/blog" component={BlogPage} />
       <ProtectedRoute path="/profile" component={ProfilePage} />
+      <ProtectedRoute path="/orders" component={OrdersPage} />
+      <ProtectedRoute path="/orders/:id" component={OrderDetailsPage} />
       <ProtectedRoute path="/checkout" component={CheckoutPage} />
       <ProtectedRoute path="/order-success" component={OrderSuccessPage} />
       <ProtectedRoute path="/admin" component={AdminDashboard} />
