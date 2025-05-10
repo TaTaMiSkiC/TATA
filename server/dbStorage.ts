@@ -438,6 +438,12 @@ export class DatabaseStorage implements IStorage {
       
       // Mapiramo rezultate u OrderItemWithProduct format
       const result = items.map(item => {
+        console.log("Obrađujem stavku:", JSON.stringify(item));
+        
+        // Prije stvaranja objekta, moramo provjeriti točno što imamo
+        const hasScent = 'scentName' in item;
+        const hasColor = 'colorName' in item;
+        
         return {
           ...item,
           product: item.product || {
@@ -452,8 +458,9 @@ export class DatabaseStorage implements IStorage {
             createdAt: new Date(),
             updatedAt: new Date()
           },
-          selectedScent: item.scentName,
-          selectedColor: item.colorName
+          // Sigurno pristupamo svojstvima koja možda ne postoje
+          selectedScent: hasScent ? item.scentName : null, 
+          selectedColor: hasColor ? item.colorName : null
         };
       });
       
