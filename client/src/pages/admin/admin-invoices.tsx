@@ -585,7 +585,7 @@ export default function AdminInvoices() {
       doc.setFont("helvetica", "bold");
       // Koristi prijevod za naslov ovisno o jeziku
       if (lang === 'hr') {
-        doc.text("Stavke narudžbe:", 20, customerY + 5);
+        doc.text("Stavke narudzbe:", 20, customerY + 5);
       } else {
         doc.text(t.orderItems + ":", 20, customerY + 5);
       }
@@ -630,7 +630,7 @@ export default function AdminInvoices() {
       // Dodavanje tablice
       autoTable(doc, {
         head: lang === 'hr' 
-          ? [["Proizvod", "Količina", "Cijena/kom", "Ukupno"]] 
+          ? [["Proizvod", "Kolicina", "Cijena/kom", "Ukupno"]] 
           : [[t.item, t.quantity, t.price, t.total]],
         body: items,
         startY: customerY + 10,
@@ -677,7 +677,7 @@ export default function AdminInvoices() {
       // Prikaz međuzbroja, dostave i ukupnog iznosa s desne strane
       doc.setFontSize(10);
       if (lang === 'hr') {
-        doc.text("Međuzbroj:", 120, finalY);
+        doc.text("Meduzboj:", 120, finalY);
       } else {
         doc.text(`${t.subtotal}:`, 120, finalY);
       }
@@ -711,7 +711,7 @@ export default function AdminInvoices() {
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
       if (lang === 'hr') {
-        doc.text("Informacije o plaćanju:", 20, finalY + 25);
+        doc.text("Informacije o placanju:", 20, finalY + 25);
       } else {
         doc.text(`${t.paymentInfo}:`, 20, finalY + 25);
       }
