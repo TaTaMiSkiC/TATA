@@ -323,6 +323,7 @@ export default function AdminInvoices() {
       phone: "",
       invoiceNumber: createInvoiceNumber(),
       language: "hr",
+      paymentMethod: "cash",
     }
   });
   
@@ -1333,6 +1334,32 @@ export default function AdminInvoices() {
                               <SelectItem value="hr">Hrvatski</SelectItem>
                               <SelectItem value="en">Engleski</SelectItem>
                               <SelectItem value="de">Njemački</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="paymentMethod"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Način plaćanja*</FormLabel>
+                          <Select 
+                            onValueChange={field.onChange} 
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Odaberi način plaćanja" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="cash">Gotovina</SelectItem>
+                              <SelectItem value="bank">Bankovni transfer</SelectItem>
+                              <SelectItem value="paypal">PayPal</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
