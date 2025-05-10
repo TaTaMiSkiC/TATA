@@ -18,10 +18,9 @@ import {
   type ProductCollection,
   type Invoice, type InsertInvoice,
   type InvoiceItem, type InsertInvoiceItem,
-  type Payment, type InsertPayment,
   users, products, categories, orders, orderItems, cartItems, reviews, settings, pages,
   scents, colors, productScents, productColors, collections, productCollections, 
-  invoices, invoiceItems, payments
+  invoices, invoiceItems
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -136,12 +135,6 @@ export interface IStorage {
   createInvoice(invoice: InsertInvoice, items: InsertInvoiceItem[]): Promise<Invoice>;
   getInvoiceItems(invoiceId: number): Promise<InvoiceItem[]>;
   deleteInvoice(id: number): Promise<void>;
-  
-  // Payment methods
-  getAllPayments(): Promise<Payment[]>;
-  getPaymentsByOrder(orderId: number): Promise<Payment[]>;
-  createPayment(payment: InsertPayment): Promise<Payment>;
-  updatePaymentStatus(id: number, status: string): Promise<Payment | undefined>;
   
   // Session store
   sessionStore: SessionStore;
@@ -453,7 +446,8 @@ export class MemStorage implements IStorage {
   }
 }
 
-// DatabaseStorage implementation is in dbStorage.ts
+export class DatabaseStorage implements IStorage {
+  sessionStore: SessionStore;
 
   constructor() {
     // Initialize PostgreSQL session store
@@ -1361,8 +1355,5 @@ export class MemStorage implements IStorage {
   }
 }
 
-// Import DatabaseStorage implementation from dbStorage.ts
-import { DatabaseStorage } from './dbStorage';
-
-// Initialize storage instance
+// Use database storage instead of memory storage
 export const storage = new DatabaseStorage();

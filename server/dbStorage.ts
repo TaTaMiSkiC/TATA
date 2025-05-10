@@ -17,8 +17,7 @@ import {
   pages,
   settings,
   invoices,
-  invoiceItems,
-  payments
+  invoiceItems
 } from "@shared/schema";
 
 import type { 
@@ -43,8 +42,6 @@ import type {
   ProductScent,
   InsertProductScent,
   ProductColor,
-  Payment,
-  InsertPayment,
   InsertProductColor,
   Collection,
   InsertCollection,
@@ -775,39 +772,5 @@ export class DatabaseStorage implements IStorage {
     
     // Then delete the invoice
     await db.delete(invoices).where(eq(invoices.id, id));
-  }
-  
-  // Payment methods
-  async getAllPayments(): Promise<Payment[]> {
-    const paymentsList = await db.query.payments.findMany({
-      with: {
-        order: true
-      },
-      orderBy: [desc(payments.createdAt)]
-    });
-    
-    return paymentsList;
-  }
-  
-  async getPaymentsByOrder(orderId: number): Promise<Payment[]> {
-    const paymentsList = await db.select().from(payments).where(eq(payments.orderId, orderId));
-    
-    return paymentsList;
-  }
-  
-  async createPayment(paymentData: InsertPayment): Promise<Payment> {
-    const [payment] = await db.insert(payments).values(paymentData).returning();
-    
-    return payment;
-  }
-  
-  async updatePaymentStatus(id: number, status: string): Promise<Payment | undefined> {
-    const [payment] = await db
-      .update(payments)
-      .set({ status })
-      .where(eq(payments.id, id))
-      .returning();
-    
-    return payment;
   }
 }

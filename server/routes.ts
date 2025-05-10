@@ -21,7 +21,6 @@ import {
   insertCollectionSchema,
   insertInvoiceSchema,
   insertInvoiceItemSchema,
-  insertPaymentSchema,
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -1902,107 +1901,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting invoice:", error);
       res.status(500).json({ message: "Failed to delete invoice" });
-    }
-  });
-
-  // === PAYMENT API ENDPOINTS ===
-  
-  // Get all payments (admin only)
-  app.get("/api/payments", async (req, res) => {
-    try {
-      if (!req.isAuthenticated() || !req.user?.isAdmin) {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
-      
-      const payments = await storage.getAllPayments();
-      res.json(payments);
-    } catch (error) {
-      console.error("Error fetching payments:", error);
-      res.status(500).json({ message: "Failed to fetch payments" });
-    }
-  });
-  
-  // Get payments for a specific order
-  app.get("/api/orders/:id/payments", async (req, res) => {
-    try {
-      if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "Unauthenticated" });
-      }
-      
-      const orderId = parseInt(req.params.id);
-      const order = await storage.getOrder(orderId);
-      
-      // Check if order exists and belongs to the current user or user is admin
-      if (!order || (order.userId !== req.user.id && !req.user.isAdmin)) {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
-      
-      const payments = await storage.getPaymentsByOrder(orderId);
-      res.json(payments);
-    } catch (error) {
-      console.error("Error fetching order payments:", error);
-      res.status(500).json({ message: "Failed to fetch order payments" });
-    }
-  });
-  
-  // Create a new payment
-  app.post("/api/payments", async (req, res) => {
-    try {
-      if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "Unauthenticated" });
-      }
-      
-      const validatedData = insertPaymentSchema.parse(req.body);
-      
-      // Check if the order exists and belongs to the current user or user is admin
-      const order = await storage.getOrder(validatedData.orderId);
-      if (!order || (order.userId !== req.user.id && !req.user.isAdmin)) {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
-      
-      const payment = await storage.createPayment(validatedData);
-      res.status(201).json(payment);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: error.errors });
-      }
-      console.error("Error creating payment:", error);
-      res.status(500).json({ message: "Failed to create payment" });
-    }
-  });
-  
-  // Update payment status (admin only)
-  app.patch("/api/payments/:id/status", async (req, res) => {
-    try {
-      if (!req.isAuthenticated() || !req.user?.isAdmin) {
-        return res.status(403).json({ message: "Unauthorized" });
-      }
-      
-      const id = parseInt(req.params.id);
-      const { status } = req.body;
-      
-      if (!status || typeof status !== 'string') {
-        return res.status(400).json({ message: "Invalid status value" });
-      }
-      
-      // Check valid status values
-      const validStatuses = ['pending', 'completed', 'failed', 'refunded'];
-      if (!validStatuses.includes(status)) {
-        return res.status(400).json({ 
-          message: `Invalid status. Must be one of: ${validStatuses.join(', ')}` 
-        });
-      }
-      
-      const payment = await storage.updatePaymentStatus(id, status);
-      
-      if (!payment) {
-        return res.status(404).json({ message: "Payment not found" });
-      }
-      
-      res.json(payment);
-    } catch (error) {
-      console.error("Error updating payment status:", error);
-      res.status(500).json({ message: "Failed to update payment status" });
     }
   });
 
