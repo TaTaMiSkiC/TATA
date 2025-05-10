@@ -453,8 +453,7 @@ export class MemStorage implements IStorage {
   }
 }
 
-export class DatabaseStorage implements IStorage {
-  sessionStore: SessionStore;
+// DatabaseStorage implementation is in dbStorage.ts
 
   constructor() {
     // Initialize PostgreSQL session store
@@ -1362,5 +1361,8 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-// Use database storage instead of memory storage
+// Import DatabaseStorage implementation from dbStorage.ts
+import { DatabaseStorage } from './dbStorage';
+
+// Initialize storage instance
 export const storage = new DatabaseStorage();
