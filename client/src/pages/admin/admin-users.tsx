@@ -38,9 +38,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, MoreVertical, UserCog, Info, Mail, Eye, EyeOff, ShieldCheck, ShieldX, UserCheck } from "lucide-react";
+import { Loader2, Search, MoreVertical, UserCog, Info, Mail, Eye, EyeOff, ShieldCheck, ShieldX, UserCheck, CreditCard, Package, PercentCircle, CalendarDays, CreditCard as CreditCardIcon, DollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function AdminUsers() {
   const { toast } = useToast();
@@ -280,7 +293,7 @@ export default function AdminUsers() {
       
       {/* User Details Dialog */}
       <Dialog open={isUserDetailsOpen} onOpenChange={setIsUserDetailsOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-4xl">
           <DialogHeader>
             <DialogTitle className="flex items-center">
               <UserCog className="mr-2 h-5 w-5" />
@@ -292,64 +305,148 @@ export default function AdminUsers() {
           </DialogHeader>
           
           {selectedUser && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">ID korisnika</p>
-                  <p>{selectedUser.id}</p>
+            <Tabs defaultValue="info" className="mt-4">
+              <TabsList className="grid w-full grid-cols-3 mb-4">
+                <TabsTrigger value="info">Informacije</TabsTrigger>
+                <TabsTrigger value="stats">Statistika</TabsTrigger>
+                <TabsTrigger value="discount">Popusti</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="info" className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">ID korisnika</p>
+                    <p>{selectedUser.id}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Tip korisnika</p>
+                    <Badge variant={selectedUser.isAdmin ? "default" : "outline"}>
+                      {selectedUser.isAdmin ? "Administrator" : "Korisnik"}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Korisničko ime</p>
+                    <p>{selectedUser.username}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Email</p>
+                    <p>{selectedUser.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Ime</p>
+                    <p>{selectedUser.firstName || "-"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Prezime</p>
+                    <p>{selectedUser.lastName || "-"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Telefon</p>
+                    <p>{selectedUser.phone || "-"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Datum registracije</p>
+                    <p>{new Date(selectedUser.createdAt).toLocaleString()}</p>
+                  </div>
                 </div>
+                
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Tip korisnika</p>
-                  <Badge variant={selectedUser.isAdmin ? "default" : "outline"}>
-                    {selectedUser.isAdmin ? "Administrator" : "Korisnik"}
-                  </Badge>
+                  <p className="text-sm font-medium text-gray-500">Adresa</p>
+                  <p>{selectedUser.address || "-"}</p>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Korisničko ime</p>
-                  <p>{selectedUser.username}</p>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Grad</p>
+                    <p>{selectedUser.city || "-"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Poštanski broj</p>
+                    <p>{selectedUser.postalCode || "-"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Država</p>
+                    <p>{selectedUser.country || "-"}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Email</p>
-                  <p>{selectedUser.email}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Ime</p>
-                  <p>{selectedUser.firstName || "-"}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Prezime</p>
-                  <p>{selectedUser.lastName || "-"}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Telefon</p>
-                  <p>{selectedUser.phone || "-"}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Datum registracije</p>
-                  <p>{new Date(selectedUser.createdAt).toLocaleString()}</p>
-                </div>
-              </div>
+              </TabsContent>
               
-              <div>
-                <p className="text-sm font-medium text-gray-500">Adresa</p>
-                <p>{selectedUser.address || "-"}</p>
-              </div>
+              <TabsContent value="stats">
+                {isLoadingStats ? (
+                  <div className="flex justify-center items-center py-8">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  </div>
+                ) : userStats ? (
+                  <div className="space-y-6">
+                    <h3 className="text-lg font-semibold mb-4">Statistika korisnika</h3>
+                    
+                    <div className="grid grid-cols-2 gap-6">
+                      <Card>
+                        <CardContent className="flex flex-col items-center justify-center pt-6">
+                          <DollarSign className="h-8 w-8 text-primary mb-2" />
+                          <h4 className="text-xl font-bold">{userStats.totalSpent} €</h4>
+                          <p className="text-sm text-muted-foreground">Ukupna potrošnja</p>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card>
+                        <CardContent className="flex flex-col items-center justify-center pt-6">
+                          <Package className="h-8 w-8 text-primary mb-2" />
+                          <h4 className="text-xl font-bold">{userStats.orderCount}</h4>
+                          <p className="text-sm text-muted-foreground">Broj narudžbi</p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Nije moguće učitati statistiku korisnika
+                  </div>
+                )}
+              </TabsContent>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Grad</p>
-                  <p>{selectedUser.city || "-"}</p>
+              <TabsContent value="discount">
+                <div className="space-y-6">
+                  <h3 className="text-lg font-semibold mb-4">Trenutni popust</h3>
+                  
+                  {selectedUser.discountAmount && parseFloat(selectedUser.discountAmount) > 0 ? (
+                    <Card className="bg-green-50 border-green-200">
+                      <CardContent className="pt-6">
+                        <div className="flex items-center mb-2">
+                          <PercentCircle className="h-5 w-5 text-green-500 mr-2" />
+                          <h4 className="text-sm font-semibold text-green-700">Aktivni popust</h4>
+                        </div>
+                        <p className="text-sm">
+                          Korisnik ima aktivan popust od <span className="font-semibold">{selectedUser.discountAmount} €</span> 
+                          {selectedUser.discountMinimumOrder && parseFloat(selectedUser.discountMinimumOrder) > 0 ? 
+                            ` za narudžbe iznad ${selectedUser.discountMinimumOrder} €` : 
+                            ' za sljedeću narudžbu'}
+                        </p>
+                        {selectedUser.discountExpiryDate && (
+                          <p className="text-xs text-green-600 mt-1">
+                            Vrijedi do: {new Date(selectedUser.discountExpiryDate).toLocaleDateString()}
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <div className="text-center py-4 text-muted-foreground">
+                      Korisnik trenutno nema aktivan popust
+                    </div>
+                  )}
+                  
+                  <Button 
+                    onClick={() => openDiscountModal(selectedUser)}
+                    className="w-full"
+                  >
+                    <PercentCircle className="h-4 w-4 mr-2" />
+                    {selectedUser.discountAmount && parseFloat(selectedUser.discountAmount) > 0 
+                      ? "Uredi popust" 
+                      : "Dodaj popust"}
+                  </Button>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Poštanski broj</p>
-                  <p>{selectedUser.postalCode || "-"}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Država</p>
-                  <p>{selectedUser.country || "-"}</p>
-                </div>
-              </div>
-            </div>
+              </TabsContent>
+            </Tabs>
           )}
           
           <DialogFooter className="flex justify-between items-center">
@@ -372,6 +469,95 @@ export default function AdminUsers() {
             </Button>
             <Button onClick={() => setIsUserDetailsOpen(false)}>
               Zatvori
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Discount Modal */}
+      <Dialog open={isDiscountModalOpen} onOpenChange={setIsDiscountModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <PercentCircle className="mr-2 h-5 w-5" />
+              {selectedUser?.discountAmount && parseFloat(selectedUser.discountAmount) > 0 
+                ? "Uredi popust" 
+                : "Dodaj popust"}
+            </DialogTitle>
+            <DialogDescription>
+              Postavite popust za korisnika {selectedUser?.username}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="discount-amount">Iznos popusta (€)</Label>
+              <Input
+                id="discount-amount"
+                type="number"
+                min="0"
+                step="0.01"
+                value={discountAmount}
+                onChange={(e) => setDiscountAmount(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">Popust koji će biti primijenjen na narudžbu</p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="minimum-order">Minimalni iznos narudžbe (€)</Label>
+              <Input
+                id="minimum-order"
+                type="number"
+                min="0"
+                step="0.01"
+                value={discountMinimumOrder}
+                onChange={(e) => setDiscountMinimumOrder(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">Za popust bez minimalnog iznosa, ostavite 0</p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="expiry-date">Datum isteka</Label>
+              <Input
+                id="expiry-date"
+                type="date"
+                value={discountExpiryDate}
+                onChange={(e) => setDiscountExpiryDate(e.target.value)}
+              />
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsDiscountModalOpen(false)}
+            >
+              Odustani
+            </Button>
+            <Button 
+              onClick={() => {
+                if (!selectedUser) return;
+                
+                setUserDiscountMutation.mutate({
+                  userId: selectedUser.id,
+                  discountAmount,
+                  discountMinimumOrder,
+                  discountExpiryDate
+                });
+              }}
+              disabled={setUserDiscountMutation.isPending}
+            >
+              {setUserDiscountMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Spremanje...
+                </>
+              ) : (
+                <>
+                  <PercentCircle className="mr-2 h-4 w-4" />
+                  Spremi
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
