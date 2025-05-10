@@ -1840,6 +1840,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { invoice, items } = req.body;
       
+      // Dodaj userId iz autentificiranog korisnika
+      invoice.userId = req.user.id;
+      
+      console.log("Creating invoice with data:", { invoice, items });
+      
       // Validate the invoice data
       const validatedInvoice = insertInvoiceSchema.parse(invoice);
       
