@@ -1478,9 +1478,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Dohvati sve kolekcije
   app.get("/api/collections", async (req, res) => {
     try {
+      console.log("Dohvaćam sve kolekcije...");
       const collections = await storage.getAllCollections();
+      console.log("Dohvaćene kolekcije:", collections);
       res.json(collections);
     } catch (error) {
+      console.error("Greška pri dohvaćanju kolekcija:", error);
       res.status(500).json({ message: "Failed to fetch collections" });
     }
   });
@@ -1528,10 +1531,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized" });
       }
       
+      console.log("Kreiranje nove kolekcije, podaci:", req.body);
       const validatedData = insertCollectionSchema.parse(req.body);
+      console.log("Podaci nakon validacije:", validatedData);
       const collection = await storage.createCollection(validatedData);
+      console.log("Kreirana kolekcija:", collection);
       res.status(201).json(collection);
     } catch (error) {
+      console.error("Greška pri kreiranju kolekcije:", error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: error.errors });
       }
