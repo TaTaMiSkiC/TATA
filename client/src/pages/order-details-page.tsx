@@ -202,7 +202,12 @@ export default function OrderDetailsPage() {
           tax: "PDV (25%)",
           grandTotal: "UKUPNO",
           thankYou: "Hvala na kupnji!",
-          footer: "Kerzenwelt by Dani - Obrt za proizvodnju svijeća"
+          footer: "Kerzenwelt by Dani - Obrt za proizvodnju svijeća",
+          paymentMethod: "Način plaćanja",
+          cashPayment: "Gotovina",
+          bankTransfer: "Bankovni prijenos",
+          paypalPayment: "PayPal",
+          deliveryAddress: "Adresa za dostavu"
         },
         en: {
           title: "INVOICE",
@@ -221,7 +226,12 @@ export default function OrderDetailsPage() {
           tax: "VAT (25%)",
           grandTotal: "GRAND TOTAL",
           thankYou: "Thank you for your purchase!",
-          footer: "Kerzenwelt by Dani - Candle Manufacturing Business"
+          footer: "Kerzenwelt by Dani - Candle Manufacturing Business",
+          paymentMethod: "Payment Method",
+          cashPayment: "Cash",
+          bankTransfer: "Bank Transfer",
+          paypalPayment: "PayPal", 
+          deliveryAddress: "Delivery Address"
         },
         de: {
           title: "RECHNUNG",
@@ -240,7 +250,27 @@ export default function OrderDetailsPage() {
           tax: "MwSt. (25%)",
           grandTotal: "GESAMTSUMME",
           thankYou: "Danke für Ihren Einkauf!",
-          footer: "Kerzenwelt by Dani - Kerzenherstellungsbetrieb"
+          footer: "Kerzenwelt by Dani - Kerzenherstellungsbetrieb",
+          paymentMethod: "Zahlungsmethode",
+          cashPayment: "Bargeld",
+          bankTransfer: "Banküberweisung",
+          paypalPayment: "PayPal",
+          deliveryAddress: "Lieferadresse"
+        }
+      };
+      
+      // Funkcija za dobivanje teksta načina plaćanja prema jeziku
+      const getPaymentMethodText = (method: string, lang: 'hr' | 'en' | 'de') => {
+        const t = translations[lang];
+        switch (method) {
+          case 'cash':
+            return t.cashPayment;
+          case 'bank':
+            return t.bankTransfer;
+          case 'paypal':
+            return t.paypalPayment;
+          default:
+            return method;
         }
       };
       
@@ -349,8 +379,13 @@ export default function OrderDetailsPage() {
       // Dodavanje podnožja
       const finalY = (doc as any).lastAutoTable.finalY || 120;
       
+      // Dodajemo način plaćanja
       doc.setFontSize(10);
-      doc.text(t.thankYou, 105, finalY + 10, { align: "center" });
+      const paymentMethodText = getPaymentMethodText(orderWithItems.paymentMethod || 'cash', selectedLanguage);
+      doc.text(`${t.paymentMethod}: ${paymentMethodText}`, 20, finalY + 15);
+      
+      doc.setFontSize(10);
+      doc.text(t.thankYou, 105, finalY + 25, { align: "center" });
       
       doc.setFontSize(8);
       doc.text(t.footer, 105, 280, { align: "center" });
