@@ -420,44 +420,38 @@ export class DatabaseStorage implements IStorage {
 
   async getOrderItems(orderId: number): Promise<OrderItemWithProduct[]> {
     try {
-      // Dohvati stavke narudžbe
-      const items = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId));
+      // Koristi Drizzle's relations API za dohvaćanje stavki s proizvodima
+      const items = await db.query.orderItems.findMany({
+        where: eq(orderItems.orderId, orderId),
+        with: {
+          product: true
+        }
+      });
       
-      // Dohvati sve potrebne proizvode odjednom
-      const productIds = items.map(item => item.productId);
-      const productsArray = await db.select().from(products)
-        .where(sql`${products.id} IN (${productIds.join(',')})`);
+      console.log("Dohvaćene stavke s proizvodima:", JSON.stringify(items));
       
-      // Mapiranje proizvoda po ID-u za brži pristup
-      const productsMap = new Map(productsArray.map(product => [product.id, product]));
-      
-      // Formiranje rezultata
+      // Mapiramo rezultate u OrderItemWithProduct format
       const result = items.map(item => {
-        // Pronađi proizvod u mapi
-        const product = productsMap.get(item.productId);
-        
-        // Ako proizvod postoji, koristi ga, a ako ne, kreiraj osnovni objekt
-        const productData = product || {
-          id: item.productId,
-          name: item.productName || "Proizvod nije dostupan",
-          description: "",
-          price: "0",
-          categoryId: 0,
-          imageUrl: null,
-          featured: false,
-          inventory: 0,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        };
-        
-        // Vrati stavku s podacima o proizvodu i izabranim opcijama
         return {
           ...item,
-          product: productData,
+          product: item.product || {
+            id: item.productId,
+            name: item.productName || `Proizvod #${item.productId}`,
+            description: "",
+            price: "0",
+            categoryId: 0,
+            imageUrl: null,
+            featured: false,
+            inventory: 0,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          },
           selectedScent: item.scentName,
           selectedColor: item.colorName
         };
       });
+      
+      console.log("Konačni rezultat:", JSON.stringify(result[0]));
       
       return result;
     } catch (error) {
