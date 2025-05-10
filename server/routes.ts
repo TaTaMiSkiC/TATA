@@ -889,6 +889,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Update user profile
+  app.put("/api/users/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const id = parseInt(req.params.id);
+      
+      // Ensure users can only update their own profile (unless admin)
+      if (id !== req.user.id && !req.user.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      // Extract only allowed fields for update
+      const { firstName, lastName, email, address, city, postalCode, country, phone } = req.body;
+      
+      // Validate email if provided
+      if (email && email !== req.user.email) {
+        const existingUser = await storage.getUserByEmail(email);
+        if (existingUser && existingUser.id !== id) {
+          return res.status(400).json({ message: "Email already in use" });
+        }
+      }
+      
+      // Update user data
+      const updatedUser = await storage.updateUser(id, {
+        firstName,
+        lastName,
+        email,
+        address,
+        city,
+        postalCode,
+        country,
+        phone,
+      });
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update user profile" });
+    }
+  });
+
   // Delete user account
   app.delete("/api/users/:id", async (req, res) => {
     try {
