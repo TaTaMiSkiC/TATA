@@ -28,6 +28,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
+  Select, 
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue 
+} from "@/components/ui/select";
+import { 
   Loader2, 
   ArrowLeft, 
   PackageCheck, 
@@ -35,8 +42,14 @@ import {
   Clock,
   Truck,
   CheckCircle,
-  XCircle
+  XCircle,
+  FileText,
+  Download
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import jsPDF from "jspdf";
+import 'jspdf-autotable';
 import { format } from "date-fns";
 
 interface OrderItemWithProduct extends OrderItemType {
@@ -122,6 +135,9 @@ export default function OrderDetailsPage() {
   const params = useParams();
   const orderId = params.id;
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const [generatingInvoice, setGeneratingInvoice] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<'hr' | 'en' | 'de'>('hr');
   
   // Preusmjeri na stranicu za prijavu ako korisnik nije prijavljen
   useEffect(() => {
@@ -159,6 +175,189 @@ export default function OrderDetailsPage() {
   const isLoading = isLoadingOrder || isLoadingItems || isLoadingProducts;
   const error = orderError || itemsError;
   
+  // Funkcija za generiranje PDF računa
+  const generateInvoice = () => {
+    if (!orderWithItems || !user) return;
+    
+    setGeneratingInvoice(true);
+    
+    try {
+      // Odabir jezika za ispis računa
+      const translations = {
+        hr: {
+          title: "RAČUN",
+          invoiceNumber: "Broj računa",
+          date: "Datum",
+          buyer: "Kupac",
+          seller: "Prodavatelj",
+          address: "Adresa",
+          phone: "Telefon",
+          email: "Email",
+          item: "Stavka",
+          quantity: "Količina",
+          price: "Cijena",
+          total: "Ukupno",
+          subtotal: "Međuzbroj",
+          tax: "PDV (25%)",
+          grandTotal: "UKUPNO",
+          thankYou: "Hvala na kupnji!",
+          footer: "Kerzenwelt by Dani - Obrt za proizvodnju svijeća"
+        },
+        en: {
+          title: "INVOICE",
+          invoiceNumber: "Invoice Number",
+          date: "Date",
+          buyer: "Customer",
+          seller: "Seller",
+          address: "Address",
+          phone: "Phone",
+          email: "Email",
+          item: "Item",
+          quantity: "Quantity",
+          price: "Price",
+          total: "Total",
+          subtotal: "Subtotal",
+          tax: "VAT (25%)",
+          grandTotal: "GRAND TOTAL",
+          thankYou: "Thank you for your purchase!",
+          footer: "Kerzenwelt by Dani - Candle Manufacturing Business"
+        },
+        de: {
+          title: "RECHNUNG",
+          invoiceNumber: "Rechnungsnummer",
+          date: "Datum",
+          buyer: "Kunde",
+          seller: "Verkäufer",
+          address: "Adresse",
+          phone: "Telefon",
+          email: "Email",
+          item: "Artikel",
+          quantity: "Menge",
+          price: "Preis",
+          total: "Summe",
+          subtotal: "Zwischensumme",
+          tax: "MwSt. (25%)",
+          grandTotal: "GESAMTSUMME",
+          thankYou: "Danke für Ihren Einkauf!",
+          footer: "Kerzenwelt by Dani - Kerzenherstellungsbetrieb"
+        }
+      };
+      
+      const t = translations[selectedLanguage];
+      
+      // Inicijalizacija PDF dokumenta
+      const doc = new jsPDF();
+      
+      // Naslov i broj računa
+      doc.setFontSize(20);
+      doc.setFont("helvetica", "bold");
+      doc.text(t.title, 105, 20, { align: "center" });
+      
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${t.invoiceNumber}: INV-${orderWithItems.id}`, 20, 30);
+      doc.text(`${t.date}: ${format(new Date(orderWithItems.createdAt), 'dd.MM.yyyy')}`, 20, 35);
+      
+      // Podaci o prodavatelju
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text(t.seller, 20, 45);
+      
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text("Kerzenwelt by Dani", 20, 50);
+      doc.text("Ossiacher Zeile, 30", 20, 55);
+      doc.text("9570 Ossiach", 20, 60);
+      doc.text("Österreich", 20, 65);
+      doc.text(`${t.phone}: +43 660 762 1948`, 20, 70);
+      doc.text(`${t.email}: kerzenwelt@dani.at`, 20, 75);
+      
+      // Podaci o kupcu
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text(t.buyer, 120, 45);
+      
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${user.firstName || ''} ${user.lastName || ''}`, 120, 50);
+      doc.text(user.address || '', 120, 55);
+      doc.text(`${user.postalCode || ''} ${user.city || ''}`, 120, 60);
+      doc.text(user.country || '', 120, 65);
+      if (user.phone) doc.text(`${t.phone}: ${user.phone}`, 120, 70);
+      if (user.email) doc.text(`${t.email}: ${user.email}`, 120, 75);
+      
+      // Tablica proizvoda
+      const tableColumn = [t.item, t.quantity, t.price, t.total];
+      const tableRows: any[] = [];
+      
+      // Dodavanje stavki u tablicu
+      let subtotal = 0;
+      for (const item of orderWithItems.items) {
+        const itemTotal = parseFloat(item.price) * item.quantity;
+        subtotal += itemTotal;
+        tableRows.push([
+          item.product?.name || 'Nepoznati proizvod',
+          item.quantity,
+          `${parseFloat(item.price).toFixed(2)} €`,
+          `${itemTotal.toFixed(2)} €`
+        ]);
+      }
+      
+      // Izračun PDV-a i ukupnog iznosa
+      const tax = subtotal * 0.25;
+      const total = subtotal + tax;
+      
+      // Dodavanje tablice u PDF
+      (doc as any).autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: 85,
+        theme: 'grid',
+        headStyles: {
+          fillColor: [41, 128, 185],
+          textColor: 255,
+          fontStyle: 'bold'
+        },
+        foot: [
+          [`${t.subtotal}:`, '', '', `${subtotal.toFixed(2)} €`],
+          [`${t.tax}:`, '', '', `${tax.toFixed(2)} €`],
+          [`${t.grandTotal}:`, '', '', `${total.toFixed(2)} €`]
+        ],
+        footStyles: {
+          fillColor: [240, 240, 240],
+          textColor: 0,
+          fontStyle: 'bold'
+        }
+      });
+      
+      // Dodavanje podnožja
+      const finalY = (doc as any).lastAutoTable.finalY || 120;
+      
+      doc.setFontSize(10);
+      doc.text(t.thankYou, 105, finalY + 10, { align: "center" });
+      
+      doc.setFontSize(8);
+      doc.text(t.footer, 105, 280, { align: "center" });
+      
+      // Preuzimanje PDF-a
+      doc.save(`Racun-${orderWithItems.id}.pdf`);
+      
+      toast({
+        title: "Račun generiran",
+        description: "PDF račun je uspješno kreiran i preuzet.",
+      });
+    } catch (error) {
+      console.error("Greška pri generiranju PDF-a:", error);
+      toast({
+        title: "Greška",
+        description: "Došlo je do greške prilikom generiranja računa. Pokušajte ponovno.",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingInvoice(false);
+    }
+  };
+  
   if (!user) {
     return null;
   }
@@ -170,7 +369,7 @@ export default function OrderDetailsPage() {
         <meta name="description" content="Detalji vaše narudžbe u trgovini Kerzenwelt by Dani." />
       </Helmet>
       
-      <div className="flex items-center gap-2 mb-6">
+      <div className="flex items-center justify-between mb-6">
         <Button 
           variant="ghost" 
           size="sm" 
@@ -180,6 +379,37 @@ export default function OrderDetailsPage() {
           <ArrowLeft className="h-4 w-4" />
           Natrag na narudžbe
         </Button>
+        
+        {orderWithItems && (
+          <div className="flex items-center gap-3">
+            <Select 
+              value={selectedLanguage} 
+              onValueChange={(value: 'hr' | 'en' | 'de') => setSelectedLanguage(value)}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Jezik računa" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hr">Hrvatski</SelectItem>
+                <SelectItem value="en">Engleski</SelectItem>
+                <SelectItem value="de">Njemački</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Button 
+              onClick={generateInvoice}
+              disabled={generatingInvoice}
+              className="gap-2"
+            >
+              {generatingInvoice ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <FileText className="h-4 w-4" />
+              )}
+              Generiraj račun
+            </Button>
+          </div>
+        )}
       </div>
       
       <h1 className="text-3xl font-bold mb-6">Detalji narudžbe #{orderId}</h1>
