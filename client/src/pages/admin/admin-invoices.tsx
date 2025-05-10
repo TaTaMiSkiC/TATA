@@ -824,60 +824,111 @@ export default function AdminInvoices() {
     // Ažuriraj form podatke sa odabranim proizvodima
     data.selectedProducts = selectedProducts;
     
+    if (selectedProducts.length === 0) {
+      toast({
+        title: "Greška",
+        description: "Morate dodati barem jedan proizvod",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // Izračunaj ukupni iznos
     const total = selectedProducts.reduce(
       (sum, product) => sum + parseFloat(product.price) * product.quantity, 
       0
     ).toFixed(2);
     
-    // Kreiraj novi račun
-    const newInvoice: Invoice = {
-      id: mockInvoices.length + 1,
-      orderId: selectedOrder?.id,
-      invoiceNumber: data.invoiceNumber,
-      createdAt: new Date(),
-      customerName: `${data.firstName} ${data.lastName}`,
-      total: total,
-      language: data.language,
+    // Pripremi podatke za API
+    const invoiceData = {
+      invoice: {
+        orderId: selectedOrder?.id || null,
+        invoiceNumber: data.invoiceNumber,
+        customerName: `${data.firstName} ${data.lastName}`,
+        customerEmail: data.email || null,
+        customerAddress: data.address || null,
+        customerCity: data.city || null,
+        customerPostalCode: data.postalCode || null,
+        customerCountry: data.country || null,
+        customerPhone: data.phone || null,
+        subtotal: total,
+        tax: "0.00",
+        total: total,
+        language: data.language
+      },
       items: selectedProducts.map(product => ({
         productId: product.productId,
         productName: product.productName,
         quantity: product.quantity,
-        price: product.price
+        price: product.price,
+        selectedScent: product.selectedScent || null,
+        selectedColor: product.selectedColor || null
       }))
     };
     
-    // Dodavanje računa u lokalno stanje
-    setInvoices([...invoices, newInvoice]);
-    
-    // Generiranje PDF-a
-    if (generatePdf({
-      ...data,
-      items: selectedProducts,
-      createdAt: new Date()
-    })) {
-      toast({
-        title: "Uspješno kreiran račun",
-        description: `Račun ${data.invoiceNumber} je uspješno kreiran i preuzet`,
+    // Pošalji podatke na API
+    apiRequest('POST', '/api/invoices', invoiceData)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Greška prilikom spremanja računa u bazu");
+        }
+        return response.json();
+      })
+      .then(() => {
+        // Generiranje PDF-a
+        if (generatePdf({
+          ...data,
+          items: selectedProducts,
+          createdAt: new Date()
+        })) {
+          toast({
+            title: "Uspješno kreiran račun",
+            description: `Račun ${data.invoiceNumber} je uspješno kreiran i preuzet`,
+          });
+          
+          // Osvježi popis računa
+          refetchInvoices();
+          
+          // Reset forme
+          form.reset();
+          setSelectedProducts([]);
+          setSelectedOrder(null);
+          
+          // Prebaci na karticu s postojećim računima
+          setActiveTab("existing");
+        }
+      })
+      .catch(error => {
+        console.error("Greška pri kreiranju računa:", error);
+        toast({
+          title: "Greška",
+          description: "Došlo je do greške prilikom spremanja računa",
+          variant: "destructive"
+        });
       });
-      
-      // Reset forme
-      form.reset();
-      setSelectedProducts([]);
-      setSelectedOrder(null);
-      
-      // Prebaci na karticu s postojećim računima
-      setActiveTab("existing");
-    }
   };
   
   // Brisanje računa
   const handleDeleteInvoice = (id: number) => {
-    setInvoices(invoices.filter(invoice => invoice.id !== id));
-    toast({
-      title: "Račun obrisan",
-      description: "Račun je uspješno obrisan iz sustava",
-    });
+    apiRequest('DELETE', `/api/invoices/${id}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Greška prilikom brisanja računa");
+        }
+        refetchInvoices(); // Osvježi popis računa nakon brisanja
+        toast({
+          title: "Račun obrisan",
+          description: "Račun je uspješno obrisan iz sustava",
+        });
+      })
+      .catch(error => {
+        console.error("Greška pri brisanju računa:", error);
+        toast({
+          title: "Greška",
+          description: "Došlo je do greške prilikom brisanja računa",
+          variant: "destructive"
+        });
+      });
   };
   
   // Preuzimanje PDF-a za postojeći račun
@@ -937,7 +988,7 @@ export default function AdminInvoices() {
                   </div>
                 ) : (
                   <InvoiceTable 
-                    invoices={invoices.length > 0 ? invoices : mockInvoices} 
+                    invoices={invoices} 
                     onGeneratePdf={handleDownloadInvoice}
                     onDelete={handleDeleteInvoice}
                   />
