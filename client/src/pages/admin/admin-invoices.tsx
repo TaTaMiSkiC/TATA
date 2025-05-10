@@ -144,7 +144,7 @@ function ProductSelector({
   });
   
   // Postavi cijenu kada se odabere proizvod
-  const handleProductChange = (productId: string) => {
+  const handleProductChange = async (productId: string) => {
     const id = parseInt(productId);
     setSelectedProductId(id);
     
@@ -158,8 +158,19 @@ function ProductSelector({
     setSelectedColor(null);
     
     console.log("Odabrani proizvod ID:", id);
-    console.log("Dohvaćeni mirisi:", productScents);
-    console.log("Dohvaćene boje:", productColors);
+    
+    // Ručno dohvaćanje mirisa i boja
+    try {
+      const scentsResponse = await fetch(`/api/products/${id}/scents`);
+      const scentsData = await scentsResponse.json();
+      console.log("Dohvaćeni mirisi:", scentsData);
+      
+      const colorsResponse = await fetch(`/api/products/${id}/colors`);
+      const colorsData = await colorsResponse.json();
+      console.log("Dohvaćene boje:", colorsData);
+    } catch (error) {
+      console.error("Greška pri dohvaćanju opcija:", error);
+    }
   };
   
   // Dodaj proizvod u listu
