@@ -47,6 +47,7 @@ import {
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Order, Product, Scent, Color } from "@shared/schema";
+import logoImg from "@assets/Kerzenwelt by Dani.png";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 // Pomoćna funkcija za generiranje broja fakture
@@ -411,18 +412,22 @@ export default function AdminInvoices() {
       doc.setTextColor(0, 0, 0);
 
       // Gornji dio - Logo s lijeve strane i naslov na desnoj
-      // Logo u zlatnoj/žutoj boji (K logo)
+      try {
+        // Dodajemo logo
+        doc.addImage(logoImg, 'PNG', 20, 15, 30, 30);
+      } catch (error) {
+        console.error("Pogreška pri učitavanju loga:", error);
+      }
+      
       doc.setTextColor(218, 165, 32); // Zlatna boja (RGB)
-      doc.setFontSize(24);
-      doc.setFont("helvetica", "bold");
-      doc.text("K", 25, 25);
       doc.setFontSize(18);
-      doc.text("Kerzenwelt by Dani", 35, 24);
+      doc.setFont("helvetica", "bold");
+      doc.text("Kerzenwelt by Dani", 55, 24);
       doc.setFontSize(10);
       doc.setTextColor(0, 0, 0); // Vraćanje na crnu boju
       doc.setFont("helvetica", "normal");
-      doc.text("Ossiacher Zeile 30, 9500 Villach, Österreich", 35, 30);
-      doc.text("Email: daniela.svoboda2@gmail.com", 35, 35);
+      doc.text("Ossiacher Zeile 30, 9500 Villach, Österreich", 55, 30);
+      doc.text("Email: daniela.svoboda2@gmail.com", 55, 35);
       
       // Naslov i broj računa na desnoj strani
       doc.setTextColor(0, 0, 0);
