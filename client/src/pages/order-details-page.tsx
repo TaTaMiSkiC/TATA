@@ -48,8 +48,6 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import { format } from "date-fns";
 
 interface OrderItemWithProduct extends OrderItemType {
@@ -82,109 +80,116 @@ interface OrderWithItems {
   transactionId?: string | null;
 }
 
-// Komponenta za prikaz statusnih ikona
 function OrderStatusIcon({ status }: { status: string }) {
   switch (status) {
     case 'pending':
-      return <Clock className="h-8 w-8 text-muted-foreground" />;
+      return <Clock className="h-5 w-5 text-yellow-500" />;
     case 'processing':
-      return <PackageCheck className="h-8 w-8 text-secondary-foreground" />;
+      return <PackageCheck className="h-5 w-5 text-blue-500" />;
     case 'shipped':
-      return <Truck className="h-8 w-8 text-primary" />;
-    case 'completed':
-      return <CheckCircle className="h-8 w-8 text-green-500" />;
+      return <Truck className="h-5 w-5 text-blue-700" />;
+    case 'delivered':
+      return <CheckCircle className="h-5 w-5 text-green-500" />;
     case 'cancelled':
-      return <XCircle className="h-8 w-8 text-destructive" />;
+      return <XCircle className="h-5 w-5 text-red-500" />;
     default:
-      return <AlertTriangle className="h-8 w-8 text-muted-foreground" />;
+      return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
   }
 }
 
-// Komponenta za prikaz statusa narudžbe s Badge komponentom
 function OrderStatusBadge({ status }: { status: string }) {
-  let variant: "default" | "secondary" | "destructive" | "outline" = "outline";
+  let variant: "default" | "secondary" | "destructive" | "outline" = "default";
   
   switch (status) {
-    case "pending":
+    case 'pending':
       variant = "outline";
-      return <Badge variant={variant}>Na čekanju</Badge>;
-    case "processing":
+      break;
+    case 'processing':
       variant = "secondary";
-      return <Badge variant={variant}>U obradi</Badge>;
-    case "shipped":
-      variant = "default";
-      return <Badge variant={variant}>Poslano</Badge>;
-    case "completed":
-      variant = "default";
-      return <Badge variant={variant}>Završeno</Badge>;
-    case "cancelled":
+      break;
+    case 'cancelled':
       variant = "destructive";
-      return <Badge variant={variant}>Otkazano</Badge>;
+      break;
     default:
-      return <Badge variant={variant}>{status}</Badge>;
+      variant = "default";
+      break;
   }
+  
+  return (
+    <Badge variant={variant} className="ml-2">
+      <OrderStatusIcon status={status} />
+      <span className="ml-1">{getStatusText(status)}</span>
+    </Badge>
+  );
 }
 
-// Komponenta za prikaz ljudski čitljivog statusnog teksta
 function getStatusText(status: string): string {
   switch (status) {
     case 'pending':
-      return 'Narudžba na čekanju';
+      return 'Na čekanju';
     case 'processing':
-      return 'Narudžba se obrađuje';
+      return 'U obradi';
     case 'shipped':
-      return 'Narudžba je poslana';
-    case 'completed':
-      return 'Narudžba je uspješno dovršena';
+      return 'Poslano';
+    case 'delivered':
+      return 'Dostavljeno';
     case 'cancelled':
-      return 'Narudžba je otkazana';
+      return 'Otkazano';
     default:
-      return 'Nepoznat status';
+      return status;
   }
 }
 
 export default function OrderDetailsPage() {
+  const { id } = useParams<{ id: string }>();
+  const orderId = parseInt(id);
+  const [, navigate] = useLocation();
   const { user } = useAuth();
-  const params = useParams();
-  const orderId = params.id;
-  const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [generatingInvoice, setGeneratingInvoice] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<'hr' | 'en' | 'de'>('hr');
+  const [generatingInvoice, setGeneratingInvoice] = useState(false);
   
-  // Preusmjeri na stranicu za prijavu ako korisnik nije prijavljen
-  useEffect(() => {
-    if (!user) {
-      setLocation("/auth");
-    }
-  }, [user, setLocation]);
-  
-  // Dohvati osnovne informacije o narudžbi
-  const { data: order, isLoading: isLoadingOrder, error: orderError } = useQuery<Order>({
+  // Dohvat narudžbe
+  const { 
+    data: order, 
+    isLoading: isLoadingOrder,
+    error: orderError
+  } = useQuery<Order>({
     queryKey: [`/api/orders/${orderId}`],
     enabled: !!user && !!orderId,
   });
   
-  // Dohvati stavke narudžbe
-  const { data: orderItems, isLoading: isLoadingItems, error: itemsError } = useQuery<OrderItemWithProduct[]>({
+  // Dohvat stavki narudžbe
+  const { 
+    data: orderItems, 
+    isLoading: isLoadingItems,
+    error: itemsError
+  } = useQuery<OrderItemWithProduct[]>({
     queryKey: [`/api/orders/${orderId}/items`],
-    enabled: !!user && !!orderId && !!order,
+    enabled: !!user && !!orderId,
   });
-  
-  // Dohvati sve proizvode za prikaz
-  const { data: products, isLoading: isLoadingProducts } = useQuery<Product[]>({
-    queryKey: [`/api/products`],
+
+  // Dohvat svih proizvoda
+  const {
+    data: products,
+    isLoading: isLoadingProducts,
+  } = useQuery<Product[]>({
+    queryKey: ['/api/products'],
     enabled: !!user,
   });
+
+  // Kombiniranje podataka o narudžbi i stavkama
+  const orderWithItems: OrderWithItems | undefined = order && orderItems ? {
+    ...order,
+    items: orderItems || [],
+  } : undefined;
   
-  // Kombiniramo podatke u jednu strukturu
-  const orderWithItems = order 
-    ? { 
-        ...order, 
-        items: orderItems || [],
-      }
-    : undefined;
-    
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+    }
+  }, [user, navigate]);
+  
   const isLoading = isLoadingOrder || isLoadingItems || isLoadingProducts;
   const error = orderError || itemsError;
   
@@ -222,7 +227,7 @@ export default function OrderDetailsPage() {
     if (!orderWithItems.items || !Array.isArray(orderWithItems.items) || orderWithItems.items.length === 0) {
       console.error("Nema stavki narudžbe ili nije ispravan format:", orderWithItems.items);
       toast({
-        title: "Greška pri generiranju PDF-a",
+        title: "Greška pri generiranju računa",
         description: "Nije moguće generirati račun jer nema stavki narudžbe.",
         variant: "destructive",
       });
@@ -231,155 +236,73 @@ export default function OrderDetailsPage() {
     }
     
     try {
-      // Odabir jezika za ispis računa
-      const translations = {
-        hr: {
-          title: "RAČUN",
-          invoiceNumber: "Broj računa",
-          date: "Datum",
-          buyer: "Kupac",
-          seller: "Prodavatelj",
-          address: "Adresa",
-          phone: "Telefon",
-          email: "Email",
-          item: "Stavka",
-          quantity: "Količina",
-          price: "Cijena",
-          total: "Ukupno",
-          subtotal: "Međuzbroj",
-          tax: "PDV (25%)",
-          grandTotal: "UKUPNO",
-          thankYou: "Hvala na kupnji!",
-          footer: "Kerzenwelt by Dani - Obrt za proizvodnju svijeća",
-          paymentMethod: "Način plaćanja",
-          cashPayment: "Gotovina",
-          bankTransfer: "Bankovni prijenos",
-          paypalPayment: "PayPal",
-          deliveryAddress: "Adresa za dostavu"
-        },
-        en: {
-          title: "INVOICE",
-          invoiceNumber: "Invoice Number",
-          date: "Date",
-          buyer: "Customer",
-          seller: "Seller",
-          address: "Address",
-          phone: "Phone",
-          email: "Email",
-          item: "Item",
-          quantity: "Quantity",
-          price: "Price",
-          total: "Total",
-          subtotal: "Subtotal",
-          tax: "VAT (25%)",
-          grandTotal: "GRAND TOTAL",
-          thankYou: "Thank you for your purchase!",
-          footer: "Kerzenwelt by Dani - Candle Manufacturing Business",
-          paymentMethod: "Payment Method",
-          cashPayment: "Cash",
-          bankTransfer: "Bank Transfer",
-          paypalPayment: "PayPal", 
-          deliveryAddress: "Delivery Address"
-        },
-        de: {
-          title: "RECHNUNG",
-          invoiceNumber: "Rechnungsnummer",
-          date: "Datum",
-          buyer: "Kunde",
-          seller: "Verkäufer",
-          address: "Adresse",
-          phone: "Telefon",
-          email: "Email",
-          item: "Artikel",
-          quantity: "Menge",
-          price: "Preis",
-          total: "Summe",
-          subtotal: "Zwischensumme",
-          tax: "MwSt. (25%)",
-          grandTotal: "GESAMTSUMME",
-          thankYou: "Danke für Ihren Einkauf!",
-          footer: "Kerzenwelt by Dani - Kerzenherstellungsbetrieb",
-          paymentMethod: "Zahlungsmethode",
-          cashPayment: "Bargeld",
-          bankTransfer: "Banküberweisung",
-          paypalPayment: "PayPal",
-          deliveryAddress: "Lieferadresse"
-        }
-      };
+      // Pripremamo za preuzimanje HTML fakturu umjesto PDF-a
+      // Ovo je privremeno rješenje dok ne popravimo probleme s PDF generiranjem
+      const orderDate = new Date(orderWithItems.createdAt).toLocaleDateString();
       
-      // Funkcija za dobivanje teksta načina plaćanja prema jeziku
-      const getPaymentMethodText = (method: string, lang: 'hr' | 'en' | 'de') => {
-        const t = translations[lang];
-        switch (method) {
-          case 'cash':
-            return t.cashPayment;
-          case 'bank':
-            return t.bankTransfer;
-          case 'paypal':
-            return t.paypalPayment;
-          default:
-            return method;
-        }
-      };
+      // Stvaramo HTML sadržaj
+      let htmlContent = `
+        <html>
+        <head>
+          <title>Račun #${orderWithItems.id}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .info-section { margin-bottom: 20px; }
+            .info-section h3 { margin-bottom: 5px; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+            .totals { text-align: right; margin-top: 20px; }
+            .footer { margin-top: 30px; text-align: center; font-size: 12px; }
+            .company-info { margin-top: 50px; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>RAČUN</h1>
+            <p>Broj računa: INV-${orderWithItems.id}</p>
+            <p>Datum: ${orderDate}</p>
+          </div>
+          
+          <div class="info-section">
+            <h3>Prodavatelj:</h3>
+            <p>Kerzenwelt by Dani</p>
+            <p>Ossiacher Zeile 30/3</p>
+            <p>9500 Villach, Austrija</p>
+          </div>
+          
+          <div class="info-section">
+            <h3>Kupac:</h3>
+            <p>${user.firstName || ''} ${user.lastName || ''}</p>
+            <p>${user.address || ''}</p>
+            <p>${user.postalCode || ''} ${user.city || ''}</p>
+            <p>${user.country || ''}</p>
+            ${user.email ? `<p>Email: ${user.email}</p>` : ''}
+            ${user.phone ? `<p>Telefon: ${user.phone}</p>` : ''}
+          </div>
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Stavka</th>
+                <th>Količina</th>
+                <th>Cijena</th>
+                <th>Ukupno</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
       
-      const t = translations[selectedLanguage];
-      
-      // Inicijalizacija PDF dokumenta
-      const doc = new jsPDF();
-      
-      // Naslov i broj računa
-      doc.setFontSize(20);
-      doc.setFont("helvetica", "bold");
-      doc.text(t.title, 105, 20, { align: "center" });
-      
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      doc.text(`${t.invoiceNumber}: INV-${orderWithItems.id}`, 20, 30);
-      doc.text(`${t.date}: ${format(new Date(orderWithItems.createdAt), 'dd.MM.yyyy')}`, 20, 35);
-      
-      // Podaci o prodavatelju
-      doc.setFontSize(12);
-      doc.setFont("helvetica", "bold");
-      doc.text(t.seller, 20, 45);
-      
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      doc.text("Kerzenwelt by Dani", 20, 50);
-      doc.text("Ossiacher Zeile, 30", 20, 55);
-      doc.text("9570 Ossiach", 20, 60);
-      doc.text("Österreich", 20, 65);
-      doc.text(`${t.phone}: +43 660 762 1948`, 20, 70);
-      doc.text(`${t.email}: kerzenwelt@dani.at`, 20, 75);
-      
-      // Podaci o kupcu
-      doc.setFontSize(12);
-      doc.setFont("helvetica", "bold");
-      doc.text(t.buyer, 120, 45);
-      
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      doc.text(`${user.firstName || ''} ${user.lastName || ''}`, 120, 50);
-      doc.text(user.address || '', 120, 55);
-      doc.text(`${user.postalCode || ''} ${user.city || ''}`, 120, 60);
-      doc.text(user.country || '', 120, 65);
-      if (user.phone) doc.text(`${t.phone}: ${user.phone}`, 120, 70);
-      if (user.email) doc.text(`${t.email}: ${user.email}`, 120, 75);
-      
-      // Tablica proizvoda
-      const tableColumn = [t.item, t.quantity, t.price, t.total];
-      const tableRows: any[] = [];
-      
-      // Dodavanje stavki u tablicu
+      // Dodajemo stavke
       let subtotal = 0;
       for (const item of orderWithItems.items) {
         const itemTotal = parseFloat(item.price) * item.quantity;
         subtotal += itemTotal;
         
-        // Dodaj informacije o proizvodu, uključujući miris i boju
+        // Generiramo naziv proizvoda s opcijama
         let productName = '';
-        
-        // Provjera postoji li product objekt
-        if (item.product && typeof item.product === 'object' && item.product?.name) {
+        if (item.product && typeof item.product === 'object' && item.product.name) {
           productName = item.product.name;
         } else if (item.productName) {
           productName = item.productName;
@@ -387,7 +310,7 @@ export default function OrderDetailsPage() {
           productName = `Proizvod #${item.productId}`;
         }
         
-        // Dodaj informacije o mirisu i boji ako postoje
+        // Dodajemo opcije ako postoje
         if (item.selectedScent || item.selectedColor) {
           productName += " (";
           if (item.selectedScent) {
@@ -400,109 +323,117 @@ export default function OrderDetailsPage() {
           productName += ")";
         }
         
-        tableRows.push([
-          productName,
-          item.quantity,
-          `${parseFloat(item.price).toFixed(2)} €`,
-          `${itemTotal.toFixed(2)} €`
-        ]);
+        htmlContent += `
+          <tr>
+            <td>${productName}</td>
+            <td>${item.quantity}</td>
+            <td>${parseFloat(item.price).toFixed(2)} €</td>
+            <td>${itemTotal.toFixed(2)} €</td>
+          </tr>
+        `;
       }
       
       // Izračun PDV-a i ukupnog iznosa
       const tax = subtotal * 0.25;
       const total = subtotal + tax;
       
-      // Dodavanje tablice u PDF koristeći autoTable umjesto (doc as any).autoTable
-      autoTable(doc, {
-        head: [tableColumn],
-        body: tableRows,
-        startY: 85,
-        theme: 'grid',
-        headStyles: {
-          fillColor: [41, 128, 185],
-          textColor: 255,
-          fontStyle: 'bold'
-        },
-        foot: [
-          [`${t.subtotal}:`, '', '', `${subtotal.toFixed(2)} €`],
-          [`${t.tax}:`, '', '', `${tax.toFixed(2)} €`],
-          [`${t.grandTotal}:`, '', '', `${total.toFixed(2)} €`]
-        ],
-        footStyles: {
-          fillColor: [240, 240, 240],
-          textColor: 0,
-          fontStyle: 'bold'
-        }
-      });
+      // Dodajemo ukupne iznose i završavamo HTML
+      htmlContent += `
+            </tbody>
+          </table>
+          
+          <div class="totals">
+            <p>Međuzbroj: ${subtotal.toFixed(2)} €</p>
+            <p>PDV (25%): ${tax.toFixed(2)} €</p>
+            <p><strong>UKUPNO: ${total.toFixed(2)} €</strong></p>
+            <p>Način plaćanja: ${orderWithItems.paymentMethod ? getPaymentMethodText(orderWithItems.paymentMethod, 'hr') : 'Bankovni transfer'}</p>
+          </div>
+          
+          <div class="company-info">
+            <p>Steuernummer: 61 154/7175</p>
+            <p>Poslovanje prema regulaciji malog biznisa u Austriji.</p>
+          </div>
+          
+          <div class="footer">
+            <p>Hvala na kupnji!</p>
+          </div>
+        </body>
+        </html>
+      `;
       
-      // Dodavanje podnožja - sigurna provjera za lastAutoTable
-      const finalY = (doc as any).lastAutoTable ? (doc as any).lastAutoTable.finalY || 120 : 120;
+      // Konvertiramo HTML u Blob i stvaramo URL za preuzimanje
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = window.URL.createObjectURL(blob);
       
-      // Dodajemo način plaćanja - provjerimo najprije postoji li podatak
-      doc.setFontSize(10);
+      // Stvaramo link za preuzimanje i simuliramo klik
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `racun-${orderWithItems.id}.html`;
+      document.body.appendChild(a);
+      a.click();
       
-      // Dodajmo dodatno logiranje za dijagnostiku
-      console.log("PDF generiranje - način plaćanja:", orderWithItems.paymentMethod);
-      
-      try {
-        // Sigurna provjera da postoji orderWithItems.paymentMethod
-        const paymentMethod = orderWithItems.paymentMethod || 'bank_transfer';
-        
-        // Koristimo funkciju koju smo definirali izvan ovog bloka
-        const paymentMethodText = getPaymentMethodText(paymentMethod, selectedLanguage);
-        doc.text(`${t.paymentMethod}: ${paymentMethodText}`, 20, finalY + 15);
-      } catch (error) {
-        console.error("Greška pri dohvaćanju načina plaćanja:", error);
-        // Postavimo defaultni način plaćanja 
-        doc.text(`${t.paymentMethod}: ${selectedLanguage === 'hr' ? 'Bankovni transfer' : 'Bank Transfer'}`, 20, finalY + 15);
-      }
-      
-      doc.setFontSize(10);
-      doc.text(t.thankYou, 105, finalY + 25, { align: "center" });
-      
-      doc.setFontSize(8);
-      doc.text(t.footer, 105, 280, { align: "center" });
-      
-      // Preuzimanje PDF-a
-      doc.save(`Racun-${orderWithItems.id}.pdf`);
+      // Čistimo
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
       
       toast({
         title: "Račun generiran",
-        description: "PDF račun je uspješno kreiran i preuzet.",
+        description: "HTML verzija računa je preuzeta. Otvorite je u pregledniku za ispis.",
       });
     } catch (error) {
-      console.error("Greška pri generiranju PDF-a:", error);
+      console.error("Greška pri generiranju računa:", error);
       toast({
-        title: "Greška",
-        description: "Došlo je do greške prilikom generiranja računa. Pokušajte ponovno.",
+        title: "Greška pri generiranju računa",
+        description: "Došlo je do pogreške prilikom generiranja računa.",
         variant: "destructive",
       });
     } finally {
       setGeneratingInvoice(false);
     }
   };
-  
-  if (!user) {
-    return null;
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto py-10 flex justify-center items-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
   }
+
+  if (error || !orderWithItems) {
+    return (
+      <div className="container mx-auto py-10 text-center">
+        <h2 className="text-2xl font-bold mb-4">Greška pri učitavanju narudžbe</h2>
+        <p className="mb-4">Došlo je do greške prilikom učitavanja podataka o narudžbi.</p>
+        <Button variant="outline" onClick={() => navigate('/account/orders')}>
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Povratak na popis narudžbi
+        </Button>
+      </div>
+    );
+  }
+
+  const totalItems = orderWithItems.items.reduce((sum, item) => sum + item.quantity, 0);
   
   return (
-    <div className="container mx-auto py-8 px-4">
+    <>
       <Helmet>
-        <title>Detalji narudžbe | Kerzenwelt by Dani</title>
-        <meta name="description" content="Detalji vaše narudžbe u trgovini Kerzenwelt by Dani." />
+        <title>Narudžba #{orderWithItems.id} | Kerzenwelt by Dani</title>
+        <meta name="description" content={`Detalji narudžbe #${orderWithItems.id} - Kerzenwelt by Dani`} />
       </Helmet>
       
-      <div className="flex items-center justify-between mb-6">
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => window.location.href = '/orders'}
-          className="gap-1"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Natrag na narudžbe
-        </Button>
+      <div className="container mx-auto py-8">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">
+            Narudžba #{orderWithItems.id}
+            <OrderStatusBadge status={orderWithItems.status} />
+          </h1>
+          
+          <Button variant="outline" onClick={() => navigate('/account/orders')}>
+            <ArrowLeft className="h-4 w-4" />
+            Natrag na narudžbe
+          </Button>
+        </div>
         
         {orderWithItems && (
           <div className="flex items-center gap-3">
@@ -523,206 +454,184 @@ export default function OrderDetailsPage() {
             <Button 
               onClick={generateInvoice}
               disabled={generatingInvoice}
-              className="gap-2"
             >
               {generatingInvoice ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Generiranje...
+                </>
               ) : (
-                <FileText className="h-4 w-4" />
+                <>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Preuzmi račun
+                </>
               )}
-              Generiraj račun
             </Button>
           </div>
         )}
-      </div>
-      
-      <h1 className="text-3xl font-bold mb-6">Detalji narudžbe #{orderId}</h1>
-      
-      {isLoading ? (
-        <div className="flex justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      ) : error ? (
-        <div className="text-center py-8 text-destructive">
-          <AlertTriangle className="h-12 w-12 mx-auto mb-4" />
-          <p className="text-lg font-medium">Došlo je do greške prilikom učitavanja detalja narudžbe.</p>
-          <p className="text-sm mt-2">Molimo pokušajte ponovno kasnije.</p>
-        </div>
-      ) : orderWithItems ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Glavni detalji narudžbe */}
-          <Card className="md:col-span-3">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-2xl">Narudžba #{orderWithItems.id}</CardTitle>
-                <CardDescription>
-                  Naručeno {orderWithItems.createdAt 
-                    ? format(new Date(orderWithItems.createdAt), 'dd.MM.yyyy u HH:mm')
-                    : 'N/A'}
-                </CardDescription>
-              </div>
-              <div className="flex items-center gap-3">
-                <OrderStatusIcon status={orderWithItems.status} />
-                <div>
-                  <p className="text-sm font-medium">Status</p>
-                  <OrderStatusBadge status={orderWithItems.status} />
-                </div>
-              </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Podaci o narudžbi</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="bg-muted/50 rounded-lg p-4 mb-6">
-                <h3 className="text-lg font-medium mb-2">{getStatusText(orderWithItems.status)}</h3>
-                <p className="text-muted-foreground">
-                  {orderWithItems.status === 'pending' && 'Vaša narudžba je zaprimljena i čeka obradu.'}
-                  {orderWithItems.status === 'processing' && 'Vaša narudžba se trenutno obrađuje i priprema za slanje.'}
-                  {orderWithItems.status === 'shipped' && 'Vaša narudžba je poslana i uskoro će biti isporučena.'}
-                  {orderWithItems.status === 'completed' && 'Vaša narudžba je uspješno isporučena. Hvala na povjerenju!'}
-                  {orderWithItems.status === 'cancelled' && 'Vaša narudžba je otkazana. Za više informacija kontaktirajte nas.'}
-                </p>
+            <CardContent className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Datum:</span>
+                <span>{format(new Date(orderWithItems.createdAt), 'dd.MM.yyyy. HH:mm')}</span>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <h3 className="font-medium mb-2">Podaci o narudžbi</h3>
-                  <div className="text-sm space-y-1">
-                    <p><span className="text-muted-foreground">Datum narudžbe:</span> {orderWithItems.createdAt 
-                      ? format(new Date(orderWithItems.createdAt), 'dd.MM.yyyy HH:mm')
-                      : 'N/A'}</p>
-                    <p><span className="text-muted-foreground">Način plaćanja:</span> {orderWithItems.paymentMethod === 'bank_transfer' 
-                      ? 'Bankovni transfer' 
-                      : orderWithItems.paymentMethod === 'paypal' 
-                        ? 'PayPal' 
-                        : orderWithItems.paymentMethod}</p>
-                    {orderWithItems.transactionId && (
-                      <p><span className="text-muted-foreground">ID transakcije:</span> {orderWithItems.transactionId}</p>
-                    )}
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium mb-2">Podaci o dostavi</h3>
-                  <div className="text-sm space-y-1">
-                    {orderWithItems.shippingFullName && (
-                      <p><span className="text-muted-foreground">Ime i prezime:</span> {orderWithItems.shippingFullName}</p>
-                    )}
-                    <p><span className="text-muted-foreground">Adresa:</span> {orderWithItems.shippingAddress || 'Nije navedeno'}</p>
-                    <p><span className="text-muted-foreground">Grad:</span> {orderWithItems.shippingCity || 'Nije navedeno'}{orderWithItems.shippingPostalCode ? `, ${orderWithItems.shippingPostalCode}` : ''}</p>
-                    <p><span className="text-muted-foreground">Država:</span> {orderWithItems.shippingCountry || 'Nije navedeno'}</p>
-                    {orderWithItems.shippingPhone && (
-                      <p><span className="text-muted-foreground">Telefon:</span> {orderWithItems.shippingPhone}</p>
-                    )}
-                  </div>
-                </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Status:</span>
+                <span className="flex items-center">
+                  <OrderStatusIcon status={orderWithItems.status} />
+                  <span className="ml-2">{getStatusText(orderWithItems.status)}</span>
+                </span>
               </div>
-              
-              <h3 className="font-medium mb-4">Stavke narudžbe</h3>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Proizvod</TableHead>
-                      <TableHead>Cijena</TableHead>
-                      <TableHead>Količina</TableHead>
-                      <TableHead className="text-right">Ukupno</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {orderWithItems.items && orderWithItems.items.length > 0 ? (
-                      orderWithItems.items.map((item) => (
-                        <TableRow key={item.id}>
-                          <TableCell>
-                            <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 bg-muted rounded-md overflow-hidden">
-                                {/* Pronađi proizvod prema productId */}
-                                {products && products.find(p => p.id === item.productId)?.imageUrl ? (
-                                  <img 
-                                    src={products.find(p => p.id === item.productId)?.imageUrl || ''} 
-                                    alt={products.find(p => p.id === item.productId)?.name || 'Proizvod'} 
-                                    className="w-full h-full object-cover"
-                                  />
-                                ) : (
-                                  <div className="w-full h-full bg-primary/10"></div>
-                                )}
-                              </div>
-                              <div>
-                                <p className="font-medium">
-                                  {products ? 
-                                    (products.find(p => p.id === item.productId)?.name || 'Kerzendosen') : 
-                                    (item.productName || 'Proizvod')}
-                                </p>
-                                {item.selectedScent && <p className="text-xs">Miris: {item.selectedScent}</p>}
-                                {item.selectedColor && <p className="text-xs">Boja: {item.selectedColor}</p>}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>{parseFloat(String(item.price)).toFixed(2)} €</TableCell>
-                          <TableCell>{item.quantity}</TableCell>
-                          <TableCell className="text-right">
-                            {(parseFloat(String(item.price)) * item.quantity).toFixed(2)} €
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={4} className="text-center py-4">
-                          Nema stavki narudžbe
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Ukupno stavki:</span>
+                <span>{totalItems}</span>
               </div>
-            </CardContent>
-            <CardFooter className="flex flex-col items-end border-t pt-6">
-              <div className="space-y-2 text-right min-w-[200px]">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Način plaćanja:</span>
+                <span>
+                  {orderWithItems.paymentMethod ? getPaymentMethodText(orderWithItems.paymentMethod, 'hr') : 'Nije specificirano'}
+                </span>
+              </div>
+              {orderWithItems.paymentStatus && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Međuzbroj:</span>
-                  <span>{parseFloat(String(orderWithItems.subtotal || orderWithItems.total)).toFixed(2)} €</span>
+                  <span className="text-muted-foreground">Status plaćanja:</span>
+                  <span>{orderWithItems.paymentStatus === 'completed' ? 'Plaćeno' : 'Na čekanju'}</span>
                 </div>
+              )}
+              {orderWithItems.transactionId && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">ID transakcije:</span>
+                  <span className="font-mono text-xs">{orderWithItems.transactionId}</span>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Dostava</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {orderWithItems.shippingFullName && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Ime:</span>
+                  <span>{orderWithItems.shippingFullName}</span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Adresa:</span>
+                <span>{orderWithItems.shippingAddress || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Grad:</span>
+                <span>{orderWithItems.shippingCity || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Poštanski broj:</span>
+                <span>{orderWithItems.shippingPostalCode || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Država:</span>
+                <span>{orderWithItems.shippingCountry || 'N/A'}</span>
+              </div>
+              {orderWithItems.shippingPhone && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Telefon:</span>
+                  <span>{orderWithItems.shippingPhone}</span>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Sažetak cijene</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Podzbir:</span>
+                <span>{orderWithItems.subtotal || '0.00'} €</span>
+              </div>
+              {orderWithItems.discountAmount && parseFloat(orderWithItems.discountAmount) > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Popust:</span>
+                  <span className="text-red-500">-{orderWithItems.discountAmount} €</span>
+                </div>
+              )}
+              {orderWithItems.shippingCost && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Dostava:</span>
-                  <span>
-                    {parseFloat(String(orderWithItems.shippingCost || "0")) === 0 
-                      ? "Besplatno" 
-                      : parseFloat(String(orderWithItems.shippingCost || "0")).toFixed(2) + " €"}
-                  </span>
+                  <span>{orderWithItems.shippingCost} €</span>
                 </div>
-                {parseFloat(String(orderWithItems.discountAmount || "0")) > 0 && (
-                  <div className="flex justify-between text-green-600">
-                    <span className="font-medium">Popust:</span>
-                    <span className="font-medium">-{parseFloat(String(orderWithItems.discountAmount)).toFixed(2)} €</span>
-                  </div>
-                )}
-                {orderWithItems.taxAmount && (
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">PDV:</span>
-                    <span>{parseFloat(String(orderWithItems.taxAmount)).toFixed(2)} €</span>
-                  </div>
-                )}
-                <Separator />
-                <div className="flex justify-between font-medium text-lg">
-                  <span>Ukupno:</span>
-                  <span>{parseFloat(String(orderWithItems.total)).toFixed(2)} €</span>
+              )}
+              {orderWithItems.taxAmount && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">PDV (25%):</span>
+                  <span>{orderWithItems.taxAmount} €</span>
                 </div>
+              )}
+              <Separator />
+              <div className="flex justify-between font-semibold">
+                <span>Ukupno:</span>
+                <span>{orderWithItems.total} €</span>
               </div>
-            </CardFooter>
+            </CardContent>
           </Card>
         </div>
-      ) : (
-        <div className="text-center py-12">
-          <AlertTriangle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium">Narudžba nije pronađena</h3>
-          <p className="text-muted-foreground mt-2 mb-6">
-            Narudžba s brojem #{orderId} ne postoji ili nemate pristup ovoj narudžbi.
-          </p>
-          <Button 
-            onClick={() => window.location.href = '/orders'}
-            className="mt-2"
-          >
-            Povratak na narudžbe
-          </Button>
-        </div>
-      )}
-    </div>
+        
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>Stavke narudžbe</CardTitle>
+            <CardDescription>
+              {orderWithItems.items.length} {orderWithItems.items.length === 1 ? 'proizvod' : 'proizvoda'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[400px]">Proizvod</TableHead>
+                  <TableHead className="text-center">Količina</TableHead>
+                  <TableHead className="text-right">Cijena</TableHead>
+                  <TableHead className="text-right">Ukupno</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {orderWithItems.items.map((item) => {
+                  const productName = item.product?.name || 'Proizvod';
+                  const scent = item.selectedScent ? ` - ${item.selectedScent}` : '';
+                  const color = item.selectedColor ? ` - ${item.selectedColor}` : '';
+                  const itemTotal = parseFloat(item.price) * item.quantity;
+                  
+                  return (
+                    <TableRow key={item.id}>
+                      <TableCell>
+                        <div className="font-medium">
+                          {productName}
+                          {scent}{color}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center">{item.quantity}</TableCell>
+                      <TableCell className="text-right">{parseFloat(item.price).toFixed(2)} €</TableCell>
+                      <TableCell className="text-right">{itemTotal.toFixed(2)} €</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
+          <CardFooter className="border-t p-4 flex justify-end">
+            <div className="text-sm text-muted-foreground">
+              Prikazane cijene uključuju PDV.
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
+    </>
   );
 }
