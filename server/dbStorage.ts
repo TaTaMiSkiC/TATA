@@ -17,7 +17,8 @@ import {
   pages,
   settings,
   invoices,
-  invoiceItems
+  invoiceItems,
+  payments
 } from "@shared/schema";
 
 import type { 
@@ -42,6 +43,8 @@ import type {
   ProductScent,
   InsertProductScent,
   ProductColor,
+  Payment,
+  InsertPayment,
   InsertProductColor,
   Collection,
   InsertCollection,
