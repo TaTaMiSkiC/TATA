@@ -556,7 +556,7 @@ export default function AdminInvoices() {
   
   // Kreiranje novog računa
   const handleCreateInvoice = (data: CreateInvoiceFormValues) => {
-    console.log("handleCreateInvoice pokrenut");
+    console.log("handleCreateInvoice pokrenut s podacima:", data);
     
     try {
       // Ažuriraj form podatke sa odabranim proizvodima
@@ -887,7 +887,17 @@ export default function AdminInvoices() {
             </div>
             
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleCreateInvoice)} className="space-y-6">
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  console.log("Form submit event:", e);
+                  form.handleSubmit((data) => {
+                    console.log("Form handleSubmit callback s podacima:", data);
+                    handleCreateInvoice(data);
+                  })(e);
+                }} 
+                className="space-y-6"
+              >
                 {/* Podaci o kupcu */}
                 <div className="bg-background border rounded-md p-4 space-y-4">
                   <h3 className="text-lg font-medium">Podaci o kupcu</h3>
@@ -1143,6 +1153,10 @@ export default function AdminInvoices() {
                   <Button 
                     type="submit"
                     disabled={selectedProducts.length === 0}
+                    onClick={(e) => {
+                      console.log("Klik na gumb za kreiranje računa");
+                      // Ne moramo ništa činiti, samo dodatno logiranje
+                    }}
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Kreiraj račun
