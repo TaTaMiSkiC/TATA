@@ -461,6 +461,56 @@ export class DatabaseStorage implements IStorage {
     this.initializeRelationTables();
   }
   
+  // Invoice methods
+  async getInvoice(id: number): Promise<Invoice | undefined> {
+    const [invoice] = await db.select().from(invoices).where(eq(invoices.id, id));
+    return invoice;
+  }
+  
+  async getInvoiceByNumber(invoiceNumber: string): Promise<Invoice | undefined> {
+    const [invoice] = await db.select().from(invoices).where(eq(invoices.invoiceNumber, invoiceNumber));
+    return invoice;
+  }
+  
+  async getAllInvoices(): Promise<Invoice[]> {
+    return await db.select().from(invoices).orderBy(desc(invoices.createdAt));
+  }
+  
+  async getUserInvoices(userId: number): Promise<Invoice[]> {
+    return await db.select().from(invoices)
+      .where(eq(invoices.userId, userId))
+      .orderBy(desc(invoices.createdAt));
+  }
+  
+  async createInvoice(invoiceData: InsertInvoice, items: InsertInvoiceItem[]): Promise<Invoice> {
+    // Create the invoice
+    const [invoice] = await db.insert(invoices).values(invoiceData).returning();
+    
+    // Create the invoice items
+    if (items && items.length > 0) {
+      for (const item of items) {
+        await db.insert(invoiceItems).values({
+          ...item,
+          invoiceId: invoice.id
+        });
+      }
+    }
+    
+    return invoice;
+  }
+  
+  async getInvoiceItems(invoiceId: number): Promise<InvoiceItem[]> {
+    return await db.select().from(invoiceItems).where(eq(invoiceItems.invoiceId, invoiceId));
+  }
+  
+  async deleteInvoice(id: number): Promise<void> {
+    // Delete all invoice items first
+    await db.delete(invoiceItems).where(eq(invoiceItems.invoiceId, id));
+    
+    // Then delete the invoice
+    await db.delete(invoices).where(eq(invoices.id, id));
+  }
+  
   // Collection methods
   async getCollection(id: number): Promise<Collection | undefined> {
     const [collection] = await db.select().from(collections).where(eq(collections.id, id));
