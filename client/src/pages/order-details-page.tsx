@@ -149,8 +149,11 @@ export default function OrderDetailsPage() {
   });
   
   // Kombiniramo podatke u jednu strukturu
-  const orderWithItems: OrderWithItems | undefined = order 
-    ? { ...order, items: orderItems || [] }
+  const orderWithItems = order 
+    ? { 
+        ...order, 
+        items: orderItems || [],
+      }
     : undefined;
     
   const isLoading = isLoadingOrder || isLoadingItems || isLoadingProducts;
@@ -293,8 +296,8 @@ export default function OrderDetailsPage() {
                                     (products.find(p => p.id === item.productId)?.name || 'Kerzendosen') : 
                                     (item.productName || 'Proizvod')}
                                 </p>
-                                {item.scentName && <p className="text-xs">Miris: {item.scentName}</p>}
-                                {item.colorName && <p className="text-xs">Boja: {item.colorName}</p>}
+                                {item.selectedScent && <p className="text-xs">Miris: {item.selectedScent}</p>}
+                                {item.selectedColor && <p className="text-xs">Boja: {item.selectedColor}</p>}
                               </div>
                             </div>
                           </TableCell>
