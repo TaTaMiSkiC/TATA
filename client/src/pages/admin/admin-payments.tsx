@@ -2,7 +2,17 @@ import { Helmet } from "react-helmet";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useQuery } from "@tanstack/react-query";
 import { DataTable } from "@/components/ui/data-table";
-import { ColumnDef } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  getPaginationRowModel,
+  SortingState,
+  getSortedRowModel,
+  ColumnFiltersState,
+  getFilteredRowModel,
+} from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +21,14 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { OrderItem, Order } from "@shared/schema";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogClose,
@@ -22,7 +40,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-type PaymentWithOrder = {
+interface PaymentWithOrder {
   id: number;
   orderId: number;
   paymentMethod: string;
@@ -31,7 +49,7 @@ type PaymentWithOrder = {
   transactionId: string | null;
   createdAt: Date;
   order: Order;
-};
+}
 
 export default function AdminPayments() {
   const [activeTab, setActiveTab] = useState("all");
@@ -90,7 +108,7 @@ export default function AdminPayments() {
         const status = row.original.status;
         return (
           <Badge variant={
-            status === 'completed' ? 'success' : 
+            status === 'completed' ? 'default' : 
             status === 'pending' ? 'outline' : 
             status === 'failed' ? 'destructive' : 'default'
           }>
