@@ -45,10 +45,11 @@ interface OrderItemWithProduct extends OrderItemType {
   selectedColor?: string;
 }
 
-interface OrderWithItems extends Order {
+interface OrderWithItems extends Omit<Order, 'subtotal' | 'discountAmount' | 'shippingCost'> {
   items: OrderItemWithProduct[];
-  subtotalAmount?: string;
-  shippingAmount?: string;
+  subtotal?: string | null;
+  discountAmount?: string | null;
+  shippingCost?: string | null;
   taxAmount?: string;
   shippingFullName?: string;
   shippingPhone?: string;
@@ -319,12 +320,22 @@ export default function OrderDetailsPage() {
               <div className="space-y-2 text-right min-w-[200px]">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Međuzbroj:</span>
-                  <span>{parseFloat(String(orderWithItems.subtotalAmount || orderWithItems.total)).toFixed(2)} €</span>
+                  <span>{parseFloat(String(orderWithItems.subtotal || orderWithItems.total)).toFixed(2)} €</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Dostava:</span>
-                  <span>{parseFloat(String(orderWithItems.shippingAmount || "0")).toFixed(2)} €</span>
+                  <span>
+                    {parseFloat(String(orderWithItems.shippingCost || "0")) === 0 
+                      ? "Besplatno" 
+                      : parseFloat(String(orderWithItems.shippingCost || "0")).toFixed(2) + " €"}
+                  </span>
                 </div>
+                {parseFloat(String(orderWithItems.discountAmount || "0")) > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span className="font-medium">Popust:</span>
+                    <span className="font-medium">-{parseFloat(String(orderWithItems.discountAmount)).toFixed(2)} €</span>
+                  </div>
+                )}
                 {orderWithItems.taxAmount && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">PDV:</span>
