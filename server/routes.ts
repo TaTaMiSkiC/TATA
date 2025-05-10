@@ -19,6 +19,8 @@ import {
   insertScentSchema,
   insertColorSchema,
   insertCollectionSchema,
+  insertInvoiceSchema,
+  insertInvoiceItemSchema,
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -1762,6 +1764,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to remove product from collection" });
+    }
+  });
+
+  // Invoices API endpoints
+  
+  // Get all invoices
+  app.get("/api/invoices", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const invoices = await storage.getAllInvoices();
+      res.json(invoices);
+    } catch (error) {
+      console.error("Error getting invoices:", error);
+      res.status(500).json({ message: "Failed to get invoices" });
+    }
+  });
+  
+  // Get invoice by ID
+  app.get("/api/invoices/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const invoiceId = parseInt(req.params.id);
+      const invoice = await storage.getInvoice(invoiceId);
+      
+      if (!invoice) {
+        return res.status(404).json({ message: "Invoice not found" });
+      }
+      
+      // Only admins or the user who owns the invoice can access it
+      if (!req.user?.isAdmin && invoice.userId !== req.user?.id) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      // Get invoice items
+      const items = await storage.getInvoiceItems(invoiceId);
+      
+      res.json({
+        ...invoice,
+        items
+      });
+    } catch (error) {
+      console.error("Error getting invoice:", error);
+      res.status(500).json({ message: "Failed to get invoice" });
+    }
+  });
+  
+  // Get user's invoices
+  app.get("/api/user/invoices", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const invoices = await storage.getUserInvoices(req.user!.id);
+      res.json(invoices);
+    } catch (error) {
+      console.error("Error getting user invoices:", error);
+      res.status(500).json({ message: "Failed to get invoices" });
+    }
+  });
+  
+  // Create a new invoice
+  app.post("/api/invoices", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const { invoice, items } = req.body;
+      
+      // Validate the invoice data
+      const validatedInvoice = insertInvoiceSchema.parse(invoice);
+      
+      // Create the invoice with its items
+      const newInvoice = await storage.createInvoice(validatedInvoice, items);
+      
+      res.status(201).json(newInvoice);
+    } catch (error) {
+      console.error("Error creating invoice:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Validation error", 
+          errors: error.errors 
+        });
+      }
+      res.status(500).json({ message: "Failed to create invoice" });
+    }
+  });
+  
+  // Delete an invoice
+  app.delete("/api/invoices/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const invoiceId = parseInt(req.params.id);
+      await storage.deleteInvoice(invoiceId);
+      
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting invoice:", error);
+      res.status(500).json({ message: "Failed to delete invoice" });
     }
   });
 

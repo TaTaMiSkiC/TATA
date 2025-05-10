@@ -15,7 +15,9 @@ import {
   collections,
   productCollections,
   pages,
-  settings
+  settings,
+  invoices,
+  invoiceItems
 } from "@shared/schema";
 
 import type { 
