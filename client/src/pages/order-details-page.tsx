@@ -604,7 +604,7 @@ export default function OrderDetailsPage() {
       <div className="container mx-auto py-10 text-center">
         <h2 className="text-2xl font-bold mb-4">Greška pri učitavanju narudžbe</h2>
         <p className="mb-4">Došlo je do greške prilikom učitavanja podataka o narudžbi.</p>
-        <Button variant="outline" onClick={() => navigate('/account/orders')}>
+        <Button variant="outline" onClick={() => navigate('/orders')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Povratak na popis narudžbi
         </Button>
@@ -628,8 +628,8 @@ export default function OrderDetailsPage() {
             <OrderStatusBadge status={orderWithItems.status} />
           </h1>
           
-          <Button variant="outline" onClick={() => navigate('/account/orders')}>
-            <ArrowLeft className="h-4 w-4" />
+          <Button variant="outline" onClick={() => navigate('/orders')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
             Natrag na narudžbe
           </Button>
         </div>
