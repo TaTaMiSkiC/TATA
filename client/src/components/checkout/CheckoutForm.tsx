@@ -133,9 +133,33 @@ export default function CheckoutForm() {
         price: item.product.price
       }));
       
+      // Check if user has a valid discount
+      const hasDiscount = user && 
+        user.discountAmount && 
+        parseFloat(user.discountAmount) > 0 && 
+        user.discountExpiryDate && 
+        new Date(user.discountExpiryDate) > new Date();
+      
+      // Check if order meets minimum requirement for discount
+      const meetsMinimumOrder = !user?.discountMinimumOrder || 
+        parseFloat(user.discountMinimumOrder || "0") <= cartTotal;
+      
+      // Apply discount if valid
+      const discountAmount = (hasDiscount && meetsMinimumOrder) ? parseFloat(user.discountAmount || "0") : 0;
+      
+      // Calculate shipping
+      const isFreeShipping = standardShippingRate === 0 || (cartTotal >= freeShippingThreshold && freeShippingThreshold > 0);
+      const shippingCost = isFreeShipping ? 0 : standardShippingRate;
+      
+      // Calculate final total
+      const orderTotal = Math.max(0, cartTotal + shippingCost - discountAmount);
+      
       // Create order
       const orderData = {
-        total: total.toString(),
+        total: orderTotal.toString(),
+        subtotal: cartTotal.toString(),
+        discountAmount: discountAmount.toString(),
+        shippingCost: shippingCost.toString(),
         paymentMethod: data.paymentMethod,
         paymentStatus: data.paymentMethod === "bank_transfer" ? "pending" : "completed",
         shippingAddress: data.address,
