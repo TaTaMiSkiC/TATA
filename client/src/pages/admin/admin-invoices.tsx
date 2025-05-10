@@ -352,7 +352,8 @@ export default function AdminInvoices() {
           paymentMethod: "Nacin placanja",
           paymentStatus: "Status placanja",
           cash: "Gotovina",
-          bankTransfer: "Bankovni prijenos",
+          bank: "Bankovni prijenos",
+          paypal: "PayPal",
           paid: "Placeno",
           unpaid: "U obradi",
           deliveryAddress: "Adresa za dostavu",
@@ -379,7 +380,8 @@ export default function AdminInvoices() {
           paymentMethod: "Payment method",
           paymentStatus: "Payment status",
           cash: "Cash",
-          bankTransfer: "Bank transfer",
+          bank: "Bank transfer",
+          paypal: "PayPal",
           paid: "Paid",
           unpaid: "Processing",
           deliveryAddress: "Delivery address",
@@ -406,7 +408,8 @@ export default function AdminInvoices() {
           paymentMethod: "Zahlungsmethode",
           paymentStatus: "Zahlungsstatus",
           cash: "Bargeld",
-          bankTransfer: "Banküberweisung",
+          bank: "Banküberweisung",
+          paypal: "PayPal",
           paid: "Bezahlt",
           unpaid: "In Bearbeitung",
           deliveryAddress: "Lieferadresse",
@@ -420,6 +423,29 @@ export default function AdminInvoices() {
 
       // Odabir prijevoda
       const t = translations[lang] || translations.hr;
+      
+      // Funkcija za dobivanje teksta načina plaćanja ovisno o odabranoj vrijednosti i jeziku
+      const getPaymentMethodText = (paymentMethod: string, langCode: string, translations: Record<string, string>) => {
+        if (!paymentMethod) return translations.cash; // Default vrijednost ako nije postavljen način plaćanja
+        
+        // Provjeri ako postoji prijevod za odabrani način plaćanja
+        if (translations[paymentMethod]) {
+          return translations[paymentMethod];
+        }
+        
+        // Fallback na hrvatske nazive ako nema prijevoda
+        if (langCode === 'hr') {
+          switch (paymentMethod) {
+            case 'cash': return 'Gotovina';
+            case 'bank': return 'Bankovni prijenos';
+            case 'paypal': return 'PayPal';
+            default: return 'Gotovina';
+          }
+        }
+        
+        // Ako ne postoji prijevod, vrati cash kao default
+        return translations.cash;
+      };
       
       const doc = new jsPDF();
       
@@ -721,11 +747,15 @@ export default function AdminInvoices() {
       
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
+      
+      // Prikaži odabrani način plaćanja
+      const paymentMethodText = getPaymentMethodText(data.paymentMethod, lang, t);
+      
       if (lang === 'hr') {
-        doc.text(`Nacin placanja: Gotovina`, 20, finalY + 32);
+        doc.text(`Nacin placanja: ${paymentMethodText}`, 20, finalY + 32);
         doc.text(`Status placanja: Placeno`, 20, finalY + 37);
       } else {
-        doc.text(`${t.paymentMethod}: ${t.cash}`, 20, finalY + 32);
+        doc.text(`${t.paymentMethod}: ${paymentMethodText}`, 20, finalY + 32);
         doc.text(`${t.paymentStatus}: ${t.paid}`, 20, finalY + 37);
       }
       
