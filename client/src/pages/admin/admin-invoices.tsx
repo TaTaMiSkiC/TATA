@@ -1045,7 +1045,23 @@ export default function AdminInvoices() {
                   
                   {/* Forma za kreiranje računa */}
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleCreateInvoice)} className="space-y-6">
+                    <form onSubmit={(e) => {
+                      e.preventDefault();
+                      console.log("Form submit event triggered");
+                      console.log("Form values:", form.getValues());
+                      console.log("Selected products:", selectedProducts);
+                      
+                      if (selectedProducts.length === 0) {
+                        toast({
+                          title: "Greška",
+                          description: "Morate dodati barem jedan proizvod",
+                          variant: "destructive"
+                        });
+                        return;
+                      }
+                      
+                      form.handleSubmit(handleCreateInvoice)(e);
+                    }} className="space-y-6">
                       <div className="grid gap-6 md:grid-cols-2">
                         <FormField
                           control={form.control}
