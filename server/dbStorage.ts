@@ -710,4 +710,61 @@ export class DatabaseStorage implements IStorage {
         )
       );
   }
+  
+  // Invoice methods
+  async getInvoice(id: number): Promise<Invoice | undefined> {
+    const [invoice] = await db.select().from(invoices).where(eq(invoices.id, id));
+    return invoice;
+  }
+
+  async getInvoiceByNumber(invoiceNumber: string): Promise<Invoice | undefined> {
+    const [invoice] = await db.select().from(invoices).where(eq(invoices.invoiceNumber, invoiceNumber));
+    return invoice;
+  }
+
+  async getAllInvoices(): Promise<Invoice[]> {
+    return await db.select().from(invoices).orderBy(desc(invoices.createdAt));
+  }
+
+  async getUserInvoices(userId: number): Promise<Invoice[]> {
+    return await db
+      .select()
+      .from(invoices)
+      .where(eq(invoices.userId, userId))
+      .orderBy(desc(invoices.createdAt));
+  }
+
+  async createInvoice(invoiceData: InsertInvoice, items: InsertInvoiceItem[]): Promise<Invoice> {
+    // Create the invoice
+    const [invoice] = await db.insert(invoices).values(invoiceData).returning();
+    
+    // Create the invoice items with the invoice ID
+    if (items.length > 0) {
+      await db.insert(invoiceItems).values(
+        items.map((item) => ({
+          ...item,
+          invoiceId: invoice.id,
+        }))
+      );
+    }
+    
+    return invoice;
+  }
+
+  async getInvoiceItems(invoiceId: number): Promise<InvoiceItem[]> {
+    const items = await db
+      .select()
+      .from(invoiceItems)
+      .where(eq(invoiceItems.invoiceId, invoiceId));
+    
+    return items;
+  }
+
+  async deleteInvoice(id: number): Promise<void> {
+    // First delete all invoice items
+    await db.delete(invoiceItems).where(eq(invoiceItems.invoiceId, id));
+    
+    // Then delete the invoice
+    await db.delete(invoices).where(eq(invoices.id, id));
+  }
 }

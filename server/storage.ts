@@ -156,6 +156,8 @@ export class MemStorage implements IStorage {
   private productColors: ProductColor[] = [];
   private collections: Map<number, Collection> = new Map();
   private productCollections: ProductCollection[] = [];
+  private invoices: Map<number, Invoice> = new Map();
+  private invoiceItems: Map<number, InvoiceItem> = new Map();
   
   private userIdCounter: number;
   private productIdCounter: number;
@@ -171,6 +173,8 @@ export class MemStorage implements IStorage {
   private productScentIdCounter: number;
   private productColorIdCounter: number;
   private productCollectionIdCounter: number;
+  private invoiceIdCounter: number;
+  private invoiceItemIdCounter: number;
   
   sessionStore: SessionStore;
   
@@ -205,6 +209,8 @@ export class MemStorage implements IStorage {
     this.productScentIdCounter = 1;
     this.productColorIdCounter = 1;
     this.productCollectionIdCounter = 1;
+    this.invoiceIdCounter = 1;
+    this.invoiceItemIdCounter = 1;
     
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000, // prune expired entries every 24h
@@ -352,6 +358,77 @@ export class MemStorage implements IStorage {
     this.productCollections = this.productCollections.filter(pc => 
       !(pc.productId === productId && pc.collectionId === collectionId)
     );
+  }
+  
+  // Invoice methods
+  async getInvoice(id: number): Promise<Invoice | undefined> {
+    return this.invoices.get(id);
+  }
+  
+  async getInvoiceByNumber(invoiceNumber: string): Promise<Invoice | undefined> {
+    for (const invoice of Array.from(this.invoices.values())) {
+      if (invoice.invoiceNumber === invoiceNumber) {
+        return invoice;
+      }
+    }
+    return undefined;
+  }
+  
+  async getAllInvoices(): Promise<Invoice[]> {
+    return Array.from(this.invoices.values())
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+  
+  async getUserInvoices(userId: number): Promise<Invoice[]> {
+    return Array.from(this.invoices.values())
+      .filter(invoice => invoice.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+  
+  async createInvoice(invoiceData: InsertInvoice, items: InsertInvoiceItem[]): Promise<Invoice> {
+    const id = this.invoiceIdCounter++;
+    const now = new Date();
+    
+    const invoice: Invoice = {
+      ...invoiceData,
+      id,
+      createdAt: now
+    };
+    
+    this.invoices.set(id, invoice);
+    
+    // Create invoice items
+    for (const itemData of items) {
+      const itemId = this.invoiceItemIdCounter++;
+      const invoiceItem: InvoiceItem = {
+        ...itemData,
+        id: itemId,
+        invoiceId: id
+      };
+      
+      this.invoiceItems.set(itemId, invoiceItem);
+    }
+    
+    return invoice;
+  }
+  
+  async getInvoiceItems(invoiceId: number): Promise<InvoiceItem[]> {
+    return Array.from(this.invoiceItems.values())
+      .filter(item => item.invoiceId === invoiceId);
+  }
+  
+  async deleteInvoice(id: number): Promise<void> {
+    // Delete all items for this invoice
+    const invoiceItemIds = Array.from(this.invoiceItems.values())
+      .filter(item => item.invoiceId === id)
+      .map(item => item.id);
+    
+    for (const itemId of invoiceItemIds) {
+      this.invoiceItems.delete(itemId);
+    }
+    
+    // Delete the invoice
+    this.invoices.delete(id);
   }
   
   // ... rest of MemStorage implementation
