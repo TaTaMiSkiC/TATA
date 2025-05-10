@@ -584,11 +584,12 @@ export default function AdminInvoices() {
       doc.setFont("helvetica", "normal");
       
       // Prikaz međuzbroja, dostave i ukupnog iznosa s desne strane
-      doc.text(`${t.subtotal}:`, 140, finalY);
+      doc.setFontSize(10);
+      doc.text(`${t.subtotal}:`, 120, finalY);
       doc.text(`${subtotal} €`, 190, finalY, { align: "right" });
       
       // Dostava
-      doc.text("Dostava:", 140, finalY + 5);
+      doc.text("Dostava:", 120, finalY + 5);
       doc.text("0.00 €", 190, finalY + 5, { align: "right" });
       
       // Ukupan iznos - podebljan
@@ -597,9 +598,10 @@ export default function AdminInvoices() {
       
       // Dodajemo box za ukupan iznos
       doc.setFillColor(245, 245, 245);
-      doc.roundedRect(140, finalY + 7, 50, 10, 1, 1, 'F');
+      doc.roundedRect(120, finalY + 7, 70, 10, 1, 1, 'F');
       
-      doc.text(`${t.totalAmount}:`, 145, finalY + 14);
+      doc.setFontSize(11);
+      doc.text(`${t.totalAmount}:`, 125, finalY + 14);
       doc.text(`${total} €`, 185, finalY + 14, { align: "right" });
       
       // Informacije o plaćanju
