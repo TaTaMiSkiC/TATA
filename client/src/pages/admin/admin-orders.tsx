@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from 'react-helmet';
 import AdminLayout from "@/components/admin/AdminLayout";
-import { Order, OrderItemWithProduct, User } from "@shared/schema";
+import { Order, OrderItemWithProduct, User, Product } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -62,13 +62,12 @@ export default function AdminOrders() {
   // Fetch order items for selected order
   const { data: orderItems, isLoading: orderItemsLoading, error: orderItemsError } = useQuery<OrderItemWithProduct[]>({
     queryKey: [`/api/orders/${selectedOrder?.id}/items`],
-    enabled: !!selectedOrder,
-    onSuccess: (data) => {
-      console.log("Dobavljen sadržaj narudžbe:", data);
-    },
-    onError: (error) => {
-      console.error("Greška kod dohvaćanja sadržaja narudžbe:", error);
-    }
+    enabled: !!selectedOrder
+  });
+  
+  // Fetch all products to get product names
+  const { data: products, isLoading: productsLoading } = useQuery<Product[]>({
+    queryKey: ["/api/products"],
   });
   
   // Filter orders based on search term and status
@@ -444,7 +443,9 @@ export default function AdminOrders() {
                           {orderItems.map((item) => (
                             <TableRow key={item.id}>
                               <TableCell>
-                                {item.productName || item.product?.name || `Proizvod (ID: ${item.productId})`}
+                                {products ? 
+                                  (products.find(p => p.id === item.productId)?.name || 'Kerzendosen') : 
+                                  (item.productName || `Proizvod (ID: ${item.productId})`)}
                               </TableCell>
                               <TableCell>
                                 {item.scent && (
