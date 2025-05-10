@@ -141,12 +141,18 @@ export default function OrderDetailsPage() {
     enabled: !!user && !!orderId && !!order,
   });
   
+  // Dohvati sve proizvode za prikaz
+  const { data: products, isLoading: isLoadingProducts } = useQuery<Product[]>({
+    queryKey: [`/api/products`],
+    enabled: !!user,
+  });
+  
   // Kombiniramo podatke u jednu strukturu
   const orderWithItems: OrderWithItems | undefined = order 
     ? { ...order, items: orderItems || [] }
     : undefined;
     
-  const isLoading = isLoadingOrder || isLoadingItems;
+  const isLoading = isLoadingOrder || isLoadingItems || isLoadingProducts;
   const error = orderError || itemsError;
   
   if (!user) {
@@ -269,10 +275,11 @@ export default function OrderDetailsPage() {
                           <TableCell>
                             <div className="flex items-center gap-3">
                               <div className="w-12 h-12 bg-muted rounded-md overflow-hidden">
-                                {item.product && item.product.imageUrl ? (
+                                {/* Pronađi proizvod prema productId */}
+                                {products && products.find(p => p.id === item.productId)?.imageUrl ? (
                                   <img 
-                                    src={item.product.imageUrl} 
-                                    alt={item.product.name} 
+                                    src={products.find(p => p.id === item.productId)?.imageUrl || ''} 
+                                    alt={products.find(p => p.id === item.productId)?.name || 'Proizvod'} 
                                     className="w-full h-full object-cover"
                                   />
                                 ) : (
@@ -280,9 +287,13 @@ export default function OrderDetailsPage() {
                                 )}
                               </div>
                               <div>
-                                <p className="font-medium">{item.product ? item.product.name : 'Proizvod'}</p>
-                                {item.selectedScent && <p className="text-xs">Miris: {item.selectedScent}</p>}
-                                {item.selectedColor && <p className="text-xs">Boja: {item.selectedColor}</p>}
+                                <p className="font-medium">
+                                  {products ? 
+                                    (products.find(p => p.id === item.productId)?.name || 'Kerzendosen') : 
+                                    (item.productName || 'Proizvod')}
+                                </p>
+                                {item.scentName && <p className="text-xs">Miris: {item.scentName}</p>}
+                                {item.colorName && <p className="text-xs">Boja: {item.colorName}</p>}
                               </div>
                             </div>
                           </TableCell>
