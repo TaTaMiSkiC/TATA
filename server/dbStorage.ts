@@ -495,22 +495,20 @@ export class DatabaseStorage implements IStorage {
     return updatedOrder;
   }
 
+
   async getOrderItems(orderId: number): Promise<OrderItemWithProduct[]> {
     try {
-      // Koristi Drizzle's relations API za dohvaćanje stavki s proizvodima
-      const result = await db.query.orderItems.findMany({
-        where: eq(orderItems.orderId, orderId),
-        with: {
-          product: true
-        }
-      });
+      // Prvo dohvati sve stavke narudžbe
+      const items = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId));
       
-      // Vraćamo stavke koje imaju i informacije o proizvodu ili kreiramo osnovni objekt proizvoda ako ne postoji
-      return result.map(item => {
-        // Ako proizvoda više nema, stvori osnovne podatke iz informacija u narudžbi
-        let productData = item.product;
-        if (!productData) {
-          productData = {
+      // Dohvati podatke o proizvodima za svaku stavku
+      const result = await Promise.all(
+        items.map(async (item) => {
+          // Dohvati proizvod
+          const [product] = await db.select().from(products).where(eq(products.id, item.productId));
+          
+          // Ako proizvod postoji, koristi njegove podatke, inače koristi podatke iz narudžbe
+          const productData = product || {
             id: item.productId,
             name: item.productName || "Proizvod nije dostupan",
             description: "",
@@ -522,19 +520,23 @@ export class DatabaseStorage implements IStorage {
             createdAt: new Date(),
             updatedAt: new Date()
           };
-        }
-        
-        return {
-          ...item,
-          product: productData,
-          selectedScent: item.scentName,
-          selectedColor: item.colorName
-        };
-      });
+          
+          // Vrati stavku s podacima o proizvodu
+          return {
+            ...item,
+            product: productData,
+            selectedScent: item.scentName,
+            selectedColor: item.colorName
+          };
+        })
+      );
+      
+      return result;
     } catch (error) {
       console.error(`Greška prilikom dohvaćanja stavki narudžbe: ${error}`);
       return [];
-    }st resolvedProduct = product || {
+    }
+  }
           id: item.productId,
           name: item.productName || `Proizvod (ID: ${item.productId})`,
           createdAt: new Date(),
