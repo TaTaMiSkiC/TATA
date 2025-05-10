@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
 import { useParams, useLocation } from "wouter";
@@ -41,10 +41,18 @@ import { format } from "date-fns";
 
 interface OrderItemWithProduct extends OrderItemType {
   product: Product;
+  selectedScent?: string;
+  selectedColor?: string;
 }
 
 interface OrderWithItems extends Order {
   items: OrderItemWithProduct[];
+  subtotalAmount?: string;
+  shippingAmount?: string;
+  taxAmount?: string;
+  shippingFullName?: string;
+  shippingPhone?: string;
+  transactionId?: string;
 }
 
 // Komponenta za prikaz statusnih ikona
@@ -121,11 +129,25 @@ export default function OrderDetailsPage() {
     }
   }, [user, setLocation]);
   
-  // Dohvati informacije o narudžbi
-  const { data: order, isLoading, error } = useQuery<OrderWithItems>({
+  // Dohvati osnovne informacije o narudžbi
+  const { data: order, isLoading: isLoadingOrder, error: orderError } = useQuery<Order>({
     queryKey: [`/api/orders/${orderId}`],
     enabled: !!user && !!orderId,
   });
+  
+  // Dohvati stavke narudžbe
+  const { data: orderItems, isLoading: isLoadingItems, error: itemsError } = useQuery<OrderItemWithProduct[]>({
+    queryKey: [`/api/orders/${orderId}/items`],
+    enabled: !!user && !!orderId && !!order,
+  });
+  
+  // Kombiniramo podatke u jednu strukturu
+  const orderWithItems: OrderWithItems | undefined = order 
+    ? { ...order, items: orderItems || [] }
+    : undefined;
+    
+  const isLoading = isLoadingOrder || isLoadingItems;
+  const error = orderError || itemsError;
   
   if (!user) {
     return null;
@@ -162,7 +184,7 @@ export default function OrderDetailsPage() {
           <p className="text-lg font-medium">Došlo je do greške prilikom učitavanja detalja narudžbe.</p>
           <p className="text-sm mt-2">Molimo pokušajte ponovno kasnije.</p>
         </div>
-      ) : order ? (
+      ) : orderWithItems ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Glavni detalji narudžbe */}
           <Card className="md:col-span-3">
@@ -216,11 +238,15 @@ export default function OrderDetailsPage() {
                 <div>
                   <h3 className="font-medium mb-2">Podaci o dostavi</h3>
                   <div className="text-sm space-y-1">
-                    <p><span className="text-muted-foreground">Ime i prezime:</span> {order.shippingFullName}</p>
-                    <p><span className="text-muted-foreground">Adresa:</span> {order.shippingAddress}</p>
-                    <p><span className="text-muted-foreground">Grad:</span> {order.shippingCity}, {order.shippingPostalCode}</p>
-                    <p><span className="text-muted-foreground">Država:</span> {order.shippingCountry}</p>
-                    <p><span className="text-muted-foreground">Telefon:</span> {order.shippingPhone}</p>
+                    {order.shippingFullName && (
+                      <p><span className="text-muted-foreground">Ime i prezime:</span> {order.shippingFullName}</p>
+                    )}
+                    <p><span className="text-muted-foreground">Adresa:</span> {order.shippingAddress || 'Nije navedeno'}</p>
+                    <p><span className="text-muted-foreground">Grad:</span> {order.shippingCity || 'Nije navedeno'}{order.shippingPostalCode ? `, ${order.shippingPostalCode}` : ''}</p>
+                    <p><span className="text-muted-foreground">Država:</span> {order.shippingCountry || 'Nije navedeno'}</p>
+                    {order.shippingPhone && (
+                      <p><span className="text-muted-foreground">Telefon:</span> {order.shippingPhone}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -274,11 +300,11 @@ export default function OrderDetailsPage() {
               <div className="space-y-2 text-right min-w-[200px]">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Međuzbroj:</span>
-                  <span>{parseFloat(String(order.subtotalAmount)).toFixed(2)} €</span>
+                  <span>{parseFloat(String(order.subtotalAmount || order.total)).toFixed(2)} €</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Dostava:</span>
-                  <span>{parseFloat(String(order.shippingAmount)).toFixed(2)} €</span>
+                  <span>{parseFloat(String(order.shippingAmount || "0")).toFixed(2)} €</span>
                 </div>
                 {order.taxAmount && (
                   <div className="flex justify-between">
@@ -289,7 +315,7 @@ export default function OrderDetailsPage() {
                 <Separator />
                 <div className="flex justify-between font-medium text-lg">
                   <span>Ukupno:</span>
-                  <span>{parseFloat(String(order.totalAmount)).toFixed(2)} €</span>
+                  <span>{parseFloat(String(order.total)).toFixed(2)} €</span>
                 </div>
               </div>
             </CardFooter>

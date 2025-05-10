@@ -313,6 +313,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch orders" });
     }
   });
+  
+  app.get("/api/orders/user", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const userId = req.user.id;
+      const orders = await storage.getUserOrders(userId);
+      res.json(orders);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user orders" });
+    }
+  });
 
   app.get("/api/orders/:id", async (req, res) => {
     try {

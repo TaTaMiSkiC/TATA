@@ -116,7 +116,7 @@ export default function OrdersPage() {
                           : 'N/A'}
                       </TableCell>
                       <TableCell>
-                        {parseFloat(String(order.totalAmount)).toFixed(2)} €
+                        {parseFloat(String(order.total)).toFixed(2)} €
                       </TableCell>
                       <TableCell>
                         <OrderStatusBadge status={order.status} />

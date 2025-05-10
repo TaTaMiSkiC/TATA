@@ -164,9 +164,9 @@ export default function Header() {
                     </div>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <div className="cursor-pointer w-full" onClick={() => window.location.href = '/orders'}>
+                    <Link href="/orders" className="cursor-pointer w-full">
                       Moje narudžbe
-                    </div>
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>
                     Odjava
