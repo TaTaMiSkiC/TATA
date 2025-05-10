@@ -418,7 +418,7 @@ export default function OrderDetailsPage() {
   return (
     <>
       <Helmet>
-        <title>Narudžba #{orderWithItems.id} | Kerzenwelt by Dani</title>
+        <title>{`Narudžba #${orderWithItems.id} | Kerzenwelt by Dani`}</title>
         <meta name="description" content={`Detalji narudžbe #${orderWithItems.id} - Kerzenwelt by Dani`} />
       </Helmet>
       
