@@ -323,45 +323,81 @@ export default function AdminInvoices() {
       const translations: Record<string, Record<string, string>> = {
         hr: {
           title: "RAČUN",
-          date: "Datum:",
-          invoiceNo: "Broj računa:",
-          buyer: "Kupac:",
-          seller: "Prodavatelj:",
-          item: "Stavka",
+          date: "Datum računa",
+          invoiceNo: "Broj računa",
+          buyer: "Podaci o kupcu",
+          seller: "Prodavatelj",
+          item: "Proizvod",
           quantity: "Količina",
-          price: "Cijena",
+          price: "Cijena/kom",
           total: "Ukupno",
-          subtotal: "Međuzbroj:",
-          tax: "PDV (0%):",
-          totalAmount: "Ukupan iznos:"
+          subtotal: "Međuzbroj",
+          tax: "PDV (0%)",
+          totalAmount: "UKUPNO",
+          paymentInfo: "Informacije o plaćanju",
+          paymentMethod: "Način plaćanja",
+          paymentStatus: "Status plaćanja",
+          cash: "Gotovina",
+          bankTransfer: "Bankovni prijenos",
+          paid: "Plaćeno",
+          unpaid: "U obradi",
+          deliveryAddress: "Adresa za dostavu",
+          handInvoice: "Ručni račun",
+          thankYou: "Hvala Vam na narudžbi",
+          generatedNote: "Ovo je automatski generirani račun i valjan je bez potpisa i pečata",
+          exemptionNote: "Poduzetnik nije u sustavu PDV-a, PDV nije obračunat temeljem odredbi posebnog postupka oporezivanja za male porezne obveznike."
         },
         en: {
           title: "INVOICE",
-          date: "Date:",
-          invoiceNo: "Invoice No.:",
-          buyer: "Buyer:",
-          seller: "Seller:",
-          item: "Item",
+          date: "Invoice date",
+          invoiceNo: "Invoice number",
+          buyer: "Buyer information",
+          seller: "Seller",
+          item: "Product",
           quantity: "Quantity",
-          price: "Price",
+          price: "Price/unit",
           total: "Total",
-          subtotal: "Subtotal:",
-          tax: "VAT (0%):",
-          totalAmount: "Total amount:"
+          subtotal: "Subtotal",
+          tax: "VAT (0%)",
+          totalAmount: "TOTAL",
+          paymentInfo: "Payment information",
+          paymentMethod: "Payment method",
+          paymentStatus: "Payment status",
+          cash: "Cash",
+          bankTransfer: "Bank transfer",
+          paid: "Paid",
+          unpaid: "Processing",
+          deliveryAddress: "Delivery address",
+          handInvoice: "Hand invoice",
+          thankYou: "Thank you for your order",
+          generatedNote: "This is an automatically generated invoice and is valid without signature or stamp",
+          exemptionNote: "The entrepreneur is not in the VAT system, VAT is not calculated based on the provisions of the special taxation procedure for small taxpayers."
         },
         de: {
           title: "RECHNUNG",
-          date: "Datum:",
-          invoiceNo: "Rechnungsnummer:",
-          buyer: "Käufer:",
-          seller: "Verkäufer:",
-          item: "Artikel",
+          date: "Rechnungsdatum",
+          invoiceNo: "Rechnungsnummer",
+          buyer: "Käuferinformationen",
+          seller: "Verkäufer",
+          item: "Produkt",
           quantity: "Menge",
-          price: "Preis",
+          price: "Preis/Stück",
           total: "Gesamt",
-          subtotal: "Zwischensumme:",
-          tax: "MwSt. (0%):",
-          totalAmount: "Gesamtbetrag:"
+          subtotal: "Zwischensumme",
+          tax: "MwSt. (0%)",
+          totalAmount: "GESAMTBETRAG",
+          paymentInfo: "Zahlungsinformationen",
+          paymentMethod: "Zahlungsmethode",
+          paymentStatus: "Zahlungsstatus",
+          cash: "Bargeld",
+          bankTransfer: "Banküberweisung",
+          paid: "Bezahlt",
+          unpaid: "In Bearbeitung",
+          deliveryAddress: "Lieferadresse",
+          handInvoice: "Handrechnung",
+          thankYou: "Vielen Dank für Ihre Bestellung",
+          generatedNote: "Dies ist eine automatisch generierte Rechnung und ist ohne Unterschrift und Stempel gültig",
+          exemptionNote: "Der Unternehmer ist nicht im Mehrwertsteuersystem, MwSt. wird nicht berechnet gemäß den Bestimmungen des Kleinunternehmerregelung."
         }
       };
 
@@ -370,65 +406,84 @@ export default function AdminInvoices() {
       
       const doc = new jsPDF();
       
-      // Dodavanje loga
-      // doc.addImage(logoImg, 'PNG', 10, 10, 40, 40);
-      
-      // Naslov
-      doc.setFontSize(20);
-      doc.setFont("helvetica", "bold");
-      doc.text(t.title, 105, 20, { align: "center" });
-      
-      // Osnovni podaci računa
+      // Postavljanje osnovnih detalja
       doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      
-      // Formatiranje datuma
-      const date = data.createdAt 
-        ? format(new Date(data.createdAt), "dd.MM.yyyy") 
-        : format(new Date(), "dd.MM.yyyy");
-      
-      doc.text(`${t.date} ${date}`, 20, 40);
-      doc.text(`${t.invoiceNo} ${data.invoiceNumber}`, 20, 45);
-      
-      // Podaci o prodavatelju
+      doc.setTextColor(0, 0, 0);
+
+      // Gornji dio - Logo s lijeve strane i naslov na desnoj
+      // Logo u zlatnoj/žutoj boji (K logo)
+      doc.setTextColor(218, 165, 32); // Zlatna boja (RGB)
+      doc.setFontSize(24);
       doc.setFont("helvetica", "bold");
-      doc.text(t.seller, 20, 55);
+      doc.text("K", 25, 25);
+      doc.setFontSize(18);
+      doc.text("Kerzenwelt by Dani", 35, 24);
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0); // Vraćanje na crnu boju
       doc.setFont("helvetica", "normal");
-      doc.text("Kerzenwelt by Dani", 20, 60);
-      doc.text("Majetići 43", 20, 65);
-      doc.text("51211 Matulji", 20, 70);
-      doc.text("Hrvatska", 20, 75);
-      doc.text("Email: kerzenwelt@gmail.com", 20, 80);
+      doc.text("Ossiacher Zeile 30, 9500 Villach, Österreich", 35, 30);
+      doc.text("Email: daniela.svoboda2@gmail.com", 35, 35);
+      
+      // Naslov i broj računa na desnoj strani
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.text(t.title, 190, 24, { align: "right" });
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${t.invoiceNo}: ${data.invoiceNumber}`, 190, 32, { align: "right" });
+      doc.text(`${t.date}: ${format(new Date(data.createdAt || new Date()), "dd.MM.yyyy.")}`, 190, 38, { align: "right" });
+      
+      // Horizontalna linija
+      doc.setDrawColor(200, 200, 200);
+      doc.line(20, 45, 190, 45);
       
       // Podaci o kupcu
+      doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
-      doc.text(t.buyer, 120, 55);
+      doc.text(`${t.buyer}:`, 20, 55);
+      doc.setDrawColor(200, 200, 200);
+      doc.line(20, 57, 190, 57);
       doc.setFont("helvetica", "normal");
-      doc.text(`${data.firstName} ${data.lastName}`, 120, 60);
       
-      if (data.address) {
-        doc.text(data.address, 120, 65);
-      }
-      
-      if (data.city && data.postalCode) {
-        doc.text(`${data.postalCode} ${data.city}`, 120, 70);
-      } else if (data.city) {
-        doc.text(data.city, 120, 70);
-      }
-      
-      if (data.country) {
-        doc.text(data.country, 120, 75);
-      }
+      let customerY = 62;
+      doc.text(`${data.firstName} ${data.lastName}`, 20, customerY);
+      customerY += 5;
       
       if (data.email) {
-        doc.text(`Email: ${data.email}`, 120, 80);
+        doc.text(`Email: ${data.email}`, 20, customerY);
+        customerY += 5;
       }
       
-      if (data.phone) {
-        doc.text(`Tel: ${data.phone}`, 120, 85);
+      if (data.address) {
+        doc.text(`${t.deliveryAddress}: ${data.address}`, 20, customerY);
+        customerY += 5;
+        
+        if (data.city && data.postalCode) {
+          doc.text(`${data.postalCode} ${data.city}`, 20, customerY);
+          customerY += 5;
+        } else if (data.city) {
+          doc.text(data.city, 20, customerY);
+          customerY += 5;
+        }
+        
+        if (data.country) {
+          doc.text(data.country, 20, customerY);
+          customerY += 5;
+        }
+      } else {
+        doc.text(`${t.deliveryAddress}: N/A - ${t.handInvoice}`, 20, customerY);
+        customerY += 5;
       }
       
-      // Tablica sa stavkama računa
+      // Stavke narudžbe
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text("Stavke narudžbe:", 20, customerY + 5);
+      doc.setDrawColor(200, 200, 200);
+      doc.line(20, customerY + 7, 190, customerY + 7);
+      
+      // Priprema podataka za tablicu
       let items = [];
       
       if (data.items && Array.isArray(data.items)) {
@@ -437,15 +492,15 @@ export default function AdminInvoices() {
           let details = '';
           
           if (item.selectedScent) {
-            details += `Miris: ${item.selectedScent}`;
+            details += `${item.selectedScent}`;
           }
           
           if (item.selectedColor) {
-            if (details) details += ', ';
-            details += `Boja: ${item.selectedColor}`;
+            if (details) details += ' - ';
+            details += `${item.selectedColor}`;
           }
           
-          const fullName = details ? `${itemName} (${details})` : itemName;
+          const fullName = details ? `${itemName} ${details}` : itemName;
           const price = parseFloat(item.price).toFixed(2);
           const total = (parseFloat(item.price) * item.quantity).toFixed(2);
           
@@ -453,20 +508,35 @@ export default function AdminInvoices() {
         });
       }
       
-      // Dodaj tablicu u PDF
+      // Dodavanje tablice
       autoTable(doc, {
         head: [[t.item, t.quantity, t.price, t.total]],
         body: items,
-        startY: 95,
-        theme: 'striped',
+        startY: customerY + 10,
+        margin: { left: 20, right: 20 },
         headStyles: {
-          fillColor: [200, 200, 200],
+          fillColor: [245, 245, 245],
           textColor: [0, 0, 0],
-          fontStyle: 'bold'
+          fontStyle: 'bold',
+          halign: 'left',
+          valign: 'middle',
+          fontSize: 10,
+          cellPadding: 5,
         },
-        styles: {
-          fontSize: 9
-        }
+        bodyStyles: {
+          textColor: [0, 0, 0],
+          fontSize: 10,
+          cellPadding: 5,
+        },
+        columnStyles: {
+          0: { cellWidth: 'auto' },
+          1: { cellWidth: 20, halign: 'center' },
+          2: { cellWidth: 30, halign: 'right' },
+          3: { cellWidth: 30, halign: 'right' },
+        },
+        alternateRowStyles: {
+          fillColor: [250, 250, 250],
+        },
       });
       
       // Izračunavanje ukupnog iznosa
@@ -480,34 +550,59 @@ export default function AdminInvoices() {
       // Dodavanje ukupnog iznosa
       const finalY = (doc as any).lastAutoTable.finalY + 10;
       
-      doc.text(t.subtotal, 140, finalY);
-      doc.text(`${subtotal} €`, 175, finalY, { align: "right" });
-      
-      doc.text(t.tax, 140, finalY + 5);
-      doc.text(`${tax} €`, 175, finalY + 5, { align: "right" });
-      
-      doc.setFont("helvetica", "bold");
-      doc.text(t.totalAmount, 140, finalY + 10);
-      doc.text(`${total} €`, 175, finalY + 10, { align: "right" });
-      
-      // Dodavanje napomene o PDV-u
-      doc.setFontSize(8);
-      doc.setFont("helvetica", "italic");
-      if (lang === "hr") {
-        doc.text("* PDV nije obračunat temeljem čl. 90 st. 2 Zakona o PDV-u.", 20, finalY + 20);
-      } else if (lang === "en") {
-        doc.text("* VAT is not calculated based on Art. 90 para. 2 of the VAT Act.", 20, finalY + 20);
-      } else if (lang === "de") {
-        doc.text("* MwSt. wird nicht berechnet gemäß Art. 90 Abs. 2 des MwSt-Gesetzes.", 20, finalY + 20);
-      }
-      
-      // Dodavanje potpisa
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
-      doc.text("Potpis / Signature", 150, finalY + 35, { align: "center" });
+      
+      // Prikaz međuzbroja, dostave i ukupnog iznosa s desne strane
+      doc.text(`${t.subtotal}:`, 150, finalY);
+      doc.text(`${subtotal} €`, 190, finalY, { align: "right" });
+      
+      // Dostava
+      doc.text("Dostava:", 150, finalY + 5);
+      doc.text("0.00 €", 190, finalY + 5, { align: "right" });
+      
+      // Ukupan iznos - podebljan
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.text(`${t.totalAmount}:`, 150, finalY + 12);
+      doc.text(`${total} €`, 190, finalY + 12, { align: "right" });
+      
+      // Informacije o plaćanju
+      doc.setFontSize(11);
+      doc.text(`${t.paymentInfo}:`, 20, finalY + 25);
+      doc.line(20, finalY + 27, 190, finalY + 27);
+      
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.text(`${t.paymentMethod}: ${t.cash}`, 20, finalY + 32);
+      doc.text(`${t.paymentStatus}: ${t.paid}`, 20, finalY + 37);
+      
+      // Zahvala i napomena o automatskom generiranju
+      doc.setFontSize(10);
+      doc.text(t.thankYou + "!", 105, finalY + 50, { align: "center" });
+      
+      // Podnožje s kontakt informacijama
+      doc.setFontSize(8);
+      doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 0043660387821", 105, finalY + 60, { align: "center" });
+      
+      // Napomena o automatskom generiranju
+      doc.setFontSize(7);
+      doc.text(t.generatedNote + ".", 105, finalY + 65, { align: "center" });
+      
+      // Porezni broj i napomena o oslobođenju
+      doc.text("Steuer nummer: 61 154/7175", 105, finalY + 70, { align: "center" });
+      
+      if (lang === "de") {
+        doc.text("Gemäß § 6 Abs. 1 Z 27 UStG. (Kleinunternehmerregelung) wird keine Umsatzsteuer berechnet.", 105, finalY + 75, { align: "center" });
+      } else if (lang === "en") {
+        doc.text("According to § 6 para. 1 no. 27 of the Austrian VAT Act (small business regulation), no VAT is calculated.", 105, finalY + 75, { align: "center" });
+      } else {
+        doc.text("Prema § 6 st. 1 br. 27 austrijskog Zakona o PDV-u (propis o malim poduzetnicima), PDV se ne obračunava.", 105, finalY + 75, { align: "center" });
+      }
       
       // Spremanje PDF-a
       doc.save(`Invoice_${data.invoiceNumber}.pdf`);
+      
     } catch (error) {
       console.error("Greška pri generiranju PDF-a:", error);
       toast({
