@@ -514,7 +514,7 @@ export default function AdminInvoices() {
       country: "Hrvatska",
       email: "",
       phone: "",
-      invoiceNumber: `${new Date().getFullYear()}-${String(mockInvoices.length + 1).padStart(3, '0')}`,
+      invoiceNumber: `${new Date().getFullYear()}-${String(invoices.length + 1).padStart(3, '0')}`,
       language: "hr",
       selectedProducts: [],
     },
@@ -562,7 +562,7 @@ export default function AdminInvoices() {
           country: user.country || "Hrvatska",
           email: user.email || "",
           phone: user.phone || "",
-          invoiceNumber: `${new Date().getFullYear()}-${String(mockInvoices.length + 1).padStart(3, '0')}`,
+          invoiceNumber: `${new Date().getFullYear()}-${String(invoices.length + 1).padStart(3, '0')}`,
           language: "hr",
           selectedProducts: []
         });
