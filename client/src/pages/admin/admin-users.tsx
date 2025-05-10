@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Helmet } from 'react-helmet';
+import { format } from "date-fns";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { User } from "@shared/schema";
 import {
@@ -46,10 +47,20 @@ export default function AdminUsers() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isUserDetailsOpen, setIsUserDetailsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
+  const [discountAmount, setDiscountAmount] = useState("");
+  const [discountMinimumOrder, setDiscountMinimumOrder] = useState("");
+  const [discountExpiryDate, setDiscountExpiryDate] = useState("");
   
   // Fetch users
   const { data: users, isLoading } = useQuery<User[]>({
     queryKey: ["/api/users"],
+  });
+  
+  // Fetch user statistics when a user is selected
+  const { data: userStats, isLoading: isLoadingStats } = useQuery({
+    queryKey: [`/api/users/${selectedUser?.id}/stats`],
+    enabled: !!selectedUser,
   });
   
   // Filter users based on search term
@@ -94,6 +105,54 @@ export default function AdminUsers() {
       });
     }
   };
+  
+  // Open the discount modal
+  const openDiscountModal = (user: User) => {
+    setSelectedUser(user);
+    setDiscountAmount(user.discountAmount?.toString() || "0");
+    setDiscountMinimumOrder(user.discountMinimumOrder?.toString() || "0");
+    setDiscountExpiryDate(user.discountExpiryDate ? 
+      format(new Date(user.discountExpiryDate), "yyyy-MM-dd") : 
+      format(new Date(Date.now() + 30*24*60*60*1000), "yyyy-MM-dd"));
+    setIsDiscountModalOpen(true);
+  };
+  
+  // Set user discount - mutation
+  const setUserDiscountMutation = useMutation({
+    mutationFn: async (data: { 
+      userId: number; 
+      discountAmount: string; 
+      discountMinimumOrder: string; 
+      discountExpiryDate: string; 
+    }) => {
+      const response = await apiRequest("POST", `/api/users/${data.userId}/discount`, {
+        discountAmount: data.discountAmount,
+        discountMinimumOrder: data.discountMinimumOrder,
+        discountExpiryDate: data.discountExpiryDate
+      });
+      return await response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Popust postavljen",
+        description: `Popust za korisnika ${selectedUser?.username} je uspješno postavljen.`,
+      });
+      
+      // Refresh users and stats
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      queryClient.invalidateQueries({ queryKey: [`/api/users/${selectedUser?.id}/stats`] });
+      
+      setIsDiscountModalOpen(false);
+    },
+    onError: (error) => {
+      console.error("Error setting user discount:", error);
+      toast({
+        title: "Greška",
+        description: "Nije moguće postaviti popust za korisnika.",
+        variant: "destructive",
+      });
+    }
+  });
 
   return (
     <AdminLayout title="Korisnici">

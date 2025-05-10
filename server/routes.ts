@@ -987,6 +987,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to delete user" });
     }
   });
+  
+  // Dohvati statistiku korisnika (ukupna potrošnja i broj narudžbi)
+  app.get("/api/users/:id/stats", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const id = parseInt(req.params.id);
+      const orders = await storage.getUserOrders(id);
+      
+      // Izračunaj ukupnu potrošnju
+      const totalSpent = orders.reduce((total, order) => {
+        return total + parseFloat(order.total);
+      }, 0);
+      
+      // Broj narudžbi
+      const orderCount = orders.length;
+      
+      res.json({
+        userId: id,
+        totalSpent: totalSpent.toFixed(2),
+        orderCount
+      });
+    } catch (error) {
+      console.error("Error fetching user stats:", error);
+      res.status(500).json({ message: "Failed to fetch user statistics" });
+    }
+  });
+  
+  // Postavi popust za korisnika
+  app.post("/api/users/:id/discount", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const id = parseInt(req.params.id);
+      const { discountAmount, discountMinimumOrder, discountExpiryDate } = req.body;
+      
+      const updatedUser = await storage.updateUser(id, {
+        discountAmount,
+        discountMinimumOrder: discountMinimumOrder || "0",
+        discountExpiryDate: discountExpiryDate || null
+      });
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error setting user discount:", error);
+      res.status(500).json({ message: "Failed to set user discount" });
+    }
+  });
 
   // Settings
   app.get("/api/settings", async (req, res) => {
