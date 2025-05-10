@@ -485,48 +485,7 @@ export default function AdminInvoices() {
   
   const invoices = invoiceData || [];
   
-  // Privremeni mock podaci za testiranje dok ne implementiramo API
-  const mockInvoices: Invoice[] = [
-    {
-      id: 1,
-      orderId: 7,
-      invoiceNumber: "2023-001",
-      createdAt: new Date("2023-12-15"),
-      customerName: "Ana Kovač",
-      total: "35.99",
-      language: "hr",
-      items: [
-        {
-          productId: 4,
-          productName: "Mirisna svijeća - Lavanda",
-          quantity: 2,
-          price: "15.99"
-        },
-        {
-          productId: 5,
-          productName: "Mala svijeća - Vanilija",
-          quantity: 1,
-          price: "4.01"
-        }
-      ]
-    },
-    {
-      id: 2,
-      invoiceNumber: "2023-002",
-      createdAt: new Date("2023-12-20"),
-      customerName: "Marko Horvat",
-      total: "24.99",
-      language: "en",
-      items: [
-        {
-          productId: 6,
-          productName: "Gift set - Winter",
-          quantity: 1,
-          price: "24.99"
-        }
-      ]
-    }
-  ];
+  // Koristimo stvarne podatke iz baze podataka
   
   // Dohvati narudžbe za odabir
   const { data: orders, isLoading: isLoadingOrders } = useQuery<Order[]>({
