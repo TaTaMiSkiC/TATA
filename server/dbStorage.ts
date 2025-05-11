@@ -191,12 +191,22 @@ export class DatabaseStorage implements IStorage {
     return product;
   }
   
-  async getAllProducts(): Promise<Product[]> {
-    return await db.select().from(products);
+  async getAllProducts(includeInactive: boolean = false): Promise<Product[]> {
+    if (includeInactive) {
+      return await db.select().from(products);
+    } else {
+      return await db.select().from(products).where(eq(products.active, true));
+    }
   }
   
   async getFeaturedProducts(): Promise<Product[]> {
-    return await db.select().from(products).where(eq(products.featured, true));
+    return await db.select().from(products)
+      .where(
+        and(
+          eq(products.featured, true),
+          eq(products.active, true)
+        )
+      );
   }
   
   async createProduct(productData: InsertProduct): Promise<Product> {
@@ -245,8 +255,17 @@ export class DatabaseStorage implements IStorage {
     await db.delete(categories).where(eq(categories.id, id));
   }
   
-  async getProductsByCategory(categoryId: number): Promise<Product[]> {
-    return await db.select().from(products).where(eq(products.categoryId, categoryId));
+  async getProductsByCategory(categoryId: number, includeInactive: boolean = false): Promise<Product[]> {
+    if (includeInactive) {
+      return await db.select().from(products).where(eq(products.categoryId, categoryId));
+    } else {
+      return await db.select().from(products).where(
+        and(
+          eq(products.categoryId, categoryId),
+          eq(products.active, true)
+        )
+      );
+    }
   }
   
   // Scent (miris) methods
@@ -832,7 +851,7 @@ export class DatabaseStorage implements IStorage {
     await db.delete(collections).where(eq(collections.id, id));
   }
   
-  async getCollectionProducts(collectionId: number): Promise<Product[]> {
+  async getCollectionProducts(collectionId: number, includeInactive: boolean = false): Promise<Product[]> {
     // JOIN preko productCollections tabele
     const joinedProducts = await db.query.productCollections.findMany({
       where: eq(productCollections.collectionId, collectionId),
@@ -841,8 +860,14 @@ export class DatabaseStorage implements IStorage {
       }
     });
     
-    // Izvuci samo product objekte iz rezultata
-    return joinedProducts.map(item => item.product);
+    // Izvuci samo product objekte iz rezultata i filtriraj neaktivne proizvode ako je potrebno
+    if (includeInactive) {
+      return joinedProducts.map(item => item.product);
+    } else {
+      return joinedProducts
+        .map(item => item.product)
+        .filter(product => product.active === true);
+    }
   }
   
   async addProductToCollection(productId: number, collectionId: number): Promise<ProductCollection> {
