@@ -95,9 +95,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const product = await storage.getProduct(id);
+      
+      // Provjera postoji li proizvod
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
       }
+      
+      // Provjera je li proizvod aktivan za ne-admin korisnike
+      if (!product.active && (!req.isAuthenticated() || !req.user?.isAdmin)) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      
       res.json(product);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch product" });

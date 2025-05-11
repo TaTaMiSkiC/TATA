@@ -53,6 +53,12 @@ export default function ProductsPage() {
   
   // Filter products based on filters
   const filteredProducts = products?.filter((product) => {
+    // Filtriramo neaktivne proizvode - ovo je dodatno sigurnosno filtriranje
+    // iako bi server trebao slati samo aktivne proizvode neadminima  
+    if (product.active === false) {
+      return false;
+    }
+    
     // Filter by category
     if (filters.category !== "all" && product.categoryId !== parseInt(filters.category)) {
       return false;
