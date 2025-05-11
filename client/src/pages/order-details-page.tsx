@@ -81,6 +81,7 @@ interface OrderWithItems {
   shippingFullName?: string | null;
   shippingPhone?: string | null;
   transactionId?: string | null;
+  customerNote?: string | null;
 }
 
 function OrderStatusIcon({ status }: { status: string }) {
@@ -301,7 +302,8 @@ export default function OrderDetailsPage() {
           generatedNote: "This is an automatically generated invoice and is valid without signature or stamp",
           exemptionNote: "The entrepreneur is not in the VAT system, VAT is not calculated based on the provisions of the special taxation procedure for small taxpayers.",
           orderItems: "Order items",
-          shipping: "Shipping"
+          shipping: "Shipping",
+          customerNote: "Customer note"
         },
         de: {
           title: "RECHNUNG",
@@ -330,7 +332,8 @@ export default function OrderDetailsPage() {
           generatedNote: "Dies ist eine automatisch generierte Rechnung und ist ohne Unterschrift und Stempel gültig",
           exemptionNote: "Der Unternehmer ist nicht im Mehrwertsteuersystem, MwSt. wird nicht berechnet gemäß den Bestimmungen des Kleinunternehmerregelung.",
           orderItems: "Bestellpositionen",
-          shipping: "Versand"
+          shipping: "Versand",
+          customerNote: "Kundenhinweis"
         }
       };
 
