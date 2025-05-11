@@ -35,9 +35,10 @@ export default function Header() {
     logoutMutation.mutate();
   };
   
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
+  // Funkcija za promjenu teme je trenutno isključena
+  // const toggleTheme = () => {
+  //   setTheme(theme === 'dark' ? 'light' : 'dark');
+  // };
 
   return (
     <header className="bg-background shadow-sm sticky top-0 z-50 border-b">
@@ -52,10 +53,10 @@ export default function Header() {
               className="h-10 md:h-16 w-auto" 
             />
             <div className="flex flex-col md:flex-row md:items-baseline">
-              <span className="text-primary heading text-xl md:text-3xl font-bold text-center md:text-left">
+              <span className="text-[#FFD700] heading text-xl md:text-3xl font-bold text-center md:text-left">
                 Kerzenwelt
               </span>
-              <span className="text-primary text-sm md:text-xl md:ml-1 font-bold text-center md:text-left">
+              <span className="text-[#FFD700] text-sm md:text-xl md:ml-1 font-bold text-center md:text-left">
                 by Dani
               </span>
             </div>
@@ -64,14 +65,14 @@ export default function Header() {
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-6">
             <div 
-              className={`font-body hover:text-primary transition cursor-pointer ${location === '/' ? 'text-primary' : 'text-foreground'}`}
+              className={`font-body hover:text-[#A67C37] transition cursor-pointer ${location === '/' ? 'text-[#A67C37]' : 'text-foreground'}`}
               onClick={() => window.location.href = '/'}
             >
               Početna
             </div>
             
             <DropdownMenu>
-              <DropdownMenuTrigger className="font-body text-text-dark hover:text-primary transition flex items-center gap-1 outline-none">
+              <DropdownMenuTrigger className="font-body text-foreground hover:text-[#A67C37] transition flex items-center gap-1 outline-none">
                 Proizvodi
                 <ChevronDown size={14} />
               </DropdownMenuTrigger>
