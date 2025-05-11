@@ -563,6 +563,7 @@ export class DatabaseStorage implements IStorage {
     // Dodajemo logging za praćenje
     console.log(`Dohvaćanje stavki košarice za korisnika ${userId}`);
     
+    // 1. Dohvati osnovne podatke o stavkama košarice s uključenim proizvodima
     const result = await db.query.cartItems.findMany({
       where: eq(cartItems.userId, userId),
       with: {
@@ -571,103 +572,93 @@ export class DatabaseStorage implements IStorage {
     });
 
     console.log(`Pronađeno ${result.length} stavki u košarici`);
-    console.log(`Detalji stavki:`, JSON.stringify(result, null, 2));
-
-    // Dohvati scent i color informacije za svaki item ako postoje
-    const cartItemsWithScentColor = await Promise.all(
+    
+    // 2. Dohvati dodatne informacije (mirise i boje) za svaku stavku
+    const cartItemsWithExtras = await Promise.all(
       result.map(async (item) => {
-        let scent = undefined;
-        let color = undefined;
-        let selectedColors = undefined;
+        // Pripremi prošireni objekt za stavku košarice
+        let cartItemWithExtras: CartItemWithProduct = {
+          ...item,
+          product: item.product
+        };
         
+        // 3. Dohvati informacije o mirisu
         if (item.scentId) {
           const [scentData] = await db
             .select()
             .from(scents)
             .where(eq(scents.id, item.scentId));
-          scent = scentData;
-          console.log(`Za stavku ID ${item.id}, pronađen miris:`, JSON.stringify(scentData));
+          
+          if (scentData) {
+            cartItemWithExtras.scent = scentData;
+            console.log(`Za stavku ID ${item.id}, pronađen miris:`, scentData.name);
+          }
         }
         
-        // Ako stavka ima višestruke boje
+        // 4. Obradi informacije o bojama na temelju tipa stavke
         if (item.hasMultipleColors && item.colorIds) {
+          // Stavka ima više odabranih boja
           try {
-            // Parsiramo JSON string u niz ID-jeva
+            // Pretvori string u niz ID-jeva
             const colorIds = JSON.parse(item.colorIds);
-            console.log(`Za stavku ID ${item.id}, pronađeni više boja IDs:`, colorIds);
+            console.log(`Za stavku ID ${item.id}, obrada više boja, IDs:`, colorIds);
             
-            // Dohvaćamo podatke za sve boje
             if (Array.isArray(colorIds) && colorIds.length > 0) {
-              // Dohvati sve boje odjednom za bolju performansu
-              let colorResults = await db
+              // Dohvati sve boje odjednom
+              const colorResults = await db
                 .select()
                 .from(colors)
                 .where(sql`${colors.id} IN (${sql.join(colorIds.map(id => Number(id)))})`);
               
-              // Dodatna provjera - ako nisu dohvaćene boje, pokupi ih pojedinačno
-              if (!colorResults || colorResults.length === 0) {
-                console.log(`Nije uspjelo dohvaćanje boja zajedno, probam pojedinačno za: ${item.id}`);
-                colorResults = await Promise.all(
-                  colorIds.map(async (colorId) => {
-                    const [color] = await db
-                      .select()
-                      .from(colors)
-                      .where(eq(colors.id, Number(colorId)));
-                    return color;
-                  })
-                );
-              }
+              console.log(`Za stavku ID ${item.id}, dohvaćeno ${colorResults.length} boja iz baze`);
               
-              console.log(`Dohvaćene boje iz baze za stavku ${item.id}:`, JSON.stringify(colorResults));
-              
-              // Mapiramo ID-jeve na podatke o bojama
-              const colorData = colorIds.map((colorId) => {
-                const color = colorResults.find(c => c.id === Number(colorId));
-                // Dodatno logiranje za lakše praćenje problema
-                console.log(`Pronađena boja za ID ${colorId}:`, color);
+              // Pripremi objekte za svaku boju s pripadajućim podacima
+              const selectedColors = colorIds.map(colorId => {
+                const colorData = colorResults.find(c => c.id === Number(colorId));
                 return {
-                  id: colorId,
-                  name: color?.name || "Nepoznata boja",
-                  hexValue: color?.hexValue || null
+                  id: Number(colorId),
+                  name: colorData?.name || "Nepoznata boja",
+                  hexValue: colorData?.hexValue || null
                 };
               });
               
-              selectedColors = colorData;
-              console.log(`Za stavku ID ${item.id}, dohvaćene boje:`, JSON.stringify(colorData));
+              // Dodaj podatke o bojama u stavku košarice
+              cartItemWithExtras.selectedColors = selectedColors;
+              cartItemWithExtras.hasMultipleColors = true;
+              
+              console.log(`Za stavku ID ${item.id}, obrađene boje:`, 
+                selectedColors.map(c => `${c.name} (${c.hexValue})`).join(', '));
             }
           } catch (error) {
-            console.error(`Greška pri parsiranju colorIds za stavku ${item.id}:`, error);
+            console.error(`Greška pri obradi višestrukih boja za stavku ${item.id}:`, error);
           }
-          
-          return {
-            ...item,
-            product: item.product,
-            scent,
-            selectedColors,
-            hasMultipleColors: true
-          };
         } 
-        // Za standardne stavke s jednom bojom
+        // Stavka ima samo jednu odabranu boju
         else if (item.colorId) {
           const [colorData] = await db
             .select()
             .from(colors)
             .where(eq(colors.id, item.colorId));
-          color = colorData;
-          console.log(`Za stavku ID ${item.id}, pronađena boja:`, JSON.stringify(colorData));
+          if (colorData) {
+            cartItemWithExtras.color = colorData;
+            console.log(`Za stavku ID ${item.id}, pronađena boja:`, colorData.name);
+          }
         }
         
-        return {
-          ...item,
-          product: item.product,
-          scent,
-          color
-        };
+        // Dodatno logiranje za debug
+        console.log(`Za stavku ID ${item.id}, kompletan objekt:`, {
+          id: cartItemWithExtras.id,
+          hasMultipleColors: cartItemWithExtras.hasMultipleColors ? "Da" : "Ne",
+          selectedColorsCount: cartItemWithExtras.selectedColors?.length || 0,
+          colorInfo: cartItemWithExtras.color ? cartItemWithExtras.color.name : "Nema"
+        });
+        
+        return cartItemWithExtras;
       })
     );
 
-    console.log('Konačni rezultat košarice:', JSON.stringify(cartItemsWithScentColor, null, 2));
-    return cartItemsWithScentColor;
+    console.log(`Dohvaćeno ukupno ${cartItemsWithExtras.length} stavki košarice za korisnika ${userId}`);
+    return cartItemsWithExtras;
   }
 
   async addToCart(itemData: InsertCartItem): Promise<CartItem> {
