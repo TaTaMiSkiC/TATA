@@ -53,10 +53,10 @@ export default function Header() {
               className="h-10 md:h-16 w-auto" 
             />
             <div className="flex flex-col md:flex-row md:items-baseline">
-              <span className="text-[#FFD700] heading text-xl md:text-3xl font-bold text-center md:text-left">
+              <span className="text-[#D4AF37] heading text-xl md:text-3xl font-bold text-center md:text-left">
                 Kerzenwelt
               </span>
-              <span className="text-[#FFD700] text-sm md:text-xl md:ml-1 font-bold text-center md:text-left">
+              <span className="text-[#D4AF37] text-sm md:text-xl md:ml-1 font-bold text-center md:text-left">
                 by Dani
               </span>
             </div>
