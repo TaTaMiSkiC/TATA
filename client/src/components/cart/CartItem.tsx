@@ -143,28 +143,47 @@ export default function CartItem({ item }: CartItemProps) {
               )}
               
               {/* Prikaz višestruko odabranih boja */}
-              {item.hasMultipleColors && item.selectedColors && item.selectedColors.length > 0 && (
-                <div className="mt-1">
-                  <span className="font-medium mr-1">Boje:</span>
-                  <div className="flex flex-wrap gap-2 items-center mt-1">
-                    {item.selectedColors.map((color, index) => (
-                      <div key={`color-${color.id}`} className="inline-flex items-center">
-                        {color.hexValue ? (
-                          <div 
-                            className="w-3 h-3 rounded-full mr-1 border"
-                            style={{ backgroundColor: color.hexValue }}
-                          ></div>
-                        ) : (
-                          <div 
-                            className="w-3 h-3 rounded-full mr-1 border bg-gray-300"
-                          ></div>
-                        )}
-                        <span>{color.name}</span>
+              {(() => {
+                console.log("Višestruke boje za stavku", item.id, {
+                  hasMultipleColors: item.hasMultipleColors,
+                  selectedColors: item.selectedColors,
+                  colorIds: item.colorIds
+                });
+                
+                if (item.hasMultipleColors && item.selectedColors && item.selectedColors.length > 0) {
+                  return (
+                    <div className="mt-1">
+                      <span className="font-medium mr-1">Boje:</span>
+                      <div className="flex flex-wrap gap-2 items-center mt-1">
+                        {item.selectedColors.map((color, index) => (
+                          <div key={`color-${color.id}`} className="inline-flex items-center">
+                            {color.hexValue ? (
+                              <div 
+                                className="w-3 h-3 rounded-full mr-1 border"
+                                style={{ backgroundColor: color.hexValue }}
+                              ></div>
+                            ) : (
+                              <div 
+                                className="w-3 h-3 rounded-full mr-1 border bg-gray-300"
+                              ></div>
+                            )}
+                            <span>{color.name}</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                    </div>
+                  );
+                } else if (item.hasMultipleColors && item.colorName) {
+                  // Fallback - ako nemamo selectedColors objekte, ali imamo colorName
+                  return (
+                    <div className="mt-1">
+                      <span className="font-medium mr-1">Boje:</span> {item.colorName}
+                    </div>
+                  );
+                }
+                
+                return null;
+              })()}
             </div>
           )}
           
