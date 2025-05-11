@@ -72,8 +72,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Products
   app.get("/api/products", async (req, res) => {
     try {
-      const products = await storage.getAllProducts();
-      res.json(products);
+      // Dohvati sve proizvode
+      const allProducts = await storage.getAllProducts();
+      
+      // Provjera je li korisnik admin - ako je admin, vratiti sve proizvode
+      if (req.isAuthenticated() && req.user.username === 'admin') {
+        res.json(allProducts);
+        return;
+      }
+      
+      // Za obične korisnike ili neprijavljene, vrati samo aktivne proizvode
+      const activeProducts = allProducts.filter(product => product.active !== false);
+      res.json(activeProducts);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch products" });
     }
@@ -81,8 +91,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/products/featured", async (req, res) => {
     try {
-      const products = await storage.getFeaturedProducts();
-      res.json(products);
+      // Dohvati sve istaknute proizvode
+      const allFeaturedProducts = await storage.getFeaturedProducts();
+      
+      // Provjera je li korisnik admin - ako je admin, vratiti sve proizvode
+      if (req.isAuthenticated() && req.user.role === 'admin') {
+        res.json(allFeaturedProducts);
+        return;
+      }
+      
+      // Za obične korisnike ili neprijavljene, vrati samo aktivne istaknute proizvode
+      const activeFeaturedProducts = allFeaturedProducts.filter(product => product.active !== false);
+      res.json(activeFeaturedProducts);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch featured products" });
     }

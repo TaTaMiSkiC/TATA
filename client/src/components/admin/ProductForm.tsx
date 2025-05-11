@@ -225,6 +225,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
         featured,
         hasColorOptions,
         allowMultipleColors,
+        active, // Dodana vrijednost za aktivaciju/deaktivaciju proizvoda
         // Postavljamo na null da ih ne bi API izbacio kao grešku
         scent: null,
         color: null,
