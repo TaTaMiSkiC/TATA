@@ -65,57 +65,66 @@ export default function Header() {
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-6">
             <div 
-              className={`font-body hover:text-[#A67C37] transition cursor-pointer ${location === '/' ? 'text-[#A67C37]' : 'text-foreground'}`}
+              className={`font-body hover:text-[#D4AF37] transition cursor-pointer ${location === '/' ? 'text-[#D4AF37]' : 'text-foreground'}`}
               onClick={() => window.location.href = '/'}
             >
               Početna
             </div>
             
-            <DropdownMenu>
-              <DropdownMenuTrigger className="font-body text-foreground hover:text-[#A67C37] transition flex items-center gap-1 outline-none">
+            <div className="relative group">
+              <button 
+                className="font-body text-foreground hover:text-[#D4AF37] transition flex items-center gap-1 outline-none"
+              >
                 Proizvodi
                 <ChevronDown size={14} />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-48">
-                <DropdownMenuItem>
-                  <div className="w-full cursor-pointer" onClick={() => window.location.href = '/products?category=1'}>
-                    Mirisne svijeće
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div className="w-full cursor-pointer" onClick={() => window.location.href = '/products?category=2'}>
-                    Dekorativne svijeće
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div className="w-full cursor-pointer" onClick={() => window.location.href = '/products?category=3'}>
-                    Personalizirane svijeće
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div className="w-full cursor-pointer" onClick={() => window.location.href = '/products'}>
-                    Posebne ponude
-                  </div>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </button>
+              <div 
+                id="products-dropdown" 
+                className="absolute left-0 top-full mt-2 hidden group-hover:block w-56 rounded-md bg-white shadow-lg py-1 z-50"
+              >
+                <div 
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
+                  onClick={() => window.location.href = '/products?category=1'}
+                >
+                  Mirisne svijeće
+                </div>
+                <div 
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
+                  onClick={() => window.location.href = '/products?category=2'}
+                >
+                  Dekorativne svijeće
+                </div>
+                <div 
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
+                  onClick={() => window.location.href = '/products?category=3'}
+                >
+                  Personalizirane svijeće
+                </div>
+                <div 
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
+                  onClick={() => window.location.href = '/products'}
+                >
+                  Posebne ponude
+                </div>
+              </div>
+            </div>
             
             <div 
-              className={`font-body hover:text-primary transition cursor-pointer ${location === '/about' ? 'text-primary' : 'text-text-dark'}`}
+              className={`font-body hover:text-[#D4AF37] transition cursor-pointer ${location === '/about' ? 'text-[#D4AF37]' : 'text-foreground'}`}
               onClick={() => window.location.href = '/about'}
             >
               O nama
             </div>
             
             <div 
-              className={`font-body hover:text-primary transition cursor-pointer ${location === '/blog' ? 'text-primary' : 'text-text-dark'}`}
+              className={`font-body hover:text-[#D4AF37] transition cursor-pointer ${location === '/blog' ? 'text-[#D4AF37]' : 'text-foreground'}`}
               onClick={() => window.location.href = '/blog'}
             >
               Slike
             </div>
             
             <div 
-              className={`font-body hover:text-primary transition cursor-pointer ${location === '/contact' ? 'text-primary' : 'text-text-dark'}`}
+              className={`font-body hover:text-[#D4AF37] transition cursor-pointer ${location === '/contact' ? 'text-[#D4AF37]' : 'text-foreground'}`}
               onClick={() => window.location.href = '/contact'}
             >
               Kontakt
@@ -130,7 +139,7 @@ export default function Header() {
                 href="https://www.instagram.com/kerzenwelt_by_dani/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-text-dark hover:text-primary transition ml-1"
+                className="text-foreground hover:text-[#D4AF37] transition ml-1"
               >
                 <Instagram size={20} />
               </a>
