@@ -55,7 +55,7 @@ export default function Header() {
               <span className="text-primary heading text-xl md:text-3xl font-bold text-center md:text-left">
                 Kerzenwelt
               </span>
-              <span className="text-foreground text-sm md:text-xl md:ml-1 font-bold text-center md:text-left">
+              <span className="text-primary text-sm md:text-xl md:ml-1 font-bold text-center md:text-left">
                 by Dani
               </span>
             </div>

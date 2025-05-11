@@ -13,7 +13,7 @@
   --card-foreground: 20 14.3% 4.1%;
   --border: 20 5.9% 90%;
   --input: 20 5.9% 90%;
-  --primary: 33 57% 36%;  /* #8B5A2B - Brown */
+  --primary: 36 50% 40%;  /* #A67C37 - Gold-Brown */
   --primary-foreground: 211 100% 99%;
   --secondary: 38 55% 71%;  /* #D4B996 - Light Brown */
   --secondary-foreground: 24 9.8% 10%;
@@ -36,11 +36,11 @@
   --card-foreground: 0 0% 98%;
   --border: 240 3.7% 15.9%;
   --input: 240 3.7% 15.9%;
-  --primary: 33 57% 36%;
+  --primary: 36 50% 40%;  /* #A67C37 - Gold-Brown */
   --primary-foreground: 211 100% 99%;
-  --secondary: 38 55% 71%;
+  --secondary: 38 55% 71%;  /* #D4B996 - Light Brown */
   --secondary-foreground: 0 0% 98%;
-  --accent: 38 67% 89%;
+  --accent: 38 67% 89%;  /* #F1E3D3 - Cream */
   --accent-foreground: 0 0% 98%;
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;

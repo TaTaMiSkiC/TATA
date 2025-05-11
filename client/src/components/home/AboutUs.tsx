@@ -24,7 +24,7 @@ export default function AboutUs() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               <div className="flex items-start">
-                <div className="flex-shrink-0 bg-accent p-3 rounded-full">
+                <div className="flex-shrink-0 bg-primary/20 p-3 rounded-full">
                   <Leaf className="text-primary" size={20} />
                 </div>
                 <div className="ml-4">
@@ -33,7 +33,7 @@ export default function AboutUs() {
                 </div>
               </div>
               <div className="flex items-start">
-                <div className="flex-shrink-0 bg-accent p-3 rounded-full">
+                <div className="flex-shrink-0 bg-primary/20 p-3 rounded-full">
                   <HeartHandshake className="text-primary" size={20} />
                 </div>
                 <div className="ml-4">
