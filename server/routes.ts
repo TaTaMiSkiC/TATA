@@ -236,10 +236,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const simplifiedResponse = {
             id: product.id,
             name: product.name,
-            active: Boolean(product.active)
+            active: product.active === true
           };
+          console.log("Šaljem odgovor:", JSON.stringify(simplifiedResponse));
           res.setHeader('Content-Type', 'application/json');
-          return res.status(200).send(JSON.stringify(simplifiedResponse));
+          return res.status(200).json(simplifiedResponse);
         } catch (err) {
           console.error("Greška pri storage.updateProduct:", err);
           return res.status(500).json({ message: "Server error during product update" });

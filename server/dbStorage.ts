@@ -215,12 +215,27 @@ export class DatabaseStorage implements IStorage {
   }
   
   async updateProduct(id: number, productData: InsertProduct): Promise<Product | undefined> {
-    const [updatedProduct] = await db
-      .update(products)
-      .set(productData)
-      .where(eq(products.id, id))
-      .returning();
-    return updatedProduct;
+    // Osigurajmo da je active polje ispravno pretvoreno u boolean
+    const sanitizedData = { ...productData };
+    if ('active' in sanitizedData) {
+      sanitizedData.active = sanitizedData.active === true;
+    }
+    
+    console.log("updateProduct - sanitirani podaci:", JSON.stringify(sanitizedData));
+    
+    try {
+      const [updatedProduct] = await db
+        .update(products)
+        .set(sanitizedData)
+        .where(eq(products.id, id))
+        .returning();
+        
+      console.log("updateProduct - rezultat:", JSON.stringify(updatedProduct));
+      return updatedProduct;
+    } catch (error) {
+      console.error("Greška pri ažuriranju proizvoda u bazi:", error);
+      throw error;
+    }
   }
   
   async deleteProduct(id: number): Promise<void> {
