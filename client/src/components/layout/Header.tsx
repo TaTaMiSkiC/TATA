@@ -49,13 +49,13 @@ export default function Header() {
             <img 
               src={logoImage} 
               alt="Kerzenwelt Logo" 
-              className="h-12 md:h-16 w-auto" 
+              className="h-10 md:h-16 w-auto" 
             />
             <div className="flex items-baseline">
-              <span className="text-primary heading text-2xl md:text-3xl font-bold">
+              <span className="text-primary heading text-xl md:text-3xl font-bold">
                 Kerzenwelt
               </span>
-              <span className="text-foreground text-lg md:text-xl ml-1 font-bold mt-1 md:mt-0">
+              <span className="text-foreground text-sm md:text-xl ml-1 font-bold mt-1 md:mt-0">
                 by Dani
               </span>
             </div>
