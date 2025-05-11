@@ -151,6 +151,9 @@ export const cartItems = pgTable("cart_items", {
 
 export const insertCartItemSchema = createInsertSchema(cartItems).omit({
   id: true,
+}).extend({
+  colorIds: z.string().optional(),
+  hasMultipleColors: z.boolean().optional(),
 });
 
 // Product-Scent relations table
