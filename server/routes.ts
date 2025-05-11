@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { z } from "zod";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, and, isNull } from "drizzle-orm";
 import { db, pool } from "./db";
 import {
   productScents,
@@ -21,6 +21,8 @@ import {
   insertCollectionSchema,
   insertInvoiceSchema,
   insertInvoiceItemSchema,
+  cartItems,
+  CartItem,
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
