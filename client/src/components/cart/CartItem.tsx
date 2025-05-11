@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
-import { CartItemWithProduct } from "@shared/schema";
+import { CartItemWithProduct, SelectedColorInfo } from "@shared/schema";
 import { useCart } from "@/hooks/use-cart";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";

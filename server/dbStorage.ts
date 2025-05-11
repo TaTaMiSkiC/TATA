@@ -65,14 +65,7 @@ import session from "express-session";
 import { pool } from "./db";
 import { IStorage } from "./storage";
 
-// Prošireni tipovi
-interface CartItemWithProduct extends CartItem {
-  product: Product;
-  scent?: Scent;
-  color?: Color;
-}
-
-// OrderItemWithProduct je već definiran u shared/schema.ts
+// Koristimo tipove iz shared/schema.ts
 
 const PostgresSessionStore = connectPg(session);
 
