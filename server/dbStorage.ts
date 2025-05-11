@@ -434,9 +434,15 @@ export class DatabaseStorage implements IStorage {
           p.category_id as product_category_id,
           p.stock as product_stock,
           p.featured as product_featured,
-          p.created_at as product_created_at
+          p.created_at as product_created_at,
+          s.id as scent_id,
+          s.name as scent_name,
+          c.id as color_id,
+          c.name as color_name
         FROM order_items oi
         LEFT JOIN products p ON oi.product_id = p.id
+        LEFT JOIN scents s ON oi.scent_id = s.id
+        LEFT JOIN colors c ON oi.color_id = c.id
         WHERE oi.order_id = $1
       `, [orderId]);
 
