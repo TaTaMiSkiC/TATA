@@ -274,8 +274,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         console.log(`[POST /api/cart] Dodajem novu stavku u košaricu`);
         
+        // Mapiramo iz camelCase u snake_case za direktni SQL upit
+        console.log(`[POST /api/cart] Inserting: userId=${validatedData.userId}, productId=${validatedData.productId}, quantity=${validatedData.quantity}`);
         const insertQuery = await db.execute(sql`
-          INSERT INTO cart_items ("userId", "productId", quantity, "scentId", "colorId")
+          INSERT INTO cart_items (user_id, product_id, quantity, scent_id, color_id)
           VALUES (
             ${validatedData.userId}, 
             ${validatedData.productId}, 
