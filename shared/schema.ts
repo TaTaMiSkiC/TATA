@@ -366,6 +366,7 @@ export interface OrderItemWithProduct extends Omit<OrderItem, 'scentId' | 'color
   colorId: number | null;
   scentName: string | null;
   colorName: string | null;
+  hasMultipleColors?: boolean;
 }
 
 // Definiranje tablice za stranice (O nama, Kontakt, Blog)

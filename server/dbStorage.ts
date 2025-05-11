@@ -491,6 +491,8 @@ export class DatabaseStorage implements IStorage {
           p.stock as product_stock,
           p.featured as product_featured,
           p.created_at as product_created_at,
+          p.allow_multiple_colors as product_allow_multiple_colors,
+          p.active as product_active,
           s.id as scent_id,
           s.name as scent_name,
           c.id as color_id,
@@ -517,6 +519,8 @@ export class DatabaseStorage implements IStorage {
           stock: item.product_stock || 0,
           featured: !!item.product_featured,
           createdAt: item.product_created_at || new Date(),
+          active: !!item.product_active,
+          allowMultipleColors: !!item.product_allow_multiple_colors,
           // Dodajemo dodatna polja koja očekuje Product tip
           scent: null,
           color: null,
