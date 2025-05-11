@@ -501,8 +501,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const product = await storage.getProduct(item.productId);
           
           // Provjera za detalje o mirisu i boji
-          let scentName = item.selectedScent || null;
-          let colorName = item.selectedColor || null;
+          let scentName = item.scentName || null;
+          let colorName = item.colorName || null;
           
           // Ako nemamo nazive, a imamo ID-eve, dohvatimo ih
           if (!scentName && item.scentId) {

@@ -122,6 +122,11 @@ export const orderItems = pgTable("order_items", {
   productName: text("product_name"),  // Dodajemo ime proizvoda za prikaz
   quantity: integer("quantity").notNull(),
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  // Dodajemo polja za varijante proizvoda
+  scentId: integer("scent_id"),
+  scentName: text("scent_name"),
+  colorId: integer("color_id"),
+  colorName: text("color_name"),
 });
 
 export const insertOrderItemSchema = createInsertSchema(orderItems).omit({
@@ -231,6 +236,13 @@ export type InsertOrder = z.infer<typeof insertOrderSchema>;
 
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
+
+// Definiranje OrderItemWithProduct interface za upotrebu u aplikaciji
+export interface OrderItemWithProduct extends OrderItem {
+  product: Product;
+  selectedScent?: string;
+  selectedColor?: string;
+}
 
 export type CartItem = typeof cartItems.$inferSelect;
 export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
