@@ -318,6 +318,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to clear cart" });
     }
   });
+  
+  // Dodajemo POST rutu za čišćenje košarice zbog jednostavnijeg testiranja
+  app.post("/api/cart/clear", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      console.log(`Čišćenje košarice za korisnika ${req.user.id}`);
+      await storage.clearCart(req.user.id);
+      
+      // Dohvati svježe podatke o košarici nakon čišćenja
+      const emptyCart = await storage.getCartItems(req.user.id);
+      res.status(200).json({ message: "Cart cleared successfully", cart: emptyCart });
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+      res.status(500).json({ message: "Failed to clear cart" });
+    }
+  });
 
   // Orders
   app.get("/api/orders", async (req, res) => {
