@@ -143,6 +143,9 @@ export const cartItems = pgTable("cart_items", {
   quantity: integer("quantity").notNull(),
   scentId: integer("scent_id"),
   colorId: integer("color_id"),
+  colorName: text("color_name"),     // Ime boje ili spojeni nazivi više boja
+  colorIds: text("color_ids"),       // JSON string s nizom ID-jeva boja za višestruki odabir
+  hasMultipleColors: boolean("has_multiple_colors").default(false).notNull(),
 });
 
 export const insertCartItemSchema = createInsertSchema(cartItems).omit({

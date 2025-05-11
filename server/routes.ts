@@ -288,16 +288,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("[POST /api/cart] Validirani podaci:", JSON.stringify(validatedData, null, 2));
       
-      // Koristit ćemo direktni SQL upit da osiguramo pravilno rukovanje NULL vrijednostima
-      // SQL "IS NOT DISTINCT FROM" operator omogućuje pravilno uspoređivanje NULL vrijednosti
-      const existingCartItemsQuery = await db.execute(sql`
-        SELECT * FROM cart_items 
-        WHERE 
-          user_id = ${validatedData.userId} AND 
-          product_id = ${validatedData.productId} AND
-          scent_id IS NOT DISTINCT FROM ${validatedData.scentId} AND
-          color_id IS NOT DISTINCT FROM ${validatedData.colorId}
-      `);
+      // Provjera da li proizvod koristi višestruke boje
+      const hasMultipleColors = validatedData.hasMultipleColors || false;
+      const colorIds = validatedData.colorIds || null;
+      const colorName = validatedData.colorName || null;
+      
+      // Različita logika pretrage ovisno o tome koristi li se višestruki odabir boja
+      let existingCartItemsQuery;
+      
+      if (hasMultipleColors) {
+        // Ako koristimo višestruki odabir boja, tražimo po colorIds i ignoriramo colorId
+        console.log("[POST /api/cart] Traženje stavke s višestrukim bojama:", colorIds);
+        existingCartItemsQuery = await db.execute(sql`
+          SELECT * FROM cart_items 
+          WHERE 
+            user_id = ${validatedData.userId} AND 
+            product_id = ${validatedData.productId} AND
+            scent_id IS NOT DISTINCT FROM ${validatedData.scentId} AND
+            has_multiple_colors = true AND
+            color_ids IS NOT DISTINCT FROM ${colorIds}
+        `);
+      } else {
+        // Standardna pretraga po pojedinačnoj boji
+        console.log("[POST /api/cart] Traženje stavke s jednom bojom");
+        existingCartItemsQuery = await db.execute(sql`
+          SELECT * FROM cart_items 
+          WHERE 
+            user_id = ${validatedData.userId} AND 
+            product_id = ${validatedData.productId} AND
+            scent_id IS NOT DISTINCT FROM ${validatedData.scentId} AND
+            color_id IS NOT DISTINCT FROM ${validatedData.colorId} AND
+            has_multiple_colors = false
+        `);
+      }
       
       const existingCartItems = existingCartItemsQuery.rows;
       console.log("[POST /api/cart] Pronađene postojeće stavke:", JSON.stringify(existingCartItems, null, 2));
@@ -322,17 +345,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Mapiramo iz camelCase u snake_case za direktni SQL upit
         console.log(`[POST /api/cart] Inserting: userId=${validatedData.userId}, productId=${validatedData.productId}, quantity=${validatedData.quantity}`);
-        const insertQuery = await db.execute(sql`
-          INSERT INTO cart_items (user_id, product_id, quantity, scent_id, color_id)
-          VALUES (
-            ${validatedData.userId}, 
-            ${validatedData.productId}, 
-            ${validatedData.quantity}, 
-            ${validatedData.scentId}, 
-            ${validatedData.colorId}
-          )
-          RETURNING *
-        `);
+        
+        // Različiti upiti za dodavanje stavke ovisno o tome koristi li višestruki odabir boja
+        let insertQuery;
+        
+        if (hasMultipleColors) {
+          console.log(`[POST /api/cart] Dodajem stavku s višestrukim bojama: ${colorIds}, nazivBoja: ${colorName}`);
+          insertQuery = await db.execute(sql`
+            INSERT INTO cart_items (
+              user_id, 
+              product_id, 
+              quantity, 
+              scent_id, 
+              color_id,
+              color_ids,
+              color_name,
+              has_multiple_colors
+            )
+            VALUES (
+              ${validatedData.userId}, 
+              ${validatedData.productId}, 
+              ${validatedData.quantity}, 
+              ${validatedData.scentId}, 
+              NULL,
+              ${colorIds},
+              ${colorName},
+              true
+            )
+            RETURNING *
+          `);
+        } else {
+          console.log(`[POST /api/cart] Dodajem stavku s jednom bojom: ID=${validatedData.colorId}`);
+          insertQuery = await db.execute(sql`
+            INSERT INTO cart_items (
+              user_id, 
+              product_id, 
+              quantity, 
+              scent_id, 
+              color_id,
+              color_name,
+              has_multiple_colors
+            )
+            VALUES (
+              ${validatedData.userId}, 
+              ${validatedData.productId}, 
+              ${validatedData.quantity}, 
+              ${validatedData.scentId}, 
+              ${validatedData.colorId},
+              ${colorName},
+              false
+            )
+            RETURNING *
+          `);
+        }
         
         cartItem = insertQuery.rows[0];
       }
