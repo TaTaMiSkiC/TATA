@@ -111,7 +111,8 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
           .filter(Boolean)
           .join(", ");
           
-        await addToCart.mutateAsync({
+        // Pripremi podatke za dodavanje u košaricu s više boja
+        const cartData = {
           productId: product.id,
           quantity: quantity,
           scentId: selectedScentId === null ? undefined : selectedScentId,
@@ -119,7 +120,11 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
           colorIds: selectedColorIds.length > 0 ? JSON.stringify(selectedColorIds) : undefined, // Šaljemo listu ID-jeva boja kao JSON string
           colorName: colorNames, // Šaljemo spojene nazive boja
           hasMultipleColors: true // Označavamo da koristimo višestruke boje
-        });
+        };
+        
+        console.log("Dodajem proizvod s višestrukim bojama u košaricu:", cartData);
+        
+        await addToCart.mutateAsync(cartData);
       } else {
         // Standardni način dodavanja u košaricu s jednom bojom
         console.log("Dodajem proizvod u košaricu:", {
