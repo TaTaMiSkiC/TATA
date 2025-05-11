@@ -34,7 +34,7 @@ export default function AboutPage() {
         <title>{pageData?.title || "O nama"} | Kerzenwelt by Dani</title>
         <meta 
           name="description" 
-          content="Upoznajte Kerzenwelt by Dani - vodeću trgovinu ručno izrađenih svijeća. Saznajte više o našoj strasti za kvalitetom i prirodnim materijalima."
+          content="Upoznajte Kerzenwelt by Dani - trgovinu ručno izrađenih svijeća. Saznajte više o našoj strasti za kvalitetom i prirodnim materijalima."
         />
       </Helmet>
       
