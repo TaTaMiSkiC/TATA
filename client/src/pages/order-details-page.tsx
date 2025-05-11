@@ -271,7 +271,8 @@ export default function OrderDetailsPage() {
           generatedNote: "Ovo je automatski generirani racun i valjan je bez potpisa i pecata",
           exemptionNote: "Poduzetnik nije u sustavu PDV-a, PDV nije obracunat temeljem odredbi posebnog postupka oporezivanja za male porezne obveznike.",
           orderItems: "Stavke narudzbe",
-          shipping: "Dostava"
+          shipping: "Dostava",
+          customerNote: "Napomena kupca"
         },
         en: {
           title: "INVOICE",
@@ -559,6 +560,21 @@ export default function OrderDetailsPage() {
       doc.text(`${t.paymentMethod}: ${paymentMethod}`, 20, finalY + 45);
       doc.text(`${t.paymentStatus}: ${paymentStatus}`, 20, finalY + 50);
       
+      // Napomena kupca ako postoji
+      if (orderWithItems.customerNote) {
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.text(`${t.customerNote || 'Napomena kupca'}:`, 20, finalY + 60);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        
+        // Napravimo potreban broj redova za napomenu
+        const noteLines = doc.splitTextToSize(orderWithItems.customerNote, 160);
+        noteLines.forEach((line: string, index: number) => {
+          doc.text(line, 20, finalY + 67 + (index * 5));
+        });
+      }
+      
       // Zahvala za narudžbu
       doc.setFontSize(10);
       doc.text(`${t.thankYou}!`, 105, finalY + 65, { align: "center" });
@@ -746,6 +762,19 @@ export default function OrderDetailsPage() {
               )}
             </CardContent>
           </Card>
+          
+          {orderWithItems.customerNote && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Napomena kupca</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="p-3 bg-neutral-50 rounded-md border border-neutral-100 text-neutral-800">
+                  {orderWithItems.customerNote}
+                </div>
+              </CardContent>
+            </Card>
+          )}
           
           <Card>
             <CardHeader>
