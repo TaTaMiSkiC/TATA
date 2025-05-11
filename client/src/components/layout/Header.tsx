@@ -35,8 +35,6 @@ export default function Header() {
     logoutMutation.mutate();
   };
   
-  const { theme, setTheme } = useTheme();
-  
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
