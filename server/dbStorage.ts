@@ -192,11 +192,26 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getAllProducts(includeInactive: boolean = false): Promise<Product[]> {
+    console.log("getAllProducts pozvana - includeInactive:", includeInactive);
+    let results: Product[];
+    
     if (includeInactive) {
-      return await db.select().from(products);
+      results = await db.select().from(products);
+      console.log(`Dohvaćeno ${results.length} proizvoda (uključujući neaktivne)`);
     } else {
-      return await db.select().from(products).where(eq(products.active, true));
+      results = await db.select().from(products).where(eq(products.active, true));
+      console.log(`Dohvaćeno ${results.length} aktivnih proizvoda`);
     }
+    
+    // Logiramo status aktivnosti prvih nekoliko proizvoda
+    if (results.length > 0) {
+      console.log("Primjeri statusa aktivnosti proizvoda:");
+      results.slice(0, 3).forEach(p => {
+        console.log(`- ID: ${p.id}, Naziv: ${p.name}, Aktivan: ${p.active}`);
+      });
+    }
+    
+    return results;
   }
   
   async getFeaturedProducts(): Promise<Product[]> {
