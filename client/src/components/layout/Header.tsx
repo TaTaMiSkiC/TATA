@@ -21,6 +21,7 @@ import { SearchDialog } from "@/components/layout/SearchDialog";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
 import logoImage from "@/assets/new-logo.png";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -28,6 +29,11 @@ export default function Header() {
   const { cartItems } = useCart();
   // Uklonili smo korištenje teme
   const [location] = useLocation();
+  
+  // Dohvaćanje kategorija iz baze podataka
+  const { data: categories = [] } = useQuery({
+    queryKey: ['/api/categories'],
+  });
 
   const cartItemCount = cartItems?.length || 0;
 
@@ -82,30 +88,27 @@ export default function Header() {
                 id="products-dropdown" 
                 className="absolute left-0 top-full mt-2 hidden group-hover:block w-56 rounded-md bg-white shadow-lg py-1 z-50"
               >
-                <div 
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
-                  onClick={() => window.location.href = '/products?category=1'}
-                >
-                  Mirisne svijeće
-                </div>
-                <div 
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
-                  onClick={() => window.location.href = '/products?category=2'}
-                >
-                  Dekorativne svijeće
-                </div>
-                <div 
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
-                  onClick={() => window.location.href = '/products?category=3'}
-                >
-                  Personalizirane svijeće
-                </div>
-                <div 
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
-                  onClick={() => window.location.href = '/products'}
-                >
-                  Posebne ponude
-                </div>
+                {categories && categories.length > 0 ? (
+                  <>
+                    {categories.map((category) => (
+                      <div 
+                        key={category.id}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
+                        onClick={() => window.location.href = `/products?category=${category.id}`}
+                      >
+                        {category.name}
+                      </div>
+                    ))}
+                    <div 
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
+                      onClick={() => window.location.href = '/products'}
+                    >
+                      Sve kategorije
+                    </div>
+                  </>
+                ) : (
+                  <div className="px-4 py-2 text-gray-500">Učitavanje kategorija...</div>
+                )}
               </div>
             </div>
             
