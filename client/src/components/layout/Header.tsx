@@ -122,7 +122,7 @@ export default function Header() {
           </nav>
           
           {/* User actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 md:space-x-4">
             <div className="hidden md:flex items-center gap-1 mr-2">
               <span className="text-foreground text-sm font-medium">Pratite nas:</span>
               <a 
@@ -135,9 +135,9 @@ export default function Header() {
               </a>
             </div>
             
-
-            
-            <SearchDialog />
+            <div className="ml-auto md:ml-0">
+              <SearchDialog />
+            </div>
             
             {user ? (
               <DropdownMenu>
