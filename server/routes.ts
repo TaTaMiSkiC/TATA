@@ -3,9 +3,11 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
+import { upload, resizeImage } from "./imageUpload";
 import { z } from "zod";
 import { eq, sql, and, isNull } from "drizzle-orm";
 import { db, pool } from "./db";
+import path from "path";
 import {
   productScents,
   productColors,
@@ -40,6 +42,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/paypal/order/:orderID/capture", async (req, res) => {
     await capturePaypalOrder(req, res);
+  });
+
+  // Enable serving static files from the public directory
+  app.use('/uploads', (req, res, next) => {
+    const filePath = path.join(process.cwd(), 'public', req.url);
+    res.sendFile(filePath, (err) => {
+      if (err) {
+        next();
+      }
+    });
+  });
+  
+  // Image Upload Route
+  app.post('/api/upload', upload.single('image'), resizeImage, (req, res) => {
+    if (!req.body.imageUrl) {
+      return res.status(400).json({ error: 'Greška pri uploadu slike' });
+    }
+    
+    // Vraćamo putanju do slike koju klijent može koristiti
+    res.json({ imageUrl: req.body.imageUrl });
   });
 
   // Products

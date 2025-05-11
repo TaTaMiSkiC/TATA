@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
+import { LoaderCircle, Upload, Link, ImageIcon } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -27,7 +28,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LoaderCircle } from "lucide-react";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger
+} from "@/components/ui/tabs";
 
 interface ProductFormProps {
   product?: Product;
@@ -41,6 +47,9 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
   const [selectedColors, setSelectedColors] = useState<number[]>([]);
   const [hasColorOptions, setHasColorOptions] = useState(product?.hasColorOptions || false);
   const [featured, setFeatured] = useState(product?.featured || false);
+  const [uploadMethod, setUploadMethod] = useState<'url' | 'file'>('url');
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Create extended schema with validations
   const validationSchema = insertProductSchema.extend({
@@ -138,6 +147,57 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
       fetchProductColors();
     }
   }, [product]);
+
+  // Handler za upload slike
+  const handleImageUpload = async (file: File) => {
+    if (!file) return null;
+    
+    setIsUploading(true);
+    
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error('Greška prilikom uploada slike');
+      }
+      
+      const data = await response.json();
+      
+      // Postavljanje URL-a slike u formular
+      form.setValue('imageUrl', data.imageUrl);
+      
+      toast({
+        title: 'Slika uspješno uploadana',
+        description: 'Slika je automatski smanjena na 800x800px.'
+      });
+      
+      return data.imageUrl;
+    } catch (error) {
+      console.error('Image upload error:', error);
+      toast({
+        title: 'Greška',
+        description: 'Došlo je do greške prilikom uploada slike.',
+        variant: 'destructive',
+      });
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+  
+  // Handler za promjenu datoteke
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      await handleImageUpload(file);
+    }
+  };
 
   // Submit handler
   const onSubmit = async (values: z.infer<typeof validationSchema>) => {
@@ -324,26 +384,100 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               )}
             />
             
-            {/* Image URL */}
-            <FormField
-              control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem className="col-span-full">
-                  <FormLabel>URL slike *</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="https://example.com/image.jpg" 
-                      {...field} 
+            {/* Image Upload/URL */}
+            <div className="col-span-full space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-medium">Slika proizvoda *</h3>
+                <Tabs 
+                  defaultValue={uploadMethod} 
+                  onValueChange={(value) => setUploadMethod(value as 'url' | 'file')}
+                  className="w-64"
+                >
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="url" className="flex items-center gap-1">
+                      <Link className="h-4 w-4" />
+                      URL
+                    </TabsTrigger>
+                    <TabsTrigger value="file" className="flex items-center gap-1">
+                      <Upload className="h-4 w-4" />
+                      Upload
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="url" className="pt-3">
+                    <FormField
+                      control={form.control}
+                      name="imageUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input 
+                              placeholder="https://example.com/image.jpg" 
+                              {...field} 
+                              value={field.value || ''}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            URL do slike proizvoda. Preporučene dimenzije: 800x800px.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </FormControl>
-                  <FormDescription>
-                    URL do slike proizvoda. Preporučene dimenzije: 800x800px.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
+                  </TabsContent>
+                  
+                  <TabsContent value="file" className="pt-3">
+                    <div className="space-y-4">
+                      <div className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-lg p-6 cursor-pointer hover:bg-accent/50 transition-colors" 
+                        onClick={() => fileInputRef.current?.click()}>
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          className="hidden"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          disabled={isUploading}
+                        />
+                        {isUploading ? (
+                          <div className="flex flex-col items-center">
+                            <LoaderCircle className="h-10 w-10 text-primary animate-spin mb-2" />
+                            <p className="text-sm text-muted-foreground">Uploading...</p>
+                          </div>
+                        ) : (
+                          <>
+                            <ImageIcon className="h-10 w-10 text-muted-foreground mb-2" />
+                            <p className="text-sm font-medium mb-1">Kliknite za upload</p>
+                            <p className="text-xs text-muted-foreground">JPEG, PNG, GIF - max 10MB</p>
+                            <p className="text-xs text-muted-foreground mt-1">(Slika će biti smanjena na 800x800px)</p>
+                          </>
+                        )}
+                      </div>
+                      
+                      {form.watch('imageUrl') && (
+                        <div className="rounded-lg overflow-hidden border border-input">
+                          <img 
+                            src={form.watch('imageUrl') as string} 
+                            alt="Preview" 
+                            className="w-full h-auto object-cover" 
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
+              
+              {/* Current image preview (always show regardless of tab) */}
+              {uploadMethod === 'url' && form.watch('imageUrl') && (
+                <div className="rounded-lg overflow-hidden border border-input mt-4">
+                  <img 
+                    src={form.watch('imageUrl') as string} 
+                    alt="Preview" 
+                    className="w-full h-auto object-cover max-h-64" 
+                  />
+                </div>
               )}
-            />
+            </div>
             
             {/* Description */}
             <FormField
