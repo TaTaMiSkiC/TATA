@@ -5,7 +5,8 @@ import { useParams, useLocation } from "wouter";
 import { 
   Order, 
   OrderItem as OrderItemType,
-  Product 
+  Product,
+  OrderItemWithProduct
 } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
 import { 
@@ -56,11 +57,7 @@ import autoTable from "jspdf-autotable";
 // Logo import
 import logoImg from "@assets/Kerzenwelt by Dani.png";
 
-interface OrderItemWithProduct extends OrderItemType {
-  product: Product;
-  selectedScent?: string;
-  selectedColor?: string;
-}
+// OrderItemWithProduct je već importiran iz @shared/schema
 
 // Odvojeni interface bez nasljeđivanja za rješavanje tipova
 interface OrderWithItems {

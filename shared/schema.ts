@@ -237,12 +237,7 @@ export type InsertOrder = z.infer<typeof insertOrderSchema>;
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
 
-// Definiranje OrderItemWithProduct interface za upotrebu u aplikaciji
-export interface OrderItemWithProduct extends OrderItem {
-  product: Product;
-  selectedScent?: string;
-  selectedColor?: string;
-}
+// Definicija OrderItemWithProduct je premještena dolje u kodu
 
 export type CartItem = typeof cartItems.$inferSelect;
 export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
@@ -344,11 +339,17 @@ export type CartItemWithProduct = CartItem & {
   color?: Color;
 };
 
-export type OrderItemWithProduct = OrderItem & {
+export interface OrderItemWithProduct extends OrderItem {
   product: Product;
   scent?: Scent;
   color?: Color;
-};
+  selectedScent?: string;
+  selectedColor?: string;
+  scentId?: number | null;
+  colorId?: number | null;
+  scentName?: string | null;
+  colorName?: string | null;
+}
 
 // Definiranje tablice za stranice (O nama, Kontakt, Blog)
 export const pages = pgTable("pages", {
