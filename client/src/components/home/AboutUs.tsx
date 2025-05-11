@@ -55,8 +55,8 @@ export default function AboutUs() {
                   <Home className="text-primary" size={20} />
                 </div>
                 <div className="ml-4">
-                  <h3 className="heading font-semibold text-lg text-foreground">Domaći proizvod</h3>
-                  <p className="text-muted-foreground text-sm">Proizvedeno u Hrvatskoj s lokalnim resursima</p>
+                  <h3 className="heading font-semibold text-lg text-foreground">Udobnost doma</h3>
+                  <p className="text-muted-foreground text-sm">Stvorite ugodnu atmosferu u svom prostoru</p>
                 </div>
               </div>
             </div>
