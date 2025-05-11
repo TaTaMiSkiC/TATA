@@ -26,9 +26,11 @@ export default function CartItem({ item }: CartItemProps) {
       scentId: item.scentId,
       scentInfo: item.scent,
       colorId: item.colorId,
-      colorInfo: item.color
+      colorInfo: item.color,
+      hasMultipleColors: item.hasMultipleColors,
+      selectedColors: item.selectedColors
     });
-  }, [id, product, item.scentId, item.scent, item.colorId, item.color]);
+  }, [id, product, item.scentId, item.scent, item.colorId, item.color, item.hasMultipleColors, item.selectedColors]);
   
   // Format price
   const formattedPrice = parseFloat(price).toFixed(2);
@@ -90,14 +92,17 @@ export default function CartItem({ item }: CartItemProps) {
             <h3 className="font-medium text-text-dark hover:text-primary transition cursor-pointer">
               {name}
               {/* Dodaj miris i boju u naslov proizvoda */}
-              {(item.scent || item.color) && (
+              {(item.scent || item.color || (item.hasMultipleColors && item.selectedColors?.length)) && (
                 <span className="text-muted-foreground ml-1">
-                  {item.scent && item.color 
-                    ? `(${item.scent.name}, ${item.color.name})`
-                    : item.scent 
-                      ? `(${item.scent.name})` 
-                      : `(${item.color.name})`
-                  }
+                  {item.hasMultipleColors && item.selectedColors?.length > 0 ? (
+                    `(${item.scent?.name ? `${item.scent.name}, ` : ''}${item.selectedColors.length} boje)`
+                  ) : (
+                    item.scent && item.color 
+                      ? `(${item.scent.name}, ${item.color.name})`
+                      : item.scent 
+                        ? `(${item.scent.name})` 
+                        : item.color ? `(${item.color.name})` : ''
+                  )}
                 </span>
               )}
             </h3>
@@ -111,7 +116,7 @@ export default function CartItem({ item }: CartItemProps) {
           </p>
           
           {/* Detaljni prikaz odabranog mirisa i boje u zasebnom bloku */}
-          {(item.scent || item.color) && (
+          {(item.scent || item.color || (item.hasMultipleColors && item.selectedColors?.length)) && (
             <div className="mt-1 p-1.5 bg-muted/40 rounded-md text-xs">
               {item.scent && (
                 <p className="text-muted-foreground">
@@ -119,7 +124,8 @@ export default function CartItem({ item }: CartItemProps) {
                 </p>
               )}
               
-              {item.color && (
+              {/* Prikaz jedne odabrane boje */}
+              {item.color && !item.hasMultipleColors && (
                 <div className="flex items-center mt-1">
                   <span className="font-medium mr-1">Boja:</span>
                   <div 
@@ -127,6 +133,21 @@ export default function CartItem({ item }: CartItemProps) {
                     style={{ backgroundColor: item.color.hexValue }}
                   ></div>
                   <span>{item.color.name}</span>
+                </div>
+              )}
+              
+              {/* Prikaz višestruko odabranih boja */}
+              {item.hasMultipleColors && item.selectedColors && item.selectedColors.length > 0 && (
+                <div className="mt-1">
+                  <span className="font-medium mr-1">Boje:</span>
+                  <div className="flex flex-wrap gap-1 items-center">
+                    {item.selectedColors.map((color, index) => (
+                      <span key={`color-${color.id}`} className="inline-flex items-center">
+                        {index > 0 && <span className="mr-1">,</span>}
+                        <span>{color.name}</span>
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
