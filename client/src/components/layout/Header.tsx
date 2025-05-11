@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { 
   Search, 
@@ -22,16 +22,18 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
 import logoImage from "@/assets/new-logo.png";
 import { useQuery } from "@tanstack/react-query";
+import { Category } from "@shared/schema";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, logoutMutation } = useAuth();
   const { cartItems } = useCart();
   // Uklonili smo korištenje teme
   const [location] = useLocation();
   
   // Dohvaćanje kategorija iz baze podataka
-  const { data: categories = [] } = useQuery({
+  const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ['/api/categories'],
   });
 
@@ -77,34 +79,37 @@ export default function Header() {
               Početna
             </div>
             
-            <div className="relative group">
+            <div className="relative dropdown-container">
               <button 
                 className="font-body text-foreground hover:text-[#D4AF37] transition flex items-center gap-1 outline-none"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 Proizvodi
                 <ChevronDown size={14} />
               </button>
               <div 
                 id="products-dropdown" 
-                className="absolute left-0 top-full mt-2 hidden group-hover:block w-56 rounded-md bg-white shadow-lg py-1 z-50"
+                className={`absolute left-0 top-full mt-2 ${dropdownOpen ? 'block' : 'hidden'} w-56 rounded-md bg-white shadow-lg py-1 z-50`}
               >
                 {categories && categories.length > 0 ? (
                   <>
                     {categories.map((category) => (
-                      <div 
+                      <Link 
                         key={category.id}
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
-                        onClick={() => window.location.href = `/products?category=${category.id}`}
+                        href={`/products?category=${category.id}`}
+                        className="block px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
+                        onClick={() => setDropdownOpen(false)}
                       >
                         {category.name}
-                      </div>
+                      </Link>
                     ))}
-                    <div 
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
-                      onClick={() => window.location.href = '/products'}
+                    <Link 
+                      href="/products"
+                      className="block px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
+                      onClick={() => setDropdownOpen(false)}
                     >
                       Sve kategorije
-                    </div>
+                    </Link>
                   </>
                 ) : (
                   <div className="px-4 py-2 text-gray-500">Učitavanje kategorija...</div>
