@@ -1,4 +1,5 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
@@ -45,10 +46,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Enable serving static files from the public directory
+  app.use(express.static(path.join(process.cwd(), 'public')));
+  
+  // Specific handler for uploads directory
   app.use('/uploads', (req, res, next) => {
-    const filePath = path.join(process.cwd(), 'public', req.url);
+    const filePath = path.join(process.cwd(), 'public', 'uploads', path.basename(req.url));
     res.sendFile(filePath, (err) => {
       if (err) {
+        console.error('Error serving file:', err);
         next();
       }
     });

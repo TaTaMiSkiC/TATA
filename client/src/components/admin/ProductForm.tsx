@@ -161,6 +161,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
       const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
+        // Važno: Ne šaljemo Content-Type zaglavlje jer će ga FormData automatski postaviti s boundary
       });
       
       if (!response.ok) {

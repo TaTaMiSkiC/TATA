@@ -71,7 +71,10 @@ export const resizeImage = async (req: Request, res: Response, next: NextFunctio
     fs.renameSync(resizedFilePath, filePath);
 
     // Dodaj URL slike u request
-    req.body.imageUrl = `/uploads/${path.basename(filePath)}`;
+    const imageUrl = `/uploads/${path.basename(filePath)}`;
+    req.body.imageUrl = imageUrl;
+    
+    console.log(`Slika uspješno procesirana i dostupna na: ${imageUrl}`);
     
     next();
   } catch (error) {
