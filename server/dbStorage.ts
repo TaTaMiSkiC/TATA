@@ -1,5 +1,5 @@
 import { eq, and, desc, isNull, sql } from "drizzle-orm";
-import { db } from "./db";
+import { db, pool } from "./db";
 import { 
   users, 
   products, 
@@ -426,41 +426,63 @@ export class DatabaseStorage implements IStorage {
 
   async getOrderItems(orderId: number): Promise<OrderItemWithProduct[]> {
     try {
-      // Koristi Drizzle's relations API za dohvaćanje stavki s proizvodima
-      const items = await db.query.orderItems.findMany({
-        where: eq(orderItems.orderId, orderId),
-        with: {
-          product: true
-        }
-      });
-      
-      console.log("Dohvaćene stavke s proizvodima:", JSON.stringify(items));
-      
+      // Koristimo direktni SQL upit kako bismo osigurali pristup svim poljima
+      const { rows } = await pool.query(`
+        SELECT 
+          oi.*,
+          p.id as product_id,
+          p.name as product_name,
+          p.description as product_description,
+          p.price as product_price,
+          p.image_url as product_image_url,
+          p.category_id as product_category_id,
+          p.stock as product_stock,
+          p.featured as product_featured,
+          p.created_at as product_created_at
+        FROM order_items oi
+        LEFT JOIN products p ON oi.product_id = p.id
+        WHERE oi.order_id = $1
+      `, [orderId]);
+
+      console.log("Dohvaćene stavke narudžbe SQL:", rows);
+
       // Mapiramo rezultate u OrderItemWithProduct format
-      const result = items.map(item => {
-        console.log("Obrađujem stavku:", JSON.stringify(item));
-        
-        // Prije stvaranja objekta, moramo provjeriti točno što imamo
-        const hasScent = 'scentName' in item;
-        const hasColor = 'colorName' in item;
-        
+      const result = rows.map((item: any) => {
+        // Pretvaramo snake_case u camelCase
+        const productData = {
+          id: item.product_id,
+          name: item.product_name || `Proizvod #${item.product_id}`,
+          description: item.product_description || "",
+          price: item.product_price || "0",
+          imageUrl: item.product_image_url,
+          categoryId: item.product_category_id,
+          stock: item.product_stock || 0,
+          featured: !!item.product_featured,
+          createdAt: item.product_created_at || new Date(),
+          // Dodajemo dodatna polja koja očekuje Product tip
+          scent: null,
+          color: null,
+          burnTime: null,
+          hasColorOptions: false,
+          dimensions: null,
+          weight: null,
+          materials: null,
+          instructions: null,
+          maintenance: null
+        };
+
         return {
-          ...item,
-          product: item.product || {
-            id: item.productId,
-            name: item.productName || `Proizvod #${item.productId}`,
-            description: "",
-            price: "0",
-            categoryId: 0,
-            imageUrl: null,
-            featured: false,
-            inventory: 0,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          },
-          // Sigurno pristupamo svojstvima koja možda ne postoje
-          selectedScent: hasScent ? item.scentName : null, 
-          selectedColor: hasColor ? item.colorName : null
+          id: item.id,
+          orderId: item.order_id,
+          productId: item.product_id,
+          quantity: item.quantity,
+          price: item.price,
+          product: productData,
+          scentId: item.scent_id,
+          colorId: item.color_id,
+          scentName: item.scent_name || null,
+          colorName: item.color_name || null,
+          productName: item.product_name || null
         };
       });
       
