@@ -75,31 +75,69 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
   }, [isOpen, productScents, productColors]);
 
   // Check if all required options are selected
+  // Check if the product allows multiple colors
+  const useMultipleColorSelection = product.hasColorOptions && product.allowMultipleColors;
+  
+  // Validate if we can add to cart based on color selection type
+  const isColorSelectionValid = useMultipleColorSelection 
+    ? (!isColorSelectionRequired || selectedColorIds.length > 0)
+    : (!isColorSelectionRequired || selectedColorId !== null);
+    
   const canAddToCart = 
     (!isScentSelectionRequired || selectedScentId !== null) && 
-    (!isColorSelectionRequired || selectedColorId !== null);
+    isColorSelectionValid;
 
   const handleAddToCart = async () => {
     if (!canAddToCart) return;
     
     try {
-      // Logiraj detalje o proizvodu koji se dodaje u košaricu
-      console.log("Dodajem proizvod u košaricu:", {
-        productId: product.id,
-        productName: product.name,
-        quantity: quantity,
-        scentId: selectedScentId,
-        scentName: selectedScentId ? productScents.find(s => s.id === selectedScentId)?.name : null,
-        colorId: selectedColorId,
-        colorName: selectedColorId ? productColors.find(c => c.id === selectedColorId)?.name : null
-      });
-      
-      await addToCart.mutateAsync({
-        productId: product.id,
-        quantity: quantity,
-        scentId: selectedScentId === null ? undefined : selectedScentId,
-        colorId: selectedColorId === null ? undefined : selectedColorId
-      });
+      if (useMultipleColorSelection && selectedColorIds.length > 0) {
+        // Ako je omogućen višestruki odabir boja, dodaj proizvod s više boja
+        console.log("Dodajem proizvod s više boja u košaricu:", {
+          productId: product.id,
+          productName: product.name,
+          quantity: quantity,
+          scentId: selectedScentId,
+          scentName: selectedScentId ? productScents.find(s => s.id === selectedScentId)?.name : null,
+          selectedColors: selectedColorIds.map(id => ({
+            id,
+            name: productColors.find(c => c.id === id)?.name
+          }))
+        });
+        
+        // Pretvaramo sve odabrane boje u string za prikaz
+        const colorNames = selectedColorIds
+          .map(id => productColors.find(c => c.id === id)?.name)
+          .filter(Boolean)
+          .join(", ");
+          
+        await addToCart.mutateAsync({
+          productId: product.id,
+          quantity: quantity,
+          scentId: selectedScentId === null ? undefined : selectedScentId,
+          colorId: undefined, // Ne koristimo pojedinačnu boju
+          colorIds: selectedColorIds, // Šaljemo listu ID-jeva boja
+          colorName: colorNames // Šaljemo spojene nazive boja
+        });
+      } else {
+        // Standardni način dodavanja u košaricu s jednom bojom
+        console.log("Dodajem proizvod u košaricu:", {
+          productId: product.id,
+          productName: product.name,
+          quantity: quantity,
+          scentId: selectedScentId,
+          scentName: selectedScentId ? productScents.find(s => s.id === selectedScentId)?.name : null,
+          colorId: selectedColorId,
+          colorName: selectedColorId ? productColors.find(c => c.id === selectedColorId)?.name : null
+        });
+        
+        await addToCart.mutateAsync({
+          productId: product.id,
+          quantity: quantity,
+          scentId: selectedScentId === null ? undefined : selectedScentId,
+          colorId: selectedColorId === null ? undefined : selectedColorId
+        });
+      }
       
       setAddedToCart(true);
       
@@ -205,39 +243,82 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
               {/* Color options */}
               {isColorSelectionRequired && (
                 <div>
-                  <h4 className="text-sm font-medium mb-2">Boja <span className="text-destructive">*</span></h4>
-                  <RadioGroup 
-                    value={selectedColorId?.toString()} 
-                    onValueChange={(value) => setSelectedColorId(parseInt(value))}
-                    className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-2"
-                  >
-                    {productColors.map((color) => (
-                      <div 
-                        key={color.id} 
-                        className={`flex items-center border rounded-md p-2 transition-colors cursor-pointer
-                          ${selectedColorId === color.id 
-                            ? 'border-primary bg-primary/5 text-primary' 
-                            : 'border-input hover:border-primary/50 hover:bg-muted/30'}`}
-                        onClick={() => setSelectedColorId(color.id)}
-                      >
+                  <h4 className="text-sm font-medium mb-2">
+                    Boja <span className="text-destructive">*</span>
+                    {useMultipleColorSelection && <span className="text-xs ml-1 text-muted-foreground">(možete odabrati više)</span>}
+                  </h4>
+                  
+                  {useMultipleColorSelection ? (
+                    // Prikaz za višestruki odabir boja
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-2">
+                      {productColors.map((color) => {
+                        const isSelected = selectedColorIds.includes(color.id);
+                        return (
+                          <div 
+                            key={color.id} 
+                            className={`flex items-center border rounded-md p-2 transition-colors cursor-pointer
+                              ${isSelected 
+                                ? 'border-primary bg-primary/5 text-primary' 
+                                : 'border-input hover:border-primary/50 hover:bg-muted/30'}`}
+                            onClick={() => {
+                              if (isSelected) {
+                                // Ukloni boju iz odabira
+                                setSelectedColorIds(prev => prev.filter(id => id !== color.id));
+                              } else {
+                                // Dodaj boju u odabir
+                                setSelectedColorIds(prev => [...prev, color.id]);
+                              }
+                            }}
+                          >
+                            <div className="flex items-center justify-center w-5 h-5 mr-2">
+                              <div 
+                                className={`w-4 h-4 rounded-full border border-muted`}
+                                style={{ backgroundColor: color.hexValue }}
+                              ></div>
+                              {isSelected && (
+                                <CheckCircle className="w-4 h-4 absolute text-primary" />
+                              )}
+                            </div>
+                            <span className="text-xs">{color.name}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    // Standardni prikaz za odabir jedne boje
+                    <RadioGroup 
+                      value={selectedColorId?.toString()} 
+                      onValueChange={(value) => setSelectedColorId(parseInt(value))}
+                      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-2"
+                    >
+                      {productColors.map((color) => (
                         <div 
-                          className={`w-5 h-5 mr-2 rounded-full border ${selectedColorId === color.id ? 'border-primary' : 'border-muted'}`}
-                          style={{ backgroundColor: color.hexValue }}
-                        ></div>
-                        <RadioGroupItem 
-                          value={color.id.toString()} 
-                          id={`modal-color-${color.id}`}
-                          className="sr-only" 
-                        />
-                        <Label
-                          htmlFor={`modal-color-${color.id}`}
-                          className="cursor-pointer text-xs"
+                          key={color.id} 
+                          className={`flex items-center border rounded-md p-2 transition-colors cursor-pointer
+                            ${selectedColorId === color.id 
+                              ? 'border-primary bg-primary/5 text-primary' 
+                              : 'border-input hover:border-primary/50 hover:bg-muted/30'}`}
+                          onClick={() => setSelectedColorId(color.id)}
                         >
-                          {color.name}
-                        </Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
+                          <div 
+                            className={`w-5 h-5 mr-2 rounded-full border ${selectedColorId === color.id ? 'border-primary' : 'border-muted'}`}
+                            style={{ backgroundColor: color.hexValue }}
+                          ></div>
+                          <RadioGroupItem 
+                            value={color.id.toString()} 
+                            id={`modal-color-${color.id}`}
+                            className="sr-only" 
+                          />
+                          <Label
+                            htmlFor={`modal-color-${color.id}`}
+                            className="cursor-pointer text-xs"
+                          >
+                            {color.name}
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  )}
                 </div>
               )}
               
