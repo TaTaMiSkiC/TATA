@@ -8,6 +8,7 @@ import { Product, Scent, Color } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/hooks/use-cart";
 import { useQuery } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
 import Image from "@/components/ui/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -94,14 +95,18 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
       await addToCart.mutateAsync({
         productId: product.id,
         quantity: quantity,
-        scentId: selectedScentId,
-        colorId: selectedColorId
+        scentId: selectedScentId === null ? undefined : selectedScentId,
+        colorId: selectedColorId === null ? undefined : selectedColorId
       });
       
       setAddedToCart(true);
       
       // Dohvati trenutnu košaricu nakon dodavanja
-      await queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      try {
+        await queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      } catch (invalidateError) {
+        console.warn("Greška pri osvježavanju košarice:", invalidateError);
+      }
       
       const selectedScentName = selectedScentId 
         ? productScents.find(s => s.id === selectedScentId)?.name 
@@ -131,7 +136,7 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
         onClose();
       }, 1500);
     } catch (error) {
-      console.error("Greška pri dodavanju u košaricu:", error);
+      console.error("Greška pri dodavanju u košaricu:", error instanceof Error ? error.message : 'Nepoznata greška');
       toast({
         title: "Greška",
         description: "Dodavanje u košaricu nije uspjelo. Molimo pokušajte ponovno.",
