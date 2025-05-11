@@ -599,16 +599,30 @@ export class DatabaseStorage implements IStorage {
             // Dohvaćamo podatke za sve boje
             if (Array.isArray(colorIds) && colorIds.length > 0) {
               // Dohvati sve boje odjednom za bolju performansu
-              const allColors = await db
+              let colorResults = await db
                 .select()
                 .from(colors)
-                .where(inArray(colors.id, colorIds));
+                .where(sql`${colors.id} IN (${sql.join(colorIds.map(id => Number(id)))})`);
               
-              console.log(`Dohvaćene boje iz baze za stavku ${item.id}:`, JSON.stringify(allColors));
+              // Dodatna provjera - ako nisu dohvaćene boje, pokupi ih pojedinačno
+              if (!colorResults || colorResults.length === 0) {
+                console.log(`Nije uspjelo dohvaćanje boja zajedno, probam pojedinačno za: ${item.id}`);
+                colorResults = await Promise.all(
+                  colorIds.map(async (colorId) => {
+                    const [color] = await db
+                      .select()
+                      .from(colors)
+                      .where(eq(colors.id, Number(colorId)));
+                    return color;
+                  })
+                );
+              }
+              
+              console.log(`Dohvaćene boje iz baze za stavku ${item.id}:`, JSON.stringify(colorResults));
               
               // Mapiramo ID-jeve na podatke o bojama
               const colorData = colorIds.map((colorId) => {
-                const color = allColors.find(c => c.id === colorId);
+                const color = colorResults.find(c => c.id === Number(colorId));
                 return {
                   id: colorId,
                   name: color?.name || "Nepoznata boja",
