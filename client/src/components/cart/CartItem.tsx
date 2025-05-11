@@ -76,6 +76,17 @@ export default function CartItem({ item }: CartItemProps) {
           <Link href={`/products/${product.id}`}>
             <h3 className="font-medium text-text-dark hover:text-primary transition cursor-pointer">
               {name}
+              {/* Dodaj miris i boju u naslov proizvoda */}
+              {(item.scent || item.color) && (
+                <span className="text-muted-foreground ml-1">
+                  {item.scent && item.color 
+                    ? `(${item.scent.name}, ${item.color.name})`
+                    : item.scent 
+                      ? `(${item.scent.name})` 
+                      : `(${item.color.name})`
+                  }
+                </span>
+              )}
             </h3>
           </Link>
           <p className="text-sm text-gray-500">
@@ -86,22 +97,25 @@ export default function CartItem({ item }: CartItemProps) {
             )}
           </p>
           
-          {/* Prikaz odabranog mirisa ako postoji */}
-          {item.scent && (
-            <p className="text-xs text-muted-foreground">
-              Miris: <span className="font-medium">{item.scent.name}</span>
-            </p>
-          )}
-          
-          {/* Prikaz odabrane boje ako postoji */}
-          {item.color && (
-            <div className="flex items-center mt-1">
-              <span className="text-xs text-muted-foreground mr-1">Boja:</span>
-              <div 
-                className="w-3 h-3 rounded-full mr-1 border"
-                style={{ backgroundColor: item.color.hexValue }}
-              ></div>
-              <span className="text-xs font-medium">{item.color.name}</span>
+          {/* Detaljni prikaz odabranog mirisa i boje u zasebnom bloku */}
+          {(item.scent || item.color) && (
+            <div className="mt-1 p-1.5 bg-muted/40 rounded-md text-xs">
+              {item.scent && (
+                <p className="text-muted-foreground">
+                  <span className="font-medium">Miris:</span> {item.scent.name}
+                </p>
+              )}
+              
+              {item.color && (
+                <div className="flex items-center mt-1">
+                  <span className="font-medium mr-1">Boja:</span>
+                  <div 
+                    className="w-3 h-3 rounded-full mr-1 border"
+                    style={{ backgroundColor: item.color.hexValue }}
+                  ></div>
+                  <span>{item.color.name}</span>
+                </div>
+              )}
             </div>
           )}
           
