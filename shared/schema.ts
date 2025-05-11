@@ -43,6 +43,7 @@ export const products = pgTable("products", {
   featured: boolean("featured").default(false).notNull(),
   hasColorOptions: boolean("has_color_options").default(true).notNull(),  // Treba li proizvod imati opcije boja
   allowMultipleColors: boolean("allow_multiple_colors").default(false).notNull(), // Omogućuje odabir više boja
+  active: boolean("active").default(true).notNull(), // Kontrolira je li proizvod vidljiv kupcima
   dimensions: text("dimensions"),  // Dimenzije proizvoda
   weight: text("weight"),  // Težina proizvoda
   materials: text("materials"),  // Materijali od kojih je proizvod napravljen
