@@ -49,13 +49,13 @@ export default function Header() {
             <img 
               src={logoImage} 
               alt="Kerzenwelt Logo" 
-              className="h-8 md:h-16 w-auto" 
+              className="h-10 md:h-16 w-auto" 
             />
-            <div className="flex items-baseline">
-              <span className="text-primary heading text-lg md:text-3xl font-bold">
+            <div className="flex flex-col md:flex-row md:items-baseline">
+              <span className="text-primary heading text-xl md:text-3xl font-bold text-center md:text-left">
                 Kerzenwelt
               </span>
-              <span className="text-foreground text-xs md:text-xl ml-1 font-bold mt-1 md:mt-0">
+              <span className="text-foreground text-sm md:text-xl md:ml-1 font-bold text-center md:text-left">
                 by Dani
               </span>
             </div>
@@ -135,7 +135,7 @@ export default function Header() {
               </a>
             </div>
             
-            <div className="ml-auto mr-2 md:ml-0 md:mr-0">
+            <div className="ml-auto mr-4 md:ml-0 md:mr-0">
               <SearchDialog />
             </div>
             
