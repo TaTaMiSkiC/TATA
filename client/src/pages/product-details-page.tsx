@@ -537,15 +537,6 @@ export default function ProductDetailsPage() {
               <h2 className="heading text-xl font-semibold mb-4">Opis proizvoda</h2>
               <div className="prose max-w-none">
                 <p>{product.description}</p>
-                <p className="mt-4">
-                  Ručno izrađena svijeća od 100% prirodnog sojinog voska s pomno odabranim 
-                  mirisnim notama. Naše svijeće su ekološki prihvatljive, bez štetnih kemikalija, 
-                  i ne ispuštaju toksine tijekom gorenja.
-                </p>
-                <p className="mt-4">
-                  Svaka svijeća je jedinstvena, izrađena s ljubavlju i pažnjom prema detaljima. 
-                  Idealna je za stvaranje ugodne atmosfere u vašem domu ili kao poklon za voljenu osobu.
-                </p>
               </div>
             </TabsContent>
             
