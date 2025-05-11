@@ -47,6 +47,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
   const [selectedColors, setSelectedColors] = useState<number[]>([]);
   const [hasColorOptions, setHasColorOptions] = useState(product?.hasColorOptions || false);
   const [featured, setFeatured] = useState(product?.featured || false);
+  const [allowMultipleColors, setAllowMultipleColors] = useState(product?.allowMultipleColors || false);
   const [uploadMethod, setUploadMethod] = useState<'url' | 'file'>('url');
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -55,6 +56,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
   const validationSchema = insertProductSchema.extend({
     featured: z.boolean().optional(),
     hasColorOptions: z.boolean().optional(),
+    allowMultipleColors: z.boolean().optional(),
     price: z.string().refine((val) => !isNaN(parseFloat(val)), {
       message: "Cijena mora biti validan broj",
     }),
@@ -87,6 +89,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
       stock: product?.stock || 0,
       featured: product?.featured || false,
       hasColorOptions: product?.hasColorOptions || false,
+      allowMultipleColors: product?.allowMultipleColors || false,
       scent: product?.scent || "",
       color: product?.color || "",
       burnTime: product?.burnTime || "",
@@ -219,6 +222,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
         price, // Korištenje cijene s točkom umjesto zareza
         featured,
         hasColorOptions,
+        allowMultipleColors,
         // Postavljamo na null da ih ne bi API izbacio kao grešku
         scent: null,
         color: null,
@@ -644,6 +648,23 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                 Omogući odabir boje
               </label>
             </div>
+            
+            {/* Allow multiple colors */}
+            {hasColorOptions && (
+              <div className="flex items-center space-x-2">
+                <Switch 
+                  id="allowMultipleColors"
+                  checked={allowMultipleColors}
+                  onCheckedChange={setAllowMultipleColors}
+                />
+                <label
+                  htmlFor="allowMultipleColors"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Omogući odabir više boja
+                </label>
+              </div>
+            )}
             
             {/* Dostupni mirisi */}
             <div className="col-span-full">
