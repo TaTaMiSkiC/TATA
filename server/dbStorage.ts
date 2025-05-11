@@ -546,7 +546,8 @@ export class DatabaseStorage implements IStorage {
                     .where(eq(colors.id, colorId));
                   return {
                     id: colorId,
-                    name: color?.name
+                    name: color?.name,
+                    hexValue: color?.hexValue
                   };
                 })
               );

@@ -94,8 +94,8 @@ export default function CartItem({ item }: CartItemProps) {
               {/* Dodaj miris i boju u naslov proizvoda */}
               {(item.scent || item.color || (item.hasMultipleColors && item.selectedColors?.length)) && (
                 <span className="text-muted-foreground ml-1">
-                  {item.hasMultipleColors && item.selectedColors?.length > 0 ? (
-                    `(${item.scent?.name ? `${item.scent.name}, ` : ''}${item.selectedColors.length} boje)`
+                  {item.hasMultipleColors && item.selectedColors && item.selectedColors.length > 0 ? (
+                    `(${item.scent?.name ? `${item.scent.name}, ` : ''}${item.selectedColors.length} ${item.selectedColors.length > 1 ? 'boje' : 'boja'})`
                   ) : (
                     item.scent && item.color 
                       ? `(${item.scent.name}, ${item.color.name})`
@@ -140,12 +140,15 @@ export default function CartItem({ item }: CartItemProps) {
               {item.hasMultipleColors && item.selectedColors && item.selectedColors.length > 0 && (
                 <div className="mt-1">
                   <span className="font-medium mr-1">Boje:</span>
-                  <div className="flex flex-wrap gap-1 items-center">
+                  <div className="flex flex-wrap gap-2 items-center mt-1">
                     {item.selectedColors.map((color, index) => (
-                      <span key={`color-${color.id}`} className="inline-flex items-center">
-                        {index > 0 && <span className="mr-1">,</span>}
+                      <div key={`color-${color.id}`} className="inline-flex items-center">
+                        <div 
+                          className="w-3 h-3 rounded-full mr-1 border"
+                          style={{ backgroundColor: color.hexValue }}
+                        ></div>
                         <span>{color.name}</span>
-                      </span>
+                      </div>
                     ))}
                   </div>
                 </div>
