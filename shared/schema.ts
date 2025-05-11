@@ -347,7 +347,7 @@ export type CartItemWithProduct = CartItem & {
   scent?: Scent;
   color?: Color;
   // Dodatna polja za podršku višestrukih boja
-  selectedColors?: Array<{ id: number, name?: string }>;
+  selectedColors?: Array<{ id: number, name?: string, hexValue?: string }>;
   hasMultipleColors?: boolean;
 };
 

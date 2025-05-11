@@ -623,6 +623,8 @@ export class DatabaseStorage implements IStorage {
               // Mapiramo ID-jeve na podatke o bojama
               const colorData = colorIds.map((colorId) => {
                 const color = colorResults.find(c => c.id === Number(colorId));
+                // Dodatno logiranje za lakše praćenje problema
+                console.log(`Pronađena boja za ID ${colorId}:`, color);
                 return {
                   id: colorId,
                   name: color?.name || "Nepoznata boja",
