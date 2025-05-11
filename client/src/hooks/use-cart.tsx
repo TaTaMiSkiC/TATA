@@ -52,7 +52,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
             scentId: item.scentId,
             scentInfo: item.scent,
             colorId: item.colorId,
-            colorInfo: item.color
+            colorInfo: item.color,
+            hasMultipleColors: item.hasMultipleColors,
+            selectedColors: item.selectedColors,
+            colorIds: item.colorIds
           });
         });
       }

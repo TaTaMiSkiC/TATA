@@ -144,12 +144,7 @@ export default function CartItem({ item }: CartItemProps) {
               
               {/* Prikaz višestruko odabranih boja */}
               {(() => {
-                console.log("Višestruke boje za stavku", item.id, {
-                  hasMultipleColors: item.hasMultipleColors,
-                  selectedColors: item.selectedColors,
-                  colorIds: item.colorIds
-                });
-                
+                // Uklonimo dodatni log jer opterećuje konzolu
                 if (item.hasMultipleColors && item.selectedColors && item.selectedColors.length > 0) {
                   return (
                     <div className="mt-1">
