@@ -761,10 +761,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
               burnTime: null,
               featured: false,
               hasColorOptions: false,
+              allowMultipleColors: false, // Dodana podrška za višestruke boje
+              active: true, // Podrazumijevano aktivan
               createdAt: new Date()
             },
             scentName: scentName || item.scentName,
-            colorName: colorName || item.colorName
+            colorName: colorName || item.colorName,
+            // Provjeriti ima li proizvod svojstvo allowMultipleColors i/ili sama stavka hasMultipleColors
+            hasMultipleColors: (item.hasMultipleColors || (product && product.allowMultipleColors)) || false
           };
           enhancedItems.push(enhancedItem);
         } catch (err) {
@@ -785,10 +789,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
               burnTime: null,
               featured: false,
               hasColorOptions: false,
+              allowMultipleColors: false,
+              active: true,
               createdAt: new Date()
             },
             scentName: item.scentName || null,
-            colorName: item.colorName || null
+            colorName: item.colorName || null,
+            hasMultipleColors: item.hasMultipleColors || false
           });
         }
       }

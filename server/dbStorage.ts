@@ -533,6 +533,9 @@ export class DatabaseStorage implements IStorage {
           maintenance: null
         };
 
+        // Provjeri postoji li polje za višestruke boje u bazi
+        const hasMultipleColors = !!item.has_multiple_colors;
+
         return {
           id: item.id,
           orderId: item.order_id,
@@ -544,7 +547,10 @@ export class DatabaseStorage implements IStorage {
           colorId: item.color_id,
           scentName: item.scent_name || null,
           colorName: item.color_name || null,
-          productName: item.product_name || null
+          productName: item.product_name || null,
+          // Dodajemo podršku za višestruke boje - koristimo vrijednost iz tablice
+          // ako postoji, inače fallback na proizvod
+          hasMultipleColors: hasMultipleColors || !!productData.allowMultipleColors
         };
       });
       
