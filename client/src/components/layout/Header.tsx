@@ -26,7 +26,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logoutMutation } = useAuth();
   const { cartItems } = useCart();
-  const { theme, setTheme } = useTheme();
+  // Uklonili smo korištenje teme
   const [location] = useLocation();
 
   const cartItemCount = cartItems?.length || 0;
