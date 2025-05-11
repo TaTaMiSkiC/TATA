@@ -231,14 +231,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Unauthorized" });
       }
       
+      console.log("[POST /api/cart] Primljeni podaci:", JSON.stringify(req.body, null, 2));
+      
       const validatedData = insertCartItemSchema.parse({
         ...req.body,
         userId: req.user.id
       });
       
+      console.log("[POST /api/cart] Validirani podaci:", JSON.stringify(validatedData, null, 2));
+      
       const cartItem = await storage.addToCart(validatedData);
+      console.log("[POST /api/cart] Dodano u košaricu:", JSON.stringify(cartItem, null, 2));
+      
+      // Odmah nakon dodavanja dohvatimo sve stavke u košarici za provjeru
+      const allCartItems = await storage.getCartItems(req.user.id);
+      console.log("[POST /api/cart] Sve stavke u košarici nakon dodavanja:", 
+        JSON.stringify(allCartItems.map(item => ({
+          id: item.id,
+          productId: item.productId,
+          productName: item.product.name,
+          quantity: item.quantity,
+          scentId: item.scentId,
+          scentName: item.scent?.name,
+          colorId: item.colorId,
+          colorName: item.color?.name
+        })), null, 2)
+      );
+      
       res.status(201).json(cartItem);
     } catch (error) {
+      console.error("[POST /api/cart] Greška:", error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: error.errors });
       }

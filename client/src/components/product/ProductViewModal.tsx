@@ -80,6 +80,17 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
     if (!canAddToCart) return;
     
     try {
+      // Logiraj detalje o proizvodu koji se dodaje u košaricu
+      console.log("Dodajem proizvod u košaricu:", {
+        productId: product.id,
+        productName: product.name,
+        quantity: quantity,
+        scentId: selectedScentId,
+        scentName: selectedScentId ? productScents.find(s => s.id === selectedScentId)?.name : null,
+        colorId: selectedColorId,
+        colorName: selectedColorId ? productColors.find(c => c.id === selectedColorId)?.name : null
+      });
+      
       await addToCart.mutateAsync({
         productId: product.id,
         quantity: quantity,
@@ -89,9 +100,30 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
       
       setAddedToCart(true);
       
+      // Dohvati trenutnu košaricu nakon dodavanja
+      await queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      
+      const selectedScentName = selectedScentId 
+        ? productScents.find(s => s.id === selectedScentId)?.name 
+        : null;
+      
+      const selectedColorName = selectedColorId 
+        ? productColors.find(c => c.id === selectedColorId)?.name 
+        : null;
+      
+      // Prikaži detaljniju poruku s mirisima i bojama
+      let successMessage = `${product.name}`;
+      if (selectedScentName || selectedColorName) {
+        successMessage += " (";
+        if (selectedScentName) successMessage += `miris: ${selectedScentName}`;
+        if (selectedScentName && selectedColorName) successMessage += ", ";
+        if (selectedColorName) successMessage += `boja: ${selectedColorName}`;
+        successMessage += ")";
+      }
+      
       toast({
         title: "Proizvod dodan u košaricu",
-        description: `${product.name} je uspješno dodan u vašu košaricu.`,
+        description: `${successMessage} je uspješno dodan u vašu košaricu.`,
       });
       
       // Close the modal after 1.5 seconds
@@ -99,6 +131,7 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
         onClose();
       }, 1500);
     } catch (error) {
+      console.error("Greška pri dodavanju u košaricu:", error);
       toast({
         title: "Greška",
         description: "Dodavanje u košaricu nije uspjelo. Molimo pokušajte ponovno.",
