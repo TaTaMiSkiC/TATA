@@ -1,5 +1,5 @@
 import { eq, and, desc, isNull, sql } from "drizzle-orm";
-import { db, pool } from "./db";
+import { db } from "./db";
 import { 
   users, 
   products, 
@@ -69,11 +69,7 @@ interface CartItemWithProduct extends CartItem {
   color?: Color;
 }
 
-interface OrderItemWithProduct extends OrderItem {
-  product: Product;
-  selectedScent?: string;
-  selectedColor?: string;
-}
+// OrderItemWithProduct je već definiran u shared/schema.ts
 
 const PostgresSessionStore = connectPg(session);
 
