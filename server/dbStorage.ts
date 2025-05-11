@@ -34,6 +34,7 @@ import type {
   InsertOrderItem,
   CartItem,
   InsertCartItem,
+  CartItemWithProduct,
   Review,
   InsertReview,
   Scent,
@@ -55,7 +56,8 @@ import type {
   Invoice,
   InsertInvoice,
   InvoiceItem, 
-  InsertInvoiceItem
+  InsertInvoiceItem,
+  SelectedColorInfo
 } from "@shared/schema";
 
 import connectPg from "connect-pg-simple";
@@ -613,7 +615,7 @@ export class DatabaseStorage implements IStorage {
               console.log(`Za stavku ID ${item.id}, dohvaćeno ${colorResults.length} boja iz baze`);
               
               // Pripremi objekte za svaku boju s pripadajućim podacima
-              const selectedColors = colorIds.map(colorId => {
+              const selectedColors: SelectedColorInfo[] = colorIds.map(colorId => {
                 const colorData = colorResults.find(c => c.id === Number(colorId));
                 return {
                   id: Number(colorId),

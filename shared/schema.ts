@@ -342,12 +342,19 @@ export const insertSettingSchema = createInsertSchema(settings).omit({
 export type Setting = typeof settings.$inferSelect;
 export type InsertSetting = z.infer<typeof insertSettingSchema>;
 
+// Definicija tipa za objekt odabrane boje
+export type SelectedColorInfo = {
+  id: number;
+  name: string | undefined;
+  hexValue: string | null;
+};
+
 export type CartItemWithProduct = CartItem & {
   product: Product;
   scent?: Scent;
   color?: Color;
   // Dodatna polja za podršku višestrukih boja
-  selectedColors?: Array<{ id: number, name?: string, hexValue?: string }>;
+  selectedColors?: SelectedColorInfo[];
   hasMultipleColors?: boolean;
 };
 
