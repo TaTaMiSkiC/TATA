@@ -554,56 +554,67 @@ export default function ProductDetailsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Accordion type="single" collapsible>
-                    <AccordionItem value="dimensions">
-                      <AccordionTrigger>Dimenzije i težina</AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2 list-disc list-inside text-muted-foreground">
-                          <li>Visina: 10 cm</li>
-                          <li>Promjer: 8 cm</li>
-                          <li>Težina: 350 g</li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="materials">
-                      <AccordionTrigger>Materijali</AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2 list-disc list-inside text-muted-foreground">
-                          <li>100% prirodni sojin vosak</li>
-                          <li>Pamučni fitilj</li>
-                          <li>Esencijalna ulja</li>
-                          <li>Staklena posuda</li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
+                    {/* Prikazujemo sekciju Dimenzije i težina samo ako postoje ti podaci */}
+                    {(product.dimensions || product.weight) && (
+                      <AccordionItem value="dimensions">
+                        <AccordionTrigger>Dimenzije i težina</AccordionTrigger>
+                        <AccordionContent>
+                          <ul className="space-y-2 list-disc list-inside text-muted-foreground">
+                            {product.dimensions && <li>{product.dimensions}</li>}
+                            {product.weight && <li>Težina: {product.weight}</li>}
+                          </ul>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
+                    
+                    {/* Prikazujemo sekciju Materijali samo ako postoje ti podaci */}
+                    {product.materials && (
+                      <AccordionItem value="materials">
+                        <AccordionTrigger>Materijali</AccordionTrigger>
+                        <AccordionContent>
+                          <div className="text-muted-foreground">
+                            {product.materials}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
                   </Accordion>
                 </div>
                 <div>
                   <Accordion type="single" collapsible>
-                    <AccordionItem value="usage">
-                      <AccordionTrigger>Upute za korištenje</AccordionTrigger>
-                      <AccordionContent>
-                        <ol className="space-y-2 list-decimal list-inside text-muted-foreground">
-                          <li>Prije prvog paljenja, odrežite fitilj na 5-7 mm</li>
-                          <li>Neka svijeća gori najmanje 2 sata pri prvom korištenju</li>
-                          <li>Uvijek postavite svijeću na vatrostalno postolje</li>
-                          <li>Ne ostavljajte upaljenu svijeću bez nadzora</li>
-                        </ol>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="care">
-                      <AccordionTrigger>Održavanje</AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2 list-disc list-inside text-muted-foreground">
-                          <li>Redovito režite fitilj na 5-7 mm</li>
-                          <li>Izbjegavajte propuh u blizini svijeće</li>
-                          <li>Preostali vosak možete koristiti u aroma lampicama</li>
-                          <li>Staklenu posudu možete ponovno iskoristiti</li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
+                    {/* Prikazujemo sekciju Upute za korištenje samo ako postoje ti podaci */}
+                    {product.instructions && (
+                      <AccordionItem value="usage">
+                        <AccordionTrigger>Upute za korištenje</AccordionTrigger>
+                        <AccordionContent>
+                          <div className="text-muted-foreground">
+                            {product.instructions}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
+                    
+                    {/* Prikazujemo sekciju Održavanje samo ako postoje ti podaci */}
+                    {product.maintenance && (
+                      <AccordionItem value="care">
+                        <AccordionTrigger>Održavanje</AccordionTrigger>
+                        <AccordionContent>
+                          <div className="text-muted-foreground">
+                            {product.maintenance}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
                   </Accordion>
                 </div>
               </div>
+              
+              {/* Ako nema nijednog podatka za prikaz, prikazujemo poruku */}
+              {!product.dimensions && !product.weight && !product.materials && !product.instructions && !product.maintenance && (
+                <div className="text-center text-muted-foreground py-6">
+                  Detalji o ovom proizvodu trenutno nisu dostupni.
+                </div>
+              )}
             </TabsContent>
             
             <TabsContent value="reviews" className="bg-card p-6 rounded-lg shadow-sm">

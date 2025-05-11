@@ -147,13 +147,20 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
       // Uklanjamo scent i color polja jer više ne koristimo pojedinačne vrijednosti
       const { scent, color, ...restValues } = values;
       
+      // Priprema podataka za slanje na server
       const productData = {
         ...restValues,
         featured,
         hasColorOptions,
         // Postavljamo na null da ih ne bi API izbacio kao grešku
         scent: null,
-        color: null
+        color: null,
+        // Postavljamo na null prazne stringove
+        dimensions: values.dimensions?.trim() || null,
+        weight: values.weight?.trim() || null,
+        materials: values.materials?.trim() || null,
+        instructions: values.instructions?.trim() || null,
+        maintenance: values.maintenance?.trim() || null
       };
       
       let savedProduct;
@@ -361,6 +368,103 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                   <FormControl>
                     <Input 
                       placeholder="Npr. 40-45 sati" 
+                      {...field} 
+                      value={field.value || ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* Dimensions */}
+            <FormField
+              control={form.control}
+              name="dimensions"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Dimenzije</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Npr. 10 x 8 x 8 cm" 
+                      {...field} 
+                      value={field.value || ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* Weight */}
+            <FormField
+              control={form.control}
+              name="weight"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Težina</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Npr. 350g" 
+                      {...field} 
+                      value={field.value || ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* Materials */}
+            <FormField
+              control={form.control}
+              name="materials"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Materijali</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Npr. Sojin vosak, pamučni fitilj" 
+                      {...field} 
+                      value={field.value || ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* Instructions */}
+            <FormField
+              control={form.control}
+              name="instructions"
+              render={({ field }) => (
+                <FormItem className="col-span-full">
+                  <FormLabel>Upute za korištenje</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Unesite upute za korištenje proizvoda..." 
+                      className="min-h-24" 
+                      {...field} 
+                      value={field.value || ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* Maintenance */}
+            <FormField
+              control={form.control}
+              name="maintenance"
+              render={({ field }) => (
+                <FormItem className="col-span-full">
+                  <FormLabel>Održavanje</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Unesite upute za održavanje proizvoda..." 
+                      className="min-h-24" 
                       {...field} 
                       value={field.value || ""}
                     />
