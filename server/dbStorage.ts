@@ -475,12 +475,18 @@ export class DatabaseStorage implements IStorage {
   
   // Cart methods
   async getCartItems(userId: number): Promise<CartItemWithProduct[]> {
+    // Dodajemo logging za praćenje
+    console.log(`Dohvaćanje stavki košarice za korisnika ${userId}`);
+    
     const result = await db.query.cartItems.findMany({
       where: eq(cartItems.userId, userId),
       with: {
         product: true,
       },
     });
+
+    console.log(`Pronađeno ${result.length} stavki u košarici`);
+    console.log(`Detalji stavki:`, JSON.stringify(result, null, 2));
 
     // Dohvati scent i color informacije za svaki item ako postoje
     const cartItemsWithScentColor = await Promise.all(
@@ -494,6 +500,7 @@ export class DatabaseStorage implements IStorage {
             .from(scents)
             .where(eq(scents.id, item.scentId));
           scent = scentData;
+          console.log(`Za stavku ID ${item.id}, pronađen miris:`, JSON.stringify(scentData));
         }
         
         if (item.colorId) {
@@ -502,6 +509,7 @@ export class DatabaseStorage implements IStorage {
             .from(colors)
             .where(eq(colors.id, item.colorId));
           color = colorData;
+          console.log(`Za stavku ID ${item.id}, pronađena boja:`, JSON.stringify(colorData));
         }
         
         return {
@@ -513,10 +521,13 @@ export class DatabaseStorage implements IStorage {
       })
     );
 
+    console.log('Konačni rezultat košarice:', JSON.stringify(cartItemsWithScentColor, null, 2));
     return cartItemsWithScentColor;
   }
 
   async addToCart(itemData: InsertCartItem): Promise<CartItem> {
+    console.log('Dodavanje u košaricu, podaci:', JSON.stringify(itemData, null, 2));
+    
     // Provjeri postoji li već isti proizvod s istim mirisom i bojom u košarici
     let query = and(
       eq(cartItems.userId, itemData.userId),
@@ -526,22 +537,38 @@ export class DatabaseStorage implements IStorage {
     // Dodaj uvjete za miris i boju ako postoje
     if (itemData.scentId) {
       query = and(query, eq(cartItems.scentId, itemData.scentId));
+      console.log(`Dodajem uvjet za miris ID: ${itemData.scentId}`);
     } else {
       query = and(query, isNull(cartItems.scentId));
+      console.log('Dodajem uvjet da miris mora biti NULL');
     }
     
     if (itemData.colorId) {
       query = and(query, eq(cartItems.colorId, itemData.colorId));
+      console.log(`Dodajem uvjet za boju ID: ${itemData.colorId}`);
     } else {
       query = and(query, isNull(cartItems.colorId));
+      console.log('Dodajem uvjet da boja mora biti NULL');
     }
     
+    // Dohvati sve stavke košarice prije dodavanja za usporedbu
+    const allCartItems = await db
+      .select()
+      .from(cartItems)
+      .where(eq(cartItems.userId, itemData.userId));
+    
+    console.log(`Trenutno u košarici za korisnika ${itemData.userId}:`, JSON.stringify(allCartItems, null, 2));
+    
+    // Dohvati specifičnu stavku koja odgovara zadanim uvjetima
     const [existingItem] = await db
       .select()
       .from(cartItems)
       .where(query);
+    
+    console.log('Postojeća stavka koja odgovara uvjetima:', existingItem ? JSON.stringify(existingItem, null, 2) : 'Nije pronađena');
 
     if (existingItem) {
+      console.log(`Ažuriram količinu sa ${existingItem.quantity} na ${existingItem.quantity + itemData.quantity}`);
       // Ažuriraj količinu ako isti proizvod s istim mirisom i bojom već postoji
       const [updatedItem] = await db
         .update(cartItems)
@@ -550,10 +577,14 @@ export class DatabaseStorage implements IStorage {
         })
         .where(eq(cartItems.id, existingItem.id))
         .returning();
+      
+      console.log('Ažurirana stavka:', JSON.stringify(updatedItem, null, 2));
       return updatedItem;
     } else {
+      console.log('Dodajem novi artikl u košaricu:', JSON.stringify(itemData, null, 2));
       // Dodaj novi artikl
       const [cartItem] = await db.insert(cartItems).values(itemData).returning();
+      console.log('Nova stavka košarice:', JSON.stringify(cartItem, null, 2));
       return cartItem;
     }
   }
