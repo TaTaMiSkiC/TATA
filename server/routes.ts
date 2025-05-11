@@ -242,49 +242,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("[POST /api/cart] Validirani podaci:", JSON.stringify(validatedData, null, 2));
       
-      // Provjeri postojeću stavku s istim proizvodom, mirisom i bojom (direktno iz baze bez upotrebe storage metode)
-      const existingCartItems = await db
-        .select()
-        .from(cartItems)
-        .where(
-          and(
-            eq(cartItems.userId, validatedData.userId),
-            eq(cartItems.productId, validatedData.productId),
-            validatedData.scentId 
-              ? eq(cartItems.scentId, validatedData.scentId) 
-              : isNull(cartItems.scentId),
-            validatedData.colorId 
-              ? eq(cartItems.colorId, validatedData.colorId) 
-              : isNull(cartItems.colorId)
-          )
-        );
+      // Koristit ćemo direktni SQL upit da osiguramo pravilno rukovanje NULL vrijednostima
+      // SQL "IS NOT DISTINCT FROM" operator omogućuje pravilno uspoređivanje NULL vrijednosti
+      const existingCartItemsQuery = await db.execute(sql`
+        SELECT * FROM cart_items 
+        WHERE 
+          "userId" = ${validatedData.userId} AND 
+          "productId" = ${validatedData.productId} AND
+          "scentId" IS NOT DISTINCT FROM ${validatedData.scentId} AND
+          "colorId" IS NOT DISTINCT FROM ${validatedData.colorId}
+      `);
       
+      const existingCartItems = existingCartItemsQuery.rows;
       console.log("[POST /api/cart] Pronađene postojeće stavke:", JSON.stringify(existingCartItems, null, 2));
       
-      let cartItem: CartItem;
+      let cartItem;
       
       // Ako postoji identična stavka, povećaj količinu, inače dodaj novu stavku
       if (existingCartItems.length > 0) {
         const existingItem = existingCartItems[0];
         console.log(`[POST /api/cart] Ažuriram postojeću stavku ${existingItem.id}, količina ${existingItem.quantity} => ${existingItem.quantity + validatedData.quantity}`);
         
-        const [updatedItem] = await db
-          .update(cartItems)
-          .set({
-            quantity: existingItem.quantity + validatedData.quantity
-          })
-          .where(eq(cartItems.id, existingItem.id))
-          .returning();
-          
-        cartItem = updatedItem;
+        const updateQuery = await db.execute(sql`
+          UPDATE cart_items 
+          SET quantity = ${existingItem.quantity + validatedData.quantity}
+          WHERE id = ${existingItem.id}
+          RETURNING *
+        `);
+        
+        cartItem = updateQuery.rows[0];
       } else {
         console.log(`[POST /api/cart] Dodajem novu stavku u košaricu`);
-        const [newItem] = await db
-          .insert(cartItems)
-          .values(validatedData)
-          .returning();
-          
-        cartItem = newItem;
+        
+        const insertQuery = await db.execute(sql`
+          INSERT INTO cart_items ("userId", "productId", quantity, "scentId", "colorId")
+          VALUES (
+            ${validatedData.userId}, 
+            ${validatedData.productId}, 
+            ${validatedData.quantity}, 
+            ${validatedData.scentId}, 
+            ${validatedData.colorId}
+          )
+          RETURNING *
+        `);
+        
+        cartItem = insertQuery.rows[0];
       }
       
       console.log("[POST /api/cart] Dodano u košaricu:", JSON.stringify(cartItem, null, 2));
@@ -358,9 +360,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Unauthorized" });
       }
       
-      await storage.clearCart(req.user.id);
+      console.log(`[DELETE /api/cart] Brisanje košarice za korisnika ${req.user.id}`);
+      
+      // Koristi direktni SQL upit za brisanje
+      await db.execute(sql`
+        DELETE FROM cart_items 
+        WHERE "userId" = ${req.user.id}
+      `);
+      
+      console.log(`[DELETE /api/cart] Košarica uspješno obrisana`);
+      
       res.status(204).send();
     } catch (error) {
+      console.error("[DELETE /api/cart] Greška:", error);
       res.status(500).json({ message: "Failed to clear cart" });
     }
   });
@@ -372,14 +384,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Unauthorized" });
       }
       
-      console.log(`Čišćenje košarice za korisnika ${req.user.id}`);
-      await storage.clearCart(req.user.id);
+      console.log(`[POST /api/cart/clear] Čišćenje košarice za korisnika ${req.user.id}`);
+      
+      // Koristi direktni SQL upit za brisanje
+      await db.execute(sql`
+        DELETE FROM cart_items 
+        WHERE "userId" = ${req.user.id}
+      `);
       
       // Dohvati svježe podatke o košarici nakon čišćenja
       const emptyCart = await storage.getCartItems(req.user.id);
+      console.log(`[POST /api/cart/clear] Košarica uspješno obrisana`);
+      
       res.status(200).json({ message: "Cart cleared successfully", cart: emptyCart });
     } catch (error) {
-      console.error("Error clearing cart:", error);
+      console.error("[POST /api/cart/clear] Greška:", error);
       res.status(500).json({ message: "Failed to clear cart" });
     }
   });
