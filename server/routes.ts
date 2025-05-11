@@ -98,16 +98,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const id = parseInt(req.params.id);
-      const validatedData = insertProductSchema.parse(req.body);
-      const product = await storage.updateProduct(id, validatedData);
-      if (!product) {
+      console.log("Ažuriranje proizvoda ID:", id, "Podaci:", JSON.stringify(req.body));
+      
+      // Provjera postoji li proizvod
+      const existingProduct = await storage.getProduct(id);
+      if (!existingProduct) {
+        console.log("Proizvod nije pronađen. ID:", id);
         return res.status(404).json({ message: "Product not found" });
       }
-      res.json(product);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: error.errors });
+      
+      try {
+        const validatedData = insertProductSchema.parse(req.body);
+        console.log("Validirani podaci:", JSON.stringify(validatedData));
+        
+        const product = await storage.updateProduct(id, validatedData);
+        if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+        }
+        
+        console.log("Proizvod uspješno ažuriran:", JSON.stringify(product));
+        res.json(product);
+      } catch (validationError) {
+        console.error("Greška pri validaciji:", validationError);
+        if (validationError instanceof z.ZodError) {
+          return res.status(400).json({ message: validationError.errors });
+        }
+        throw validationError;
       }
+    } catch (error) {
+      console.error("Greška pri ažuriranju proizvoda:", error);
       res.status(500).json({ message: "Failed to update product" });
     }
   });
