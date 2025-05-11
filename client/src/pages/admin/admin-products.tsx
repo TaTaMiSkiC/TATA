@@ -313,6 +313,17 @@ export default function AdminProducts() {
                                 <DropdownMenuItem onClick={() => handleEditProduct(product)}>
                                   <Edit className="mr-2 h-4 w-4" /> Uredi
                                 </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleToggleActivation(product)}>
+                                  {product.active !== false ? (
+                                    <>
+                                      <EyeOff className="mr-2 h-4 w-4" /> Deaktiviraj
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Eye className="mr-2 h-4 w-4" /> Aktiviraj
+                                    </>
+                                  )}
+                                </DropdownMenuItem>
                                 <DropdownMenuItem 
                                   onClick={() => handleDeleteProduct(product)}
                                   className="text-destructive focus:text-destructive"

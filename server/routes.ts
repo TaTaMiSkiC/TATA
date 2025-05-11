@@ -160,6 +160,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to update product" });
     }
   });
+  
+  // PATCH endpoint za parcijalnu izmjenu podataka proizvoda (npr. status aktivnosti)
+  app.patch("/api/products/:id", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const id = parseInt(req.params.id);
+      console.log("Parcijalno ažuriranje proizvoda ID:", id, "Podaci:", JSON.stringify(req.body));
+      
+      // Provjera postoji li proizvod
+      const existingProduct = await storage.getProduct(id);
+      if (!existingProduct) {
+        console.log("Proizvod nije pronađen. ID:", id);
+        return res.status(404).json({ message: "Product not found" });
+      }
+      
+      // Dohvatimo trenutne podatke proizvoda za ažuriranje samo određenih polja
+      const currentData = {
+        name: existingProduct.name,
+        description: existingProduct.description,
+        price: existingProduct.price,
+        imageUrl: existingProduct.imageUrl,
+        categoryId: existingProduct.categoryId,
+        stock: existingProduct.stock,
+        featured: existingProduct.featured,
+        active: existingProduct.active,
+        hasColorOptions: existingProduct.hasColorOptions,
+        allowMultipleColors: existingProduct.allowMultipleColors,
+        scent: existingProduct.scent,
+        color: existingProduct.color,
+        burnTime: existingProduct.burnTime,
+        dimensions: existingProduct.dimensions,
+        weight: existingProduct.weight,
+        materials: existingProduct.materials,
+        instructions: existingProduct.instructions,
+        maintenance: existingProduct.maintenance
+      };
+      
+      // Kombiniramo postojeće podatke s novim podacima
+      const updatedData = { ...currentData, ...req.body };
+      
+      // Ažuriramo proizvod
+      const product = await storage.updateProduct(id, updatedData);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      
+      console.log("Proizvod uspješno ažuriran:", JSON.stringify(product));
+      res.json(product);
+    } catch (error) {
+      console.error("Greška pri ažuriranju proizvoda:", error);
+      res.status(500).json({ message: "Failed to update product" });
+    }
+  });
 
   app.delete("/api/products/:id", async (req, res) => {
     try {
