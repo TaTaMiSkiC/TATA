@@ -339,16 +339,14 @@ export type CartItemWithProduct = CartItem & {
   color?: Color;
 };
 
-export interface OrderItemWithProduct extends OrderItem {
+export interface OrderItemWithProduct extends Omit<OrderItem, 'scentId' | 'colorId' | 'scentName' | 'colorName'> {
   product: Product;
   scent?: Scent;
   color?: Color;
-  selectedScent?: string;
-  selectedColor?: string;
-  scentId?: number | null;
-  colorId?: number | null;
-  scentName?: string | null;
-  colorName?: string | null;
+  scentId: number | null;
+  colorId: number | null;
+  scentName: string | null;
+  colorName: string | null;
 }
 
 // Definiranje tablice za stranice (O nama, Kontakt, Blog)

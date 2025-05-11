@@ -457,13 +457,13 @@ export default function OrderDetailsPage() {
           
           let details = '';
           
-          if (item.selectedScent) {
-            details += `${item.selectedScent}`;
+          if (item.scentName) {
+            details += `${item.scentName}`;
           }
           
-          if (item.selectedColor) {
+          if (item.colorName) {
             if (details) details += ' - ';
-            details += `${item.selectedColor}`;
+            details += `${item.colorName}`;
           }
           
           const fullName = details ? `${productName} ${details}` : productName;
@@ -804,8 +804,8 @@ export default function OrderDetailsPage() {
               <TableBody>
                 {orderWithItems.items.map((item) => {
                   const productName = item.product?.name || 'Proizvod';
-                  const scent = item.selectedScent || '';
-                  const color = item.selectedColor || '';
+                  const scent = item.scentName || '';
+                  const color = item.colorName || '';
                   const itemTotal = parseFloat(item.price) * item.quantity;
                   const imageUrl = item.product?.imageUrl || null;
                   
