@@ -48,6 +48,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
   const [hasColorOptions, setHasColorOptions] = useState(product?.hasColorOptions || false);
   const [featured, setFeatured] = useState(product?.featured || false);
   const [allowMultipleColors, setAllowMultipleColors] = useState(product?.allowMultipleColors || false);
+  const [active, setActive] = useState(product?.active !== false); // defaultno je true ako nije definirano drugačije
   const [uploadMethod, setUploadMethod] = useState<'url' | 'file'>('url');
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -57,6 +58,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
     featured: z.boolean().optional(),
     hasColorOptions: z.boolean().optional(),
     allowMultipleColors: z.boolean().optional(),
+    active: z.boolean().optional(),
     price: z.string().refine((val) => !isNaN(parseFloat(val)), {
       message: "Cijena mora biti validan broj",
     }),
@@ -665,6 +667,24 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                 </label>
               </div>
             )}
+            
+            {/* Product active/inactive status */}
+            <div className="flex items-center space-x-2">
+              <Switch 
+                id="active"
+                checked={active}
+                onCheckedChange={setActive}
+              />
+              <label
+                htmlFor="active"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Proizvod aktivan
+              </label>
+              <span className="text-xs text-muted-foreground ml-2">
+                (Ako je isključeno, proizvod neće biti vidljiv kupcima)
+              </span>
+            </div>
             
             {/* Dostupni mirisi */}
             <div className="col-span-full">
