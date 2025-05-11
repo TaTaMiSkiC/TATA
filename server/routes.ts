@@ -247,10 +247,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const existingCartItemsQuery = await db.execute(sql`
         SELECT * FROM cart_items 
         WHERE 
-          "userId" = ${validatedData.userId} AND 
-          "productId" = ${validatedData.productId} AND
-          "scentId" IS NOT DISTINCT FROM ${validatedData.scentId} AND
-          "colorId" IS NOT DISTINCT FROM ${validatedData.colorId}
+          user_id = ${validatedData.userId} AND 
+          product_id = ${validatedData.productId} AND
+          scent_id IS NOT DISTINCT FROM ${validatedData.scentId} AND
+          color_id IS NOT DISTINCT FROM ${validatedData.colorId}
       `);
       
       const existingCartItems = existingCartItemsQuery.rows;
@@ -265,7 +265,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         const updateQuery = await db.execute(sql`
           UPDATE cart_items 
-          SET quantity = ${existingItem.quantity + validatedData.quantity}
+          SET quantity = quantity + ${validatedData.quantity}
           WHERE id = ${existingItem.id}
           RETURNING *
         `);
@@ -365,7 +365,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Koristi direktni SQL upit za brisanje
       await db.execute(sql`
         DELETE FROM cart_items 
-        WHERE "userId" = ${req.user.id}
+        WHERE user_id = ${req.user.id}
       `);
       
       console.log(`[DELETE /api/cart] Košarica uspješno obrisana`);
@@ -389,7 +389,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Koristi direktni SQL upit za brisanje
       await db.execute(sql`
         DELETE FROM cart_items 
-        WHERE "userId" = ${req.user.id}
+        WHERE user_id = ${req.user.id}
       `);
       
       // Dohvati svježe podatke o košarici nakon čišćenja
