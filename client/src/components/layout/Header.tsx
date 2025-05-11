@@ -31,11 +31,26 @@ export default function Header() {
   const { cartItems } = useCart();
   // Uklonili smo korištenje teme
   const [location] = useLocation();
+  const dropdownRef = useRef<HTMLDivElement>(null);
   
   // Dohvaćanje kategorija iz baze podataka
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ['/api/categories'],
   });
+
+  // Dodajemo event listener za zatvaranje dropdown-a kada se klikne izvan
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   const cartItemCount = cartItems?.length || 0;
 
@@ -79,10 +94,13 @@ export default function Header() {
               Početna
             </div>
             
-            <div className="relative dropdown-container">
+            <div className="relative dropdown-container" ref={dropdownRef}>
               <button 
                 className="font-body text-foreground hover:text-[#D4AF37] transition flex items-center gap-1 outline-none"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Spriječiti propagaciju klika na dokument
+                  setDropdownOpen(!dropdownOpen);
+                }}
               >
                 Proizvodi
                 <ChevronDown size={14} />
