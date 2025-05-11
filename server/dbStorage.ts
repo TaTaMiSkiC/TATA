@@ -1,6 +1,6 @@
 import { eq, and, desc, isNull, sql } from "drizzle-orm";
 import { db } from "./db";
-import { 
+import {
   users, 
   products, 
   categories, 
@@ -13,6 +13,7 @@ import {
   productScents,
   productColors,
   collections,
+  OrderItemWithProduct,
   productCollections,
   pages,
   settings,
