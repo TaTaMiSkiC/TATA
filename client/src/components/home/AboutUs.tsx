@@ -9,7 +9,7 @@ export default function AboutUs() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <img 
-              src="https://pixabay.com/get/gb6ff819283a0fa5a8c17a1fd83109826723610c5ca8d9e71643c59dac6ad6ee004b06c6a2a91a48f6a32816c25a01ba45bb58f8b3654c818e9212bff1828e812_1280.jpg" 
+              src="/uploads/nasa-radionica-nova.jpg" 
               alt="Naša radionica za izradu svijeća" 
               className="w-full h-auto rounded-lg shadow-lg"
             />
