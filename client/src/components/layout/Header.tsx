@@ -6,8 +6,6 @@ import {
   ShoppingBag, 
   ChevronDown, 
   Menu,
-  Sun,
-  Moon,
   Instagram
 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
@@ -137,9 +135,7 @@ export default function Header() {
               </a>
             </div>
             
-            <Button variant="ghost" size="icon" className="text-text-dark hover:text-primary hover:bg-transparent" onClick={toggleTheme}>
-              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-            </Button>
+
             
             <SearchDialog />
             
