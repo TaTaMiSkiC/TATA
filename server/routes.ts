@@ -72,18 +72,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Products
   app.get("/api/products", async (req, res) => {
     try {
-      // Dohvati sve proizvode
-      const allProducts = await storage.getAllProducts();
-      
-      // Provjera je li korisnik admin - ako je admin, vratiti sve proizvode
-      if (req.isAuthenticated() && req.user.username === 'admin') {
-        res.json(allProducts);
-        return;
-      }
-      
-      // Za obične korisnike ili neprijavljene, vrati samo aktivne proizvode
-      const activeProducts = allProducts.filter(product => product.active !== false);
-      res.json(activeProducts);
+      // Provjera je li korisnik admin - ako je admin, dohvati i neaktivne proizvode
+      const includeInactive = req.isAuthenticated() && req.user?.isAdmin;
+      const products = await storage.getAllProducts(includeInactive);
+      res.json(products);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch products" });
     }
@@ -91,18 +83,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/products/featured", async (req, res) => {
     try {
-      // Dohvati sve istaknute proizvode
-      const allFeaturedProducts = await storage.getFeaturedProducts();
-      
-      // Provjera je li korisnik admin - ako je admin, vratiti sve proizvode
-      if (req.isAuthenticated() && req.user.role === 'admin') {
-        res.json(allFeaturedProducts);
-        return;
-      }
-      
-      // Za obične korisnike ili neprijavljene, vrati samo aktivne istaknute proizvode
-      const activeFeaturedProducts = allFeaturedProducts.filter(product => product.active !== false);
-      res.json(activeFeaturedProducts);
+      // Dohvati istaknute proizvode (metoda već sama filtrira neaktivne proizvode)
+      const featuredProducts = await storage.getFeaturedProducts();
+      res.json(featuredProducts);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch featured products" });
     }
@@ -218,7 +201,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/categories/:id/products", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const products = await storage.getProductsByCategory(id);
+      // Provjera je li korisnik admin - ako je admin, dohvati i neaktivne proizvode
+      const includeInactive = req.isAuthenticated() && req.user?.isAdmin;
+      const products = await storage.getProductsByCategory(id, includeInactive);
       res.json(products);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch products by category" });
