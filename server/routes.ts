@@ -213,8 +213,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           // Kopiramo ostale vrijednosti
           Object.keys(req.body).forEach(key => {
-            if (key !== 'active') {
-              updatedData[key] = req.body[key];
+            if (key !== 'active' && key in currentData) {
+              updatedData[key as keyof typeof currentData] = req.body[key];
             }
           });
         }
@@ -222,13 +222,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log("Ažurirani podaci:", JSON.stringify(updatedData));
         
         // Ažuriramo proizvod
-        const product = await storage.updateProduct(id, updatedData);
-        if (!product) {
-          return res.status(404).json({ message: "Product not found" });
+        try {
+          console.log("Pozivam storage.updateProduct s podacima:", JSON.stringify(updatedData));
+          const product = await storage.updateProduct(id, updatedData);
+          if (!product) {
+            console.log("Product not found nakon updateProduct");
+            return res.status(404).json({ message: "Product not found" });
+          }
+          
+          console.log("Proizvod uspješno ažuriran:", JSON.stringify(product));
+          // Šaljemo pojednostavljeni odgovor koji sadrži samo podstawne informacije
+          // kako bismo izbjegli probleme s JSON parsanjem
+          const simplifiedResponse = {
+            id: product.id,
+            name: product.name,
+            active: Boolean(product.active)
+          };
+          res.setHeader('Content-Type', 'application/json');
+          return res.status(200).send(JSON.stringify(simplifiedResponse));
+        } catch (err) {
+          console.error("Greška pri storage.updateProduct:", err);
+          return res.status(500).json({ message: "Server error during product update" });
         }
-        
-        console.log("Proizvod uspješno ažuriran:", JSON.stringify(product));
-        return res.json(product);
       } catch (validationError) {
         console.error("Greška pri validaciji:", validationError);
         return res.status(400).json({ message: "Validation error", error: validationError.message });

@@ -86,18 +86,44 @@ export default function AdminProducts() {
   // Toggle product activation status
   const toggleActivationMutation = useMutation({
     mutationFn: async ({ productId, active }: { productId: number, active: boolean }) => {
-      const response = await apiRequest(
-        "PATCH", 
-        `/api/products/${productId}`, 
-        { active }
-      );
-      return response.json();
+      try {
+        console.log(`Sending activation patch with data:`, { productId, active });
+        const response = await fetch(`/api/products/${productId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ active }),
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Server returned ${response.status} ${response.statusText}`);
+        }
+        
+        const result = await response.text();
+        console.log("Raw server response:", result);
+        
+        try {
+          return result ? JSON.parse(result) : { success: true };
+        } catch (parseError) {
+          console.error("JSON parse error:", parseError);
+          return { success: true, active: active };
+        }
+      } catch (error) {
+        console.error("Network error:", error);
+        throw error;
+      }
     },
     onSuccess: (data) => {
-      const statusText = data.active ? "aktiviran" : "deaktiviran";
+      console.log("Mutation success data:", data);
+      // Ako podatak nije definiran ili nema active polje, koristimo defaultne vrijednosti
+      const isActive = data?.active !== false;
+      const productName = data?.name || "Proizvod";
+      
+      const statusText = isActive ? "aktiviran" : "deaktiviran";
       toast({
         title: `Proizvod ${statusText}`,
-        description: `Proizvod "${data.name}" je uspješno ${statusText}.`,
+        description: `Proizvod "${productName}" je uspješno ${statusText}.`,
       });
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       queryClient.invalidateQueries({ queryKey: ["/api/products/featured"] });
@@ -105,6 +131,7 @@ export default function AdminProducts() {
       queryClient.invalidateQueries({ queryKey: ["/api/collections"] });
     },
     onError: (error: Error) => {
+      console.error("Activation error:", error);
       toast({
         title: "Greška",
         description: `Došlo je do greške prilikom promjene statusa proizvoda: ${error.message}`,
