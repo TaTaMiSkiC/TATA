@@ -42,6 +42,7 @@ export const products = pgTable("products", {
   burnTime: text("burn_time"),
   featured: boolean("featured").default(false).notNull(),
   hasColorOptions: boolean("has_color_options").default(true).notNull(),  // Treba li proizvod imati opcije boja
+  allowMultipleColors: boolean("allow_multiple_colors").default(false).notNull(), // Omogućuje odabir više boja
   dimensions: text("dimensions"),  // Dimenzije proizvoda
   weight: text("weight"),  // Težina proizvoda
   materials: text("materials"),  // Materijali od kojih je proizvod napravljen
@@ -102,6 +103,7 @@ export const orders = pgTable("orders", {
   shippingCost: decimal("shipping_cost", { precision: 10, scale: 2 }).default("0"),
   paymentMethod: text("payment_method").notNull(),
   paymentStatus: text("payment_status").default("pending").notNull(),
+  customerNote: text("customer_note"), // Napomena kupca
   shippingAddress: text("shipping_address"),
   shippingCity: text("shipping_city"),
   shippingPostalCode: text("shipping_postal_code"),
@@ -433,6 +435,7 @@ export const invoices = pgTable("invoices", {
   customerPostalCode: text("customer_postal_code"),
   customerCountry: text("customer_country"),
   customerPhone: text("customer_phone"),
+  customerNote: text("customer_note"), // Napomena kupca
   paymentMethod: text("payment_method").default("cash").notNull(),
   total: decimal("total", { precision: 10, scale: 2 }).notNull(),
   subtotal: decimal("subtotal", { precision: 10, scale: 2 }).notNull(),
