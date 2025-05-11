@@ -459,18 +459,22 @@ export default function OrderDetailsPage() {
             productName = `Proizvod #${item.productId}`;
           }
           
-          let details = '';
+          let details = [];
           
+          // Dodaj miris ako postoji
           if (item.scentName) {
-            details += `${item.scentName}`;
+            details.push(`Miris: ${item.scentName}`);
           }
           
+          // Dodaj boju/boje
           if (item.colorName) {
-            if (details) details += ' - ';
-            details += `${item.colorName}`;
+            const colorPrefix = item.hasMultipleColors ? 'Boje' : 'Boja';
+            details.push(`${colorPrefix}: ${item.colorName}`);
           }
           
-          const fullName = details ? `${productName} ${details}` : productName;
+          // Spoji naziv proizvoda s detaljima
+          const detailsText = details.length > 0 ? `\n${details.join('\n')}` : '';
+          const fullName = `${productName}${detailsText}`;
           const price = parseFloat(item.price).toFixed(2);
           const total = (parseFloat(item.price) * item.quantity).toFixed(2);
           
@@ -857,12 +861,31 @@ export default function OrderDetailsPage() {
                       <TableCell className="align-middle">
                         <div>
                           <div className="font-medium">{productName}</div>
-                          {(scent || color) && (
-                            <div className="text-sm text-muted-foreground mt-1">
-                              {scent && <span className="inline-block mr-2">Miris: {scent}</span>}
-                              {color && <span className="inline-block">Boja: {color}</span>}
-                            </div>
-                          )}
+                          <div className="text-sm text-muted-foreground mt-1 space-y-1">
+                            {/* Prikaz mirisa */}
+                            {scent && (
+                              <div>
+                                <span className="font-medium mr-1">Miris:</span>
+                                <span>{scent}</span>
+                              </div>
+                            )}
+                            
+                            {/* Prikaz jedne boje */}
+                            {color && !item.hasMultipleColors && (
+                              <div className="flex items-center">
+                                <span className="font-medium mr-1">Boja:</span>
+                                <span>{color}</span>
+                              </div>
+                            )}
+                            
+                            {/* Prikaz višestrukih boja - sve boje prikazujemo kao listu */}
+                            {item.hasMultipleColors && color && (
+                              <div>
+                                <span className="font-medium mr-1">Boje:</span>
+                                <span>{color}</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell className="text-center align-middle">{item.quantity}</TableCell>
