@@ -152,7 +152,7 @@ export default function Header() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-text-dark hover:text-primary hover:bg-transparent">
+                  <Button variant="ghost" size="icon" className="text-foreground hover:text-[#D4AF37] hover:bg-transparent">
                     <User size={20} />
                   </Button>
                 </DropdownMenuTrigger>
@@ -180,15 +180,15 @@ export default function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="text-text-dark hover:text-primary transition cursor-pointer" onClick={() => window.location.href = '/auth'}>
+              <div className="text-foreground hover:text-[#D4AF37] transition cursor-pointer" onClick={() => window.location.href = '/auth'}>
                 <User size={20} />
               </div>
             )}
             
-            <div className="text-text-dark hover:text-primary transition relative cursor-pointer" onClick={() => window.location.href = '/cart'}>
+            <div className="text-foreground hover:text-[#D4AF37] transition relative cursor-pointer" onClick={() => window.location.href = '/cart'}>
               <ShoppingBag size={20} />
               {cartItemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-primary text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-[#D4AF37] text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
                   {cartItemCount}
                 </span>
               )}
@@ -198,7 +198,7 @@ export default function Header() {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="md:hidden text-text-dark hover:text-primary hover:bg-transparent"
+              className="md:hidden text-foreground hover:text-[#D4AF37] hover:bg-transparent"
               onClick={() => setMobileMenuOpen(true)}
             >
               <Menu size={24} />
