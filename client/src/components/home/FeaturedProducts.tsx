@@ -8,6 +8,9 @@ export default function FeaturedProducts() {
   const { data: products, isLoading, error } = useQuery<Product[]>({
     queryKey: ["/api/products/featured"],
   });
+  
+  // Dodatno filtriranje neaktivnih proizvoda na klijentskoj strani
+  const activeProducts = products?.filter(product => product.active !== false) || [];
 
   return (
     <section className="py-16 bg-muted/30">
@@ -31,7 +34,7 @@ export default function FeaturedProducts() {
           </div>
         ) : (
           <ProductGrid 
-            products={products || []} 
+            products={activeProducts} 
             isLoading={isLoading} 
           />
         )}

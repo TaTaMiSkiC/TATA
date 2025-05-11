@@ -215,13 +215,24 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getFeaturedProducts(): Promise<Product[]> {
-    return await db.select().from(products)
+    console.log("getFeaturedProducts pozvan");
+    const featuredProducts = await db.select().from(products)
       .where(
         and(
           eq(products.featured, true),
           eq(products.active, true)
         )
       );
+    
+    console.log(`Dohvaćeno ${featuredProducts.length} istaknutih i aktivnih proizvoda`);
+    if (featuredProducts.length > 0) {
+      console.log("Primjeri istaknutih proizvoda:");
+      featuredProducts.slice(0, 3).forEach(p => {
+        console.log(`- ID: ${p.id}, Naziv: ${p.name}, Aktivan: ${p.active}, Istaknut: ${p.featured}`);
+      });
+    }
+    
+    return featuredProducts;
   }
   
   async createProduct(productData: InsertProduct): Promise<Product> {
