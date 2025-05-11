@@ -146,7 +146,8 @@ export default function CheckoutPage() {
                                 Miris: <span className="font-medium">{item.scent.name}</span>
                               </p>
                             )}
-                            {item.color && (
+                            {/* Prikaz jedne boje */}
+                            {item.color && !item.hasMultipleColors && (
                               <div className="flex items-center mt-1">
                                 <span className="text-xs text-muted-foreground mr-1">Boja:</span>
                                 <div 
@@ -154,6 +155,38 @@ export default function CheckoutPage() {
                                   style={{ backgroundColor: item.color.hexValue }}
                                 ></div>
                                 <span className="text-xs font-medium">{item.color.name}</span>
+                              </div>
+                            )}
+                            
+                            {/* Prikaz višestrukih boja */}
+                            {item.hasMultipleColors && item.selectedColors && item.selectedColors.length > 0 && (
+                              <div className="mt-1">
+                                <span className="text-xs text-muted-foreground">Boje:</span>
+                                <div className="flex flex-wrap gap-1 items-center mt-1">
+                                  {item.selectedColors.map((color) => (
+                                    <div key={`color-${color.id}`} className="inline-flex items-center mr-1">
+                                      {color.hexValue ? (
+                                        <div 
+                                          className="w-3 h-3 rounded-full mr-1 border"
+                                          style={{ backgroundColor: color.hexValue }}
+                                        ></div>
+                                      ) : (
+                                        <div 
+                                          className="w-3 h-3 rounded-full mr-1 border bg-gray-300"
+                                        ></div>
+                                      )}
+                                      <span className="text-xs font-medium">{color.name}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            
+                            {/* Fallback - ako nemamo selectedColors objekte, ali imamo colorName */}
+                            {item.hasMultipleColors && (!item.selectedColors || item.selectedColors.length === 0) && item.colorName && (
+                              <div className="mt-1">
+                                <span className="text-xs text-muted-foreground mr-1">Boje:</span>
+                                <span className="text-xs font-medium">{item.colorName}</span>
                               </div>
                             )}
                           </div>
