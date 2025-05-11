@@ -128,10 +128,16 @@ export default function CartItem({ item }: CartItemProps) {
               {item.color && !item.hasMultipleColors && (
                 <div className="flex items-center mt-1">
                   <span className="font-medium mr-1">Boja:</span>
-                  <div 
-                    className="w-3 h-3 rounded-full mr-1 border"
-                    style={{ backgroundColor: item.color.hexValue }}
-                  ></div>
+                  {item.color.hexValue ? (
+                    <div 
+                      className="w-3 h-3 rounded-full mr-1 border"
+                      style={{ backgroundColor: item.color.hexValue }}
+                    ></div>
+                  ) : (
+                    <div 
+                      className="w-3 h-3 rounded-full mr-1 border bg-gray-300"
+                    ></div>
+                  )}
                   <span>{item.color.name}</span>
                 </div>
               )}
@@ -143,10 +149,16 @@ export default function CartItem({ item }: CartItemProps) {
                   <div className="flex flex-wrap gap-2 items-center mt-1">
                     {item.selectedColors.map((color, index) => (
                       <div key={`color-${color.id}`} className="inline-flex items-center">
-                        <div 
-                          className="w-3 h-3 rounded-full mr-1 border"
-                          style={{ backgroundColor: color.hexValue }}
-                        ></div>
+                        {color.hexValue ? (
+                          <div 
+                            className="w-3 h-3 rounded-full mr-1 border"
+                            style={{ backgroundColor: color.hexValue }}
+                          ></div>
+                        ) : (
+                          <div 
+                            className="w-3 h-3 rounded-full mr-1 border bg-gray-300"
+                          ></div>
+                        )}
                         <span>{color.name}</span>
                       </div>
                     ))}

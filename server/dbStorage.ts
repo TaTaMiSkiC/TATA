@@ -598,19 +598,23 @@ export class DatabaseStorage implements IStorage {
             
             // Dohvaćamo podatke za sve boje
             if (Array.isArray(colorIds) && colorIds.length > 0) {
-              const colorData = await Promise.all(
-                colorIds.map(async (colorId) => {
-                  const [color] = await db
-                    .select()
-                    .from(colors)
-                    .where(eq(colors.id, colorId));
-                  return {
-                    id: colorId,
-                    name: color?.name,
-                    hexValue: color?.hexValue
-                  };
-                })
-              );
+              // Dohvati sve boje odjednom za bolju performansu
+              const allColors = await db
+                .select()
+                .from(colors)
+                .where(inArray(colors.id, colorIds));
+              
+              console.log(`Dohvaćene boje iz baze za stavku ${item.id}:`, JSON.stringify(allColors));
+              
+              // Mapiramo ID-jeve na podatke o bojama
+              const colorData = colorIds.map((colorId) => {
+                const color = allColors.find(c => c.id === colorId);
+                return {
+                  id: colorId,
+                  name: color?.name || "Nepoznata boja",
+                  hexValue: color?.hexValue || null
+                };
+              });
               
               selectedColors = colorData;
               console.log(`Za stavku ID ${item.id}, dohvaćene boje:`, JSON.stringify(colorData));
