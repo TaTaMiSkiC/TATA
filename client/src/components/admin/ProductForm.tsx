@@ -148,8 +148,14 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
       const { scent, color, ...restValues } = values;
       
       // Priprema podataka za slanje na server
+      // Zamjena zareza s točkom za cijenu
+      const price = typeof restValues.price === 'string' 
+        ? restValues.price.replace(',', '.') 
+        : restValues.price;
+        
       const productData = {
         ...restValues,
+        price, // Korištenje cijene s točkom umjesto zareza
         featured,
         hasColorOptions,
         // Postavljamo na null da ih ne bi API izbacio kao grešku
