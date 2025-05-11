@@ -23,6 +23,7 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
   const { addToCart } = useCart();
   const [selectedScentId, setSelectedScentId] = useState<number | null>(null);
   const [selectedColorId, setSelectedColorId] = useState<number | null>(null);
+  const [selectedColorIds, setSelectedColorIds] = useState<number[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
 
@@ -55,6 +56,7 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
     if (isOpen) {
       setSelectedScentId(null);
       setSelectedColorId(null);
+      setSelectedColorIds([]);
       setQuantity(1);
       setAddedToCart(false);
     }
