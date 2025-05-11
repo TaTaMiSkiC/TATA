@@ -240,7 +240,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("[POST /api/cart] Validirani podaci:", JSON.stringify(validatedData, null, 2));
       
-      const cartItem = await storage.addToCart(validatedData);
+      // Provjeri postojeću stavku s istim proizvodom, mirisom i bojom (direktno iz baze bez upotrebe storage metode)
+      const existingCartItems = await db
+        .select()
+        .from(cartItems)
+        .where(
+          and(
+            eq(cartItems.userId, validatedData.userId),
+            eq(cartItems.productId, validatedData.productId),
+            validatedData.scentId 
+              ? eq(cartItems.scentId, validatedData.scentId) 
+              : isNull(cartItems.scentId),
+            validatedData.colorId 
+              ? eq(cartItems.colorId, validatedData.colorId) 
+              : isNull(cartItems.colorId)
+          )
+        );
+      
+      console.log("[POST /api/cart] Pronađene postojeće stavke:", JSON.stringify(existingCartItems, null, 2));
+      
+      let cartItem: CartItem;
+      
+      // Ako postoji identična stavka, povećaj količinu, inače dodaj novu stavku
+      if (existingCartItems.length > 0) {
+        const existingItem = existingCartItems[0];
+        console.log(`[POST /api/cart] Ažuriram postojeću stavku ${existingItem.id}, količina ${existingItem.quantity} => ${existingItem.quantity + validatedData.quantity}`);
+        
+        const [updatedItem] = await db
+          .update(cartItems)
+          .set({
+            quantity: existingItem.quantity + validatedData.quantity
+          })
+          .where(eq(cartItems.id, existingItem.id))
+          .returning();
+          
+        cartItem = updatedItem;
+      } else {
+        console.log(`[POST /api/cart] Dodajem novu stavku u košaricu`);
+        const [newItem] = await db
+          .insert(cartItems)
+          .values(validatedData)
+          .returning();
+          
+        cartItem = newItem;
+      }
+      
       console.log("[POST /api/cart] Dodano u košaricu:", JSON.stringify(cartItem, null, 2));
       
       // Odmah nakon dodavanja dohvatimo sve stavke u košarici za provjeru
