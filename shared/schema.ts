@@ -42,6 +42,11 @@ export const products = pgTable("products", {
   burnTime: text("burn_time"),
   featured: boolean("featured").default(false).notNull(),
   hasColorOptions: boolean("has_color_options").default(true).notNull(),  // Treba li proizvod imati opcije boja
+  dimensions: text("dimensions"),  // Dimenzije proizvoda
+  weight: text("weight"),  // Težina proizvoda
+  materials: text("materials"),  // Materijali od kojih je proizvod napravljen
+  instructions: text("instructions"),  // Upute za korištenje
+  maintenance: text("maintenance"),  // Upute za održavanje
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

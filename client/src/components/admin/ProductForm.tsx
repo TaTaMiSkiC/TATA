@@ -58,6 +58,12 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
     // Ova polja imamo samo zbog defaultValues, ali su zamijenjena checkbox listama
     scent: z.string().optional().nullable(),
     color: z.string().optional().nullable(),
+    // Dodatna polja za detalje proizvoda
+    dimensions: z.string().optional().nullable(),
+    weight: z.string().optional().nullable(),
+    materials: z.string().optional().nullable(),
+    instructions: z.string().optional().nullable(),
+    maintenance: z.string().optional().nullable(),
   });
 
   // Create form with validation
@@ -75,6 +81,12 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
       scent: product?.scent || "",
       color: product?.color || "",
       burnTime: product?.burnTime || "",
+      // Dodatna polja za detalje proizvoda
+      dimensions: product?.dimensions || "",
+      weight: product?.weight || "",
+      materials: product?.materials || "",
+      instructions: product?.instructions || "",
+      maintenance: product?.maintenance || "",
     },
   });
 
