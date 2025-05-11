@@ -518,6 +518,7 @@ export class DatabaseStorage implements IStorage {
       result.map(async (item) => {
         let scent = undefined;
         let color = undefined;
+        let selectedColors = undefined;
         
         if (item.scentId) {
           const [scentData] = await db
@@ -528,7 +529,45 @@ export class DatabaseStorage implements IStorage {
           console.log(`Za stavku ID ${item.id}, pronađen miris:`, JSON.stringify(scentData));
         }
         
-        if (item.colorId) {
+        // Ako stavka ima višestruke boje
+        if (item.hasMultipleColors && item.colorIds) {
+          try {
+            // Parsiramo JSON string u niz ID-jeva
+            const colorIds = JSON.parse(item.colorIds);
+            console.log(`Za stavku ID ${item.id}, pronađeni više boja IDs:`, colorIds);
+            
+            // Dohvaćamo podatke za sve boje
+            if (Array.isArray(colorIds) && colorIds.length > 0) {
+              const colorData = await Promise.all(
+                colorIds.map(async (colorId) => {
+                  const [color] = await db
+                    .select()
+                    .from(colors)
+                    .where(eq(colors.id, colorId));
+                  return {
+                    id: colorId,
+                    name: color?.name
+                  };
+                })
+              );
+              
+              selectedColors = colorData;
+              console.log(`Za stavku ID ${item.id}, dohvaćene boje:`, JSON.stringify(colorData));
+            }
+          } catch (error) {
+            console.error(`Greška pri parsiranju colorIds za stavku ${item.id}:`, error);
+          }
+          
+          return {
+            ...item,
+            product: item.product,
+            scent,
+            selectedColors,
+            hasMultipleColors: true
+          };
+        } 
+        // Za standardne stavke s jednom bojom
+        else if (item.colorId) {
           const [colorData] = await db
             .select()
             .from(colors)
@@ -559,6 +598,10 @@ export class DatabaseStorage implements IStorage {
       const currentCartItems = await db.select().from(cartItems).where(eq(cartItems.userId, itemData.userId));
       console.log('DEBUG: Trenutno stanje košarice:', JSON.stringify(currentCartItems, null, 2));
       
+      // Provjera jel stavka koristi višestruki odabir boja
+      const hasMultipleColors = itemData.hasMultipleColors === true;
+      console.log(`DEBUG: Stavka koristi višestruke boje: ${hasMultipleColors}`);
+      
       // Izgradi SQL upit za pronalaženje identične stavke
       let conditions = [];
       conditions.push(sql`"userId" = ${itemData.userId}`);
@@ -573,13 +616,28 @@ export class DatabaseStorage implements IStorage {
         console.log('DEBUG: Tražim NULL miris');
       }
       
-      // Dodaj uvjet za boju
-      if (itemData.colorId) {
-        conditions.push(sql`"colorId" = ${itemData.colorId}`);
-        console.log(`DEBUG: Tražim točno boju ID=${itemData.colorId}`);
+      // Različita logika pretraživanja za stavke s jednom ili više boja
+      if (hasMultipleColors) {
+        conditions.push(sql`"hasMultipleColors" = true`);
+        
+        if (itemData.colorIds) {
+          conditions.push(sql`"colorIds" = ${itemData.colorIds}`);
+          console.log(`DEBUG: Tražim višestruke boje: ${itemData.colorIds}`);
+        } else {
+          conditions.push(sql`"colorIds" IS NULL`);
+          console.log('DEBUG: Tražim NULL colorIds');
+        }
       } else {
-        conditions.push(sql`"colorId" IS NULL`);
-        console.log('DEBUG: Tražim NULL boju');
+        // Standardna logika za jednu boju
+        conditions.push(sql`"hasMultipleColors" = false`);
+        
+        if (itemData.colorId) {
+          conditions.push(sql`"colorId" = ${itemData.colorId}`);
+          console.log(`DEBUG: Tražim točno boju ID=${itemData.colorId}`);
+        } else {
+          conditions.push(sql`"colorId" IS NULL`);
+          console.log('DEBUG: Tražim NULL boju');
+        }
       }
       
       // Kreiraj SQL upit

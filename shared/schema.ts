@@ -346,6 +346,9 @@ export type CartItemWithProduct = CartItem & {
   product: Product;
   scent?: Scent;
   color?: Color;
+  // Dodatna polja za podršku višestrukih boja
+  selectedColors?: Array<{ id: number, name?: string }>;
+  hasMultipleColors?: boolean;
 };
 
 export interface OrderItemWithProduct extends Omit<OrderItem, 'scentId' | 'colorId' | 'scentName' | 'colorName'> {
