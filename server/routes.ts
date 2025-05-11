@@ -545,8 +545,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               hasColorOptions: false,
               createdAt: new Date()
             },
-            selectedScent: scentName || item.scentName,
-            selectedColor: colorName || item.colorName
+            scentName: scentName || item.scentName,
+            colorName: colorName || item.colorName
           };
           enhancedItems.push(enhancedItem);
         } catch (err) {
