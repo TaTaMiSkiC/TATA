@@ -178,42 +178,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Product not found" });
       }
       
-      // Dohvatimo trenutne podatke proizvoda za ažuriranje samo određenih polja
-      const currentData = {
-        name: existingProduct.name,
-        description: existingProduct.description,
-        price: existingProduct.price,
-        imageUrl: existingProduct.imageUrl,
-        categoryId: existingProduct.categoryId,
-        stock: existingProduct.stock,
-        featured: existingProduct.featured,
-        active: existingProduct.active,
-        hasColorOptions: existingProduct.hasColorOptions,
-        allowMultipleColors: existingProduct.allowMultipleColors,
-        scent: existingProduct.scent,
-        color: existingProduct.color,
-        burnTime: existingProduct.burnTime,
-        dimensions: existingProduct.dimensions,
-        weight: existingProduct.weight,
-        materials: existingProduct.materials,
-        instructions: existingProduct.instructions,
-        maintenance: existingProduct.maintenance
-      };
-      
-      // Kombiniramo postojeće podatke s novim podacima
-      const updatedData = { ...currentData, ...req.body };
-      
-      // Ažuriramo proizvod
-      const product = await storage.updateProduct(id, updatedData);
-      if (!product) {
-        return res.status(404).json({ message: "Product not found" });
+      try {
+        // Dohvatimo trenutne podatke proizvoda za ažuriranje samo određenih polja
+        const currentData = {
+          name: existingProduct.name,
+          description: existingProduct.description,
+          price: existingProduct.price,
+          imageUrl: existingProduct.imageUrl,
+          categoryId: existingProduct.categoryId,
+          stock: existingProduct.stock,
+          featured: existingProduct.featured,
+          active: existingProduct.active !== false, // osiguravamo da je boolean
+          hasColorOptions: existingProduct.hasColorOptions,
+          allowMultipleColors: existingProduct.allowMultipleColors,
+          scent: existingProduct.scent,
+          color: existingProduct.color,
+          burnTime: existingProduct.burnTime,
+          dimensions: existingProduct.dimensions,
+          weight: existingProduct.weight,
+          materials: existingProduct.materials,
+          instructions: existingProduct.instructions,
+          maintenance: existingProduct.maintenance
+        };
+        
+        // Kombiniramo postojeće podatke s novim podacima
+        // Pretvorimo active eksplicitno u boolean ako postoji u req.body
+        let updatedData = { ...currentData };
+        
+        if (req.body) {
+          if ('active' in req.body) {
+            // Sigurno konvertiramo u boolean
+            updatedData.active = req.body.active === true || req.body.active === 'true';
+          }
+          
+          // Kopiramo ostale vrijednosti
+          Object.keys(req.body).forEach(key => {
+            if (key !== 'active') {
+              updatedData[key] = req.body[key];
+            }
+          });
+        }
+        
+        console.log("Ažurirani podaci:", JSON.stringify(updatedData));
+        
+        // Ažuriramo proizvod
+        const product = await storage.updateProduct(id, updatedData);
+        if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+        }
+        
+        console.log("Proizvod uspješno ažuriran:", JSON.stringify(product));
+        return res.json(product);
+      } catch (validationError) {
+        console.error("Greška pri validaciji:", validationError);
+        return res.status(400).json({ message: "Validation error", error: validationError.message });
       }
-      
-      console.log("Proizvod uspješno ažuriran:", JSON.stringify(product));
-      res.json(product);
     } catch (error) {
       console.error("Greška pri ažuriranju proizvoda:", error);
-      res.status(500).json({ message: "Failed to update product" });
+      return res.status(500).json({ message: "Failed to update product" });
     }
   });
 
