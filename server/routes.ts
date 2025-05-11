@@ -490,13 +490,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Dohvati stavke narudžbe
       const orderItems = await storage.getOrderItems(id);
       console.log("Dohvaćeno stavki:", orderItems.length);
-      console.log("Cijeli item:", JSON.stringify(orderItems[0]));
+      if (orderItems.length > 0) {
+        console.log("Cijeli item:", JSON.stringify(orderItems[0]));
+      }
       
       // Potrebno je dodati product podatke na svaku stavku
       const enhancedItems = [];
       for (const item of orderItems) {
         try {
           const product = await storage.getProduct(item.productId);
+          
+          // Provjera za detalje o mirisu i boji
+          let scentName = item.selectedScent || null;
+          let colorName = item.selectedColor || null;
+          
+          // Ako nemamo nazive, a imamo ID-eve, dohvatimo ih
+          if (!scentName && item.scentId) {
+            try {
+              const scent = await storage.getScent(item.scentId);
+              if (scent) {
+                scentName = scent.name;
+              }
+            } catch (error) {
+              console.error(`Greška pri dohvaćanju mirisa za stavku ${item.id}:`, error);
+            }
+          }
+          
+          if (!colorName && item.colorId) {
+            try {
+              const color = await storage.getColor(item.colorId);
+              if (color) {
+                colorName = color.name;
+              }
+            } catch (error) {
+              console.error(`Greška pri dohvaćanju boje za stavku ${item.id}:`, error);
+            }
+          }
+          
           // Dodajemo podatke o proizvodu na stavku
           const enhancedItem = {
             ...item,
@@ -514,7 +544,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
               featured: false,
               hasColorOptions: false,
               createdAt: new Date()
-            }
+            },
+            selectedScent: scentName || item.scentName,
+            selectedColor: colorName || item.colorName
           };
           enhancedItems.push(enhancedItem);
         } catch (err) {
@@ -536,7 +568,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
               featured: false,
               hasColorOptions: false,
               createdAt: new Date()
-            }
+            },
+            selectedScent: item.selectedScent || item.scentName || null,
+            selectedColor: item.selectedColor || item.colorName || null
           });
         }
       }

@@ -797,7 +797,8 @@ export default function OrderDetailsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[400px]">Proizvod</TableHead>
+                  <TableHead className="w-[80px]"></TableHead>
+                  <TableHead className="w-[320px]">Proizvod</TableHead>
                   <TableHead className="text-center">Količina</TableHead>
                   <TableHead className="text-right">Cijena</TableHead>
                   <TableHead className="text-right">Ukupno</TableHead>
@@ -806,21 +807,38 @@ export default function OrderDetailsPage() {
               <TableBody>
                 {orderWithItems.items.map((item) => {
                   const productName = item.product?.name || 'Proizvod';
-                  const scent = item.selectedScent ? ` - ${item.selectedScent}` : '';
-                  const color = item.selectedColor ? ` - ${item.selectedColor}` : '';
+                  const scent = item.selectedScent || '';
+                  const color = item.selectedColor || '';
                   const itemTotal = parseFloat(item.price) * item.quantity;
+                  const imageUrl = item.product?.imageUrl || null;
                   
                   return (
                     <TableRow key={item.id}>
-                      <TableCell>
-                        <div className="font-medium">
-                          {productName}
-                          {scent}{color}
+                      <TableCell className="align-middle">
+                        {imageUrl && (
+                          <div className="relative h-16 w-16 rounded-md overflow-hidden">
+                            <img 
+                              src={imageUrl} 
+                              alt={productName} 
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell className="align-middle">
+                        <div>
+                          <div className="font-medium">{productName}</div>
+                          {(scent || color) && (
+                            <div className="text-sm text-muted-foreground mt-1">
+                              {scent && <span className="inline-block mr-2">Miris: {scent}</span>}
+                              {color && <span className="inline-block">Boja: {color}</span>}
+                            </div>
+                          )}
                         </div>
                       </TableCell>
-                      <TableCell className="text-center">{item.quantity}</TableCell>
-                      <TableCell className="text-right">{parseFloat(item.price).toFixed(2)} €</TableCell>
-                      <TableCell className="text-right">{itemTotal.toFixed(2)} €</TableCell>
+                      <TableCell className="text-center align-middle">{item.quantity}</TableCell>
+                      <TableCell className="text-right align-middle">{parseFloat(item.price).toFixed(2)} €</TableCell>
+                      <TableCell className="text-right align-middle">{itemTotal.toFixed(2)} €</TableCell>
                     </TableRow>
                   );
                 })}
