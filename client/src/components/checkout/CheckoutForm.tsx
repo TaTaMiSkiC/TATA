@@ -49,6 +49,7 @@ const checkoutSchema = z.object({
   city: z.string().min(2, "Grad je obavezan"),
   postalCode: z.string().min(4, "Poštanski broj mora imati najmanje 4 znaka"),
   country: z.string().min(2, "Država je obavezna"),
+  customerNote: z.string().optional(),
   paymentMethod: z.enum(["credit_card", "paypal", "bank_transfer"]),
   saveAddress: z.boolean().optional(),
   sameAsBilling: z.boolean().optional(),
@@ -96,6 +97,7 @@ export default function CheckoutForm() {
       city: user?.city || "",
       postalCode: user?.postalCode || "",
       country: user?.country || "Hrvatska",
+      customerNote: "",
       paymentMethod: "credit_card",
       saveAddress: true,
       sameAsBilling: true,
@@ -166,6 +168,7 @@ export default function CheckoutForm() {
         shippingCity: data.city,
         shippingPostalCode: data.postalCode,
         shippingCountry: data.country,
+        customerNote: data.customerNote,
         items: orderItems
       };
       
@@ -235,6 +238,7 @@ export default function CheckoutForm() {
         shippingCity: formData.city,
         shippingPostalCode: formData.postalCode,
         shippingCountry: formData.country,
+        customerNote: formData.customerNote,
         items: orderItems,
         paypalOrderId: paypalData.id,
         paypalTransactionId: paypalData.purchase_units?.[0]?.payments?.captures?.[0]?.id
@@ -423,6 +427,30 @@ export default function CheckoutForm() {
             />
           </div>
           
+          {/* Polje za napomenu kupca */}
+          <div className="mt-4 col-span-2">
+            <FormField
+              control={form.control}
+              name="customerNote"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Napomena (opcionalno)</FormLabel>
+                  <FormControl>
+                    <textarea 
+                      className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      placeholder="Dodajte napomenu za narudžbu (npr. specifične upute za dostavu ili dodatne zahtjeve)" 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Napomena će biti vidljiva na vašoj narudžbi i računu.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <div className="mt-4">
             <FormField
               control={form.control}
