@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { CartItemWithProduct } from "@shared/schema";
 import { useCart } from "@/hooks/use-cart";
@@ -16,6 +16,19 @@ export default function CartItem({ item }: CartItemProps) {
   
   const { id, product, scentId, colorId } = item;
   const { name, price, imageUrl, stock } = product;
+  
+  // Debug logging
+  useEffect(() => {
+    console.log("Cart item details:", {
+      id,
+      productId: product.id,
+      productName: product.name,
+      scentId: item.scentId,
+      scentInfo: item.scent,
+      colorId: item.colorId,
+      colorInfo: item.color
+    });
+  }, [id, product, item.scentId, item.scent, item.colorId, item.color]);
   
   // Format price
   const formattedPrice = parseFloat(price).toFixed(2);

@@ -39,6 +39,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
   } = useQuery<CartItemWithProduct[], Error>({
     queryKey: ["/api/cart"],
     enabled: !!user,
+    onSuccess: (data) => {
+      // Dodatno logiranje kada su podaci košarice uspješno dohvaćeni
+      console.log("Dohvaćeni podaci košarice:", data);
+      
+      // Provjeri sadrže li stavke košarice potrebne informacije o mirisima i bojama
+      if (data && data.length > 0) {
+        data.forEach(item => {
+          console.log(`Stavka košarice ID ${item.id}:`, {
+            productId: item.productId,
+            productName: item.product?.name,
+            scentId: item.scentId,
+            scentInfo: item.scent,
+            colorId: item.colorId,
+            colorInfo: item.color
+          });
+        });
+      }
+    }
   });
 
   const cartTotal = cartItems?.reduce(
