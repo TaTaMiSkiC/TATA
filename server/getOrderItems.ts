@@ -27,8 +27,8 @@ async getOrderItems(orderId: number): Promise<OrderItemWithProduct[]> {
         return {
           ...item,
           product: productData,
-          selectedScent: item.scentName,
-          selectedColor: item.colorName
+          scentName: item.scentName,
+          colorName: item.colorName
         };
       })
     );
