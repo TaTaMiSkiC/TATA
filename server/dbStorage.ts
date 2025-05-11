@@ -526,67 +526,64 @@ export class DatabaseStorage implements IStorage {
   }
 
   async addToCart(itemData: InsertCartItem): Promise<CartItem> {
-    console.log('========== DODAVANJE U KOŠARICU ZAPOČETO ==========');
+    console.log('========== DODAVANJE U KOŠARICU ZAPOČETO (NOVA METODA) ==========');
     console.log('Dodavanje u košaricu, podaci:', JSON.stringify(itemData, null, 2));
     
     try {
-      // Konstruiraj kompletan upit za provjeru postojanja identične stavke
-      const conditions = [
-        eq(cartItems.userId, itemData.userId),
-        eq(cartItems.productId, itemData.productId),
-      ];
-      
-      // Dodaj uvjet za miris - mora biti potpuno identičan
-      if (itemData.scentId) {
-        conditions.push(eq(cartItems.scentId, itemData.scentId));
-        console.log(`DEBUG: Tražim proizvod s mirisom ID: ${itemData.scentId}`);
-      } else {
-        conditions.push(isNull(cartItems.scentId));
-        console.log('DEBUG: Tražim proizvod bez mirisa');
-      }
-      
-      // Dodaj uvjet za boju - mora biti potpuno identična
-      if (itemData.colorId) {
-        conditions.push(eq(cartItems.colorId, itemData.colorId));
-        console.log(`DEBUG: Tražim proizvod s bojom ID: ${itemData.colorId}`);
-      } else {
-        conditions.push(isNull(cartItems.colorId));
-        console.log('DEBUG: Tražim proizvod bez boje');
-      }
-      
-      const query = and(...conditions);
-      
-      // Dohvati sve stavke košarice prije dodavanja za debugging
-      const allCartItems = await db
+      // Dohvati sve stavke košarice korisnika za debugiranje
+      const currentCartItems = await db
         .select()
         .from(cartItems)
         .where(eq(cartItems.userId, itemData.userId));
       
-      console.log(`DEBUG: Trenutno u košarici za korisnika ${itemData.userId}:`, 
-        JSON.stringify(allCartItems.map(item => ({
+      console.log('DEBUG: Trenutno stanje košarice:', 
+        JSON.stringify(currentCartItems.map(item => ({
           id: item.id,
           productId: item.productId,
+          quantity: item.quantity,
           scentId: item.scentId,
-          colorId: item.colorId,
-          quantity: item.quantity
+          colorId: item.colorId
         })), null, 2)
       );
       
-      // Provjeri postoji li identičan proizvod u košarici (isti proizvod, miris i boja)
-      const existingItems = await db
+      // Provjeri postoji li već identična stavka u košarici
+      // Identična stavka = isti proizvod + isti miris + ista boja
+      let existingCartItemQuery = and(
+        eq(cartItems.userId, itemData.userId),
+        eq(cartItems.productId, itemData.productId)
+      );
+      
+      // Dodatni uvjeti za miris i boju
+      if (itemData.scentId) {
+        existingCartItemQuery = and(existingCartItemQuery, eq(cartItems.scentId, itemData.scentId));
+        console.log(`DEBUG: Tražim stavku s mirisom ID=${itemData.scentId}`);
+      } else {
+        existingCartItemQuery = and(existingCartItemQuery, isNull(cartItems.scentId));
+        console.log('DEBUG: Tražim stavku bez mirisa');
+      }
+      
+      if (itemData.colorId) {
+        existingCartItemQuery = and(existingCartItemQuery, eq(cartItems.colorId, itemData.colorId));
+        console.log(`DEBUG: Tražim stavku s bojom ID=${itemData.colorId}`);
+      } else {
+        existingCartItemQuery = and(existingCartItemQuery, isNull(cartItems.colorId));
+        console.log('DEBUG: Tražim stavku bez boje');
+      }
+      
+      // Izvrši pretragu
+      const existingCartItems = await db
         .select()
         .from(cartItems)
-        .where(query);
-        
-      console.log(`DEBUG: Broj pronađenih proizvoda s istim uvjetima: ${existingItems.length}`);
+        .where(existingCartItemQuery);
       
-      let result: CartItem;
+      console.log(`DEBUG: Pronađeno ${existingCartItems.length} postojećih stavki po zadanim uvjetima`);
       
-      // Ako postoji identičan proizvod, ažuriraj količinu
-      if (existingItems.length > 0) {
-        const existingItem = existingItems[0];
-        console.log(`DEBUG: Pronađena identična stavka s ID: ${existingItem.id}`);
-        console.log(`DEBUG: Ažuriram količinu sa ${existingItem.quantity} na ${existingItem.quantity + itemData.quantity}`);
+      let resultCartItem: CartItem;
+      
+      if (existingCartItems.length > 0) {
+        // Ažuriraj količinu postojeće stavke
+        const existingItem = existingCartItems[0];
+        console.log(`DEBUG: Ažuriram stavku ID=${existingItem.id}, količina ${existingItem.quantity} => ${existingItem.quantity + itemData.quantity}`);
         
         const [updatedItem] = await db
           .update(cartItems)
@@ -595,41 +592,40 @@ export class DatabaseStorage implements IStorage {
           })
           .where(eq(cartItems.id, existingItem.id))
           .returning();
-          
-        console.log(`DEBUG: Ažurirana stavka:`, JSON.stringify(updatedItem, null, 2));
-        result = updatedItem;
-      } 
-      // Ako ne postoji identičan proizvod, dodaj novi
-      else {
-        console.log(`DEBUG: Dodajem novu stavku u košaricu:`, JSON.stringify(itemData, null, 2));
         
-        const [newItem] = await db
+        console.log('DEBUG: Ažurirana stavka:', JSON.stringify(updatedItem, null, 2));
+        resultCartItem = updatedItem;
+      } else {
+        // Dodaj novu stavku u košaricu
+        console.log('DEBUG: Dodajem novu stavku u košaricu:', JSON.stringify(itemData, null, 2));
+        
+        const [newCartItem] = await db
           .insert(cartItems)
           .values(itemData)
           .returning();
-          
-        console.log(`DEBUG: Nova stavka dodana:`, JSON.stringify(newItem, null, 2));
-        result = newItem;
+        
+        console.log('DEBUG: Nova stavka dodana:', JSON.stringify(newCartItem, null, 2));
+        resultCartItem = newCartItem;
       }
       
-      // Dohvati sve stavke košarice nakon operacije za provjeru
-      const updatedCart = await db
+      // Provjeri krajnje stanje košarice
+      const finalCartItems = await db
         .select()
         .from(cartItems)
         .where(eq(cartItems.userId, itemData.userId));
-        
-      console.log(`DEBUG: Košarica nakon operacije:`, 
-        JSON.stringify(updatedCart.map(item => ({
+      
+      console.log('DEBUG: Konačno stanje košarice:', 
+        JSON.stringify(finalCartItems.map(item => ({
           id: item.id,
           productId: item.productId,
+          quantity: item.quantity,
           scentId: item.scentId,
-          colorId: item.colorId,
-          quantity: item.quantity
+          colorId: item.colorId
         })), null, 2)
       );
       
-      console.log('========== DODAVANJE U KOŠARICU ZAVRŠENO ==========');
-      return result;
+      console.log('========== DODAVANJE U KOŠARICU ZAVRŠENO (NOVA METODA) ==========');
+      return resultCartItem;
     } catch (error) {
       console.error('ERROR: Greška prilikom dodavanja u košaricu:', error);
       throw error;
