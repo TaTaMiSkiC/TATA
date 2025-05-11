@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Helmet } from 'react-helmet';
 import AdminLayout from "@/components/admin/AdminLayout";
 import ProductForm from "@/components/admin/ProductForm";
@@ -42,7 +42,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, Search, Filter, MoreVertical, Edit, Trash2, Star } from "lucide-react";
+import { Loader2, Plus, Search, Filter, MoreVertical, Edit, Trash2, Star, Eye, EyeOff } from "lucide-react";
 
 export default function AdminProducts() {
   const { toast } = useToast();
@@ -81,6 +81,44 @@ export default function AdminProducts() {
   const handleDeleteProduct = (product: Product) => {
     setProductToDelete(product);
     setIsDeleteDialogOpen(true);
+  };
+  
+  // Toggle product activation status
+  const toggleActivationMutation = useMutation({
+    mutationFn: async ({ productId, active }: { productId: number, active: boolean }) => {
+      const response = await apiRequest(
+        "PATCH", 
+        `/api/products/${productId}`, 
+        { active }
+      );
+      return response.json();
+    },
+    onSuccess: (data) => {
+      const statusText = data.active ? "aktiviran" : "deaktiviran";
+      toast({
+        title: `Proizvod ${statusText}`,
+        description: `Proizvod "${data.name}" je uspješno ${statusText}.`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/products/featured"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/collections"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Greška",
+        description: `Došlo je do greške prilikom promjene statusa proizvoda: ${error.message}`,
+        variant: "destructive",
+      });
+    }
+  });
+  
+  // Handle toggling product activation
+  const handleToggleActivation = (product: Product) => {
+    toggleActivationMutation.mutate({
+      productId: product.id,
+      active: product.active === false
+    });
   };
   
   // Confirm delete
@@ -246,12 +284,21 @@ export default function AdminProducts() {
                           <TableCell>{parseFloat(product.price).toFixed(2)} €</TableCell>
                           <TableCell>{product.stock}</TableCell>
                           <TableCell>
-                            <Badge 
-                              variant={product.stock > 0 ? "default" : "destructive"}
-                              className={product.stock > 10 ? "bg-green-500" : product.stock > 0 ? "bg-yellow-500" : ""}
-                            >
-                              {product.stock > 10 ? "Na zalihi" : product.stock > 0 ? "Niska zaliha" : "Nije dostupno"}
-                            </Badge>
+                            <div className="flex flex-col gap-1">
+                              <Badge 
+                                variant={product.stock > 0 ? "default" : "destructive"}
+                                className={product.stock > 10 ? "bg-green-500" : product.stock > 0 ? "bg-yellow-500" : ""}
+                              >
+                                {product.stock > 10 ? "Na zalihi" : product.stock > 0 ? "Niska zaliha" : "Nije dostupno"}
+                              </Badge>
+                              
+                              <Badge 
+                                variant={product.active !== false ? "outline" : "destructive"}
+                                className={product.active !== false ? "border-green-500 text-green-600" : ""}
+                              >
+                                {product.active !== false ? "Aktivan" : "Neaktivan"}
+                              </Badge>
+                            </div>
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
