@@ -565,6 +565,8 @@ export class DatabaseStorage implements IStorage {
         product: true,
       },
     });
+    
+    console.log(`Dohvaćene stavke košarice:`, JSON.stringify(result, null, 2));
 
     console.log(`Pronađeno ${result.length} stavki u košarici`);
     
