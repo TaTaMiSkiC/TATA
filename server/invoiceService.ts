@@ -1,44 +1,63 @@
 import { db } from "./db";
+import { storage } from "./storage";
 import { 
   orders, 
   invoices, 
-  invoiceItems, 
-  insertInvoiceSchema,
-  insertInvoiceItemSchema,
-  Order,
-  orderItems as OrderItem
+  invoiceItems,
+  users
 } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 export interface InvoiceGenerationOptions {
   language?: string;
 }
 
+/**
+ * Generira račun za navedenu narudžbu
+ * @param orderId ID narudžbe za koju se generira račun
+ * @param options Dodatne opcije (jezik itd.)
+ * @returns ID kreiranog računa ili null u slučaju greške
+ */
 export async function generateInvoiceFromOrder(
   orderId: number, 
   options: InvoiceGenerationOptions = {}
 ): Promise<number | null> {
   try {
+    console.log(`Pokretanje generiranja računa za narudžbu ${orderId}...`);
+    
     // Dohvati narudžbu
-    const [order] = await db
-      .select()
-      .from(orders)
-      .where(eq(orders.id, orderId));
+    const order = await storage.getOrder(orderId);
     
     if (!order) {
       console.error(`Narudžba s ID: ${orderId} nije pronađena`);
       return null;
     }
     
-    // Dohvati stavke narudžbe
-    const orderItems = await db
-      .select()
-      .from(OrderItem)
-      .where(eq(OrderItem.orderId, orderId));
+    // Dohvati korisnika
+    const user = await storage.getUser(order.userId);
+    
+    if (!user) {
+      console.error(`Korisnik s ID: ${order.userId} nije pronađen`);
+      return null;
+    }
+    
+    // Dohvati stavke narudžbe s proizvod detaljima
+    const orderItems = await storage.getOrderItems(orderId);
     
     if (orderItems.length === 0) {
       console.error(`Narudžba s ID: ${orderId} nema stavki`);
       return null;
+    }
+    
+    // Provjeri postoji li već račun za ovu narudžbu
+    const existingInvoices = await db
+      .select()
+      .from(invoices)
+      .where(eq(invoices.orderId, orderId));
+    
+    if (existingInvoices.length > 0) {
+      console.log(`Račun za narudžbu ${orderId} već postoji (ID: ${existingInvoices[0].id})`);
+      return existingInvoices[0].id;
     }
     
     // Generiraj broj računa
@@ -47,24 +66,28 @@ export async function generateInvoiceFromOrder(
     const invoiceNumber = `${year}-${uniqueNumber}`;
     
     // Pripremi podatke za račun
+    const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+    
     const invoiceData = {
       invoiceNumber,
       orderId: order.id,
       userId: order.userId,
-      customerName: `${order.firstName} ${order.lastName}`,
-      customerEmail: order.email,
-      customerAddress: order.address,
-      customerCity: order.city,
-      customerPostalCode: order.postalCode,
-      customerCountry: order.country,
-      customerPhone: order.phone,
-      customerNote: order.note,
+      customerName: fullName,
+      customerEmail: user.email,
+      customerAddress: order.shippingAddress,
+      customerCity: order.shippingCity,
+      customerPostalCode: order.shippingPostalCode,
+      customerCountry: order.shippingCountry,
+      customerPhone: order.shippingPhone,
+      customerNote: order.customerNote,
       total: order.total,
-      subtotal: order.subtotal,
-      tax: order.tax,
+      subtotal: order.subtotal || "0.00",
+      tax: "0.00", // Austrija nema PDV za male poduzetnike
       paymentMethod: order.paymentMethod,
       language: options.language || order.language || "hr"
     };
+    
+    console.log("Kreiranje računa s podacima:", invoiceData);
     
     // Spremi račun u bazu
     const [invoice] = await db
@@ -72,17 +95,22 @@ export async function generateInvoiceFromOrder(
       .values(invoiceData)
       .returning();
     
+    console.log(`Kreiran račun ${invoice.invoiceNumber} (ID: ${invoice.id})`);
+    
     // Spremi stavke računa
     for (const item of orderItems) {
-      await db.insert(invoiceItems).values({
+      const invoiceItem = {
         invoiceId: invoice.id,
         productId: item.productId,
-        productName: item.productName,
+        productName: item.product.name,
         quantity: item.quantity,
         price: item.price,
-        selectedScent: item.scentName,
-        selectedColor: item.colorName
-      });
+        selectedScent: item.scentName || null,
+        selectedColor: item.colorName || null
+      };
+      
+      await db.insert(invoiceItems).values(invoiceItem);
+      console.log(`Dodana stavka računa: ${item.product.name}, količina: ${item.quantity}`);
     }
     
     console.log(`Uspješno kreiran račun ${invoiceNumber} za narudžbu ${orderId}`);

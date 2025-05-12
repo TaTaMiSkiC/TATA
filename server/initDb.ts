@@ -1,5 +1,5 @@
 import { db } from './db';
-import { users, categories, products, settings } from '@shared/schema';
+import { users, categories, products, settings, companyDocuments } from '@shared/schema';
 import { hashPassword } from './auth';
 import { eq, sql } from 'drizzle-orm';
 
@@ -42,6 +42,9 @@ export async function initializeDatabase() {
   if (!generalSettingsExist) {
     await createDefaultGeneralSettings();
   }
+  
+  // Provjeri postojanje tablice za dokumente tvrtke
+  await createCompanyDocumentsTable();
   
   console.log("Inicijalizacija baze podataka završena");
 }
