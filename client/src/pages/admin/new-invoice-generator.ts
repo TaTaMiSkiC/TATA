@@ -225,8 +225,9 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
     doc.text(`${t.orderItems}:`, 20, customerY + 5);
-    doc.setDrawColor(200, 200, 200);
-    doc.line(20, customerY + 7, 190, customerY + 7);
+    // doc.setDrawColor(200, 200, 200);
+    // doc.line(20, customerY + 7, 190, customerY + 7);
+    // Uklanjamo liniju prema primjeru
     
     // Priprema podataka za tablicu
     let items = [];
@@ -260,7 +261,11 @@ export const generateInvoicePdf = (data: any, toast: any) => {
           }
         }
         
-        const fullName = itemName + (details ? `\n${details}` : '');
+        // Dodajemo prazne linije prije i nakon detalja za bolji razmak kao u primjeru
+        const fullName = details 
+          ? `${itemName}\n\n${details}\n\n` // Dvostruki razmak prije i nakon detalja
+          : itemName;
+        
         const price = parseFloat(item.price).toFixed(2);
         const total = (parseFloat(item.price) * item.quantity).toFixed(2);
         
@@ -294,14 +299,17 @@ export const generateInvoicePdf = (data: any, toast: any) => {
         fontStyle: 'bold',
       },
       columnStyles: {
-        0: { cellWidth: 'auto' },
-        1: { cellWidth: 25, halign: 'center' },
-        2: { cellWidth: 35, halign: 'right' },
-        3: { cellWidth: 30, halign: 'right' },
+        0: { cellWidth: 100 }, // Prva kolona fiksne širine za produkt
+        1: { cellWidth: 25, halign: 'center' },  // Količina centrirana
+        2: { cellWidth: 35, halign: 'right' },   // Cijena desno poravnata
+        3: { cellWidth: 30, halign: 'right' },   // Ukupno desno poravnato
       },
+      // Uklanjamo alternativne boje redova za čisti izgled kao u primjeru
       alternateRowStyles: {
-        fillColor: [250, 250, 250],
+        fillColor: [255, 255, 255], // Bijela boja za sve redove
       },
+      // Dodajemo više prostora između redova
+      margin: { top: 15, bottom: 15 },
     });
     
     console.log("Nakon poziva autoTable, tableResult:", tableResult);
@@ -316,15 +324,27 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     const total = (parseFloat(subtotal) + parseFloat(shipping)).toFixed(2);
     
     // Dodavanje ukupnog iznosa
-    // Fiksni položaj za nastavak - umjesto da se oslanjamo na finalY
-    let finalY = 180; // Fiksna pozicija za nastavak dokumenta
-    console.log("Koristi se fiksni položaj za finalY:", finalY);
+    // Koristimo dy poziciju tablice za pozicioniranje ostatka sadržaja
+    // ili fiksnu poziciju ako nema tablice
+    let finalY = tableResult?.finalY || 180; 
+    console.log("Pozicija finalY:", finalY);
+    
+    // Ostavljamo prostor između tablice i zbrojeva
+    finalY += 15;
     
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     
     // Prikaz međuzbroja, dostave i ukupnog iznosa s desne strane (poravnato desno)
     doc.setFontSize(10);
+    
+    // Crtamo liniju između tablice i međuzbroja
+    doc.setDrawColor(200, 200, 200);
+    
+    // Pravimo horizontalnu liniju razdvajanja
+    // doc.line(150, finalY - 5, 190, finalY - 5);
+    
+    // Međuzbroj
     doc.text(`${t.subtotal}:`, 150, finalY);
     doc.text(`${subtotal} €`, 190, finalY, { align: "right" });
     
@@ -338,12 +358,9 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     
     // Ukupan iznos - podebljan
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
+    doc.setFontSize(10);
     
-    // Dodajemo box za ukupan iznos
-    doc.setFillColor(245, 245, 245);
-    doc.roundedRect(150, finalY + 12, 40, 8, 1, 1, 'F');
-    
+    // Razmak prije ukupnog iznosa
     doc.text(`${t.totalAmount}:`, 150, finalY + 18);
     doc.text(`${total} €`, 190, finalY + 18, { align: "right" });
     
@@ -362,22 +379,23 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.text(`${t.paymentMethod}: ${paymentMethodText}`, 20, finalY + 32);
     doc.text(`${t.paymentStatus}: ${t.paid}`, 20, finalY + 37);
     
+    // Veći razmak prije zahvale
     // Zahvala
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
-    doc.text(`${t.thankYou}!`, 105, finalY + 50, { align: "center" });
+    doc.text(`${t.thankYou}!`, 105, finalY + 55, { align: "center" });
     
-    // Podnožje s kontakt informacijama
+    // Podnožje s kontakt informacijama - razmak je veći
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-    doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 004366038787621", 105, finalY + 60, { align: "center" });
+    doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 004366038787621", 105, finalY + 70, { align: "center" });
     
     // Napomena o automatskom generiranju
-    doc.text(`${t.generatedNote}.`, 105, finalY + 65, { align: "center" });
+    doc.text(`${t.generatedNote}.`, 105, finalY + 75, { align: "center" });
     
     // Napomena o malim poreznim obveznicima
-    doc.text("Steuernummer: 61 154/7175", 105, finalY + 70, { align: "center" });
-    doc.text(t.exemptionNote, 105, finalY + 75, { align: "center" });
+    doc.text("Steuernummer: 61 154/7175", 105, finalY + 80, { align: "center" });
+    doc.text(t.exemptionNote, 105, finalY + 85, { align: "center" });
     
     // Spremanje PDF-a
     doc.save(`${t.title.toLowerCase()}_${data.invoiceNumber}.pdf`);
