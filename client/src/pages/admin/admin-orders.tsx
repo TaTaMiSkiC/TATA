@@ -162,6 +162,7 @@ export default function AdminOrders() {
       let lastName = '';
       
       if (userData) {
+        // Ako imamo podatke o korisniku, koristimo njih
         if (userData.firstName) firstName = userData.firstName;
         if (userData.lastName) lastName = userData.lastName;
         
@@ -169,16 +170,8 @@ export default function AdminOrders() {
         if (!firstName && !lastName) {
           firstName = userData.username || 'Kupac';
         }
-      } else if (order.shippingName) {
-        // Ako postoji shippingName, pokušaj ga raspakirat na ime i prezime
-        const nameParts = order.shippingName.split(' ');
-        if (nameParts.length > 1) {
-          firstName = nameParts[0];
-          lastName = nameParts.slice(1).join(' ');
-        } else {
-          firstName = order.shippingName;
-        }
       } else {
+        // Ako nemamo podatke korisnika, koristimo "Kupac" kao zadanu vrijednost
         firstName = 'Kupac';
       }
       
