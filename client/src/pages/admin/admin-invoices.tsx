@@ -9,13 +9,8 @@ import {
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
 import { 
-  Plus, FileText, Trash2, Download, ShoppingCart, Upload, File, Calendar, X, Check
+  Plus, FileText, Trash2, Download, ShoppingCart, Upload, File, Calendar, X
 } from "lucide-react";
-import {
-  RadioGroup,
-  RadioGroupItem
-} from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -62,6 +57,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Order, Product, Scent, Color } from "@shared/schema";
@@ -1068,57 +1069,6 @@ export default function AdminInvoices() {
         <title>Upravljanje računima | Kerzenwelt by Dani</title>
       </Helmet>
       
-      {/* Dialog za odabir jezika prilikom preuzimanja računa */}
-      <Dialog open={downloadLanguageDialogOpen} onOpenChange={setDownloadLanguageDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Odabir jezika za račun</DialogTitle>
-            <DialogDescription>
-              Odaberite jezik na kojem želite preuzeti račun.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-4">
-            <RadioGroup
-              value={downloadLanguage}
-              onValueChange={setDownloadLanguage}
-              className="flex flex-col space-y-2"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="hr" id="hr" />
-                <Label htmlFor="hr">Hrvatski</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="en" id="en" />
-                <Label htmlFor="en">Engleski</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="de" id="de" />
-                <Label htmlFor="de">Njemački</Label>
-              </div>
-            </RadioGroup>
-          </div>
-          <DialogFooter className="sm:justify-between">
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Odustani
-              </Button>
-            </DialogClose>
-            <Button 
-              type="button" 
-              onClick={() => {
-                if (invoiceToDownload) {
-                  processDownloadInvoice(invoiceToDownload, downloadLanguage);
-                  setDownloadLanguageDialogOpen(false);
-                }
-              }}
-            >
-              <Check className="mr-2 h-4 w-4" />
-              Preuzmi
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold tracking-tight">Računi</h1>
@@ -1168,14 +1118,28 @@ export default function AdminInvoices() {
                           {invoice.language === "de" && "Njemački"}
                         </TableCell>
                         <TableCell className="flex space-x-2">
-                          <Button 
-                            variant="outline" 
-                            size="icon" 
-                            onClick={() => handleDownloadInvoice(invoice)}
-                            title="Preuzmi PDF"
-                          >
-                            <Download className="h-4 w-4" />
-                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button 
+                                variant="outline" 
+                                size="icon" 
+                                title="Preuzmi PDF"
+                              >
+                                <Download className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem onClick={() => handleDownloadInvoiceWithLanguage(invoice, "hr")}>
+                                Preuzmi na hrvatskom
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDownloadInvoiceWithLanguage(invoice, "en")}>
+                                Preuzmi na engleskom
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDownloadInvoiceWithLanguage(invoice, "de")}>
+                                Preuzmi na njemačkom
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                           
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
