@@ -249,7 +249,7 @@ export const generateInvoicePdf = (data: any, toast: any) => {
         
         if (item.colorName || item.selectedColor) {
           const colorName = item.colorName || item.selectedColor;
-          if (details) details += ', ';
+          if (details) details += '\n';
           
           if (lang === 'de') {
             details += `Farben: ${colorName}`;

@@ -60,10 +60,20 @@ export async function generateInvoiceFromOrder(
       return existingInvoices[0].id;
     }
     
-    // Generiraj broj računa
-    const year = new Date().getFullYear();
-    const uniqueNumber = Math.floor(1000 + Math.random() * 9000);
-    const invoiceNumber = `${year}-${uniqueNumber}`;
+    // Generiraj broj računa - koristimo isti broj kao narudžba, ali s 'i' prefiksom
+    // Pravilo: ako je broj narudžbe manji od 450, koristimo i450 kao početnu točku
+    const orderId = order.id;
+    const invoicePrefix = 'i';
+    let invoiceNumber;
+    
+    // Ako je ID narudžbe manji od 450, koristimo 450 kao početnu točku
+    if (orderId < 450) {
+      invoiceNumber = `${invoicePrefix}450`;
+    } else {
+      invoiceNumber = `${invoicePrefix}${orderId}`;
+    }
+    
+    console.log(`Generiranje računa za narudžbu ${orderId}, broj računa: ${invoiceNumber}`);
     
     // Pripremi podatke za račun
     const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
