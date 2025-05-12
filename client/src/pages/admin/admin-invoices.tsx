@@ -1008,7 +1008,7 @@ export default function AdminInvoices() {
             
             console.log("Generiram PDF s podacima:", pdfData);
             
-            generatePdf(pdfData);
+            generateInvoicePdf(pdfData, toast);
             
             toast({
               title: "Uspješno kreiran račun",
