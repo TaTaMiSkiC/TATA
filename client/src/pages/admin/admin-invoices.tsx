@@ -1014,19 +1014,18 @@ export default function AdminInvoices() {
       });
   };
   
-  // Preuzimanje PDF-a za postojeći račun
-  const [invoiceToDownload, setInvoiceToDownload] = useState<Invoice | null>(null);
-  const [downloadLanguageDialogOpen, setDownloadLanguageDialogOpen] = useState(false);
-  const [downloadLanguage, setDownloadLanguage] = useState<string>("hr");
-  
+  // Funkcije za preuzimanje PDF-a za postojeće račune
   const handleDownloadInvoice = (invoice: Invoice) => {
-    // Postavi odabrani račun i otvori dijalog za odabir jezika
-    setInvoiceToDownload(invoice);
-    setDownloadLanguage(invoice.language || "hr"); // Postavljamo defaultni jezik na jezik računa
-    setDownloadLanguageDialogOpen(true);
+    // Direktno preuzmi račun s originalnim jezikom
+    downloadInvoice(invoice, invoice.language || "hr");
   };
 
-  const processDownloadInvoice = (invoice: Invoice, selectedLanguage: string) => {
+  const handleDownloadInvoiceWithLanguage = (invoice: Invoice, language: string) => {
+    // Preuzmi račun s odabranim jezikom
+    downloadInvoice(invoice, language);
+  };
+
+  const downloadInvoice = (invoice: Invoice, language: string) => {
     // Dohvati stavke računa sa servera
     apiRequest('GET', `/api/invoices/${invoice.id}`)
       .then(response => response.json())
@@ -1046,7 +1045,7 @@ export default function AdminInvoices() {
           email: invoice.customerEmail || "",
           phone: invoice.customerPhone || "",
           items: data.items || [], // Koristimo stavke dohvaćene sa servera
-          language: selectedLanguage, // Koristimo odabrani jezik iz dijaloga
+          language: language, // Koristimo odabrani jezik
           paymentMethod: invoice.paymentMethod || "cash" // Koristimo način plaćanja iz postojećeg računa
         };
         
