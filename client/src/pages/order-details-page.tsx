@@ -51,11 +51,9 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
-import { jsPDF } from "jspdf";
-import autoTable from "jspdf-autotable";
-
 // Logo import
 import logoImg from "@assets/Kerzenwelt by Dani.png";
+import { generateInvoicePdf } from "./admin/invoice-generator-new";
 
 // OrderItemWithProduct je već importiran iz @shared/schema
 
