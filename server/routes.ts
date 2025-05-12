@@ -2387,6 +2387,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to delete invoice" });
     }
   });
+  
+  // Dohvati fakturu za narudžbu
+  app.get("/api/orders/:id/invoice", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const orderId = parseInt(req.params.id);
+      const order = await storage.getOrder(orderId);
+      
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+      
+      if (!req.user.isAdmin && order.userId !== req.user.id) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      // Dohvati fakturu vezanu uz ovu narudžbu
+      const invoices = await db
+        .select()
+        .from(schema.invoices)
+        .where(eq(schema.invoices.orderId, orderId));
+      
+      // Vrati prvu pronađenu fakturu ili null ako ne postoji
+      const invoice = invoices.length > 0 ? invoices[0] : null;
+      
+      console.log(`Dohvaćena faktura za narudžbu ${orderId}:`, invoice ? `${invoice.invoiceNumber} (ID: ${invoice.id})` : "Nema fakture");
+      
+      res.json(invoice);
+    } catch (error) {
+      console.error("Greška pri dohvaćanju fakture za narudžbu:", error);
+      res.status(500).json({ message: "Failed to fetch invoice for order" });
+    }
+  });
 
   // Create HTTP server
   const httpServer = createServer(app);
