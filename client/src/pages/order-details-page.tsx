@@ -481,12 +481,17 @@ export default function OrderDetailsPage() {
           
           // Dodaj miris ako postoji
           if (item.scentName) {
-            details.push(`Miris: ${item.scentName}`);
+            // Koristi prijevod za riječ "Miris"
+            const scentLabel = lang === 'hr' ? 'Miris' : lang === 'de' ? 'Duft' : 'Scent';
+            details.push(`${scentLabel}: ${item.scentName}`);
           }
           
           // Dodaj boju/boje
           if (item.colorName) {
-            const colorPrefix = item.hasMultipleColors ? 'Boje' : 'Boja';
+            // Koristi prijevod za riječ "Boja" ili "Boje"
+            const colorSingular = lang === 'hr' ? 'Boja' : lang === 'de' ? 'Farbe' : 'Color';
+            const colorPlural = lang === 'hr' ? 'Boje' : lang === 'de' ? 'Farben' : 'Colors';
+            const colorPrefix = item.hasMultipleColors ? colorPlural : colorSingular;
             details.push(`${colorPrefix}: ${item.colorName}`);
           }
           
