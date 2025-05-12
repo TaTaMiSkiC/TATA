@@ -92,6 +92,370 @@ export default function AdminOrders() {
     return matchesSearch && matchesStatus;
   });
   
+  // Kreiranje i spremanje računa
+  const createInvoiceMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiRequest("POST", "/api/invoices", data);
+      return await response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
+      toast({
+        title: "Račun kreiran",
+        description: "Račun je uspješno kreiran i spremljen u bazu podataka.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Greška",
+        description: `Nije moguće kreirati račun: ${error.message}`,
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Funkcija za generiranje PDF računa
+  const generateInvoice = async (order: Order, language: string) => {
+    if (!order) return;
+    
+    setGeneratingInvoice(true);
+    
+    try {
+      // Dohvati stavke narudžbe
+      const itemsResponse = await fetch(`/api/orders/${order.id}/items`);
+      const items = await itemsResponse.json();
+      
+      if (!items || !Array.isArray(items) || items.length === 0) {
+        toast({
+          title: "Greška",
+          description: "Nije moguće generirati račun jer nema stavki narudžbe.",
+          variant: "destructive",
+        });
+        setGeneratingInvoice(false);
+        return;
+      }
+      
+      // Dohvati korisnika (kupca)
+      const user = users?.find(u => u.id === order.userId);
+      if (!user) {
+        toast({
+          title: "Greška",
+          description: "Nije moguće pronaći podatke o kupcu.",
+          variant: "destructive",
+        });
+        setGeneratingInvoice(false);
+        return;
+      }
+      
+      // Provjeri postojanje računa za ovu narudžbu
+      const existingInvoice = await fetch(`/api/invoices?orderId=${order.id}`).then(res => res.json());
+      let invoiceId = null;
+      
+      // Ako račun postoji, koristi ga, a ako ne, kreiraj novi
+      if (existingInvoice && existingInvoice.length > 0) {
+        invoiceId = existingInvoice[0].id;
+        console.log("Koristi postojeći račun ID:", invoiceId);
+      } else {
+        // Generiraj broj računa
+        const invoiceNumber = `${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+        
+        // Pripremi podatke za kreiranje računa
+        const invoiceData = {
+          invoiceNumber,
+          orderId: order.id,
+          userId: order.userId,
+          customerName: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+          customerEmail: user.email || '',
+          customerAddress: user.address || '',
+          customerCity: user.city || '',
+          customerPostalCode: user.postalCode || '',
+          customerCountry: user.country || '',
+          customerPhone: user.phone || '',
+          customerNote: order.customerNote || '',
+          paymentMethod: order.paymentMethod || 'cash',
+          total: order.total,
+          subtotal: order.subtotal,
+          tax: "0.00", // PDV je 0% za male poduzetnike u Austriji
+          language: language,
+          items: items.map((item: any) => ({
+            productId: item.productId,
+            productName: item.product.name,
+            quantity: item.quantity,
+            price: item.price,
+            selectedScent: item.scentName || '',
+            selectedColor: item.colorName || '',
+          }))
+        };
+        
+        // Spremi račun u bazu
+        const savedInvoice = await createInvoiceMutation.mutateAsync(invoiceData);
+        invoiceId = savedInvoice.id;
+        console.log("Kreiran novi račun ID:", invoiceId);
+      }
+      
+      // Definiranje prijevoda za PDF
+      const translations: Record<string, Record<string, string>> = {
+        hr: {
+          title: "RACUN",
+          date: "Datum racuna",
+          invoiceNo: "Broj racuna",
+          buyer: "Podaci o kupcu",
+          seller: "Prodavatelj",
+          taxId: "OIB",
+          companyName: "Kerzenwelt by Dani",
+          address: "Ossiacher Zeile 30",
+          city: "9523 Landskron",
+          country: "Austria",
+          email: "info@kerzenwelt.at",
+          phone: "+43 660 1234567",
+          taxNumber: "Steuernummer: 61 154/7175",
+          smallBusiness: "Kleinunternehmer nach §6(1)27 UStG",
+          product: "Proizvod",
+          quantity: "Količina",
+          price: "Cijena",
+          amount: "Iznos",
+          subtotal: "Međuzbroj",
+          tax: "PDV (0%)",
+          total: "Ukupno",
+          notes: "Napomene",
+          paymentMethod: "Način plaćanja",
+          thankYou: "Hvala na povjerenju!",
+          scent: "Miris",
+          color: "Boja",
+          colors: "Boje"
+        },
+        en: {
+          title: "INVOICE",
+          date: "Invoice date",
+          invoiceNo: "Invoice number",
+          buyer: "Customer details",
+          seller: "Seller",
+          taxId: "Tax ID",
+          companyName: "Kerzenwelt by Dani",
+          address: "Ossiacher Zeile 30",
+          city: "9523 Landskron",
+          country: "Austria",
+          email: "info@kerzenwelt.at",
+          phone: "+43 660 1234567",
+          taxNumber: "Tax number: 61 154/7175",
+          smallBusiness: "Small business according to §6(1)27 UStG",
+          product: "Product",
+          quantity: "Quantity",
+          price: "Price",
+          amount: "Amount",
+          subtotal: "Subtotal",
+          tax: "VAT (0%)",
+          total: "Total",
+          notes: "Notes",
+          paymentMethod: "Payment method",
+          thankYou: "Thank you for your business!",
+          scent: "Scent",
+          color: "Color",
+          colors: "Colors"
+        },
+        de: {
+          title: "RECHNUNG",
+          date: "Rechnungsdatum",
+          invoiceNo: "Rechnungsnummer",
+          buyer: "Kundeninformationen",
+          seller: "Verkäufer",
+          taxId: "Steuer-ID",
+          companyName: "Kerzenwelt by Dani",
+          address: "Ossiacher Zeile 30",
+          city: "9523 Landskron",
+          country: "Österreich",
+          email: "info@kerzenwelt.at",
+          phone: "+43 660 1234567",
+          taxNumber: "Steuernummer: 61 154/7175",
+          smallBusiness: "Kleinunternehmer gemäß §6(1)27 UStG",
+          product: "Produkt",
+          quantity: "Menge",
+          price: "Preis",
+          amount: "Betrag",
+          subtotal: "Zwischensumme",
+          tax: "MwSt. (0%)",
+          total: "Gesamtbetrag",
+          notes: "Anmerkungen",
+          paymentMethod: "Zahlungsmethode",
+          thankYou: "Vielen Dank für Ihren Einkauf!",
+          scent: "Duft",
+          color: "Farbe",
+          colors: "Farben"
+        }
+      };
+      
+      // Funkcija za prevođenje načina plaćanja
+      const getPaymentMethodText = (method: string, lang: string) => {
+        switch(method) {
+          case 'cash': 
+            return lang === 'hr' ? 'Gotovina' : lang === 'de' ? 'Barzahlung' : 'Cash';
+          case 'bank_transfer': 
+            return lang === 'hr' ? 'Bankovni transfer' : lang === 'de' ? 'Banküberweisung' : 'Bank Transfer';
+          case 'paypal': 
+            return 'PayPal';
+          case 'credit_card':
+            return lang === 'hr' ? 'Kreditna kartica' : lang === 'de' ? 'Kreditkarte' : 'Credit Card';
+          default:
+            const formattedMethod = method
+              .replace(/_/g, ' ')
+              .replace(/\b\w/g, (l) => l.toUpperCase());
+            return formattedMethod;
+        }
+      };
+      
+      // Kreiraj PDF
+      const doc = new jsPDF();
+      const lang = language || 'hr';
+      const t = translations[lang];
+      
+      // Logo i naslov
+      doc.setFontSize(24);
+      doc.setFont("helvetica", "bold");
+      doc.text(t.title, 105, 20, { align: "center" });
+      
+      // Podaci o prodavatelju
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.text(t.seller, 20, 35);
+      doc.setFont("helvetica", "normal");
+      doc.text(t.companyName, 20, 40);
+      doc.text(t.address, 20, 45);
+      doc.text(t.city, 20, 50);
+      doc.text(t.country, 20, 55);
+      doc.text(t.email, 20, 60);
+      doc.text(t.phone, 20, 65);
+      doc.text(t.taxNumber, 20, 70);
+      doc.text(t.smallBusiness, 20, 75);
+      
+      // Podaci o računu
+      doc.setFont("helvetica", "bold");
+      doc.text(t.date + ":", 140, 35);
+      doc.text(t.invoiceNo + ":", 140, 40);
+      
+      doc.setFont("helvetica", "normal");
+      doc.text(format(new Date(), "dd.MM.yyyy."), 190, 35, { align: "right" });
+      const invoiceNumber = existingInvoice && existingInvoice.length > 0 ? 
+        existingInvoice[0].invoiceNumber : 
+        `${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+      doc.text(invoiceNumber, 190, 40, { align: "right" });
+      
+      // Podaci o kupcu
+      doc.setFont("helvetica", "bold");
+      doc.text(t.buyer, 140, 55);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${user.firstName || ''} ${user.lastName || ''}`.trim(), 140, 60);
+      if (user.address) doc.text(user.address, 140, 65);
+      if (user.postalCode || user.city) doc.text(`${user.postalCode || ''} ${user.city || ''}`.trim(), 140, 70);
+      if (user.country) doc.text(user.country, 140, 75);
+      if (user.email) doc.text(user.email, 140, 80);
+      if (user.phone) doc.text(user.phone, 140, 85);
+      
+      // Napomena kupca
+      if (order.customerNote) {
+        const customerNoteY = user.phone ? 95 : 90;
+        doc.setFont("helvetica", "bold");
+        doc.text(t.notes + ":", 140, customerNoteY);
+        doc.setFont("helvetica", "normal");
+        
+        // Razdvoji napomenu na više redova ako je duga
+        const noteLines = doc.splitTextToSize(order.customerNote, 50);
+        noteLines.forEach((line: string, idx: number) => {
+          doc.text(line, 140, customerNoteY + 5 + (idx * 5));
+        });
+      }
+      
+      // Način plaćanja
+      const paymentMethod = getPaymentMethodText(order.paymentMethod || 'cash', lang);
+      const paymentMethodY = 95 + (order.customerNote ? doc.splitTextToSize(order.customerNote, 50).length * 5 : 0);
+      
+      doc.setFont("helvetica", "bold");
+      doc.text(t.paymentMethod + ":", 20, 85);
+      doc.setFont("helvetica", "normal");
+      doc.text(paymentMethod, 60, 85);
+      
+      // Tablični prikaz stavki
+      const tableColumn = [t.product, t.quantity, t.price, t.amount];
+      const tableRows: any[] = [];
+      
+      // Dodaj stavke računa u tablicu
+      items.forEach((item: any) => {
+        let productName = item.product.name;
+        
+        // Dodaj informacije o mirisu i boji ako postoje
+        if (item.scentName) {
+          productName += `\n${t.scent}: ${item.scentName}`;
+        }
+        if (item.colorName) {
+          productName += `\n${item.hasMultipleColors ? t.colors : t.color}: ${item.colorName}`;
+        }
+        
+        const price = parseFloat(item.price).toFixed(2);
+        const amount = (parseFloat(item.price) * item.quantity).toFixed(2);
+        
+        tableRows.push([productName, item.quantity, price + " €", amount + " €"]);
+      });
+      
+      // Kreiraj tablicu
+      autoTable(doc, {
+        head: [tableColumn],
+        body: tableRows,
+        startY: 110,
+        theme: 'plain',
+        headStyles: { fillColor: [212, 175, 55], textColor: [0, 0, 0], fontStyle: 'bold' },
+        columnStyles: { 
+          0: { cellWidth: 100 },
+          1: { cellWidth: 25, halign: 'center' },  // Prošireni stupac za količinu
+          2: { cellWidth: 30, halign: 'right' },
+          3: { cellWidth: 30, halign: 'right' }
+        },
+        styles: { cellPadding: 5, fontSize: 10 },
+        didDrawPage: (data) => {
+          // Footer na svakoj stranici
+          const pageCount = doc.getNumberOfPages();
+          doc.setFontSize(8);
+          doc.text(`${pageCount}`, doc.internal.pageSize.width / 2, doc.internal.pageSize.height - 10, { align: 'center' });
+        }
+      });
+      
+      // Dodaj ukupno
+      const finalY = (doc as any).lastAutoTable.finalY + 10;
+      
+      doc.setFont("helvetica", "bold");
+      doc.text(t.subtotal + ":", 150, finalY);
+      doc.text(order.subtotal ? parseFloat(order.subtotal).toFixed(2) + " €" : parseFloat(order.total).toFixed(2) + " €", 190, finalY, { align: "right" });
+      
+      doc.text(t.tax + ":", 150, finalY + 7);
+      // Budući da je PDV 0% za male poduzetnike u Austriji
+      doc.text("0.00 €", 190, finalY + 7, { align: "right" });
+      
+      doc.setFontSize(12);
+      doc.text(t.total + ":", 150, finalY + 15);
+      doc.text(parseFloat(order.total).toFixed(2) + " €", 190, finalY + 15, { align: "right" });
+      
+      // Zahvala na dnu
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text(t.thankYou, 105, finalY + 30, { align: "center" });
+      
+      // Preuzmi PDF
+      doc.save(`invoice-${invoiceNumber}-${lang}.pdf`);
+      
+      toast({
+        title: "PDF račun generiran",
+        description: "Račun je uspješno generiran i preuzet."
+      });
+    } catch (error) {
+      console.error("Greška kod generiranja računa:", error);
+      toast({
+        title: "Greška",
+        description: "Došlo je do pogreške pri generiranju računa.",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingInvoice(false);
+    }
+  };
+
   // Handle order status update
   const updateOrderStatus = async (orderId: number, status: string) => {
     try {
@@ -587,18 +951,37 @@ export default function AdminOrders() {
             <Button variant="outline" onClick={() => setIsOrderDetailsOpen(false)}>
               Zatvori
             </Button>
-            <Button 
-              onClick={() => {
-                // Generate and download invoice (for demonstration)
-                toast({
-                  title: "Generiranje računa",
-                  description: "Ova funkcionalnost bi generirala PDF račun za narudžbu.",
-                });
-              }}
-            >
-              <FileText className="mr-2 h-4 w-4" />
-              Generiraj račun
-            </Button>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button disabled={generatingInvoice}>
+                  {generatingInvoice ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generiranje...
+                    </>
+                  ) : (
+                    <>
+                      <FileText className="mr-2 h-4 w-4" />
+                      Generiraj račun
+                    </>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Odaberi jezik računa</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => selectedOrder && generateInvoice(selectedOrder, "hr")}>
+                  <span className="mr-2">🇭🇷</span> Hrvatski
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => selectedOrder && generateInvoice(selectedOrder, "en")}>
+                  <span className="mr-2">🇬🇧</span> Engleski
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => selectedOrder && generateInvoice(selectedOrder, "de")}>
+                  <span className="mr-2">🇩🇪</span> Njemački
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </DialogFooter>
         </DialogContent>
       </Dialog>
