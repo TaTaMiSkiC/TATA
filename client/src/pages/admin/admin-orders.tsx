@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Helmet } from 'react-helmet';
 import AdminLayout from "@/components/admin/AdminLayout";
-import { Order, OrderItemWithProduct, User, Product } from "@shared/schema";
+import { Order, OrderItemWithProduct, User, Product, Invoice } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -40,7 +40,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Search, FileText, Calendar, Clock, CreditCard, User as UserIcon, Package } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Loader2, Search, FileText, Calendar, Clock, CreditCard, User as UserIcon, Package, Download } from "lucide-react";
+import { format } from "date-fns";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function AdminOrders() {
   const { toast } = useToast();
@@ -48,6 +59,7 @@ export default function AdminOrders() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isOrderDetailsOpen, setIsOrderDetailsOpen] = useState(false);
+  const [generatingInvoice, setGeneratingInvoice] = useState(false);
   
   // Fetch orders
   const { data: orders, isLoading } = useQuery<Order[]>({
