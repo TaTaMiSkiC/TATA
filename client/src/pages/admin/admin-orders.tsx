@@ -157,23 +157,50 @@ export default function AdminOrders() {
       // Generiraj jedinstveni broj računa za narudžbu
       const invoiceNum = `${new Date().getFullYear()}-${order.id.toString().padStart(4, '0')}`;
       
+      // Raspakiraj ime i prezime iz userData
+      let firstName = '';
+      let lastName = '';
+      
+      if (userData) {
+        if (userData.firstName) firstName = userData.firstName;
+        if (userData.lastName) lastName = userData.lastName;
+        
+        // Ako nema imena ili prezimena, koristi username
+        if (!firstName && !lastName) {
+          firstName = userData.username || 'Kupac';
+        }
+      } else if (order.shippingName) {
+        // Ako postoji shippingName, pokušaj ga raspakirat na ime i prezime
+        const nameParts = order.shippingName.split(' ');
+        if (nameParts.length > 1) {
+          firstName = nameParts[0];
+          lastName = nameParts.slice(1).join(' ');
+        } else {
+          firstName = order.shippingName;
+        }
+      } else {
+        firstName = 'Kupac';
+      }
+      
       // Priprema podataka za generiranje računa u standardiziranom formatu
       const invoiceData = {
         invoiceNumber: invoiceNum,
         orderId: order.id,
         userId: order.userId,
-        customerName: userData ? `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || userData.username : order.shippingName || 'Kupac',
-        customerEmail: userData?.email || '',
-        customerAddress: order.shippingAddress || '',
-        customerCity: order.shippingCity || '',
-        customerPostalCode: order.shippingPostalCode || '',
-        customerCountry: order.shippingCountry || '',
-        customerPhone: userData?.phone || '',
+        firstName: firstName,
+        lastName: lastName,
+        email: userData?.email || '',
+        address: order.shippingAddress || '',
+        city: order.shippingCity || '',
+        postalCode: order.shippingPostalCode || '',
+        country: order.shippingCountry || '',
+        phone: userData?.phone || '',
         customerNote: order.customerNote || '',
         paymentMethod: order.paymentMethod || 'bank_transfer',
         total: order.total,
         subtotal: order.subtotal || order.total,
         tax: "0.00", // PDV je 0% za male poduzetnike u Austriji
+        createdAt: new Date(),
         language: language,
         items: items.map((item: any) => ({
           productId: item.productId,
