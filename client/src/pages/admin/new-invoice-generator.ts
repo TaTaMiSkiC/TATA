@@ -182,42 +182,44 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.setDrawColor(200, 200, 200);
     doc.line(20, 45, 190, 45);
     
-    // Podaci o kupcu
+    // Podaci o kupcu - koristimo razmak od lijeve margine
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
     doc.text(`${t.buyer}:`, 20, 55);
     doc.setDrawColor(200, 200, 200);
-    doc.line(20, 57, 190, 57);
+    // Nema linije kao u templatu
     doc.setFont("helvetica", "normal");
     
+    // Pomaknuti smo desno kao u templatu
+    const customerIndent = 20;
     let customerY = 62;
     
     // Zaštitimo se od nedostajućih imena i prezimena
     const firstName = data.firstName || '';
     const lastName = data.lastName || '';
-    doc.text(`${firstName} ${lastName}`.trim() || 'Kupac', 20, customerY);
+    doc.text(`${firstName} ${lastName}`.trim() || 'Kupac', customerIndent, customerY);
     customerY += 5;
     
     if (data.email) {
-      doc.text(`Email: ${data.email}`, 20, customerY);
+      doc.text(`Email: ${data.email}`, customerIndent, customerY);
       customerY += 5;
     }
     
     if (data.address) {
-      doc.text(`${t.deliveryAddress}: ${data.address}`, 20, customerY);
+      doc.text(`${t.deliveryAddress}: ${data.address}`, customerIndent, customerY);
       customerY += 5;
       
       if (data.city && data.postalCode) {
-        doc.text(`${data.postalCode} ${data.city}`, 20, customerY);
+        doc.text(`${data.postalCode} ${data.city}`, customerIndent, customerY);
         customerY += 5;
       }
       
       if (data.country) {
-        doc.text(data.country, 20, customerY);
+        doc.text(data.country, customerIndent, customerY);
         customerY += 5;
       }
     } else {
-      doc.text(`${t.deliveryAddress}: N/A - ${t.handInvoice}`, 20, customerY);
+      doc.text(`${t.deliveryAddress}: N/A - ${t.handInvoice}`, customerIndent, customerY);
       customerY += 5;
     }
     
@@ -230,12 +232,12 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.setFont("helvetica", "bold");
     doc.text(`${t.orderItems}:`, 20, customerY + 5);
     
-    // Priprema podataka za ručno crtanje tablice
-    // Definicija pozicija za svaku kolonu - prilagođeno točno kao u primjeru
+    // Priprema podataka za ručno crtanje tablice - pozicije prema priloženom templatu
+    // Definicija pozicija za svaku kolonu
     const columnPositions = {
-      product: 20,  // Proizvod
-      quantity: 140, // Količina - dalje od proizvoda za više prostora
-      price: 160,    // Cijena - prilagođeno za više prostora
+      product: 30,  // Proizvod - uvučeno udесno
+      quantity: 140, // Količina - centrirana daleko od proizvoda
+      price: 165,    // Cijena - desno poravnata prije ukupno
       total: 190     // Ukupno - desno poravnato
     };
     
@@ -245,16 +247,14 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     // Iscrtavanje zaglavlja tablice
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
+    // Dodajemo razmak na početku redka za zaglavlje
     doc.text(t.item, columnPositions.product, startY);
     doc.text(t.quantity, columnPositions.quantity, startY, { align: "center" });
     doc.text(t.price, columnPositions.price, startY, { align: "right" });
     doc.text(t.total, columnPositions.total, startY, { align: "right" });
     
-    // Dodajemo dodatni razmak za zaglavlje
-    // Samo koristimo više prostora
-    
-    // Dodatan prostor nakon zaglavlja
-    let currentY = startY + 10;
+    // Veći razmak nakon zaglavlja
+    let currentY = startY + 15;
     
     // Ručno iscrtavanje svake stavke
     if (data.items && Array.isArray(data.items)) {
@@ -264,7 +264,7 @@ export const generateInvoicePdf = (data: any, toast: any) => {
         const quantity = item.quantity;
         const total = (parseFloat(item.price) * quantity).toFixed(2);
         
-        // Iscrtaj naziv proizvoda
+        // Iscrtaj naziv proizvoda - uvučeno kao u template-u
         doc.setFont("helvetica", "normal");
         doc.text(productName, columnPositions.product, currentY);
         currentY += 6; // Veći razmak nakon naziva proizvoda
@@ -303,16 +303,16 @@ export const generateInvoicePdf = (data: any, toast: any) => {
           currentY += 6; // Veći razmak nakon boja
         }
         
-        // Dodatni razmak nakon stavke
-        currentY += 8;
+        // Dodatni razmak nakon stavke - dupli prazan red kao u template-u
+        currentY += 12;
         
-        // Za količinu, cijenu i ukupno koristimo vertikalnu sredinu stavke
-        const verticalCenter = currentY - 15; // Sredina stavke za druge stupce
+        // Količina, cijena i ukupno se prikazuju na istoj visini kao naziv proizvoda
+        // Pozicioniramo ih prema templatu
         
         // Iscrtaj količinu, cijenu i ukupno za trenutnu stavku, poravnato desno
-        doc.text(quantity.toString(), columnPositions.quantity, verticalCenter, { align: "center" });
-        doc.text(`${price} €`, columnPositions.price, verticalCenter, { align: "right" });
-        doc.text(`${total} €`, columnPositions.total, verticalCenter, { align: "right" });
+        doc.text(quantity.toString(), columnPositions.quantity, currentY - 18, { align: "center" });
+        doc.text(`${price} €`, columnPositions.price, currentY - 18, { align: "right" });
+        doc.text(`${total} €`, columnPositions.total, currentY - 18, { align: "right" });
       });
     } else {
       doc.text("N/A - " + t.handInvoice, columnPositions.product, currentY);
