@@ -265,8 +265,9 @@ export const generateInvoicePdf = (data: any, toast: any) => {
       ];
     }
     
-    // Crtamo tablicu sa stavkama
-    autoTable(doc, {
+    // Crtamo tablicu sa stavkama i spremamo rezultat
+    // jspdf-autotable vraća objekt s informacijama o tablici
+    const tableResult = autoTable(doc, {
       startY: customerY + 10,
       head: [[t.item, t.quantity, t.price, t.total]],
       body: items,
@@ -297,9 +298,8 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     const total = (parseFloat(subtotal) + parseFloat(shipping)).toFixed(2);
     
     // Dodavanje ukupnog iznosa
-    // Ne možemo koristiti (doc as any).lastAutoTable jer koristimo autoTable iz biblioteke
-    // Dobijemo finalY iz tablice koja je nacrtana
-    const finalY = (doc as any)._previousAutoTable.finalY + 10;
+    // Korištenje finalY vrijednosti koju vraća autoTable funkcija
+    const finalY = tableResult.finalY + 10;
     
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
