@@ -133,7 +133,14 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     // Odabir prijevoda
     const t = translations[lang] || translations.hr;
     
-    const doc = new jsPDF();
+    // Proširujemo jsPDF s lastAutoTable interfejsom
+    interface ExtendedJsPDF extends jsPDF {
+      lastAutoTable?: {
+        finalY: number;
+      };
+    }
+    
+    const doc = new jsPDF() as ExtendedJsPDF;
     
     // Postavljanje osnovnih detalja
     doc.setFontSize(10);
@@ -266,8 +273,11 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     }
     
     // Crtamo tablicu sa stavkama i spremamo rezultat
+    console.log("Prije poziva autoTable");
+    
     // jspdf-autotable vraća objekt s informacijama o tablici
-    const tableResult = autoTable(doc, {
+    // Korištenje any tipa za rezultat jer neki importi tipova nisu kompatibilni
+    const tableResult: any = autoTable(doc, {
       startY: customerY + 10,
       head: [[t.item, t.quantity, t.price, t.total]],
       body: items,
@@ -288,6 +298,8 @@ export const generateInvoicePdf = (data: any, toast: any) => {
       },
     });
     
+    console.log("Nakon poziva autoTable, tableResult:", tableResult);
+    
     // Izračunavanje ukupnog iznosa
     const subtotal = data.items && Array.isArray(data.items)
       ? data.items.reduce((sum: number, item: any) => sum + (parseFloat(item.price) * item.quantity), 0).toFixed(2)
@@ -298,8 +310,9 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     const total = (parseFloat(subtotal) + parseFloat(shipping)).toFixed(2);
     
     // Dodavanje ukupnog iznosa
-    // Korištenje finalY vrijednosti koju vraća autoTable funkcija
-    const finalY = tableResult.finalY + 10;
+    // Fiksni položaj za nastavak - umjesto da se oslanjamo na finalY
+    let finalY = 180; // Fiksna pozicija za nastavak dokumenta
+    console.log("Koristi se fiksni položaj za finalY:", finalY);
     
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
