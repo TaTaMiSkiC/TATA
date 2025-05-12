@@ -151,6 +151,29 @@ export default function OrderDetailsPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [selectedLanguage, setSelectedLanguage] = useState<'hr' | 'en' | 'de'>('hr');
+  
+  // Funkcija za prijevod tekstova sučelja
+  const translate = (key: string): string => {
+    const translations: Record<string, Record<string, string>> = {
+      hr: {
+        scent: "Miris",
+        color: "Boja",
+        colors: "Boje"
+      },
+      en: {
+        scent: "Scent",
+        color: "Color",
+        colors: "Colors"
+      },
+      de: {
+        scent: "Duft",
+        color: "Farbe",
+        colors: "Farben"
+      }
+    };
+    
+    return translations[selectedLanguage]?.[key] || translations.hr[key] || key;
+  };
   const [generatingInvoice, setGeneratingInvoice] = useState(false);
   
   // Dohvat narudžbe
@@ -884,14 +907,14 @@ export default function OrderDetailsPage() {
                           {/* Prikaz mirisa */}
                           {scent && (
                             <div className="inline-flex items-center text-sm bg-amber-50 rounded-full px-2 py-0.5 border border-amber-100">
-                              <span className="font-medium text-amber-800 mr-1">Miris:</span> {scent}
+                              <span className="font-medium text-amber-800 mr-1">{translate('scent')}:</span> {scent}
                             </div>
                           )}
                           
                           {/* Prikaz jedne boje */}
                           {color && !item.hasMultipleColors && (
                             <div className="inline-flex items-center text-sm bg-blue-50 rounded-full px-2 py-0.5 border border-blue-100">
-                              <span className="font-medium text-blue-800 mr-1">Boja:</span>
+                              <span className="font-medium text-blue-800 mr-1">{translate('color')}:</span>
                               {products?.flatMap(p => 
                                 p.id === item.productId ? (p as any).colors || [] : []
                               ).find(c => c?.name === color)?.hexValue ? (
@@ -910,7 +933,7 @@ export default function OrderDetailsPage() {
                           {item.hasMultipleColors && item.colorName && (
                             <div className="flex flex-col gap-1">
                               <div className="inline-flex items-center text-sm bg-purple-50 rounded-full px-2 py-0.5 border border-purple-100">
-                                <span className="font-medium text-purple-800 mr-1">Boje:</span>
+                                <span className="font-medium text-purple-800 mr-1">{translate('colors')}:</span>
                                 {item.colorName}
                               </div>
                               
@@ -956,7 +979,7 @@ export default function OrderDetailsPage() {
                           {/* Falback za stare načine prikaza (ako postoji) */}
                           {item.hasMultipleColors && color && !item.colorIds && (
                             <div className="inline-flex items-center text-sm bg-blue-50 rounded-full px-2 py-0.5 border border-blue-100 flex-wrap">
-                              <span className="font-medium text-blue-800 mr-1">Boje:</span>
+                              <span className="font-medium text-blue-800 mr-1">{translate('colors')}:</span>
                               {color.split(',').map((colorName, index) => {
                                 const trimmedColor = colorName.trim();
                                 const productColor = products?.flatMap(p => 

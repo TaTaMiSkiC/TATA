@@ -464,7 +464,20 @@ export default function AdminOrders() {
                                     <span className="text-xs font-medium">{item.color.name}</span>
                                   </div>
                                 )}
-                                {!item.scent && !item.color && (
+                                {/* Prikaz scentName i colorName iz OrderItemWithProduct */}
+                                {!item.scent && !item.color && item.scentName && (
+                                  <div className="flex items-center mb-1">
+                                    <span className="text-xs text-muted-foreground mr-1">Miris:</span>
+                                    <span className="text-xs font-medium">{item.scentName}</span>
+                                  </div>
+                                )}
+                                {!item.scent && !item.color && item.colorName && (
+                                  <div className="flex items-center">
+                                    <span className="text-xs text-muted-foreground mr-1">{item.hasMultipleColors ? 'Boje:' : 'Boja:'}</span>
+                                    <span className="text-xs font-medium">{item.colorName}</span>
+                                  </div>
+                                )}
+                                {!item.scent && !item.color && !item.scentName && !item.colorName && (
                                   <span className="text-xs text-muted-foreground">Standardni proizvod</span>
                                 )}
                               </TableCell>
