@@ -233,10 +233,10 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.text(`${t.orderItems}:`, 20, customerY + 5);
     
     // Priprema podataka za ručno crtanje tablice - pozicije prema priloženom templatu
-    // Definicija pozicija za svaku kolonu
+    // Definicija pozicija za svaku kolonu - precizno usklađene s PDFom
     const columnPositions = {
       product: 30,  // Proizvod - uvučeno udесno
-      quantity: 140, // Količina - centrirana daleko od proizvoda
+      quantity: 143, // Količina - centrirana daleko od proizvoda
       price: 165,    // Cijena - desno poravnata prije ukupno
       total: 190     // Ukupno - desno poravnato
     };
@@ -244,17 +244,18 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     // Razmak između zaglavlja tablice i podataka
     const startY = customerY + 15;
     
-    // Iscrtavanje zaglavlja tablice
+    // Iscrtavanje zaglavlja tablice - sve s dodatnim razmacima kao u PDF-u
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
-    // Dodajemo razmak na početku redka za zaglavlje
+    
+    // Postavimo zaglavlje s većim razmakom na vrhu, i bez linije na dnu
     doc.text(t.item, columnPositions.product, startY);
     doc.text(t.quantity, columnPositions.quantity, startY, { align: "center" });
     doc.text(t.price, columnPositions.price, startY, { align: "right" });
     doc.text(t.total, columnPositions.total, startY, { align: "right" });
     
-    // Veći razmak nakon zaglavlja
-    let currentY = startY + 15;
+    // Veći razmak nakon zaglavlja - u predlošku je vrlo velik razmak
+    let currentY = startY + 20;
     
     // Ručno iscrtavanje svake stavke
     if (data.items && Array.isArray(data.items)) {
@@ -304,8 +305,8 @@ export const generateInvoicePdf = (data: any, toast: any) => {
           currentY += 6; // Veći razmak nakon boja
         }
         
-        // Dodatni razmak nakon stavke - dupli prazan red kao u template-u
-        currentY += 12;
+        // Dodatni razmak nakon stavke - vrlo velik razmak kao u PDF predlošku
+        currentY += 18;
         
         // Količina, cijena i ukupno se prikazuju na istoj visini kao naziv proizvoda
         // Pozicioniramo ih prema templatu
