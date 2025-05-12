@@ -13,6 +13,7 @@ import { eq, sql, and, isNull } from "drizzle-orm";
 import { db, pool } from "./db";
 import { registerDocumentRoutes } from "./documentRoutes";
 import { generateInvoiceFromOrder } from "./invoiceService";
+import { sendNewOrderNotification, sendInvoiceGeneratedNotification } from './notificationService';
 import {
   productScents,
   productColors,
@@ -837,11 +838,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`Automatsko generiranje računa za narudžbu ${order.id}...`);
         const language = req.body.language || 'hr';
         
+        // Pošalji obavijest o novoj narudžbi
+        sendNewOrderNotification(order).catch(err => {
+          console.error("Greška kod slanja obavijesti o novoj narudžbi:", err);
+        });
+        
         // Generiraj račun s odabranim jezikom
         const invoiceId = await generateInvoiceFromOrder(order.id, { language });
         
         if (invoiceId) {
           console.log(`Uspješno generiran račun (ID: ${invoiceId}) za narudžbu ${order.id}`);
+          
+          // Pošalji obavijest o generiranom računu
+          sendInvoiceGeneratedNotification(order.id, invoiceId).catch(err => {
+            console.error("Greška kod slanja obavijesti o generiranom računu:", err);
+          });
+          
           // Dodaj broj računa u odgovor
           res.status(201).json({ ...order, invoiceId });
         } else {

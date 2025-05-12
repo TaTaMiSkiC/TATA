@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Redirect, useLocation } from "wouter";
-import { Menu, Search, Bell, User } from "lucide-react";
+import { Menu, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import AdminNotifications from "./AdminNotifications";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import AdminSidebar from "./AdminSidebar";
 
@@ -73,9 +74,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
               <Input placeholder="Pretraži..." className="pl-8" />
             </div>
             
-            <Button variant="ghost" size="icon">
-              <Bell size={20} />
-            </Button>
+            <AdminNotifications />
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

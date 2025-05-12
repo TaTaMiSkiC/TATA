@@ -1,156 +1,163 @@
-import React, { useState, useEffect } from 'react';
-import { Bell } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Bell } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { useQuery } from '@tanstack/react-query';
-import { Link } from 'wouter';
-import { queryClient } from '@/lib/queryClient';
-import { formatDistanceToNow } from 'date-fns';
-import { hr } from 'date-fns/locale';
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Order } from "@shared/schema";
 
-// Tipovi za notifikacije
-export type NotificationType = 'order' | 'invoice' | 'other';
-
-export interface Notification {
+interface Notification {
   id: number;
-  type: NotificationType;
+  type: "order" | "invoice" | "system";
+  title: string;
   message: string;
-  referenceId?: number; // ID narudžbe ili računa
   read: boolean;
-  createdAt: string;
+  date: Date;
+  link?: string;
+  orderId?: number;
+  invoiceId?: number;
 }
 
-export default function AdminNotifications() {
+const AdminNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [open, setOpen] = useState(false);
 
-  // Dohvati notifikacije
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['/api/notifications'],
-    queryFn: async () => {
-      try {
-        // Za sada simuliramo dohvat notifikacija jer još nemamo API endpoint
-        const pendingOrders = await queryClient.fetchQuery({
-          queryKey: ['/api/orders/pending'],
-          queryFn: async () => {
-            const response = await fetch('/api/orders?status=pending');
-            if (!response.ok) {
-              throw new Error('Greška kod dohvata narudžbi');
-            }
-            return response.json();
-          }
-        });
-
-        return pendingOrders.map((order: any) => ({
-          id: order.id,
-          type: 'order' as NotificationType,
-          message: `Nova narudžba #${order.id} - ${order.total} EUR`,
-          referenceId: order.id,
-          read: false,
-          createdAt: order.createdAt
-        })) as Notification[];
-      } catch (err) {
-        console.error('Greška kod dohvata notifikacija:', err);
-        return [];
-      }
-    },
-    refetchInterval: 60000, // Provjeri nove notifikacije svakih 60 sekundi
+  // Dohvati najnovije narudžbe
+  const { data: orders } = useQuery<Order[]>({
+    queryKey: ["/api/orders"],
   });
 
+  // Simuliraj notifikacije na temelju narudžbi
   useEffect(() => {
-    if (data) {
-      setNotifications(data);
+    if (orders && orders.length > 0) {
+      // Uzmi zadnjih 5 narudžbi
+      const latestOrders = [...orders].sort((a, b) => {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }).slice(0, 5);
+      
+      // Generiraj notifikacije za svaku narudžbu
+      const newNotifications: Notification[] = latestOrders.map((order, index) => {
+        return {
+          id: order.id,
+          type: "order",
+          title: `Nova narudžba #${order.id}`,
+          message: `Zaprimljena je nova narudžba u iznosu od ${order.total} EUR`,
+          read: index > 1, // prve dvije notifikacije su nepročitane
+          date: new Date(order.createdAt),
+          link: `/admin/orders/${order.id}`,
+          orderId: order.id
+        };
+      });
+      
+      setNotifications(newNotifications);
+      setUnreadCount(newNotifications.filter(n => !n.read).length);
     }
-  }, [data]);
+  }, [orders]);
 
-  const handleNotificationClick = (notification: Notification) => {
-    // Ažuriraj pročitano stanje
-    setNotifications(prev => 
-      prev.map(n => n.id === notification.id ? { ...n, read: true } : n)
-    );
-    
-    // Zatvori dropdown ako je otvoreno
-    setIsOpen(false);
-  };
-
-  const unreadCount = notifications.filter(n => !n.read).length;
-
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  };
-
-  const clearAll = () => {
-    setNotifications([]);
-  };
-
-  const formatTimeAgo = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      return formatDistanceToNow(date, { addSuffix: true, locale: hr });
-    } catch (error) {
-      return 'nepoznato vrijeme';
+  // Označi sve notifikacije kao pročitane kada se otvori popover
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (newOpen && unreadCount > 0) {
+      const updatedNotifications = notifications.map(notification => ({
+        ...notification,
+        read: true
+      }));
+      setNotifications(updatedNotifications);
+      setUnreadCount(0);
     }
+  };
+
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString('hr-HR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative p-2">
-          <Bell className="h-6 w-6" />
+    <Popover open={open} onOpenChange={handleOpenChange}>
+      <PopoverTrigger asChild>
+        <Button variant="ghost" size="icon" className="relative">
+          <Bell size={20} />
           {unreadCount > 0 && (
-            <Badge className="absolute -top-1 -right-1 px-1.5 bg-red-500">
-              {unreadCount > 9 ? '9+' : unreadCount}
+            <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center bg-red-500">
+              {unreadCount}
             </Badge>
           )}
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-80">
-        <DropdownMenuLabel className="flex justify-between items-center">
-          <span>Obavijesti</span>
-          <div className="flex gap-2">
-            <Button variant="ghost" size="sm" onClick={markAllAsRead}>
-              Označi sve kao pročitano
-            </Button>
-            <Button variant="ghost" size="sm" onClick={clearAll}>
-              Obriši sve
-            </Button>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {isLoading ? (
-          <div className="p-4 text-center">Učitavanje...</div>
-        ) : error ? (
-          <div className="p-4 text-center text-red-500">Greška kod dohvata obavijesti</div>
-        ) : notifications.length === 0 ? (
-          <div className="p-4 text-center">Nema novih obavijesti</div>
-        ) : (
-          notifications.map(notification => (
-            <DropdownMenuItem key={notification.id} className={`p-3 cursor-pointer ${!notification.read ? 'bg-muted/50' : ''}`}>
-              {notification.type === 'order' ? (
-                <Link to={`/admin/orders/${notification.referenceId}`} onClick={() => handleNotificationClick(notification)}>
-                  <div className="flex flex-col">
-                    <span className="font-medium">{notification.message}</span>
-                    <span className="text-sm text-muted-foreground">{formatTimeAgo(notification.createdAt)}</span>
-                  </div>
-                </Link>
+      </PopoverTrigger>
+      <PopoverContent className="w-80 p-0" align="end">
+        <Card className="border-0">
+          <CardHeader className="pb-2 pt-4 px-4">
+            <CardTitle className="text-lg">Obavijesti</CardTitle>
+            <CardDescription>
+              {unreadCount > 0 
+                ? `Imate ${unreadCount} nepročitanih obavijesti` 
+                : 'Nema novih obavijesti'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="px-0">
+            <ScrollArea className="h-[300px]">
+              {notifications.length > 0 ? (
+                <div className="space-y-1">
+                  {notifications.map((notification) => (
+                    <a 
+                      key={notification.id}
+                      href={notification.link} 
+                      className={`block px-4 py-3 hover:bg-muted transition-colors cursor-pointer ${
+                        !notification.read ? 'bg-muted/50' : ''
+                      }`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <p className="text-sm font-medium">
+                            {notification.title}
+                            {!notification.read && (
+                              <Badge variant="outline" className="ml-2 bg-primary text-primary-foreground">
+                                Novo
+                              </Badge>
+                            )}
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">{notification.message}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{formatDate(notification.date)}</p>
+                        </div>
+                        {notification.type === "order" && (
+                          <Badge variant="outline" className="ml-2">Narudžba</Badge>
+                        )}
+                        {notification.type === "invoice" && (
+                          <Badge variant="outline" className="ml-2">Račun</Badge>
+                        )}
+                      </div>
+                    </a>
+                  ))}
+                </div>
               ) : (
-                <div className="flex flex-col" onClick={() => handleNotificationClick(notification)}>
-                  <span className="font-medium">{notification.message}</span>
-                  <span className="text-sm text-muted-foreground">{formatTimeAgo(notification.createdAt)}</span>
+                <div className="py-6 text-center">
+                  <p className="text-sm text-muted-foreground">Nema obavijesti</p>
                 </div>
               )}
-            </DropdownMenuItem>
-          ))
-        )}
-      </DropdownMenuContent>
-    </DropdownMenu>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      </PopoverContent>
+    </Popover>
   );
-}
+};
+
+export default AdminNotifications;
