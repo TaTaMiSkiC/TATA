@@ -12,6 +12,7 @@ import { z } from "zod";
 import { eq, sql, and, isNull } from "drizzle-orm";
 import { db, pool } from "./db";
 import { registerDocumentRoutes } from "./documentRoutes";
+import { generateInvoiceFromOrder } from "./invoiceService";
 import {
   productScents,
   productColors,
@@ -827,14 +828,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user.id
       });
       
+      // Kreiraj narudžbu
       const order = await storage.createOrder(validatedData, req.body.items);
       await storage.clearCart(req.user.id);
       
-      res.status(201).json(order);
+      // Automatski generiraj račun za narudžbu
+      try {
+        console.log(`Automatsko generiranje računa za narudžbu ${order.id}...`);
+        const language = req.body.language || 'hr';
+        
+        // Generiraj račun s odabranim jezikom
+        const invoiceId = await generateInvoiceFromOrder(order.id, { language });
+        
+        if (invoiceId) {
+          console.log(`Uspješno generiran račun (ID: ${invoiceId}) za narudžbu ${order.id}`);
+          // Dodaj broj računa u odgovor
+          res.status(201).json({ ...order, invoiceId });
+        } else {
+          console.error(`Neuspjelo generiranje računa za narudžbu ${order.id}`);
+          res.status(201).json(order);
+        }
+      } catch (invoiceError) {
+        console.error("Greška kod automatskog generiranja računa:", invoiceError);
+        // Svejedno vrati narudžbu kao uspješnu jer je kreiranje narudžbe uspjelo
+        res.status(201).json(order);
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: error.errors });
       }
+      console.error("Greška kod kreiranja narudžbe:", error);
       res.status(500).json({ message: "Failed to create order" });
     }
   });
