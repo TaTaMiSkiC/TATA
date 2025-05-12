@@ -61,16 +61,34 @@ export async function generateInvoiceFromOrder(
     }
     
     // Generiraj broj računa - koristimo isti broj kao narudžba, ali s 'i' prefiksom
-    // Pravilo: ako je broj narudžbe manji od 450, koristimo i450 kao početnu točku
+    // Potrebno je osigurati da nikad nemamo duplikate
     const invoicePrefix = 'i';
     let invoiceNumber;
     
-    // Ako je ID narudžbe manji od 450, koristimo 450 kao početnu točku
-    if (order.id < 450) {
-      invoiceNumber = `${invoicePrefix}450`;
-    } else {
-      invoiceNumber = `${invoicePrefix}${order.id}`;
+    // Dohvati posljednji račun iz baze da vidimo koji je najveći broj
+    const lastInvoice = await db
+      .select()
+      .from(invoices)
+      .orderBy(invoices.id, 'desc')
+      .limit(1);
+    
+    // Početni broj računa je 450
+    const baseNumber = 450;
+    
+    // Ako postoji prethodni račun, izvuci broj iz njegovog broja računa
+    let lastInvoiceNumber = baseNumber - 1; // Početno stanje ako nema prethodnih računa
+    
+    if (lastInvoice.length > 0 && lastInvoice[0].invoiceNumber) {
+      // Izvuci broj iz formata "i450" -> 450
+      const matches = lastInvoice[0].invoiceNumber.match(/i(\d+)/);
+      if (matches && matches[1]) {
+        lastInvoiceNumber = parseInt(matches[1]);
+      }
     }
+    
+    // Generiraj sljedeći broj računa - uvijek povećaj za 1 od posljednjeg
+    const nextInvoiceNumber = Math.max(lastInvoiceNumber + 1, baseNumber, order.id);
+    invoiceNumber = `${invoicePrefix}${nextInvoiceNumber}`;
     
     console.log(`Generiranje računa za narudžbu ${order.id}, broj računa: ${invoiceNumber}`);
     

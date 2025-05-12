@@ -221,7 +221,9 @@ export default function OrderDetailsPage() {
   const error = orderError || itemsError;
   
   // Funkcija za prevođenje načina plaćanja
-  const getPaymentMethodText = (method: string, lang: string) => {
+  const getPaymentMethodText = (method: string | undefined, lang: string) => {
+    if (!method) return lang === 'hr' ? 'Nije definirano' : lang === 'de' ? 'Nicht definiert' : 'Not defined';
+    
     switch(method) {
       case 'cash': 
         return lang === 'hr' ? 'Gotovina' : lang === 'de' ? 'Barzahlung' : 'Cash';
@@ -364,7 +366,7 @@ export default function OrderDetailsPage() {
       const t = translations[lang] || translations.hr;
       
       // Funkcija za dobivanje teksta načina plaćanja ovisno o odabranoj vrijednosti i jeziku
-      const getPaymentStatusText = (status: string) => {
+      const getPaymentStatusText = (status: string | undefined) => {
         if (!status) return t.unpaid;
         return status === 'completed' ? t.paid : t.unpaid;
       };
