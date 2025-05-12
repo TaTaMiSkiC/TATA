@@ -379,18 +379,23 @@ export default function AdminInvoices() {
   // Form za kreiranje računa
   const form = useForm<CreateInvoiceFormValues>({
     resolver: zodResolver(createInvoiceSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      address: "",
-      city: "",
-      postalCode: "",
-      country: "",
-      email: "",
-      phone: "",
-      invoiceNumber: createInvoiceNumber(),
-      language: "hr",
-      paymentMethod: "cash",
+    defaultValues: async () => {
+      // Dohvati inicijalni broj računa
+      const invoiceNumber = await createInvoiceNumber();
+      
+      return {
+        firstName: "",
+        lastName: "",
+        address: "",
+        city: "",
+        postalCode: "",
+        country: "",
+        email: "",
+        phone: "",
+        invoiceNumber,
+        language: "hr",
+        paymentMethod: "cash",
+      };
     }
   });
   
@@ -1015,7 +1020,12 @@ export default function AdminInvoices() {
             
             // Reset forme
             form.reset();
-            form.setValue("invoiceNumber", createInvoiceNumber());
+            
+            // Dohvati novi broj računa i ažuriraj formu
+            createInvoiceNumber().then(newInvoiceNumber => {
+              form.setValue("invoiceNumber", newInvoiceNumber);
+            });
+            
             form.setValue("language", "hr");
             setSelectedProducts([]);
             setSelectedOrder(null);

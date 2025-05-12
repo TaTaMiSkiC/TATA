@@ -2244,6 +2244,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Get last invoice (za generiranje novih brojeva računa)
+  app.get("/api/invoices/last", async (req, res) => {
+    try {
+      // Ovu rutu mogu koristiti i ulogirani korisnici jer im treba za generiranje novih brojeva
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      // Dohvati sve račune sortirane po ID-ju silazno i vrati prvi (posljednji kreirani)
+      const invoices = await storage.getAllInvoices();
+      const lastInvoice = invoices.length > 0 ? invoices[0] : null;
+      res.json(lastInvoice);
+    } catch (error) {
+      console.error("Error getting last invoice:", error);
+      res.status(500).json({ message: "Failed to get last invoice" });
+    }
+  });
+  
   // Get invoice by ID
   app.get("/api/invoices/:id", async (req, res) => {
     try {
