@@ -505,7 +505,12 @@ export default function OrderDetailsPage() {
       
       // Dodavanje tablice
       autoTable(doc, {
-        head: [[t.item, t.quantity, t.price, t.total]],
+        head: [[
+          t.item, 
+          t.quantity.replace(/\s+/g, ' '), // Osigurajmo da nema višestrukih razmaka
+          t.price, 
+          t.total
+        ]],
         body: items,
         startY: customerY + 10,
         margin: { left: 20, right: 20 },
@@ -517,6 +522,8 @@ export default function OrderDetailsPage() {
           valign: 'middle',
           fontSize: 10,
           cellPadding: 5,
+          minCellWidth: 30, // Osigurajmo da ćelije zaglavlja budu dovoljno široke
+          overflow: 'visible', // Osigurajmo da tekst ne bude prekinut
         },
         bodyStyles: {
           textColor: [0, 0, 0],
@@ -525,7 +532,7 @@ export default function OrderDetailsPage() {
         },
         columnStyles: {
           0: { cellWidth: 'auto' },
-          1: { cellWidth: 20, halign: 'center' },
+          1: { cellWidth: 30, halign: 'center' }, // Povećali smo širinu stupca "Menge" s 20 na 30
           2: { cellWidth: 30, halign: 'right' },
           3: { cellWidth: 30, halign: 'right' },
         },
