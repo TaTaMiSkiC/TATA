@@ -11,6 +11,7 @@ import multer from 'multer';
 import { z } from "zod";
 import { eq, sql, and, isNull } from "drizzle-orm";
 import { db, pool } from "./db";
+import { registerDocumentRoutes } from "./documentRoutes";
 import {
   productScents,
   productColors,
@@ -35,6 +36,9 @@ import {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication routes
   setupAuth(app);
+  
+  // Set up document routes for company documents
+  registerDocumentRoutes(app);
 
   // PayPal routes
   app.get("/api/paypal/setup", async (req, res) => {
