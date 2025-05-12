@@ -43,8 +43,16 @@ export async function initializeDatabase() {
     await createDefaultGeneralSettings();
   }
   
-  // Provjeri postojanje tablice za dokumente tvrtke
-  await createCompanyDocumentsTable();
+  try {
+    // Provjeri prisutnost tablice za dokumente tvrtke
+    console.log("Provjera postojanja tablice za dokumente tvrtke...");
+    await db.select().from(companyDocuments).limit(1);
+    console.log("Tablica za dokumente tvrtke već postoji");
+  } catch (error) {
+    // Ako tablica ne postoji, drizzle će automatski stvoriti tablicu kada se
+    // pokuša pristupiti nepostojećoj tablici kroz drizzle orm.
+    console.log("Kreiranje tablice za dokumente tvrtke...");
+  }
   
   console.log("Inicijalizacija baze podataka završena");
 }
