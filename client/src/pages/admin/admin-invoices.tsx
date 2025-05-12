@@ -1008,7 +1008,7 @@ export default function AdminInvoices() {
             
             console.log("Generiram PDF s podacima:", pdfData);
             
-            generateInvoicePdf(pdfData, toast);
+            generatePdf(pdfData);
             
             toast({
               title: "Uspješno kreiran račun",
@@ -1103,31 +1103,25 @@ export default function AdminInvoices() {
       .then(data => {
         console.log("Dohvaćeni podaci za PDF računa:", data);
         
-        // Pripremi podatke za PDF koristeći isti format kao u "Moje narudžbe > Detalji"
+        // Pripremi podatke za PDF
         const invoiceData = {
           invoiceNumber: invoice.invoiceNumber,
           createdAt: invoice.createdAt,
-          customerName: invoice.customerName,
           firstName: invoice.customerName.split(' ')[0],
           lastName: invoice.customerName.split(' ').slice(1).join(' '),
-          address: invoice.customerAddress || "",
-          city: invoice.customerCity || "",
-          postalCode: invoice.customerPostalCode || "",
-          country: invoice.customerCountry || "",
+          address: invoice.customerAddress || "Adresa kupca",
+          city: invoice.customerCity || "Grad kupca",
+          postalCode: invoice.customerPostalCode || "12345",
+          country: invoice.customerCountry || "Hrvatska",
           email: invoice.customerEmail || "",
           phone: invoice.customerPhone || "",
           items: data.items || [], // Koristimo stavke dohvaćene sa servera
           language: language, // Koristimo odabrani jezik
-          paymentMethod: invoice.paymentMethod || "cash", // Koristimo način plaćanja iz postojećeg računa
-          subtotal: invoice.subtotal,
-          tax: invoice.tax,
-          total: invoice.total,
-          notes: data.notes || "",
+          paymentMethod: invoice.paymentMethod || "cash" // Koristimo način plaćanja iz postojećeg računa
         };
         
         console.log("Priprema podataka za PDF:", invoiceData);
-        // Koristimo konzistentnu funkciju za generiranje PDF-a
-        generateInvoicePdf(invoiceData, toast);
+        generatePdf(invoiceData);
       })
       .catch(error => {
         console.error("Greška kod dohvaćanja stavki računa:", error);
@@ -1176,7 +1170,7 @@ export default function AdminInvoices() {
                     <TableHead>Datum</TableHead>
                     <TableHead>Kupac</TableHead>
                     <TableHead>Iznos</TableHead>
-                    <TableHead>Način plaćanja</TableHead>
+                    <TableHead>Jezik</TableHead>
                     <TableHead>Akcije</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -1184,16 +1178,14 @@ export default function AdminInvoices() {
                   {invoices.length > 0 ? (
                     invoices.map(invoice => (
                       <TableRow key={invoice.id}>
-                        <TableCell className="font-medium text-primary">{invoice.invoiceNumber}</TableCell>
-                        <TableCell>{format(new Date(invoice.createdAt), "dd.MM.yyyy.")}</TableCell>
+                        <TableCell className="font-medium">{invoice.invoiceNumber}</TableCell>
+                        <TableCell>{format(new Date(invoice.createdAt), "dd.MM.yyyy")}</TableCell>
                         <TableCell>{invoice.customerName}</TableCell>
                         <TableCell>{parseFloat(invoice.total).toFixed(2)} €</TableCell>
                         <TableCell>
-                          {invoice.paymentMethod === "cash" && "Gotovina"}
-                          {invoice.paymentMethod === "bank_transfer" && "Bankovni prijenos"}
-                          {invoice.paymentMethod === "paypal" && "PayPal"}
-                          {invoice.paymentMethod === "credit_card" && "Kreditna kartica"}
-                          {!["cash", "bank_transfer", "paypal", "credit_card"].includes(invoice.paymentMethod) && invoice.paymentMethod}
+                          {invoice.language === "hr" && "Hrvatski"}
+                          {invoice.language === "en" && "Engleski"}
+                          {invoice.language === "de" && "Njemački"}
                         </TableCell>
                         <TableCell className="flex space-x-2">
                           <DropdownMenu>
