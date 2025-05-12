@@ -87,7 +87,7 @@ export async function generateInvoiceFromOrder(
       customerCity: order.shippingCity,
       customerPostalCode: order.shippingPostalCode,
       customerCountry: order.shippingCountry,
-      customerPhone: order.shippingPhone || null,
+      customerPhone: user.phone || null, // Koristimo telefon iz korisničkih podataka
       customerNote: order.customerNote,
       total: order.total,
       subtotal: order.subtotal || "0.00",
@@ -114,7 +114,7 @@ export async function generateInvoiceFromOrder(
         const invoiceItem = {
           invoiceId: invoice.id,
           productId: item.productId,
-          productName: item.productName,
+          productName: item.productName || "Nepoznat proizvod", // Osiguramo da nikad nije null
           quantity: item.quantity,
           price: item.price,
           selectedScent: item.scentName || null,
@@ -130,7 +130,7 @@ export async function generateInvoiceFromOrder(
       }
     }
     
-    console.log(`Uspješno kreiran račun ${invoiceNumber} za narudžbu ${orderId}`);
+    console.log(`Uspješno kreiran račun ${invoiceNumber} za narudžbu ${orderIdParam}`);
     return invoice.id;
   } catch (error) {
     console.error("Greška kod generiranja računa:", error);
