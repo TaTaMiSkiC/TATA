@@ -1154,6 +1154,10 @@ export default function AdminInvoices() {
             </div>
           </TabsContent>
           
+          <TabsContent value="documents" className="space-y-6">
+            <DocumentManager />
+          </TabsContent>
+          
           <TabsContent value="create" className="space-y-6">
             <div className="bg-background border rounded-md p-4">
               <h3 className="text-lg font-medium mb-4">Izaberi narudžbu (opcionalno)</h3>

@@ -5,10 +5,12 @@ import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { upload, resizeImage } from "./imageUpload";
+import fs from 'fs';
+import path from 'path';
+import multer from 'multer';
 import { z } from "zod";
 import { eq, sql, and, isNull } from "drizzle-orm";
 import { db, pool } from "./db";
-import path from "path";
 import {
   productScents,
   productColors,
@@ -24,6 +26,8 @@ import {
   insertCollectionSchema,
   insertInvoiceSchema,
   insertInvoiceItemSchema,
+  companyDocuments,
+  insertCompanyDocumentSchema,
   cartItems,
   CartItem,
 } from "@shared/schema";
