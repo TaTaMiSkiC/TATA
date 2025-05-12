@@ -2406,14 +2406,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized" });
       }
       
-      // Dohvati fakturu vezanu uz ovu narudžbu
-      const invoices = await db
-        .select()
-        .from(schema.invoices)
-        .where(eq(schema.invoices.orderId, orderId));
-      
-      // Vrati prvu pronađenu fakturu ili null ako ne postoji
-      const invoice = invoices.length > 0 ? invoices[0] : null;
+      // Umjesto direktnog pristupa bazi, koristimo storage metodu
+      // Ovo je jednostavnije i koristi već postojeće metode
+      const invoicesList = await storage.getAllInvoices();
+      const invoice = invoicesList.find(inv => inv.orderId === orderId) || null;
       
       console.log(`Dohvaćena faktura za narudžbu ${orderId}:`, invoice ? `${invoice.invoiceNumber} (ID: ${invoice.id})` : "Nema fakture");
       

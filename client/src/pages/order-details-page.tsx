@@ -218,10 +218,11 @@ export default function OrderDetailsPage() {
   // Dohvat fakture za narudžbu
   const {
     data: invoice,
-    isLoading: isLoadingInvoice
+    isLoading: isLoadingInvoice,
+    error: invoiceError
   } = useQuery<Invoice | null>({
     queryKey: [`/api/orders/${orderId}/invoice`],
-    enabled: !!user && !!orderId,
+    enabled: !!user && !!orderId
   });
 
   // Kombiniranje podataka o narudžbi i stavkama
@@ -237,8 +238,8 @@ export default function OrderDetailsPage() {
     }
   }, [user, navigate]);
   
-  const isLoading = isLoadingOrder || isLoadingItems || isLoadingProducts;
-  const error = orderError || itemsError;
+  const isLoading = isLoadingOrder || isLoadingItems || isLoadingProducts || isLoadingInvoice;
+  const error = orderError || itemsError || invoiceError;
   
   // Funkcija za prevođenje načina plaćanja
   const getPaymentMethodText = (method: string | undefined, lang: string) => {
