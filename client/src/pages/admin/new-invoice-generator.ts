@@ -285,12 +285,18 @@ export const generateInvoicePdf = (data: any, toast: any) => {
       styles: {
         fontSize: 10,
         overflow: 'linebreak',
-        cellPadding: 4,
+        cellPadding: 5,
+        lineWidth: 0.1,
+      },
+      headStyles: {
+        fillColor: [255, 255, 255],
+        textColor: [0, 0, 0],
+        fontStyle: 'bold',
       },
       columnStyles: {
         0: { cellWidth: 'auto' },
-        1: { cellWidth: 20, halign: 'center' },
-        2: { cellWidth: 30, halign: 'right' },
+        1: { cellWidth: 25, halign: 'center' },
+        2: { cellWidth: 35, halign: 'right' },
         3: { cellWidth: 30, halign: 'right' },
       },
       alternateRowStyles: {
@@ -317,24 +323,29 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     
-    // Prikaz međuzbroja, dostave i ukupnog iznosa s desne strane
+    // Prikaz međuzbroja, dostave i ukupnog iznosa s desne strane (poravnato desno)
     doc.setFontSize(10);
-    doc.text(`${t.subtotal}:`, 120, finalY);
+    doc.text(`${t.subtotal}:`, 150, finalY);
     doc.text(`${subtotal} €`, 190, finalY, { align: "right" });
     
     // Dostava
-    doc.text(`${t.shipping}:`, 120, finalY + 5);
+    doc.text(`${t.shipping}:`, 150, finalY + 5);
     doc.text(`${shipping} €`, 190, finalY + 5, { align: "right" });
     
     // PDV (0%)
-    doc.text(`${t.tax}:`, 120, finalY + 10);
+    doc.text(`${t.tax}:`, 150, finalY + 10);
     doc.text(`0.00 €`, 190, finalY + 10, { align: "right" });
     
     // Ukupan iznos - podebljan
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
-    doc.text(`${t.totalAmount}:`, 120, finalY + 15);
-    doc.text(`${total} €`, 190, finalY + 15, { align: "right" });
+    
+    // Dodajemo box za ukupan iznos
+    doc.setFillColor(245, 245, 245);
+    doc.roundedRect(150, finalY + 12, 40, 8, 1, 1, 'F');
+    
+    doc.text(`${t.totalAmount}:`, 150, finalY + 18);
+    doc.text(`${total} €`, 190, finalY + 18, { align: "right" });
     
     // Informacije o plaćanju
     doc.setFontSize(11);
@@ -352,26 +363,21 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.text(`${t.paymentStatus}: ${t.paid}`, 20, finalY + 37);
     
     // Zahvala
-    doc.setFontSize(10);
+    doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
     doc.text(`${t.thankYou}!`, 105, finalY + 50, { align: "center" });
     
     // Podnožje s kontakt informacijama
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-    doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 004366038787821", 105, finalY + 60, { align: "center" });
+    doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 004366038787621", 105, finalY + 60, { align: "center" });
     
     // Napomena o automatskom generiranju
-    doc.text(`${t.generatedNote}`, 105, finalY + 65, { align: "center" });
+    doc.text(`${t.generatedNote}.`, 105, finalY + 65, { align: "center" });
     
     // Napomena o malim poreznim obveznicima
-    if (lang === 'de') {
-      doc.text("Steuernummer: 61 154/7175", 105, finalY + 70, { align: "center" });
-      doc.text(t.exemptionNote, 105, finalY + 75, { align: "center" });
-    } else {
-      doc.text("Steuernummer: 61 154/7175", 105, finalY + 70, { align: "center" });
-      doc.text(t.exemptionNote, 105, finalY + 75, { align: "center" });
-    }
+    doc.text("Steuernummer: 61 154/7175", 105, finalY + 70, { align: "center" });
+    doc.text(t.exemptionNote, 105, finalY + 75, { align: "center" });
     
     // Spremanje PDF-a
     doc.save(`${t.title.toLowerCase()}_${data.invoiceNumber}.pdf`);
