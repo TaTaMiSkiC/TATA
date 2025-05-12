@@ -6,7 +6,7 @@ import {
   invoiceItems,
   users
 } from "@shared/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 
 export interface InvoiceGenerationOptions {
   language?: string;
@@ -65,11 +65,11 @@ export async function generateInvoiceFromOrder(
     const invoicePrefix = 'i';
     let invoiceNumber;
     
-    // Dohvati posljednji račun iz baze da vidimo koji je najveći broj
+    // Dohvati posljednji račun iz baze sortirano po ID-ju silazno
     const lastInvoice = await db
       .select()
       .from(invoices)
-      .orderBy(invoices.id, 'desc')
+      .orderBy(desc(invoices.id))
       .limit(1);
     
     // Početni broj računa je 450
