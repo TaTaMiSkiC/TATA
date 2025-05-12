@@ -862,11 +862,11 @@ export default function OrderDetailsPage() {
                         <div>
                           <div className="font-medium">{productName}</div>
                           <div className="text-sm text-muted-foreground mt-1 space-y-1">
-                            {/* Prikaz mirisa */}
+                            {/* Prikaz mirisa s poboljšanim stilom */}
                             {scent && (
-                              <div>
+                              <div className="p-1 rounded-md border border-gray-100 bg-gray-50 inline-block mb-1">
                                 <span className="font-medium mr-1">Miris:</span>
-                                <span>{scent}</span>
+                                <span className="text-primary">{scent}</span>
                               </div>
                             )}
                             
@@ -878,11 +878,32 @@ export default function OrderDetailsPage() {
                               </div>
                             )}
                             
-                            {/* Prikaz višestrukih boja - sve boje prikazujemo kao listu */}
+                            {/* Prikaz višestrukih boja - sve boje prikazujemo kao listu s vizualnim indikatorima */}
                             {item.hasMultipleColors && color && (
                               <div>
                                 <span className="font-medium mr-1">Boje:</span>
-                                <span>{color}</span>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {color.split(',').map((colorName, index) => {
+                                    const trimmedColor = colorName.trim();
+                                    // Pronađi odgovarajuću boju u svim proizvodima ako je moguće
+                                    const productColor = products?.flatMap(p => 
+                                      p.id === item.productId ? (p as any).colors || [] : []
+                                    ).find(c => c?.name === trimmedColor);
+                                    
+                                    return (
+                                      <div key={index} className="flex items-center gap-1">
+                                        {productColor?.hexValue ? (
+                                          <div 
+                                            className="w-3 h-3 rounded-full inline-block border border-gray-200" 
+                                            style={{ backgroundColor: productColor.hexValue }}
+                                          />
+                                        ) : null}
+                                        <span className="text-sm">{trimmedColor}</span>
+                                        {index < color.split(',').length - 1 && <span className="text-muted-foreground">,</span>}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
                               </div>
                             )}
                           </div>
