@@ -1069,6 +1069,57 @@ export default function AdminInvoices() {
         <title>Upravljanje računima | Kerzenwelt by Dani</title>
       </Helmet>
       
+      {/* Dialog za odabir jezika prilikom preuzimanja računa */}
+      <Dialog open={downloadLanguageDialogOpen} onOpenChange={setDownloadLanguageDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Odabir jezika za račun</DialogTitle>
+            <DialogDescription>
+              Odaberite jezik na kojem želite preuzeti račun.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <RadioGroup
+              value={downloadLanguage}
+              onValueChange={setDownloadLanguage}
+              className="flex flex-col space-y-2"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="hr" id="hr" />
+                <Label htmlFor="hr">Hrvatski</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="en" id="en" />
+                <Label htmlFor="en">Engleski</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="de" id="de" />
+                <Label htmlFor="de">Njemački</Label>
+              </div>
+            </RadioGroup>
+          </div>
+          <DialogFooter className="sm:justify-between">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Odustani
+              </Button>
+            </DialogClose>
+            <Button 
+              type="button" 
+              onClick={() => {
+                if (invoiceToDownload) {
+                  processDownloadInvoice(invoiceToDownload, downloadLanguage);
+                  setDownloadLanguageDialogOpen(false);
+                }
+              }}
+            >
+              <Check className="mr-2 h-4 w-4" />
+              Preuzmi
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold tracking-tight">Računi</h1>
