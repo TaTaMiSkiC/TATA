@@ -890,7 +890,54 @@ export default function OrderDetailsPage() {
                           )}
                           
                           {/* Prikaz višestrukih boja */}
-                          {item.hasMultipleColors && color && (
+                          {item.hasMultipleColors && item.colorName && (
+                            <div className="flex flex-col gap-1">
+                              <div className="inline-flex items-center text-sm bg-purple-50 rounded-full px-2 py-0.5 border border-purple-100">
+                                <span className="font-medium text-purple-800 mr-1">Boje:</span>
+                                {item.colorName}
+                              </div>
+                              
+                              {/* Prikaz indikatori boja */}
+                              {item.colorIds && (
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {(() => {
+                                    try {
+                                      // Pokušaj parsirati colorIds string
+                                      const colorIdArray = JSON.parse(item.colorIds);
+                                      
+                                      // Ako je uspješno parsirano, prikaži indikatore boja
+                                      if (Array.isArray(colorIdArray)) {
+                                        return colorIdArray.map((colorId) => {
+                                          // Pronađi informacije o boji u proizvodima
+                                          const colorInfo = products?.flatMap(p => 
+                                            p.id === item.productId ? (p as any).colors || [] : []
+                                          ).find(c => c?.id === colorId);
+                                          
+                                          if (colorInfo?.hexValue) {
+                                            return (
+                                              <div 
+                                                key={colorId}
+                                                className="w-4 h-4 rounded-full inline-block border border-gray-300" 
+                                                style={{ backgroundColor: colorInfo.hexValue }}
+                                                title={colorInfo.name}
+                                              />
+                                            );
+                                          }
+                                          return null;
+                                        });
+                                      }
+                                    } catch (e) {
+                                      console.error("Greška pri parsiranju colorIds:", e);
+                                    }
+                                    return null;
+                                  })()}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          
+                          {/* Falback za stare načine prikaza (ako postoji) */}
+                          {item.hasMultipleColors && color && !item.colorIds && (
                             <div className="inline-flex items-center text-sm bg-blue-50 rounded-full px-2 py-0.5 border border-blue-100 flex-wrap">
                               <span className="font-medium text-blue-800 mr-1">Boje:</span>
                               {color.split(',').map((colorName, index) => {

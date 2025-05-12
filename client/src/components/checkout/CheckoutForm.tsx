@@ -135,7 +135,7 @@ export default function CheckoutForm() {
         quantity: item.quantity,
         price: item.product.price,
         scentId: item.scentId || null,  // Prenosimo ID mirisa
-        scentName: item.scentName || null,  // Prenosimo naziv mirisa
+        scentName: item.scent?.name || null,  // Prenosimo naziv mirisa iz objekta scent
         colorId: item.colorId || null,  // Prenosimo ID boje
         colorName: item.colorName || null,  // Prenosimo naziv boje
         colorIds: item.colorIds || null,  // Prenosimo niz ID-jeva boja
