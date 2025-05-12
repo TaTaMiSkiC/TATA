@@ -266,7 +266,7 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     }
     
     // Crtamo tablicu sa stavkama
-    (doc as any).autoTable({
+    autoTable(doc, {
       startY: customerY + 10,
       head: [[t.item, t.quantity, t.price, t.total]],
       body: items,
@@ -297,7 +297,9 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     const total = (parseFloat(subtotal) + parseFloat(shipping)).toFixed(2);
     
     // Dodavanje ukupnog iznosa
-    const finalY = (doc as any).lastAutoTable.finalY + 10;
+    // Ne možemo koristiti (doc as any).lastAutoTable jer koristimo autoTable iz biblioteke
+    // Dobijemo finalY iz tablice koja je nacrtana
+    const finalY = (doc as any)._previousAutoTable.finalY + 10;
     
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
