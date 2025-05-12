@@ -1011,10 +1011,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getInvoiceItems(invoiceId: number): Promise<InvoiceItem[]> {
+    console.log(`Dohvaćanje stavki računa ID: ${invoiceId}`);
+    
     const items = await db
       .select()
       .from(invoiceItems)
       .where(eq(invoiceItems.invoiceId, invoiceId));
+    
+    console.log(`Dohvaćeno ${items.length} stavki računa:`, JSON.stringify(items, null, 2));
     
     return items;
   }
