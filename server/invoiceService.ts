@@ -19,17 +19,17 @@ export interface InvoiceGenerationOptions {
  * @returns ID kreiranog računa ili null u slučaju greške
  */
 export async function generateInvoiceFromOrder(
-  orderId: number, 
+  orderIdParam: number, 
   options: InvoiceGenerationOptions = {}
 ): Promise<number | null> {
   try {
-    console.log(`Pokretanje generiranja računa za narudžbu ${orderId}...`);
+    console.log(`Pokretanje generiranja računa za narudžbu ${orderIdParam}...`);
     
     // Dohvati narudžbu
-    const order = await storage.getOrder(orderId);
+    const order = await storage.getOrder(orderIdParam);
     
     if (!order) {
-      console.error(`Narudžba s ID: ${orderId} nije pronađena`);
+      console.error(`Narudžba s ID: ${orderIdParam} nije pronađena`);
       return null;
     }
     
@@ -42,10 +42,10 @@ export async function generateInvoiceFromOrder(
     }
     
     // Dohvati stavke narudžbe s proizvod detaljima
-    const orderItems = await storage.getOrderItems(orderId);
+    const orderItems = await storage.getOrderItems(orderIdParam);
     
     if (orderItems.length === 0) {
-      console.error(`Narudžba s ID: ${orderId} nema stavki`);
+      console.error(`Narudžba s ID: ${orderIdParam} nema stavki`);
       return null;
     }
     
@@ -53,27 +53,26 @@ export async function generateInvoiceFromOrder(
     const existingInvoices = await db
       .select()
       .from(invoices)
-      .where(eq(invoices.orderId, orderId));
+      .where(eq(invoices.orderId, orderIdParam));
     
     if (existingInvoices.length > 0) {
-      console.log(`Račun za narudžbu ${orderId} već postoji (ID: ${existingInvoices[0].id})`);
+      console.log(`Račun za narudžbu ${orderIdParam} već postoji (ID: ${existingInvoices[0].id})`);
       return existingInvoices[0].id;
     }
     
     // Generiraj broj računa - koristimo isti broj kao narudžba, ali s 'i' prefiksom
     // Pravilo: ako je broj narudžbe manji od 450, koristimo i450 kao početnu točku
-    const orderId = order.id;
     const invoicePrefix = 'i';
     let invoiceNumber;
     
     // Ako je ID narudžbe manji od 450, koristimo 450 kao početnu točku
-    if (orderId < 450) {
+    if (order.id < 450) {
       invoiceNumber = `${invoicePrefix}450`;
     } else {
-      invoiceNumber = `${invoicePrefix}${orderId}`;
+      invoiceNumber = `${invoicePrefix}${order.id}`;
     }
     
-    console.log(`Generiranje računa za narudžbu ${orderId}, broj računa: ${invoiceNumber}`);
+    console.log(`Generiranje računa za narudžbu ${order.id}, broj računa: ${invoiceNumber}`);
     
     // Pripremi podatke za račun
     const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
@@ -88,13 +87,13 @@ export async function generateInvoiceFromOrder(
       customerCity: order.shippingCity,
       customerPostalCode: order.shippingPostalCode,
       customerCountry: order.shippingCountry,
-      customerPhone: order.shippingPhone,
+      customerPhone: order.shippingPhone || null,
       customerNote: order.customerNote,
       total: order.total,
       subtotal: order.subtotal || "0.00",
       tax: "0.00", // Austrija nema PDV za male poduzetnike
       paymentMethod: order.paymentMethod,
-      language: options.language || order.language || "hr"
+      language: options.language || "hr" // Default to Croatian if not specified
     };
     
     console.log("Kreiranje računa s podacima:", invoiceData);

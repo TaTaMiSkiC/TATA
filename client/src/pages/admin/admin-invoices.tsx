@@ -73,9 +73,12 @@ import { generateInvoicePdf, getPaymentMethodText } from "./new-invoice-generato
 
 // Pomoćna funkcija za generiranje broja fakture
 const createInvoiceNumber = () => {
-  const year = new Date().getFullYear();
-  const randomDigits = Math.floor(1000 + Math.random() * 9000);
-  return `${year}-${randomDigits}`;
+  // Generiranje broja računa u formatu i450, i451, itd.
+  const baseNumber = 450;
+  const currentTimeComponent = Math.floor((Date.now() / 1000) % 1000); // Koristi dio timestampa za razlikovanje
+  const invoiceNumber = `i${Math.max(baseNumber, baseNumber + currentTimeComponent)}`;
+  console.log(`Generiran novi broj računa: ${invoiceNumber}`);
+  return invoiceNumber;
 };
 
 interface Invoice {
