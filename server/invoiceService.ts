@@ -98,20 +98,27 @@ export async function generateInvoiceFromOrder(
     console.log(`Kreiran račun ${invoice.invoiceNumber} (ID: ${invoice.id})`);
     
     // Spremi stavke računa
+    console.log("Sve stavke narudžbe za unos u račun:", JSON.stringify(orderItems, null, 2));
+    
     for (const item of orderItems) {
-      const invoiceItem = {
-        invoiceId: invoice.id,
-        productId: item.productId,
-        // Koristimo productName direktno umjesto pristupa preko item.product.name
-        productName: item.productName,
-        quantity: item.quantity,
-        price: item.price,
-        selectedScent: item.scentName || null,
-        selectedColor: item.colorName || null
-      };
-      
-      await db.insert(invoiceItems).values(invoiceItem);
-      console.log(`Dodana stavka računa: ${item.productName}, količina: ${item.quantity}`);
+      try {
+        const invoiceItem = {
+          invoiceId: invoice.id,
+          productId: item.productId,
+          productName: item.productName,
+          quantity: item.quantity,
+          price: item.price,
+          selectedScent: item.scentName || null,
+          selectedColor: item.colorName || null
+        };
+        
+        console.log("Dodajem stavku računa:", JSON.stringify(invoiceItem, null, 2));
+        
+        await db.insert(invoiceItems).values([invoiceItem]);
+        console.log(`Uspješno dodana stavka računa: ${item.productName}, količina: ${item.quantity}`);
+      } catch (itemError) {
+        console.error(`Greška pri dodavanju stavke (${item.productName}) računa:`, itemError);
+      }
     }
     
     console.log(`Uspješno kreiran račun ${invoiceNumber} za narudžbu ${orderId}`);
