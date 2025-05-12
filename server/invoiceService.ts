@@ -102,7 +102,8 @@ export async function generateInvoiceFromOrder(
       const invoiceItem = {
         invoiceId: invoice.id,
         productId: item.productId,
-        productName: item.product.name,
+        // Koristimo productName direktno umjesto pristupa preko item.product.name
+        productName: item.productName,
         quantity: item.quantity,
         price: item.price,
         selectedScent: item.scentName || null,
@@ -110,7 +111,7 @@ export async function generateInvoiceFromOrder(
       };
       
       await db.insert(invoiceItems).values(invoiceItem);
-      console.log(`Dodana stavka računa: ${item.product.name}, količina: ${item.quantity}`);
+      console.log(`Dodana stavka računa: ${item.productName}, količina: ${item.quantity}`);
     }
     
     console.log(`Uspješno kreiran račun ${invoiceNumber} za narudžbu ${orderId}`);
