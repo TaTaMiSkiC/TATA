@@ -1010,7 +1010,18 @@ export default function AdminInvoices() {
   };
   
   // Preuzimanje PDF-a za postojeći račun
+  const [invoiceToDownload, setInvoiceToDownload] = useState<Invoice | null>(null);
+  const [downloadLanguageDialogOpen, setDownloadLanguageDialogOpen] = useState(false);
+  const [downloadLanguage, setDownloadLanguage] = useState<string>("hr");
+  
   const handleDownloadInvoice = (invoice: Invoice) => {
+    // Postavi odabrani račun i otvori dijalog za odabir jezika
+    setInvoiceToDownload(invoice);
+    setDownloadLanguage(invoice.language || "hr"); // Postavljamo defaultni jezik na jezik računa
+    setDownloadLanguageDialogOpen(true);
+  };
+
+  const processDownloadInvoice = (invoice: Invoice, selectedLanguage: string) => {
     // Dohvati stavke računa sa servera
     apiRequest('GET', `/api/invoices/${invoice.id}`)
       .then(response => response.json())
@@ -1030,7 +1041,7 @@ export default function AdminInvoices() {
           email: invoice.customerEmail || "",
           phone: invoice.customerPhone || "",
           items: data.items || [], // Koristimo stavke dohvaćene sa servera
-          language: invoice.language,
+          language: selectedLanguage, // Koristimo odabrani jezik iz dijaloga
           paymentMethod: invoice.paymentMethod || "cash" // Koristimo način plaćanja iz postojećeg računa
         };
         
