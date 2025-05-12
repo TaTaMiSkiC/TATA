@@ -59,6 +59,14 @@ import logoImg from "@assets/Kerzenwelt by Dani.png";
 
 // OrderItemWithProduct je već importiran iz @shared/schema
 
+// Definicija strukture fakture
+interface Invoice {
+  id: number;
+  invoiceNumber: string;
+  orderId: number;
+  // ostala polja nisu nužna za ovo rješenje
+}
+
 // Odvojeni interface bez nasljeđivanja za rješavanje tipova
 interface OrderWithItems {
   id: number;
@@ -82,6 +90,8 @@ interface OrderWithItems {
   shippingPhone?: string | null;
   transactionId?: string | null;
   customerNote?: string | null;
+  // Dodano polje za fakturu
+  invoice?: Invoice | null;
 }
 
 function OrderStatusIcon({ status }: { status: string }) {
@@ -204,11 +214,21 @@ export default function OrderDetailsPage() {
     queryKey: ['/api/products'],
     enabled: !!user,
   });
+  
+  // Dohvat fakture za narudžbu
+  const {
+    data: invoice,
+    isLoading: isLoadingInvoice
+  } = useQuery<Invoice | null>({
+    queryKey: [`/api/orders/${orderId}/invoice`],
+    enabled: !!user && !!orderId,
+  });
 
   // Kombiniranje podataka o narudžbi i stavkama
   const orderWithItems: OrderWithItems | undefined = order && orderItems ? {
     ...order,
     items: orderItems || [],
+    invoice: invoice
   } : undefined;
   
   useEffect(() => {
@@ -390,9 +410,19 @@ export default function OrderDetailsPage() {
       const currentDate = new Date();
       const formattedDate = format(currentDate, 'dd.MM.yyyy.');
       
-      // Generiranje broja računa u formatu i450
+      // Dobivanje broja računa iz baze ili generiranje privremenog ako ne postoji
       const baseNumber = 450;
-      const invoiceNumber = orderWithItems.id < baseNumber ? `i${baseNumber}` : `i${orderWithItems.id}`;
+      let invoiceNumber = `i${baseNumber}`;
+      
+      // Ako postoji faktura u bazi, koristi njen broj
+      if (orderWithItems.invoice && orderWithItems.invoice.invoiceNumber) {
+        invoiceNumber = orderWithItems.invoice.invoiceNumber;
+        console.log("Korištenje stvarnog broja računa iz baze:", invoiceNumber);
+      } else {
+        // Ako nema fakture, koristimo privremeni format
+        invoiceNumber = orderWithItems.id < baseNumber ? `i${baseNumber}` : `i${orderWithItems.id}`;
+        console.log("Korištenje privremenog broja računa:", invoiceNumber);
+      }
       
       doc.setTextColor(218, 165, 32); // Zlatna boja (RGB)
       doc.setFontSize(18);
