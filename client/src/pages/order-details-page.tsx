@@ -846,93 +846,80 @@ export default function OrderDetailsPage() {
                   const imageUrl = item.product?.imageUrl || null;
                   
                   return (
-                    <>
-                      {/* Prvi red s osnovnim informacijama o proizvodu */}
-                      <TableRow key={item.id}>
-                        <TableCell className="align-middle">
-                          {imageUrl && (
-                            <div className="relative h-16 w-16 rounded-md overflow-hidden">
-                              <img 
-                                src={imageUrl} 
-                                alt={productName} 
-                                className="h-full w-full object-cover"
-                              />
-                            </div>
-                          )}
-                        </TableCell>
-                        <TableCell className="align-middle">
+                    <TableRow key={item.id}>
+                      <TableCell className="align-middle">
+                        {imageUrl && (
+                          <div className="relative h-16 w-16 rounded-md overflow-hidden">
+                            <img 
+                              src={imageUrl} 
+                              alt={productName} 
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell className="align-middle">
+                        <div>
                           <div className="font-medium">{productName}</div>
-                        </TableCell>
-                        <TableCell className="text-center align-middle">{item.quantity}</TableCell>
-                        <TableCell className="text-right align-middle">{parseFloat(item.price).toFixed(2)} €</TableCell>
-                        <TableCell className="text-right align-middle">{itemTotal.toFixed(2)} €</TableCell>
-                      </TableRow>
-                      
-                      {/* Drugi red za prikaz boja i mirisa (samo ako postoje) */}
-                      {(scent || color) && (
-                        <TableRow key={`${item.id}-details`} className="bg-gray-50 border-b border-gray-100">
-                          <TableCell className="py-2"></TableCell>
-                          <TableCell colSpan={4} className="py-2">
-                            <div className="flex flex-wrap gap-2 items-center">
-                              {/* Prikaz mirisa */}
-                              {scent && (
-                                <div className="flex items-center gap-1.5 bg-amber-50 px-3 py-1.5 rounded-md border border-amber-100">
-                                  <span className="font-medium text-amber-800 text-sm">Miris:</span>
-                                  <span className="text-sm">{scent}</span>
-                                </div>
-                              )}
-                              
-                              {/* Prikaz jedne boje */}
-                              {color && !item.hasMultipleColors && (
-                                <div className="flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-md border border-blue-100">
-                                  <span className="font-medium text-blue-800 text-sm">Boja:</span>
-                                  {/* Pronađi hex vrijednost boje ako postoji */}
-                                  {products?.flatMap(p => 
+                          
+                          {/* Prikaz boja i mirisa direktno uz proizvod */}
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {/* Prikaz mirisa */}
+                            {scent && (
+                              <div className="inline-flex items-center text-sm bg-amber-50 rounded-full px-2 py-0.5 border border-amber-100">
+                                <span className="font-medium text-amber-800 mr-1">Miris:</span> {scent}
+                              </div>
+                            )}
+                            
+                            {/* Prikaz jedne boje */}
+                            {color && !item.hasMultipleColors && (
+                              <div className="inline-flex items-center text-sm bg-blue-50 rounded-full px-2 py-0.5 border border-blue-100">
+                                <span className="font-medium text-blue-800 mr-1">Boja:</span>
+                                {products?.flatMap(p => 
+                                  p.id === item.productId ? (p as any).colors || [] : []
+                                ).find(c => c?.name === color)?.hexValue ? (
+                                  <div 
+                                    className="w-3 h-3 rounded-full inline-block border border-gray-200 mx-1" 
+                                    style={{ backgroundColor: products?.flatMap(p => 
+                                      p.id === item.productId ? (p as any).colors || [] : []
+                                    ).find(c => c?.name === color)?.hexValue }}
+                                  />
+                                ) : null}
+                                {color}
+                              </div>
+                            )}
+                            
+                            {/* Prikaz višestrukih boja */}
+                            {item.hasMultipleColors && color && (
+                              <div className="inline-flex items-center text-sm bg-blue-50 rounded-full px-2 py-0.5 border border-blue-100">
+                                <span className="font-medium text-blue-800 mr-1">Boje:</span>
+                                {color.split(',').map((colorName, index) => {
+                                  const trimmedColor = colorName.trim();
+                                  const productColor = products?.flatMap(p => 
                                     p.id === item.productId ? (p as any).colors || [] : []
-                                  ).find(c => c?.name === color)?.hexValue ? (
-                                    <div 
-                                      className="w-4 h-4 rounded-full inline-block border border-gray-200" 
-                                      style={{ backgroundColor: products?.flatMap(p => 
-                                        p.id === item.productId ? (p as any).colors || [] : []
-                                      ).find(c => c?.name === color)?.hexValue }}
-                                    />
-                                  ) : null}
-                                  <span className="text-sm">{color}</span>
-                                </div>
-                              )}
-                              
-                              {/* Prikaz za višestruke boje */}
-                              {item.hasMultipleColors && color && (
-                                <div className="flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-md border border-blue-100">
-                                  <span className="font-medium text-blue-800 text-sm">Boje:</span>
-                                  <div className="flex flex-wrap gap-1.5">
-                                    {color.split(',').map((colorName, index) => {
-                                      const trimmedColor = colorName.trim();
-                                      // Pronađi odgovarajuću boju u svim proizvodima ako je moguće
-                                      const productColor = products?.flatMap(p => 
-                                        p.id === item.productId ? (p as any).colors || [] : []
-                                      ).find(c => c?.name === trimmedColor);
-                                      
-                                      return (
-                                        <div key={index} className="flex items-center gap-1 bg-white px-2 py-0.5 rounded shadow-sm">
-                                          {productColor?.hexValue ? (
-                                            <div 
-                                              className="w-3 h-3 rounded-full inline-block border border-gray-200" 
-                                              style={{ backgroundColor: productColor.hexValue }}
-                                            />
-                                          ) : null}
-                                          <span className="text-sm">{trimmedColor}</span>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </>
+                                  ).find(c => c?.name === trimmedColor);
+                                  
+                                  return (
+                                    <span key={index} className="inline-flex items-center mx-0.5">
+                                      {productColor?.hexValue && (
+                                        <div 
+                                          className="w-3 h-3 rounded-full inline-block border border-gray-200 mr-0.5" 
+                                          style={{ backgroundColor: productColor.hexValue }}
+                                        />
+                                      )}
+                                      {trimmedColor}{index < color.split(',').length - 1 ? ',' : ''}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center align-middle">{item.quantity}</TableCell>
+                      <TableCell className="text-right align-middle">{parseFloat(item.price).toFixed(2)} €</TableCell>
+                      <TableCell className="text-right align-middle">{itemTotal.toFixed(2)} €</TableCell>
+                    </TableRow>
                   );
                 })}
               </TableBody>
