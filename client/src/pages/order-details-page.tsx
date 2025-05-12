@@ -846,57 +846,66 @@ export default function OrderDetailsPage() {
                   const imageUrl = item.product?.imageUrl || null;
                   
                   return (
-                    <TableRow key={item.id}>
-                      <TableCell className="align-middle">
-                        {imageUrl && (
-                          <div className="relative h-16 w-16 rounded-md overflow-hidden">
-                            <img 
-                              src={imageUrl} 
-                              alt={productName} 
-                              className="h-full w-full object-cover"
-                            />
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell className="align-middle">
-                        <div>
+                    <>
+                      {/* Prvi red s osnovnim informacijama o proizvodu */}
+                      <TableRow key={item.id}>
+                        <TableCell className="align-middle">
+                          {imageUrl && (
+                            <div className="relative h-16 w-16 rounded-md overflow-hidden">
+                              <img 
+                                src={imageUrl} 
+                                alt={productName} 
+                                className="h-full w-full object-cover"
+                              />
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell className="align-middle">
                           <div className="font-medium">{productName}</div>
-                          <div className="text-sm text-muted-foreground mt-1 space-y-1">
-                            {/* Prikaz mirisa s poboljšanim stilom */}
-                            {scent && (
-                              <div className="p-1 rounded-md border border-gray-100 bg-gray-50 inline-block mb-1">
-                                <span className="font-medium mr-1">Miris:</span>
-                                <span className="text-primary">{scent}</span>
-                              </div>
-                            )}
-                            
-                            {/* Prikaz jedne boje s vizualnim indikatorom */}
-                            {color && !item.hasMultipleColors && (
-                              <div className="p-1 rounded-md border border-gray-100 bg-gray-50 inline-block">
-                                <div className="flex items-center gap-2">
-                                  <span className="font-medium mr-1">Boja:</span>
-                                  {/* Pokušaj pronaći hex vrijednost boje */}
+                        </TableCell>
+                        <TableCell className="text-center align-middle">{item.quantity}</TableCell>
+                        <TableCell className="text-right align-middle">{parseFloat(item.price).toFixed(2)} €</TableCell>
+                        <TableCell className="text-right align-middle">{itemTotal.toFixed(2)} €</TableCell>
+                      </TableRow>
+                      
+                      {/* Drugi red za prikaz boja i mirisa (samo ako postoje) */}
+                      {(scent || color) && (
+                        <TableRow key={`${item.id}-details`} className="bg-gray-50 border-b border-gray-100">
+                          <TableCell className="py-2"></TableCell>
+                          <TableCell colSpan={4} className="py-2">
+                            <div className="flex flex-wrap gap-2 items-center">
+                              {/* Prikaz mirisa */}
+                              {scent && (
+                                <div className="flex items-center gap-1.5 bg-amber-50 px-3 py-1.5 rounded-md border border-amber-100">
+                                  <span className="font-medium text-amber-800 text-sm">Miris:</span>
+                                  <span className="text-sm">{scent}</span>
+                                </div>
+                              )}
+                              
+                              {/* Prikaz jedne boje */}
+                              {color && !item.hasMultipleColors && (
+                                <div className="flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-md border border-blue-100">
+                                  <span className="font-medium text-blue-800 text-sm">Boja:</span>
+                                  {/* Pronađi hex vrijednost boje ako postoji */}
                                   {products?.flatMap(p => 
                                     p.id === item.productId ? (p as any).colors || [] : []
                                   ).find(c => c?.name === color)?.hexValue ? (
                                     <div 
-                                      className="w-3 h-3 rounded-full inline-block border border-gray-200" 
+                                      className="w-4 h-4 rounded-full inline-block border border-gray-200" 
                                       style={{ backgroundColor: products?.flatMap(p => 
                                         p.id === item.productId ? (p as any).colors || [] : []
                                       ).find(c => c?.name === color)?.hexValue }}
                                     />
                                   ) : null}
-                                  <span className="text-primary">{color}</span>
+                                  <span className="text-sm">{color}</span>
                                 </div>
-                              </div>
-                            )}
-                            
-                            {/* Prikaz višestrukih boja - sve boje prikazujemo kao listu s vizualnim indikatorima */}
-                            {item.hasMultipleColors && color && (
-                              <div className="p-1 rounded-md border border-gray-100 bg-gray-50 inline-block">
-                                <div className="flex items-start gap-2">
-                                  <span className="font-medium mr-1">Boje:</span>
-                                  <div className="flex flex-wrap gap-2">
+                              )}
+                              
+                              {/* Prikaz za višestruke boje */}
+                              {item.hasMultipleColors && color && (
+                                <div className="flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-md border border-blue-100">
+                                  <span className="font-medium text-blue-800 text-sm">Boje:</span>
+                                  <div className="flex flex-wrap gap-1.5">
                                     {color.split(',').map((colorName, index) => {
                                       const trimmedColor = colorName.trim();
                                       // Pronađi odgovarajuću boju u svim proizvodima ako je moguće
@@ -905,28 +914,25 @@ export default function OrderDetailsPage() {
                                       ).find(c => c?.name === trimmedColor);
                                       
                                       return (
-                                        <div key={index} className="flex items-center gap-1 bg-white px-2 py-1 rounded-md shadow-sm">
+                                        <div key={index} className="flex items-center gap-1 bg-white px-2 py-0.5 rounded shadow-sm">
                                           {productColor?.hexValue ? (
                                             <div 
                                               className="w-3 h-3 rounded-full inline-block border border-gray-200" 
                                               style={{ backgroundColor: productColor.hexValue }}
                                             />
                                           ) : null}
-                                          <span className="text-sm text-primary">{trimmedColor}</span>
+                                          <span className="text-sm">{trimmedColor}</span>
                                         </div>
                                       );
                                     })}
                                   </div>
                                 </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center align-middle">{item.quantity}</TableCell>
-                      <TableCell className="text-right align-middle">{parseFloat(item.price).toFixed(2)} €</TableCell>
-                      <TableCell className="text-right align-middle">{itemTotal.toFixed(2)} €</TableCell>
-                    </TableRow>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </>
                   );
                 })}
               </TableBody>
