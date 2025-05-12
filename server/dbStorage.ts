@@ -456,11 +456,21 @@ export class DatabaseStorage implements IStorage {
     
     // Create the order items with the order ID
     if (items.length > 0) {
+      console.log("Stvaranje stavki narudžbe:", items);
+      // Provjeri i osiguraj da su colorIds i hasMultipleColors ispravno preneseni
       await db.insert(orderItems).values(
-        items.map((item) => ({
-          ...item,
-          orderId: order.id,
-        }))
+        items.map((item) => {
+          console.log("Procesiranje stavke narudžbe:", item);
+          
+          // Vrati transformiranu stavku s ID-jem narudžbe
+          return {
+            ...item,
+            orderId: order.id,
+            // Osiguraj da su colorIds i hasMultipleColors preneseni
+            colorIds: item.colorIds || null,
+            hasMultipleColors: item.hasMultipleColors || false
+          };
+        })
       );
     }
     

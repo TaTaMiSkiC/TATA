@@ -131,8 +131,15 @@ export default function CheckoutForm() {
       // Create order items from cart items
       const orderItems = cartItems.map(item => ({
         productId: item.productId,
+        productName: item.product.name,  // Dodajemo ime proizvoda
         quantity: item.quantity,
-        price: item.product.price
+        price: item.product.price,
+        scentId: item.scentId || null,  // Prenosimo ID mirisa
+        scentName: item.scentName || null,  // Prenosimo naziv mirisa
+        colorId: item.colorId || null,  // Prenosimo ID boje
+        colorName: item.colorName || null,  // Prenosimo naziv boje
+        colorIds: item.colorIds || null,  // Prenosimo niz ID-jeva boja
+        hasMultipleColors: item.hasMultipleColors || false  // Prenosimo zastavicu za višestruke boje
       }));
       
       // Check if user has a valid discount
