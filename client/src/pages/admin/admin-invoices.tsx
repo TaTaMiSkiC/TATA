@@ -658,15 +658,28 @@ export default function AdminInvoices() {
           let details = '';
           
           if (item.selectedScent) {
-            details += `${item.selectedScent}`;
+            if (lang === 'de') {
+              details += `Duft: ${item.selectedScent}`;
+            } else if (lang === 'en') {
+              details += `Scent: ${item.selectedScent}`;
+            } else {
+              details += `Miris: ${item.selectedScent}`;
+            }
           }
           
           if (item.selectedColor) {
-            if (details) details += ' - ';
-            details += `${item.selectedColor}`;
+            if (details) details += '\n';
+            
+            if (lang === 'de') {
+              details += `Farben: ${item.selectedColor}`;
+            } else if (lang === 'en') {
+              details += `Colors: ${item.selectedColor}`;
+            } else {
+              details += `Boje: ${item.selectedColor}`;
+            }
           }
           
-          const fullName = details ? `${itemName} ${details}` : itemName;
+          const fullName = itemName + (details ? `\n${details}` : '');
           const price = parseFloat(item.price).toFixed(2);
           const total = (parseFloat(item.price) * item.quantity).toFixed(2);
           
@@ -682,9 +695,7 @@ export default function AdminInvoices() {
       
       // Dodavanje tablice
       autoTable(doc, {
-        head: lang === 'hr' 
-          ? [["Proizvod", "Kolicina", "Cijena/kom", "Ukupno"]] 
-          : [[t.item, t.quantity, t.price, t.total]],
+        head: [[t.item, t.quantity, t.price, t.total]],
         body: items,
         startY: customerY + 10,
         margin: { left: 20, right: 20 },

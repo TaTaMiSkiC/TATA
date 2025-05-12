@@ -362,15 +362,15 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 004366038787821", 105, finalY + 60, { align: "center" });
     
     // Napomena o automatskom generiranju
-    doc.text(`${t.generatedNote}.`, 105, finalY + 65, { align: "center" });
+    doc.text(`${t.generatedNote}`, 105, finalY + 65, { align: "center" });
     
     // Napomena o malim poreznim obveznicima
     if (lang === 'de') {
-      doc.text("Dies ist eine automatisch generierte Rechnung und ist ohne Unterschrift und Stempel gültig", 105, finalY + 70, { align: "center" });
-      doc.text("Steuernummer: 61 154/7175", 105, finalY + 75, { align: "center" });
+      doc.text("Steuernummer: 61 154/7175", 105, finalY + 70, { align: "center" });
+      doc.text(t.exemptionNote, 105, finalY + 75, { align: "center" });
     } else {
       doc.text("Steuernummer: 61 154/7175", 105, finalY + 70, { align: "center" });
-      doc.text("Der Unternehmer ist nicht im Mehrwertsteuersystem.", 105, finalY + 75, { align: "center" });
+      doc.text(t.exemptionNote, 105, finalY + 75, { align: "center" });
     }
     
     // Spremanje PDF-a
