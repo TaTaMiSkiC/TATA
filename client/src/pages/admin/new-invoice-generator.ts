@@ -170,10 +170,10 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     
     // Naslov i broj računa na desnoj strani
     doc.setTextColor(0, 0, 0);
-    doc.setFontSize(16);
+    doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
     doc.text(t.title, 190, 24, { align: "right" });
-    doc.setFontSize(11);
+    doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.text(`${t.invoiceNo}: ${data.invoiceNumber}`, 190, 32, { align: "right" });
     doc.text(`${t.date}: ${format(new Date(data.createdAt || new Date()), "dd.MM.yyyy.")}`, 190, 38, { align: "right" });
