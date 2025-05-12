@@ -231,12 +231,12 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.text(`${t.orderItems}:`, 20, customerY + 5);
     
     // Priprema podataka za ručno crtanje tablice
-    // Definicija pozicija za svaku kolonu
+    // Definicija pozicija za svaku kolonu - prilagođeno točno kao u primjeru
     const columnPositions = {
       product: 20,  // Proizvod
-      quantity: 53, // Količina
-      price: 71,    // Cijena
-      total: 90     // Ukupno
+      quantity: 140, // Količina - dalje od proizvoda za više prostora
+      price: 160,    // Cijena - prilagođeno za više prostora
+      total: 190     // Ukupno - desno poravnato
     };
     
     // Razmak između zaglavlja tablice i podataka
@@ -249,6 +249,9 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.text(t.quantity, columnPositions.quantity, startY, { align: "center" });
     doc.text(t.price, columnPositions.price, startY, { align: "right" });
     doc.text(t.total, columnPositions.total, startY, { align: "right" });
+    
+    // Dodajemo dodatni razmak za zaglavlje
+    // Samo koristimo više prostora
     
     // Dodatan prostor nakon zaglavlja
     let currentY = startY + 10;
@@ -264,12 +267,9 @@ export const generateInvoicePdf = (data: any, toast: any) => {
         // Iscrtaj naziv proizvoda
         doc.setFont("helvetica", "normal");
         doc.text(productName, columnPositions.product, currentY);
-        currentY += 5;
+        currentY += 6; // Veći razmak nakon naziva proizvoda
         
-        // Dodajemo praznu liniju
-        currentY += 2;
-        
-        // Iscrtaj informacije o mirisu
+        // Opcija "Duft:" za miris
         if (item.scentName || item.selectedScent) {
           const scentName = item.scentName || item.selectedScent;
           let scentText = '';
@@ -283,10 +283,10 @@ export const generateInvoicePdf = (data: any, toast: any) => {
           }
           
           doc.text(scentText, columnPositions.product, currentY);
-          currentY += 5;
+          currentY += 6; // Veći razmak nakon mirisa
         }
         
-        // Iscrtaj informacije o bojama
+        // Opcija "Farben:" za boje
         if (item.colorName || item.selectedColor) {
           const colorName = item.colorName || item.selectedColor;
           let colorText = '';
@@ -300,16 +300,19 @@ export const generateInvoicePdf = (data: any, toast: any) => {
           }
           
           doc.text(colorText, columnPositions.product, currentY);
-          currentY += 5;
+          currentY += 6; // Veći razmak nakon boja
         }
         
-        // Prazna linija nakon detalja
-        currentY += 5;
+        // Dodatni razmak nakon stavke
+        currentY += 8;
         
-        // Iscrtaj količinu, cijenu i ukupno za trenutnu stavku
-        doc.text(quantity.toString(), columnPositions.quantity, currentY - 10, { align: "center" });
-        doc.text(`${price} €`, columnPositions.price, currentY - 10, { align: "right" });
-        doc.text(`${total} €`, columnPositions.total, currentY - 10, { align: "right" });
+        // Za količinu, cijenu i ukupno koristimo vertikalnu sredinu stavke
+        const verticalCenter = currentY - 15; // Sredina stavke za druge stupce
+        
+        // Iscrtaj količinu, cijenu i ukupno za trenutnu stavku, poravnato desno
+        doc.text(quantity.toString(), columnPositions.quantity, verticalCenter, { align: "center" });
+        doc.text(`${price} €`, columnPositions.price, verticalCenter, { align: "right" });
+        doc.text(`${total} €`, columnPositions.total, verticalCenter, { align: "right" });
       });
     } else {
       doc.text("N/A - " + t.handInvoice, columnPositions.product, currentY);
@@ -338,27 +341,27 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     
     // Poravnanje desne kolone s vrijednostima
     const valueX = 190;
-    const labelX = 160;
+    const labelX = 170; // Više desno za kraće labele kao u primjeru
     
     // Međuzbroj - s više razmaka
     doc.text(`${t.subtotal}:`, labelX, currentY, { align: "right" });
     doc.text(`${subtotal} €`, valueX, currentY, { align: "right" });
     
     // Dostava
-    doc.text(`${t.shipping}:`, labelX, currentY + 5, { align: "right" });
-    doc.text(`${shipping} €`, valueX, currentY + 5, { align: "right" });
+    doc.text(`${t.shipping}:`, labelX, currentY + 6, { align: "right" });
+    doc.text(`${shipping} €`, valueX, currentY + 6, { align: "right" });
     
     // PDV (0%)
-    doc.text(`${t.tax}:`, labelX, currentY + 10, { align: "right" });
-    doc.text(`0.00 €`, valueX, currentY + 10, { align: "right" });
+    doc.text(`${t.tax}:`, labelX, currentY + 12, { align: "right" });
+    doc.text(`0.00 €`, valueX, currentY + 12, { align: "right" });
     
     // Ukupan iznos - podebljan s dodatnim razmakom
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
     
     // Dodatni razmak prije totala
-    doc.text(`${t.totalAmount}:`, labelX, currentY + 18, { align: "right" });
-    doc.text(`${total} €`, valueX, currentY + 18, { align: "right" });
+    doc.text(`${t.totalAmount}:`, labelX, currentY + 20, { align: "right" });
+    doc.text(`${total} €`, valueX, currentY + 20, { align: "right" });
     
     // Informacije o plaćanju
     doc.setFontSize(11);
@@ -379,19 +382,22 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     // Zahvala
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
-    doc.text(`${t.thankYou}!`, 105, currentY + 55, { align: "center" });
+    doc.text(`${t.thankYou}!`, 105, currentY + 60, { align: "center" });
     
     // Podnožje s kontakt informacijama - razmak je veći
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-    doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 004366038787621", 105, currentY + 70, { align: "center" });
+    
+    const footerY = currentY + 75; // Početna pozicija podnožja
+    
+    doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 004366038787621", 105, footerY, { align: "center" });
     
     // Napomena o automatskom generiranju
-    doc.text(`${t.generatedNote}.`, 105, currentY + 75, { align: "center" });
+    doc.text(`${t.generatedNote}.`, 105, footerY + 5, { align: "center" });
     
     // Napomena o malim poreznim obveznicima
-    doc.text("Steuernummer: 61 154/7175", 105, currentY + 80, { align: "center" });
-    doc.text(t.exemptionNote, 105, currentY + 85, { align: "center" });
+    doc.text("Steuernummer: 61 154/7175", 105, footerY + 10, { align: "center" });
+    doc.text(t.exemptionNote, 105, footerY + 15, { align: "center" });
     
     // Spremanje PDF-a
     doc.save(`${t.title.toLowerCase()}_${data.invoiceNumber}.pdf`);
