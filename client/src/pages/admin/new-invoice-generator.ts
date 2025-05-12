@@ -30,8 +30,11 @@ export const getPaymentMethodText = (method: string, lang: string, translations:
 // Funkcija za generiranje PDF-a
 export const generateInvoicePdf = (data: any, toast: any) => {
   try {
+    console.log("Početak generiranja PDF-a, dobiveni podaci:", JSON.stringify(data, null, 2));
+    
     // Određivanje jezika računa
     const lang = data.language || "hr";
+    console.log("Korišteni jezik:", lang);
     
     // Definiranje prijevoda za PDF
     const translations: Record<string, Record<string, string>> = {
@@ -138,8 +141,12 @@ export const generateInvoicePdf = (data: any, toast: any) => {
 
     // Gornji dio - Logo s lijeve strane i naslov na desnoj
     try {
-      // Dodajemo logo
-      doc.addImage(logoImg, 'PNG', 20, 15, 30, 30);
+      // Dodajemo logo ako je dostupan
+      if (logoImg) {
+        doc.addImage(logoImg, 'PNG', 20, 15, 30, 30);
+      } else {
+        console.log("Logo nije dostupan, preskačem dodavanje.");
+      }
     } catch (error) {
       console.error("Pogreška pri učitavanju loga:", error);
     }
@@ -178,7 +185,10 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     
     let customerY = 62;
     
-    doc.text(`${data.firstName} ${data.lastName}`, 20, customerY);
+    // Zaštitimo se od nedostajućih imena i prezimena
+    const firstName = data.firstName || '';
+    const lastName = data.lastName || '';
+    doc.text(`${firstName} ${lastName}`.trim() || 'Kupac', 20, customerY);
     customerY += 5;
     
     if (data.email) {
@@ -352,6 +362,8 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.save(`${t.title.toLowerCase()}_${data.invoiceNumber}.pdf`);
   } catch (error) {
     console.error("Greška pri generiranju PDF-a:", error);
+    console.log("Stack trace:", error instanceof Error ? error.stack : 'Nema stack trace-a');
+    
     toast({
       title: "Greška",
       description: "Došlo je do pogreške pri generiranju PDF računa.",
