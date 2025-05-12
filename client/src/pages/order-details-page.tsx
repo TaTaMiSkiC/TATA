@@ -831,7 +831,8 @@ export default function OrderDetailsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[80px]"></TableHead>
-                  <TableHead className="w-[320px]">Proizvod</TableHead>
+                  <TableHead className="w-[200px]">Proizvod</TableHead>
+                  <TableHead className="w-[250px]">Detalji</TableHead>
                   <TableHead className="text-center">Količina</TableHead>
                   <TableHead className="text-right">Cijena</TableHead>
                   <TableHead className="text-right">Ukupno</TableHead>
@@ -859,61 +860,59 @@ export default function OrderDetailsPage() {
                         )}
                       </TableCell>
                       <TableCell className="align-middle">
-                        <div>
-                          <div className="font-medium">{productName}</div>
+                        <div className="font-medium">{productName}</div>
+                      </TableCell>
+                      <TableCell className="align-middle">
+                        <div className="flex flex-col gap-1">
+                          {/* Prikaz mirisa */}
+                          {scent && (
+                            <div className="inline-flex items-center text-sm bg-amber-50 rounded-full px-2 py-0.5 border border-amber-100">
+                              <span className="font-medium text-amber-800 mr-1">Miris:</span> {scent}
+                            </div>
+                          )}
                           
-                          {/* Prikaz boja i mirisa direktno uz proizvod */}
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {/* Prikaz mirisa */}
-                            {scent && (
-                              <div className="inline-flex items-center text-sm bg-amber-50 rounded-full px-2 py-0.5 border border-amber-100">
-                                <span className="font-medium text-amber-800 mr-1">Miris:</span> {scent}
-                              </div>
-                            )}
-                            
-                            {/* Prikaz jedne boje */}
-                            {color && !item.hasMultipleColors && (
-                              <div className="inline-flex items-center text-sm bg-blue-50 rounded-full px-2 py-0.5 border border-blue-100">
-                                <span className="font-medium text-blue-800 mr-1">Boja:</span>
-                                {products?.flatMap(p => 
-                                  p.id === item.productId ? (p as any).colors || [] : []
-                                ).find(c => c?.name === color)?.hexValue ? (
-                                  <div 
-                                    className="w-3 h-3 rounded-full inline-block border border-gray-200 mx-1" 
-                                    style={{ backgroundColor: products?.flatMap(p => 
-                                      p.id === item.productId ? (p as any).colors || [] : []
-                                    ).find(c => c?.name === color)?.hexValue }}
-                                  />
-                                ) : null}
-                                {color}
-                              </div>
-                            )}
-                            
-                            {/* Prikaz višestrukih boja */}
-                            {item.hasMultipleColors && color && (
-                              <div className="inline-flex items-center text-sm bg-blue-50 rounded-full px-2 py-0.5 border border-blue-100">
-                                <span className="font-medium text-blue-800 mr-1">Boje:</span>
-                                {color.split(',').map((colorName, index) => {
-                                  const trimmedColor = colorName.trim();
-                                  const productColor = products?.flatMap(p => 
+                          {/* Prikaz jedne boje */}
+                          {color && !item.hasMultipleColors && (
+                            <div className="inline-flex items-center text-sm bg-blue-50 rounded-full px-2 py-0.5 border border-blue-100">
+                              <span className="font-medium text-blue-800 mr-1">Boja:</span>
+                              {products?.flatMap(p => 
+                                p.id === item.productId ? (p as any).colors || [] : []
+                              ).find(c => c?.name === color)?.hexValue ? (
+                                <div 
+                                  className="w-3 h-3 rounded-full inline-block border border-gray-200 mx-1" 
+                                  style={{ backgroundColor: products?.flatMap(p => 
                                     p.id === item.productId ? (p as any).colors || [] : []
-                                  ).find(c => c?.name === trimmedColor);
-                                  
-                                  return (
-                                    <span key={index} className="inline-flex items-center mx-0.5">
-                                      {productColor?.hexValue && (
-                                        <div 
-                                          className="w-3 h-3 rounded-full inline-block border border-gray-200 mr-0.5" 
-                                          style={{ backgroundColor: productColor.hexValue }}
-                                        />
-                                      )}
-                                      {trimmedColor}{index < color.split(',').length - 1 ? ',' : ''}
-                                    </span>
-                                  );
-                                })}
-                              </div>
-                            )}
-                          </div>
+                                  ).find(c => c?.name === color)?.hexValue }}
+                                />
+                              ) : null}
+                              {color}
+                            </div>
+                          )}
+                          
+                          {/* Prikaz višestrukih boja */}
+                          {item.hasMultipleColors && color && (
+                            <div className="inline-flex items-center text-sm bg-blue-50 rounded-full px-2 py-0.5 border border-blue-100 flex-wrap">
+                              <span className="font-medium text-blue-800 mr-1">Boje:</span>
+                              {color.split(',').map((colorName, index) => {
+                                const trimmedColor = colorName.trim();
+                                const productColor = products?.flatMap(p => 
+                                  p.id === item.productId ? (p as any).colors || [] : []
+                                ).find(c => c?.name === trimmedColor);
+                                
+                                return (
+                                  <span key={index} className="inline-flex items-center mx-0.5">
+                                    {productColor?.hexValue && (
+                                      <div 
+                                        className="w-3 h-3 rounded-full inline-block border border-gray-200 mr-0.5" 
+                                        style={{ backgroundColor: productColor.hexValue }}
+                                      />
+                                    )}
+                                    {trimmedColor}{index < color.split(',').length - 1 ? ',' : ''}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell className="text-center align-middle">{item.quantity}</TableCell>
