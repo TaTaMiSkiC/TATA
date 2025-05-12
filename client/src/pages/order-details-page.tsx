@@ -168,17 +168,20 @@ export default function OrderDetailsPage() {
       hr: {
         scent: "Miris",
         color: "Boja",
-        colors: "Boje"
+        colors: "Boje",
+        invoiceNumber: "Broj računa"
       },
       en: {
         scent: "Scent",
         color: "Color",
-        colors: "Colors"
+        colors: "Colors",
+        invoiceNumber: "Invoice number"
       },
       de: {
         scent: "Duft",
         color: "Farbe",
-        colors: "Farben"
+        colors: "Farben",
+        invoiceNumber: "Rechnungsnummer"
       }
     };
     
@@ -789,6 +792,13 @@ export default function OrderDetailsPage() {
                 <span className="text-muted-foreground">Ukupno stavki:</span>
                 <span>{totalItems}</span>
               </div>
+              
+              {orderWithItems.invoice && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{translate('invoiceNumber')}:</span>
+                  <span className="font-medium text-primary">{orderWithItems.invoice.invoiceNumber}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Način plaćanja:</span>
                 <span>

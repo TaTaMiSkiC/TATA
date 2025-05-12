@@ -2406,12 +2406,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized" });
       }
       
-      // Umjesto direktnog pristupa bazi, koristimo storage metodu
-      // Ovo je jednostavnije i koristi već postojeće metode
-      const invoicesList = await storage.getAllInvoices();
-      const invoice = invoicesList.find(inv => inv.orderId === orderId) || null;
-      
-      console.log(`Dohvaćena faktura za narudžbu ${orderId}:`, invoice ? `${invoice.invoiceNumber} (ID: ${invoice.id})` : "Nema fakture");
+      // Koristimo storage metodu za dohvat svih faktura i filtriranje
+      let invoice = null;
+      try {
+        const invoicesList = await storage.getAllInvoices();
+        invoice = invoicesList.find(inv => inv.orderId === orderId) || null;
+        
+        console.log(`Dohvaćena faktura za narudžbu ${orderId}:`, invoice ? `${invoice.invoiceNumber} (ID: ${invoice.id})` : "Nema fakture");
+        
+        // Dodajmo dodatno logiranje za praćenje svih faktura u bazi
+        console.log(`Sve fakture u bazi:`, invoicesList.map(inv => `${inv.invoiceNumber} (za narudžbu ${inv.orderId})`));
+      } catch (error) {
+        console.error(`Greška pri dohvaćanju faktura iz baze:`, error);
+        return res.status(500).json({ message: "Greška pri dohvaćanju fakture iz baze" });
+      }
       
       res.json(invoice);
     } catch (error) {
