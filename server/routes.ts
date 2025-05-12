@@ -2255,6 +2255,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Dohvati sve račune sortirane po ID-ju silazno i vrati prvi (posljednji kreirani)
       const invoices = await storage.getAllInvoices();
       const lastInvoice = invoices.length > 0 ? invoices[0] : null;
+      
+      console.log(`Dohvaćen posljednji račun: ${lastInvoice ? JSON.stringify({
+        id: lastInvoice.id,
+        invoiceNumber: lastInvoice.invoiceNumber
+      }) : 'Nema računa u bazi'}`);
+      
       res.json(lastInvoice);
     } catch (error) {
       console.error("Error getting last invoice:", error);
