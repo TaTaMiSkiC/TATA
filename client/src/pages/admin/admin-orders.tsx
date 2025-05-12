@@ -154,8 +154,10 @@ export default function AdminOrders() {
       // Dohvaćanje podataka o kupcu
       const userData = users?.find(u => u.id === order.userId);
       
-      // Generiraj jedinstveni broj računa za narudžbu
-      const invoiceNum = `${new Date().getFullYear()}-${order.id.toString().padStart(4, '0')}`;
+      // Generiraj jedinstveni broj računa za narudžbu u formatu i450
+      // Ako je ID narudžbe manji od 450, koristimo 450 kao početak, inače koristimo ID narudžbe
+      const baseNumber = 450;
+      const invoiceNum = order.id < baseNumber ? `i${baseNumber}` : `i${order.id}`;
       
       // Raspakiraj ime i prezime iz userData
       let firstName = '';

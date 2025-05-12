@@ -387,7 +387,10 @@ export default function OrderDetailsPage() {
       // Formatiranje datuma i broja računa
       const currentDate = new Date();
       const formattedDate = format(currentDate, 'dd.MM.yyyy.');
-      const invoiceNumber = `${currentDate.getFullYear()}-${orderWithItems.id.toString().padStart(4, '0')}`;
+      
+      // Generiranje broja računa u formatu i450
+      const baseNumber = 450;
+      const invoiceNumber = orderWithItems.id < baseNumber ? `i${baseNumber}` : `i${orderWithItems.id}`;
       
       doc.setTextColor(218, 165, 32); // Zlatna boja (RGB)
       doc.setFontSize(18);
