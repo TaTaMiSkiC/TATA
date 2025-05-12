@@ -72,13 +72,26 @@ import DocumentManager from "@/components/admin/DocumentManager";
 import { generateInvoicePdf, getPaymentMethodText } from "./new-invoice-generator";
 
 // Pomoćna funkcija za generiranje broja fakture
-const createInvoiceNumber = () => {
+const createInvoiceNumber = (orderId?: number) => {
   // Generiranje broja računa u formatu i450, i451, itd.
   const baseNumber = 450;
-  const currentTimeComponent = Math.floor((Date.now() / 1000) % 1000); // Koristi dio timestampa za razlikovanje
-  const invoiceNumber = `i${Math.max(baseNumber, baseNumber + currentTimeComponent)}`;
-  console.log(`Generiran novi broj računa: ${invoiceNumber}`);
-  return invoiceNumber;
+  
+  if (orderId) {
+    // Ako je narudžba poznata, koristimo njen ID za formiranje broja računa
+    return orderId < baseNumber ? `i${baseNumber}` : `i${orderId}`;
+  } else {
+    // Ako nema narudžbe, koristimo next_invoice_number iz sesije ili generiramo novi
+    // baziran na trenutnom vremenu kako bismo osigurali jedinstvenost
+    const currentNextNumber = parseInt(sessionStorage.getItem('next_invoice_number') || '0');
+    const newInvoiceNumber = Math.max(baseNumber, currentNextNumber);
+    
+    // Odmah uvećamo za sljedeći put
+    sessionStorage.setItem('next_invoice_number', (newInvoiceNumber + 1).toString());
+    
+    const invoiceNumber = `i${newInvoiceNumber}`;
+    console.log(`Generiran novi broj računa: ${invoiceNumber}`);
+    return invoiceNumber;
+  }
 };
 
 interface Invoice {
