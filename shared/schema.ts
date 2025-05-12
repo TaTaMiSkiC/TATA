@@ -130,10 +130,16 @@ export const orderItems = pgTable("order_items", {
   scentName: text("scent_name"),
   colorId: integer("color_id"),
   colorName: text("color_name"),
+  // Polja za podršku višestrukih boja
+  colorIds: text("color_ids"),       // JSON string s nizom ID-jeva boja za višestruki odabir
+  hasMultipleColors: boolean("has_multiple_colors").default(false).notNull(),
 });
 
 export const insertOrderItemSchema = createInsertSchema(orderItems).omit({
   id: true,
+}).extend({
+  colorIds: z.string().optional(),
+  hasMultipleColors: z.boolean().optional(),
 });
 
 // Cart items table
@@ -358,7 +364,7 @@ export type CartItemWithProduct = CartItem & {
   hasMultipleColors?: boolean;
 };
 
-export interface OrderItemWithProduct extends Omit<OrderItem, 'scentId' | 'colorId' | 'scentName' | 'colorName'> {
+export type OrderItemWithProduct = Omit<OrderItem, 'scentId' | 'colorId' | 'scentName' | 'colorName'> & {
   product: Product;
   scent?: Scent;
   color?: Color;
@@ -366,7 +372,7 @@ export interface OrderItemWithProduct extends Omit<OrderItem, 'scentId' | 'color
   colorId: number | null;
   scentName: string | null;
   colorName: string | null;
-  hasMultipleColors?: boolean;
+  // hasMultipleColors je već prisutan u OrderItem
 }
 
 // Definiranje tablice za stranice (O nama, Kontakt, Blog)
