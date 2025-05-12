@@ -438,6 +438,32 @@ export default function OrderDetailsPage() {
         customerY += 5;
       }
       
+      // Dodajemo okvir i napomene kupca ako postoje
+      if (orderWithItems.customerNote) {
+        customerY += 5;
+        
+        // Iscrtavanje okvira za napomene (plavi okvir)
+        doc.setDrawColor(41, 98, 255); // Plava boja za okvir
+        doc.setLineWidth(0.5);
+        doc.roundedRect(100, customerY - 2, 90, 25, 3, 3);
+        
+        // Postavljanje teksta napomene
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text(`${t.customerNote}:`, 105, customerY + 5);
+        doc.setFont("helvetica", "normal");
+        
+        // Napravimo potreban broj redova za napomenu - maksimalno 3 reda za ovaj prostor
+        const noteLines = doc.splitTextToSize(orderWithItems.customerNote, 80);
+        const maxLines = Math.min(3, noteLines.length); // Maksimalno 3 reda
+        
+        for (let i = 0; i < maxLines; i++) {
+          doc.text(noteLines[i], 105, customerY + 10 + (i * 4));
+        }
+        
+        customerY += 30; // Povećavamo Y za visinu okvira + margina
+      }
+      
       // Stavke narudžbe
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
@@ -567,20 +593,7 @@ export default function OrderDetailsPage() {
       doc.text(`${t.paymentMethod}: ${paymentMethod}`, 20, finalY + 45);
       doc.text(`${t.paymentStatus}: ${paymentStatus}`, 20, finalY + 50);
       
-      // Napomena kupca ako postoji
-      if (orderWithItems.customerNote) {
-        doc.setFontSize(11);
-        doc.setFont("helvetica", "bold");
-        doc.text(`${t.customerNote || 'Napomena kupca'}:`, 20, finalY + 60);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        
-        // Napravimo potreban broj redova za napomenu
-        const noteLines = doc.splitTextToSize(orderWithItems.customerNote, 160);
-        noteLines.forEach((line: string, index: number) => {
-          doc.text(line, 20, finalY + 67 + (index * 5));
-        });
-      }
+      // Napomene kupca prikazujemo samo u plavom okviru na vrhu dokumenta
       
       // Zahvala za narudžbu
       doc.setFontSize(10);
