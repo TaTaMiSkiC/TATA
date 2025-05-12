@@ -30,6 +30,7 @@ import DeliverySettingsPage from "@/pages/admin/delivery-settings-page";
 import AdminSettings from "@/pages/admin/settings-page";
 import PageSettingsPage from "@/pages/admin/page-settings";
 import ContactSettingsPage from "@/pages/admin/contact-settings";
+import DocumentManagementPage from "@/pages/admin/document-management";
 
 import { ProtectedRoute } from "./lib/protected-route";
 import { AuthProvider } from "./hooks/use-auth";
@@ -118,6 +119,9 @@ function Router() {
       </Route>
       <Route path="/admin/contact-settings">
         <ProtectedRoute path="/admin/contact-settings" component={ContactSettingsPage} />
+      </Route>
+      <Route path="/admin/documents">
+        <ProtectedRoute path="/admin/documents" component={DocumentManagementPage} />
       </Route>
       <Route component={NotFound} />
     </Switch>
