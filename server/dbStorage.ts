@@ -479,9 +479,21 @@ export class DatabaseStorage implements IStorage {
   async getOrderItems(orderId: number): Promise<OrderItemWithProduct[]> {
     try {
       // Koristimo direktni SQL upit kako bismo osigurali pristup svim poljima
+      // i omogućili pristup poljima za višestruke boje
       const { rows } = await pool.query(`
         SELECT 
-          oi.*,
+          oi.id,
+          oi.order_id,
+          oi.product_id,
+          oi.product_name,
+          oi.quantity,
+          oi.price,
+          oi.scent_id,
+          oi.scent_name,
+          oi.color_id,
+          oi.color_name,
+          oi.color_ids,
+          oi.has_multiple_colors,
           p.id as product_id,
           p.name as product_name,
           p.description as product_description,
