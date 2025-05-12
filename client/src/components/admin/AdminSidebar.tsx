@@ -15,7 +15,8 @@ import {
   FileText,
   RefreshCw,
   Grid,
-  Layers
+  Layers,
+  FileCog
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -95,6 +96,11 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
       name: "Postavke dostave",
       path: "/admin/delivery-settings",
       icon: <Truck size={20} />
+    },
+    {
+      name: "Dokumenti tvrtke",
+      path: "/admin/documents",
+      icon: <FileCog size={20} />
     },
   ];
 
