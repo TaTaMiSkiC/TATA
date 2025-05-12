@@ -309,12 +309,16 @@ export const generateInvoicePdf = (data: any, toast: any) => {
         currentY += 18;
         
         // Količina, cijena i ukupno se prikazuju na istoj visini kao naziv proizvoda
-        // Pozicioniramo ih prema templatu
+        // Pozicija je točno usklađena s primjerom - razlika je značajna
         
-        // Iscrtaj količinu, cijenu i ukupno za trenutnu stavku, poravnato desno
-        doc.text(quantity.toString(), columnPositions.quantity, currentY - 18, { align: "center" });
-        doc.text(`${price} €`, columnPositions.price, currentY - 18, { align: "right" });
-        doc.text(`${total} €`, columnPositions.total, currentY - 18, { align: "right" });
+        // Pozicija cijene i količine menjana da odgovara predlošku
+        // Ovu vrijednost sam precizno namjestio prema PDF-u
+        const verticalPosition = currentY - 28;
+        
+        // Iscrtaj količinu, cijenu i ukupno za trenutnu stavku, poravnato kao u primjeru
+        doc.text(quantity.toString(), columnPositions.quantity, verticalPosition, { align: "center" });
+        doc.text(`${price} €`, columnPositions.price, verticalPosition, { align: "right" });
+        doc.text(`${total} €`, columnPositions.total, verticalPosition, { align: "right" });
       });
     } else {
       doc.text("N/A - " + t.handInvoice, columnPositions.product, currentY);
@@ -324,8 +328,8 @@ export const generateInvoicePdf = (data: any, toast: any) => {
       currentY += 10;
     }
     
-    // Dodajemo razmak nakon tablice za sažetak
-    currentY += 20;
+    // Puno više prostora prije sažetka - u predlošku je vrlo veliki razmak
+    currentY += 30;
     
     console.log("Pozicija nakon tablice:", currentY);
     
@@ -341,60 +345,58 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     
-    // Poravnanje desne kolone s vrijednostima - daleko na desnoj strani
-    // Postavljanje kao u priloženom template-u
+    // Poravnanje desne kolone s vrijednostima - precizno namješteno kao u predlošku
     const valueX = 190;
-    const labelX = 155; // Tekst labela završava prije vrijednosti
+    const labelX = 145; // Pomičem još više lijevo za predloška
     
-    // Sve iznose pišemo više udesno
     // Međuzbroj - s više razmaka
     doc.text(`${t.subtotal}:`, labelX, currentY, { align: "right" });
     doc.text(`${subtotal} €`, valueX, currentY, { align: "right" });
     
-    // Dostava
-    doc.text(`${t.shipping}:`, labelX, currentY + 6, { align: "right" });
-    doc.text(`${shipping} €`, valueX, currentY + 6, { align: "right" });
+    // Dostava - više razmaka u predlošku
+    doc.text(`${t.shipping}:`, labelX, currentY + 8, { align: "right" });
+    doc.text(`${shipping} €`, valueX, currentY + 8, { align: "right" });
     
-    // PDV (0%)
-    doc.text(`${t.tax}:`, labelX, currentY + 12, { align: "right" });
-    doc.text(`0.00 €`, valueX, currentY + 12, { align: "right" });
+    // PDV (0%) - više razmaka u predlošku
+    doc.text(`${t.tax}:`, labelX, currentY + 16, { align: "right" });
+    doc.text(`0.00 €`, valueX, currentY + 16, { align: "right" });
     
-    // Ukupan iznos - podebljan s dodatnim razmakom
+    // Ukupan iznos - podebljan s dodatnim razmakom - još veći razmak
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
     
-    // Dodatni razmak prije totala
-    doc.text(`${t.totalAmount}:`, labelX, currentY + 20, { align: "right" });
-    doc.text(`${total} €`, valueX, currentY + 20, { align: "right" });
+    // Dodatni razmak prije totala - u predlošku je posebno velik razmak
+    doc.text(`${t.totalAmount}:`, labelX, currentY + 26, { align: "right" });
+    doc.text(`${total} €`, valueX, currentY + 26, { align: "right" });
     
-    // Informacije o plaćanju
+    // Informacije o plaćanju - veliki razmak kao u predlošku
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
-    doc.text(`${t.paymentInfo}:`, 20, currentY + 30); // Povećan razmak prije informacija o plaćanju
+    doc.text(`${t.paymentInfo}:`, 20, currentY + 40); // Povećan razmak prije informacija o plaćanju
     // Nema linije u template-u 
     
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     
-    // Prikaži odabrani način plaćanja - uvučeno kao u template-u
+    // Prikaži odabrani način plaćanja
     const paymentMethodText = getPaymentMethodText(data.paymentMethod, lang, t);
     
-    // Razmak između naslova i podataka
-    doc.text(`${t.paymentMethod}: ${paymentMethodText}`, 20, currentY + 38);
-    doc.text(`${t.paymentStatus}: ${t.paid}`, 20, currentY + 44);
+    // Rzmak između naslova i podataka - povećan kao u predlošku
+    doc.text(`${t.paymentMethod}: ${paymentMethodText}`, 20, currentY + 48);
+    doc.text(`${t.paymentStatus}: ${t.paid}`, 20, currentY + 54);
     
-    // Veći razmak prije zahvale - dvostruki razmak prema template-u
+    // Veći razmak prije zahvale - vrlo veliki razmak prema predlošku
     // Zahvala
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
-    doc.text(`${t.thankYou}!`, 105, currentY + 70, { align: "center" });
+    doc.text(`${t.thankYou}!`, 105, currentY + 85, { align: "center" });
     
     // Podnožje s kontakt informacijama - razmak je veći
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
     
-    // Velika margina prije podnožja kao u primjeru
-    const footerY = currentY + 85; 
+    // Velika margina prije podnožja kao u primjeru PDF-a
+    const footerY = currentY + 100; 
     
     doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 004366038787621", 105, footerY, { align: "center" });
     
