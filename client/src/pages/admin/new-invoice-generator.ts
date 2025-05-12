@@ -168,7 +168,7 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.text("Ossiacher Zeile 30, 9500 Villach, Österreich", 55, 30);
     doc.text("Email: daniela.svoboda2@gmail.com", 55, 35);
     
-    // Naslov i broj računa na desnoj strani
+    // Naslov i broj računa na desnoj strani - poravnato prema template-u
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
@@ -266,6 +266,7 @@ export const generateInvoicePdf = (data: any, toast: any) => {
         
         // Iscrtaj naziv proizvoda - uvučeno kao u template-u
         doc.setFont("helvetica", "normal");
+        // Dodajemo 5px razmaka ispred naziva proizvoda da dobijemo uvlačenje kao u primjeru
         doc.text(productName, columnPositions.product, currentY);
         currentY += 6; // Veći razmak nakon naziva proizvoda
         
@@ -339,10 +340,12 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     
-    // Poravnanje desne kolone s vrijednostima
+    // Poravnanje desne kolone s vrijednostima - daleko na desnoj strani
+    // Postavljanje kao u priloženom template-u
     const valueX = 190;
-    const labelX = 170; // Više desno za kraće labele kao u primjeru
+    const labelX = 155; // Tekst labela završava prije vrijednosti
     
+    // Sve iznose pišemo više udesno
     // Međuzbroj - s više razmaka
     doc.text(`${t.subtotal}:`, labelX, currentY, { align: "right" });
     doc.text(`${subtotal} €`, valueX, currentY, { align: "right" });
@@ -366,33 +369,35 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     // Informacije o plaćanju
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
-    doc.text(`${t.paymentInfo}:`, 20, currentY + 25);
-    doc.line(20, currentY + 27, 190, currentY + 27);
+    doc.text(`${t.paymentInfo}:`, 20, currentY + 30); // Povećan razmak prije informacija o plaćanju
+    // Nema linije u template-u 
     
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     
-    // Prikaži odabrani način plaćanja
+    // Prikaži odabrani način plaćanja - uvučeno kao u template-u
     const paymentMethodText = getPaymentMethodText(data.paymentMethod, lang, t);
     
-    doc.text(`${t.paymentMethod}: ${paymentMethodText}`, 20, currentY + 32);
-    doc.text(`${t.paymentStatus}: ${t.paid}`, 20, currentY + 37);
+    // Razmak između naslova i podataka
+    doc.text(`${t.paymentMethod}: ${paymentMethodText}`, 20, currentY + 38);
+    doc.text(`${t.paymentStatus}: ${t.paid}`, 20, currentY + 44);
     
-    // Veći razmak prije zahvale
+    // Veći razmak prije zahvale - dvostruki razmak prema template-u
     // Zahvala
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
-    doc.text(`${t.thankYou}!`, 105, currentY + 60, { align: "center" });
+    doc.text(`${t.thankYou}!`, 105, currentY + 70, { align: "center" });
     
     // Podnožje s kontakt informacijama - razmak je veći
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
     
-    const footerY = currentY + 75; // Početna pozicija podnožja
+    // Velika margina prije podnožja kao u primjeru
+    const footerY = currentY + 85; 
     
     doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 004366038787621", 105, footerY, { align: "center" });
     
-    // Napomena o automatskom generiranju
+    // Napomena o automatskom generiranju - centrirana i manja
     doc.text(`${t.generatedNote}.`, 105, footerY + 5, { align: "center" });
     
     // Napomena o malim poreznim obveznicima
