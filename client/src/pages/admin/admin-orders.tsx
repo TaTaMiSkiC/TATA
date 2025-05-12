@@ -48,6 +48,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { generateInvoicePdf } from "./new-invoice-generator";
 import { Loader2, Search, FileText, Calendar, Clock, CreditCard, User as UserIcon, Package, Download } from "lucide-react";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
@@ -150,18 +151,33 @@ export default function AdminOrders() {
         return;
       }
       
-      // Dohvaćanje podataka o kupcu
-      const user = users?.find(u => u.id === order.userId);
-      if (!user) {
-        toast({
-          title: "Greška",
-          description: "Nije moguće pronaći podatke o kupcu.",
-          variant: "destructive",
-        });
-        setGeneratingInvoice(false);
-        return;
-      }
-      console.log("Pronađen kupac:", user.username);
+      // Priprema podataka za PDF račun u novom formatu
+      const invoiceData = {
+        firstName: order.firstName || "N/A",
+        lastName: order.lastName || "N/A",
+        email: order.email || "N/A",
+        address: order.shippingAddress || "N/A",
+        city: order.shippingCity || "N/A",
+        postalCode: order.shippingPostalCode || "N/A",
+        country: order.shippingCountry || "N/A",
+        invoiceNumber: `${new Date().getFullYear()}-${order.id.toString().padStart(4, '0')}`,
+        createdAt: new Date(),
+        items: items.map((item: any) => ({
+          productName: item.productName,
+          scentName: item.scentName,
+          colorName: item.colorName,
+          quantity: item.quantity,
+          price: item.price
+        })),
+        language: language,
+        paymentMethod: order.paymentMethod || "bank_transfer",
+        shippingCost: order.shippingCost || "5.00",
+        customerNote: order.customerNote
+      };
+      
+      // Generiranje PDF-a koristeći našu novu funkciju
+      generateInvoicePdf(invoiceData, toast);
+      setGeneratingInvoice(false);
       
       // Provjera postojanja računa za ovu narudžbu
       console.log("Provjera postojećeg računa za narudžbu ID:", order.id);
