@@ -118,12 +118,27 @@ export default function AdminOrders() {
   const generateInvoice = async (order: Order, language: string) => {
     if (!order) return;
     
+    console.log("Generiranje računa za narudžbu ID:", order.id, "na jeziku:", language);
     setGeneratingInvoice(true);
     
     try {
-      // Dohvati stavke narudžbe
+      // Dohvaćanje stavki narudžbe
+      console.log("Dohvaćam stavke narudžbe:", order.id);
       const itemsResponse = await fetch(`/api/orders/${order.id}/items`);
+      
+      if (!itemsResponse.ok) {
+        console.error("Greška pri dohvaćanju stavki narudžbe:", itemsResponse.status);
+        toast({
+          title: "Greška",
+          description: "Nije moguće dohvatiti stavke narudžbe.",
+          variant: "destructive",
+        });
+        setGeneratingInvoice(false);
+        return;
+      }
+      
       const items = await itemsResponse.json();
+      console.log("Dohvaćene stavke narudžbe:", items.length);
       
       if (!items || !Array.isArray(items) || items.length === 0) {
         toast({
@@ -135,7 +150,7 @@ export default function AdminOrders() {
         return;
       }
       
-      // Dohvati korisnika (kupca)
+      // Dohvaćanje podataka o kupcu
       const user = users?.find(u => u.id === order.userId);
       if (!user) {
         toast({
@@ -146,25 +161,33 @@ export default function AdminOrders() {
         setGeneratingInvoice(false);
         return;
       }
+      console.log("Pronađen kupac:", user.username);
       
-      // Provjeri postojanje računa za ovu narudžbu
-      const existingInvoice = await fetch(`/api/invoices?orderId=${order.id}`).then(res => res.json());
+      // Provjera postojanja računa za ovu narudžbu
+      console.log("Provjera postojećeg računa za narudžbu ID:", order.id);
+      const invoicesResponse = await fetch(`/api/invoices`);
+      const allInvoices = await invoicesResponse.json();
+      const existingInvoice = allInvoices.find((inv: any) => inv.orderId === order.id);
+      
       let invoiceId = null;
+      let invoiceNumber = "";
       
       // Ako račun postoji, koristi ga, a ako ne, kreiraj novi
-      if (existingInvoice && existingInvoice.length > 0) {
-        invoiceId = existingInvoice[0].id;
-        console.log("Koristi postojeći račun ID:", invoiceId);
+      if (existingInvoice) {
+        invoiceId = existingInvoice.id;
+        invoiceNumber = existingInvoice.invoiceNumber;
+        console.log("Koristi postojeći račun ID:", invoiceId, "broj:", invoiceNumber);
       } else {
         // Generiraj broj računa
-        const invoiceNumber = `${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+        invoiceNumber = `${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+        console.log("Generiran novi broj računa:", invoiceNumber);
         
         // Pripremi podatke za kreiranje računa
         const invoiceData = {
           invoiceNumber,
           orderId: order.id,
           userId: order.userId,
-          customerName: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+          customerName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
           customerEmail: user.email || '',
           customerAddress: user.address || '',
           customerCity: user.city || '',
@@ -174,12 +197,12 @@ export default function AdminOrders() {
           customerNote: order.customerNote || '',
           paymentMethod: order.paymentMethod || 'cash',
           total: order.total,
-          subtotal: order.subtotal,
+          subtotal: order.subtotal || order.total,
           tax: "0.00", // PDV je 0% za male poduzetnike u Austriji
           language: language,
           items: items.map((item: any) => ({
             productId: item.productId,
-            productName: item.product.name,
+            productName: item.product?.name || "Proizvod",
             quantity: item.quantity,
             price: item.price,
             selectedScent: item.scentName || '',
@@ -187,10 +210,16 @@ export default function AdminOrders() {
           }))
         };
         
-        // Spremi račun u bazu
-        const savedInvoice = await createInvoiceMutation.mutateAsync(invoiceData);
-        invoiceId = savedInvoice.id;
-        console.log("Kreiran novi račun ID:", invoiceId);
+        console.log("Spremam novi račun:", invoiceData.invoiceNumber);
+        try {
+          // Spremanje računa u bazu podataka
+          const newInvoice = await createInvoiceMutation.mutateAsync(invoiceData);
+          invoiceId = newInvoice.id;
+          console.log("Spremljen novi račun ID:", invoiceId);
+        } catch (error) {
+          console.error("Greška pri spremanju računa:", error);
+          // Nastavi s generiranjem PDF-a čak i ako spremanje nije uspjelo
+        }
       }
       
       // Definiranje prijevoda za PDF
@@ -303,7 +332,8 @@ export default function AdminOrders() {
         }
       };
       
-      // Kreiraj PDF
+      // Kreiranje PDF dokumenta
+      console.log("Generiranje PDF računa");
       const doc = new jsPDF();
       const lang = language || 'hr';
       const t = translations[lang];
@@ -334,16 +364,16 @@ export default function AdminOrders() {
       
       doc.setFont("helvetica", "normal");
       doc.text(format(new Date(), "dd.MM.yyyy."), 190, 35, { align: "right" });
-      const invoiceNumber = existingInvoice && existingInvoice.length > 0 ? 
-        existingInvoice[0].invoiceNumber : 
-        `${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
       doc.text(invoiceNumber, 190, 40, { align: "right" });
       
       // Podaci o kupcu
       doc.setFont("helvetica", "bold");
       doc.text(t.buyer, 140, 55);
       doc.setFont("helvetica", "normal");
-      doc.text(`${user.firstName || ''} ${user.lastName || ''}`.trim(), 140, 60);
+      
+      const customerName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username;
+      doc.text(customerName, 140, 60);
+      
       if (user.address) doc.text(user.address, 140, 65);
       if (user.postalCode || user.city) doc.text(`${user.postalCode || ''} ${user.city || ''}`.trim(), 140, 70);
       if (user.country) doc.text(user.country, 140, 75);
@@ -366,7 +396,6 @@ export default function AdminOrders() {
       
       // Način plaćanja
       const paymentMethod = getPaymentMethodText(order.paymentMethod || 'cash', lang);
-      const paymentMethodY = 95 + (order.customerNote ? doc.splitTextToSize(order.customerNote, 50).length * 5 : 0);
       
       doc.setFont("helvetica", "bold");
       doc.text(t.paymentMethod + ":", 20, 85);
@@ -379,7 +408,7 @@ export default function AdminOrders() {
       
       // Dodaj stavke računa u tablicu
       items.forEach((item: any) => {
-        let productName = item.product.name;
+        let productName = item.product?.name || "Proizvod";
         
         // Dodaj informacije o mirisu i boji ako postoje
         if (item.scentName) {
@@ -395,7 +424,7 @@ export default function AdminOrders() {
         tableRows.push([productName, item.quantity, price + " €", amount + " €"]);
       });
       
-      // Kreiraj tablicu
+      // Kreiranje tablice
       autoTable(doc, {
         head: [tableColumn],
         body: tableRows,
@@ -417,12 +446,17 @@ export default function AdminOrders() {
         }
       });
       
-      // Dodaj ukupno
+      // Dodavanje ukupnog iznosa
       const finalY = (doc as any).lastAutoTable.finalY + 10;
       
       doc.setFont("helvetica", "bold");
       doc.text(t.subtotal + ":", 150, finalY);
-      doc.text(order.subtotal ? parseFloat(order.subtotal).toFixed(2) + " €" : parseFloat(order.total).toFixed(2) + " €", 190, finalY, { align: "right" });
+      
+      const subtotalAmount = order.subtotal 
+        ? parseFloat(order.subtotal).toFixed(2) + " €" 
+        : parseFloat(order.total).toFixed(2) + " €";
+      
+      doc.text(subtotalAmount, 190, finalY, { align: "right" });
       
       doc.text(t.tax + ":", 150, finalY + 7);
       // Budući da je PDV 0% za male poduzetnike u Austriji
@@ -437,8 +471,10 @@ export default function AdminOrders() {
       doc.setFont("helvetica", "normal");
       doc.text(t.thankYou, 105, finalY + 30, { align: "center" });
       
-      // Preuzmi PDF
-      doc.save(`invoice-${invoiceNumber}-${lang}.pdf`);
+      // Spremanje i preuzimanje PDF-a
+      const filename = `invoice-${invoiceNumber}-${lang}.pdf`;
+      console.log("Spremanje PDF-a kao:", filename);
+      doc.save(filename);
       
       toast({
         title: "PDF račun generiran",
@@ -971,13 +1007,22 @@ export default function AdminOrders() {
               <DropdownMenuContent>
                 <DropdownMenuLabel>Odaberi jezik računa</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => selectedOrder && generateInvoice(selectedOrder, "hr")}>
+                <DropdownMenuItem onClick={() => {
+                  console.log("Odabran hrvatski jezik", selectedOrder);
+                  if (selectedOrder) generateInvoice(selectedOrder, "hr");
+                }}>
                   <span className="mr-2">🇭🇷</span> Hrvatski
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => selectedOrder && generateInvoice(selectedOrder, "en")}>
+                <DropdownMenuItem onClick={() => {
+                  console.log("Odabran engleski jezik", selectedOrder);
+                  if (selectedOrder) generateInvoice(selectedOrder, "en");
+                }}>
                   <span className="mr-2">🇬🇧</span> Engleski
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => selectedOrder && generateInvoice(selectedOrder, "de")}>
+                <DropdownMenuItem onClick={() => {
+                  console.log("Odabran njemački jezik", selectedOrder);
+                  if (selectedOrder) generateInvoice(selectedOrder, "de");
+                }}>
                   <span className="mr-2">🇩🇪</span> Njemački
                 </DropdownMenuItem>
               </DropdownMenuContent>
