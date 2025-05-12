@@ -72,25 +72,54 @@ import DocumentManager from "@/components/admin/DocumentManager";
 import { generateInvoicePdf, getPaymentMethodText } from "./new-invoice-generator";
 
 // Pomoćna funkcija za generiranje broja fakture
-const createInvoiceNumber = (orderId?: number) => {
+const createInvoiceNumber = async (orderId?: number) => {
   // Generiranje broja računa u formatu i450, i451, itd.
   const baseNumber = 450;
   
+  try {
+    // Dohvati posljednji račun iz baze da vidimo koji je najveći broj
+    const response = await fetch('/api/invoices/last');
+    if (response.ok) {
+      const lastInvoice = await response.json();
+      
+      // Ako postoji prethodni račun, izvuci broj iz njegovog broja računa
+      let lastInvoiceNumber = baseNumber - 1; // Početno stanje ako nema prethodnih računa
+      
+      if (lastInvoice && lastInvoice.invoiceNumber) {
+        // Izvuci broj iz formata "i450" -> 450
+        const matches = lastInvoice.invoiceNumber.match(/i(\d+)/);
+        if (matches && matches[1]) {
+          lastInvoiceNumber = parseInt(matches[1]);
+        }
+      }
+      
+      // Generiraj sljedeći broj računa
+      if (orderId) {
+        // Ako je narudžba poznata, koristimo njen ID za formiranje broja računa
+        // ali osiguravamo i da je veći od posljednjeg korištenog broja
+        const nextInvoiceNumber = Math.max(lastInvoiceNumber + 1, baseNumber, orderId);
+        return `i${nextInvoiceNumber}`;
+      } else {
+        // Ako nema narudžbe, jednostavno povećavamo za jedan od posljednjeg
+        const nextInvoiceNumber = Math.max(lastInvoiceNumber + 1, baseNumber);
+        return `i${nextInvoiceNumber}`;
+      }
+    }
+  } catch (error) {
+    console.error("Greška pri dohvaćanju posljednjeg broja računa:", error);
+  }
+  
+  // Fallback - koristi sessionstorage kao prije ako API nije dostupan
   if (orderId) {
-    // Ako je narudžba poznata, koristimo njen ID za formiranje broja računa
     return orderId < baseNumber ? `i${baseNumber}` : `i${orderId}`;
   } else {
-    // Ako nema narudžbe, koristimo next_invoice_number iz sesije ili generiramo novi
-    // baziran na trenutnom vremenu kako bismo osigurali jedinstvenost
+    const currentTime = new Date().getTime();
     const currentNextNumber = parseInt(sessionStorage.getItem('next_invoice_number') || '0');
-    const newInvoiceNumber = Math.max(baseNumber, currentNextNumber);
+    const newInvoiceNumber = Math.max(baseNumber, currentNextNumber, Math.floor(currentTime / 1000) % 10000 + baseNumber);
     
-    // Odmah uvećamo za sljedeći put
     sessionStorage.setItem('next_invoice_number', (newInvoiceNumber + 1).toString());
     
-    const invoiceNumber = `i${newInvoiceNumber}`;
-    console.log(`Generiran novi broj računa: ${invoiceNumber}`);
-    return invoiceNumber;
+    return `i${newInvoiceNumber}`;
   }
 };
 
