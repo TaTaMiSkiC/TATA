@@ -88,6 +88,12 @@ interface Invoice {
 interface OrderWithItems extends Order {
   items: OrderItemWithProduct[];
   invoice?: Invoice;
+  shippingFullName?: string;
+  shippingPhone?: string;
+  shippingMethod?: string;
+  trackingNumber?: string;
+  transactionId?: string;
+  tax?: string; // Dodano za podržavanje PDV polja
 }
 
 export default function OrderDetailsPage() {
@@ -241,7 +247,7 @@ export default function OrderDetailsPage() {
   return (
     <>
       <Helmet>
-        <title>Detalji narudžbe #{orderId} | Kerzenwelt by Dani</title>
+        <title>{`Detalji narudžbe #${orderId} | Kerzenwelt by Dani`}</title>
         <meta name="description" content={`Pregledajte detalje vaše narudžbe #${orderId} uključujući stavke, adresu dostave i status.`} />
       </Helmet>
       
