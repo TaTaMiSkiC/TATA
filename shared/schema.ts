@@ -519,3 +519,30 @@ export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
     references: [products.id],
   }),
 }));
+
+// Tablica za dokumente firme
+export const companyDocuments = pgTable("company_documents", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  fileUrl: text("file_url").notNull(),
+  fileType: text("file_type").notNull(), // npr. pdf, docx, xlsx
+  fileSize: integer("file_size").notNull(), // veličina u bajtovima
+  uploadedBy: integer("uploaded_by").notNull(), // ID korisnika koji je dodao dokument
+  uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+});
+
+export const insertCompanyDocumentSchema = createInsertSchema(companyDocuments).omit({
+  id: true,
+  uploadedAt: true,
+});
+
+export type CompanyDocument = typeof companyDocuments.$inferSelect;
+export type InsertCompanyDocument = z.infer<typeof insertCompanyDocumentSchema>;
+
+export const companyDocumentsRelations = relations(companyDocuments, ({ one }) => ({
+  uploader: one(users, {
+    fields: [companyDocuments.uploadedBy],
+    references: [users.id],
+  }),
+}));

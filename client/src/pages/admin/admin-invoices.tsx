@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { 
   Tabs, TabsList, TabsTrigger, TabsContent 
@@ -8,7 +8,9 @@ import {
 } from "@/components/ui/table";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
-import { Plus, FileText, Trash2, Download, ShoppingCart } from "lucide-react";
+import { 
+  Plus, FileText, Trash2, Download, ShoppingCart, Upload, File, Calendar, X 
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -27,6 +29,14 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
 import { Separator } from "@/components/ui/separator";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
 import { 
   Select, 
   SelectContent, 
@@ -44,6 +54,9 @@ import {
   DialogTrigger,
   DialogClose
 } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Order, Product, Scent, Color } from "@shared/schema";
@@ -1053,6 +1066,10 @@ export default function AdminInvoices() {
             <TabsTrigger value="create">
               <Plus className="h-4 w-4 mr-2" />
               Kreiraj novi račun
+            </TabsTrigger>
+            <TabsTrigger value="documents">
+              <FileText className="h-4 w-4 mr-2" />
+              Dokumenti firme
             </TabsTrigger>
           </TabsList>
           
