@@ -438,30 +438,22 @@ export default function OrderDetailsPage() {
         customerY += 5;
       }
       
-      // Dodajemo okvir i napomene kupca ako postoje
+      // Dodajemo napomene kupca u istoj liniji s podacima o kupcu ako postoje
       if (orderWithItems.customerNote) {
-        customerY += 5;
-        
-        // Iscrtavanje okvira za napomene (plavi okvir)
-        doc.setDrawColor(41, 98, 255); // Plava boja za okvir
-        doc.setLineWidth(0.5);
-        doc.roundedRect(100, customerY - 2, 90, 25, 3, 3);
-        
-        // Postavljanje teksta napomene
-        doc.setFontSize(10);
+        // Postavljanje teksta napomene pored podataka o kupcu
+        doc.setFontSize(11);
         doc.setFont("helvetica", "bold");
-        doc.text(`${t.customerNote}:`, 105, customerY + 5);
+        doc.text(`${t.customerNote}:`, 120, 55); // Ista pozicija (Y) kao i "Podaci o kupcu"
         doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
         
-        // Napravimo potreban broj redova za napomenu - maksimalno 3 reda za ovaj prostor
-        const noteLines = doc.splitTextToSize(orderWithItems.customerNote, 80);
+        // Napravimo potreban broj redova za napomenu - maksimalno 3 reda 
+        const noteLines = doc.splitTextToSize(orderWithItems.customerNote, 65); // Nešto uži prostor za napomene
         const maxLines = Math.min(3, noteLines.length); // Maksimalno 3 reda
         
         for (let i = 0; i < maxLines; i++) {
-          doc.text(noteLines[i], 105, customerY + 10 + (i * 4));
+          doc.text(noteLines[i], 120, 62 + (i * 5)); // Počinjemo ispod naslova napomene
         }
-        
-        customerY += 30; // Povećavamo Y za visinu okvira + margina
       }
       
       // Stavke narudžbe
