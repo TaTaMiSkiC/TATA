@@ -69,6 +69,7 @@ import { Order, Product, Scent, Color } from "@shared/schema";
 import logoImg from "@assets/Kerzenwelt by Dani.png";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import DocumentManager from "@/components/admin/DocumentManager";
+import { generateInvoicePdf, getPaymentMethodText } from "./new-invoice-generator";
 
 // Pomoćna funkcija za generiranje broja fakture
 const createInvoiceNumber = () => {
@@ -350,7 +351,10 @@ export default function AdminInvoices() {
   
   // Funkcija za generiranje PDF-a
   const generatePdf = (data: any) => {
+    generateInvoicePdf(data, toast);
+    return;
     try {
+      // STARI KOD - NE KORISTI SE VIŠE
       // Određivanje jezika računa
       const lang = data.language || "hr";
       
