@@ -221,6 +221,9 @@ export const generateInvoicePdf = (data: any, toast: any) => {
       customerY += 5;
     }
     
+    // Dodajemo više prostora nakon podataka o kupcu
+    customerY += 5;
+    
     // Stavke narudžbe
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
@@ -290,13 +293,15 @@ export const generateInvoicePdf = (data: any, toast: any) => {
       styles: {
         fontSize: 10,
         overflow: 'linebreak',
-        cellPadding: 5,
+        cellPadding: { top: 6, right: 4, bottom: 6, left: 4 }, // Više prostora vertikalno
         lineWidth: 0.1,
+        lineColor: [255, 255, 255], // Bijela boja za liniju - čak ni granice
       },
       headStyles: {
         fillColor: [255, 255, 255],
         textColor: [0, 0, 0],
         fontStyle: 'bold',
+        cellPadding: { top: 6, right: 4, bottom: 12, left: 4 }, // Više prostora ispod zaglavlja
       },
       columnStyles: {
         0: { cellWidth: 100 }, // Prva kolona fiksne širine za produkt
@@ -308,8 +313,10 @@ export const generateInvoicePdf = (data: any, toast: any) => {
       alternateRowStyles: {
         fillColor: [255, 255, 255], // Bijela boja za sve redove
       },
-      // Dodajemo više prostora između redova
-      margin: { top: 15, bottom: 15 },
+      margin: { top: 20, bottom: 20 }, // Još više prostora oko tablice
+      // Uklanjanje granica ćelija
+      tableLineWidth: 0,
+      showHead: 'firstPage',
     });
     
     console.log("Nakon poziva autoTable, tableResult:", tableResult);
@@ -330,39 +337,34 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     console.log("Pozicija finalY:", finalY);
     
     // Ostavljamo prostor između tablice i zbrojeva
-    finalY += 15;
+    finalY += 20;
     
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     
-    // Prikaz međuzbroja, dostave i ukupnog iznosa s desne strane (poravnato desno)
-    doc.setFontSize(10);
+    // Poravnanje desne kolone s vrijednostima
+    const valueX = 190;
+    const labelX = 160;
     
-    // Crtamo liniju između tablice i međuzbroja
-    doc.setDrawColor(200, 200, 200);
-    
-    // Pravimo horizontalnu liniju razdvajanja
-    // doc.line(150, finalY - 5, 190, finalY - 5);
-    
-    // Međuzbroj
-    doc.text(`${t.subtotal}:`, 150, finalY);
-    doc.text(`${subtotal} €`, 190, finalY, { align: "right" });
+    // Međuzbroj - s više razmaka
+    doc.text(`${t.subtotal}:`, labelX, finalY, { align: "right" });
+    doc.text(`${subtotal} €`, valueX, finalY, { align: "right" });
     
     // Dostava
-    doc.text(`${t.shipping}:`, 150, finalY + 5);
-    doc.text(`${shipping} €`, 190, finalY + 5, { align: "right" });
+    doc.text(`${t.shipping}:`, labelX, finalY + 5, { align: "right" });
+    doc.text(`${shipping} €`, valueX, finalY + 5, { align: "right" });
     
     // PDV (0%)
-    doc.text(`${t.tax}:`, 150, finalY + 10);
-    doc.text(`0.00 €`, 190, finalY + 10, { align: "right" });
+    doc.text(`${t.tax}:`, labelX, finalY + 10, { align: "right" });
+    doc.text(`0.00 €`, valueX, finalY + 10, { align: "right" });
     
-    // Ukupan iznos - podebljan
+    // Ukupan iznos - podebljan s dodatnim razmakom
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
     
-    // Razmak prije ukupnog iznosa
-    doc.text(`${t.totalAmount}:`, 150, finalY + 18);
-    doc.text(`${total} €`, 190, finalY + 18, { align: "right" });
+    // Dodatni razmak prije totala
+    doc.text(`${t.totalAmount}:`, labelX, finalY + 18, { align: "right" });
+    doc.text(`${total} €`, valueX, finalY + 18, { align: "right" });
     
     // Informacije o plaćanju
     doc.setFontSize(11);
