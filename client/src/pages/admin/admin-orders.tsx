@@ -151,11 +151,14 @@ export default function AdminOrders() {
         return;
       }
       
+      // Dohvaćanje podataka o kupcu
+      const userData = users?.find(u => u.id === order.userId);
+      
       // Priprema podataka za PDF račun u novom formatu
       const invoiceData = {
-        firstName: order.firstName || "N/A",
-        lastName: order.lastName || "N/A",
-        email: order.email || "N/A",
+        firstName: userData?.firstName || "Admin",
+        lastName: userData?.lastName || "User",
+        email: userData?.email || "admin@example.com",
         address: order.shippingAddress || "N/A",
         city: order.shippingCity || "N/A",
         postalCode: order.shippingPostalCode || "N/A",
@@ -171,7 +174,7 @@ export default function AdminOrders() {
         })),
         language: language,
         paymentMethod: order.paymentMethod || "bank_transfer",
-        shippingCost: order.shippingCost || "5.00",
+        shippingCost: order.shippingCost ? order.shippingCost : "5.00",
         customerNote: order.customerNote
       };
       
@@ -185,31 +188,24 @@ export default function AdminOrders() {
       const allInvoices = await invoicesResponse.json();
       const existingInvoice = allInvoices.find((inv: any) => inv.orderId === order.id);
       
-      let invoiceId = null;
-      let invoiceNumber = "";
-      
-      // Ako račun postoji, koristi ga, a ako ne, kreiraj novi
-      if (existingInvoice) {
-        invoiceId = existingInvoice.id;
-        invoiceNumber = existingInvoice.invoiceNumber;
-        console.log("Koristi postojeći račun ID:", invoiceId, "broj:", invoiceNumber);
-      } else {
+      // Ako račun ne postoji, kreiraj novi
+      if (!existingInvoice) {
         // Generiraj broj računa
-        invoiceNumber = `${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+        const invoiceNumber = `${new Date().getFullYear()}-${order.id.toString().padStart(4, '0')}`;
         console.log("Generiran novi broj računa:", invoiceNumber);
         
         // Pripremi podatke za kreiranje računa
-        const invoiceData = {
+        const invoiceDataForDb = {
           invoiceNumber,
           orderId: order.id,
           userId: order.userId,
-          customerName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username,
-          customerEmail: user.email || '',
-          customerAddress: user.address || '',
-          customerCity: user.city || '',
-          customerPostalCode: user.postalCode || '',
-          customerCountry: user.country || '',
-          customerPhone: user.phone || '',
+          customerName: userData ? `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || userData.username : 'Admin User',
+          customerEmail: userData?.email || '',
+          customerAddress: order.shippingAddress || '',
+          customerCity: order.shippingCity || '',
+          customerPostalCode: order.shippingPostalCode || '',
+          customerCountry: order.shippingCountry || '',
+          customerPhone: '',
           customerNote: order.customerNote || '',
           paymentMethod: order.paymentMethod || 'cash',
           total: order.total,
