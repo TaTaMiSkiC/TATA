@@ -50,8 +50,9 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { generateInvoicePdf } from "@/lib/generate-invoice-pdf";
 import { format } from "date-fns";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 // Logo import
 import logoImg from "@assets/Kerzenwelt by Dani.png";
@@ -66,24 +67,42 @@ interface Invoice {
   // ostala polja nisu nužna za ovo rješenje
 }
 
-// Dodatna struktura koja uključuje fakturu saOrder-om
-interface OrderWithItems extends Order {
+// Odvojeni interface bez nasljeđivanja za rješavanje tipova
+interface OrderWithItems {
+  id: number;
+  userId: number;
+  status: string;
+  total: string;
+  createdAt: Date;
   items: OrderItemWithProduct[];
+  subtotal?: string | null;
+  discountAmount?: string | null;
+  shippingCost?: string | null;
+  paymentMethod?: string;
+  paymentStatus?: string;
+  shippingAddress?: string | null;
+  shippingCity?: string | null;
+  shippingPostalCode?: string | null;
+  shippingCountry?: string | null;
+  // Dodatna polja koja možda nisu u originalnom Order tipu
+  taxAmount?: string | null;
+  shippingFullName?: string | null;
+  shippingPhone?: string | null;
+  transactionId?: string | null;
+  customerNote?: string | null;
+  // Dodano polje za fakturu
   invoice?: Invoice | null;
 }
 
-// Statusna komponenta
 function OrderStatusIcon({ status }: { status: string }) {
   switch (status) {
     case 'pending':
       return <Clock className="h-5 w-5 text-yellow-500" />;
     case 'processing':
-      return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
+      return <PackageCheck className="h-5 w-5 text-blue-500" />;
     case 'shipped':
-      return <Truck className="h-5 w-5 text-blue-500" />;
+      return <Truck className="h-5 w-5 text-blue-700" />;
     case 'delivered':
-      return <PackageCheck className="h-5 w-5 text-green-500" />;
-    case 'completed':
       return <CheckCircle className="h-5 w-5 text-green-500" />;
     case 'cancelled':
       return <XCircle className="h-5 w-5 text-red-500" />;
@@ -92,7 +111,6 @@ function OrderStatusIcon({ status }: { status: string }) {
   }
 }
 
-// Badge komponenta
 function OrderStatusBadge({ status }: { status: string }) {
   let variant: "default" | "secondary" | "destructive" | "outline" = "default";
   
@@ -101,29 +119,24 @@ function OrderStatusBadge({ status }: { status: string }) {
       variant = "outline";
       break;
     case 'processing':
-    case 'shipped':
       variant = "secondary";
-      break;
-    case 'delivered':
-    case 'completed':
-      variant = "default";
       break;
     case 'cancelled':
       variant = "destructive";
       break;
     default:
-      variant = "outline";
+      variant = "default";
+      break;
   }
   
   return (
-    <Badge variant={variant} className="flex items-center gap-1">
+    <Badge variant={variant} className="ml-2">
       <OrderStatusIcon status={status} />
-      <span>{getStatusText(status)}</span>
+      <span className="ml-1">{getStatusText(status)}</span>
     </Badge>
   );
 }
 
-// Funkcija za dobivanje teksta statusa na hrvatskom
 function getStatusText(status: string): string {
   switch (status) {
     case 'pending':
@@ -134,117 +147,128 @@ function getStatusText(status: string): string {
       return 'Poslano';
     case 'delivered':
       return 'Dostavljeno';
-    case 'completed':
-      return 'Završeno';
     case 'cancelled':
       return 'Otkazano';
     default:
-      return status.charAt(0).toUpperCase() + status.slice(1);
+      return status;
   }
 }
 
-// Funkcija za dobivanje teksta načina plaćanja na hrvatskom
-function getPaymentMethodText(method: string | undefined): string {
-  if (!method) return 'Nije definirano';
-  
-  switch (method) {
-    case 'cash':
-      return 'Gotovina';
-    case 'bank_transfer':
-      return 'Bankovni prijenos';
-    case 'paypal':
-      return 'PayPal';
-    case 'credit_card':
-      return 'Kreditna kartica';
-    default:
-      // Za nepoznati tip, vrati formatiran tekst
-      const formattedMethod = method
-        .replace(/_/g, ' ')
-        .replace(/\b\w/g, (l) => l.toUpperCase());
-      return formattedMethod;
-  }
-};
-
 export default function OrderDetailsPage() {
   const { id } = useParams<{ id: string }>();
+  const orderId = parseInt(id);
   const [, navigate] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
-  const orderIdNumber = parseInt(id, 10);
-  const [selectedLanguage, setSelectedLanguage] = useState<"hr" | "en" | "de">("hr");
+  const [selectedLanguage, setSelectedLanguage] = useState<'hr' | 'en' | 'de'>('hr');
+  
+  // Funkcija za prijevod tekstova sučelja
+  const translate = (key: string): string => {
+    const translations: Record<string, Record<string, string>> = {
+      hr: {
+        scent: "Miris",
+        color: "Boja",
+        colors: "Boje",
+        invoiceNumber: "Broj računa"
+      },
+      en: {
+        scent: "Scent",
+        color: "Color",
+        colors: "Colors",
+        invoiceNumber: "Invoice number"
+      },
+      de: {
+        scent: "Duft",
+        color: "Farbe",
+        colors: "Farben",
+        invoiceNumber: "Rechnungsnummer"
+      }
+    };
+    
+    return translations[selectedLanguage]?.[key] || translations.hr[key] || key;
+  };
   const [generatingInvoice, setGeneratingInvoice] = useState(false);
   
-  const {
-    data: orderWithItems,
-    error: orderError,
+  // Dohvat narudžbe
+  const { 
+    data: order, 
     isLoading: isLoadingOrder,
-  } = useQuery<OrderWithItems, Error>({
-    queryKey: [`/api/orders/${id}`],
-    queryFn: async ({ queryKey }) => {
-      const res = await fetch(queryKey[0] as string);
-      if (!res.ok) throw new Error("Narudžba nije pronađena");
-      return await res.json();
-    },
-    enabled: !!id && !!user,
+    error: orderError
+  } = useQuery<Order>({
+    queryKey: [`/api/orders/${orderId}`],
+    enabled: !!user && !!orderId,
   });
   
-  const {
-    data: orderItems,
-    error: itemsError,
+  // Dohvat stavki narudžbe
+  const { 
+    data: orderItems, 
     isLoading: isLoadingItems,
-  } = useQuery<OrderItemWithProduct[], Error>({
-    queryKey: [`/api/orders/${id}/items`],
-    queryFn: async ({ queryKey }) => {
-      const res = await fetch(queryKey[0] as string);
-      if (!res.ok) throw new Error("Stavke narudžbe nisu pronađene");
-      return await res.json();
-    },
-    enabled: !!id && !!user,
+    error: itemsError
+  } = useQuery<OrderItemWithProduct[]>({
+    queryKey: [`/api/orders/${orderId}/items`],
+    enabled: !!user && !!orderId,
   });
-  
+
+  // Dohvat svih proizvoda
   const {
     data: products,
-    error: productsError,
     isLoading: isLoadingProducts,
-  } = useQuery<Product[], Error>({
-    queryKey: ["/api/products"],
+  } = useQuery<Product[]>({
+    queryKey: ['/api/products'],
     enabled: !!user,
   });
   
+  // Dohvat fakture za narudžbu
   const {
     data: invoice,
-    error: invoiceError,
     isLoading: isLoadingInvoice,
-  } = useQuery<Invoice | null, Error>({
-    queryKey: [`/api/orders/${id}/invoice`],
-    queryFn: async ({ queryKey }) => {
-      const res = await fetch(queryKey[0] as string);
-      if (!res.ok) {
-        if (res.status === 404) return null;
-        throw new Error("Greška pri dohvaćanju fakture");
-      }
-      return await res.json();
-    },
-    enabled: !!id && !!user,
+    error: invoiceError
+  } = useQuery<Invoice | null>({
+    queryKey: [`/api/orders/${orderId}/invoice`],
+    enabled: !!user && !!orderId
   });
+
+  // Kombiniranje podataka o narudžbi i stavkama
+  const orderWithItems: OrderWithItems | undefined = order && orderItems ? {
+    ...order,
+    items: orderItems || [],
+    invoice: invoice
+  } : undefined;
   
-  // Samo za sigurnost, provjeravamo je li faktura automatski dodana objektu narudžbe
   useEffect(() => {
-    if (orderWithItems && !orderWithItems.invoice && invoice) {
-      orderWithItems.invoice = invoice;
+    if (!user) {
+      navigate('/auth');
     }
-  }, [orderWithItems, invoice]);
+  }, [user, navigate]);
   
-  const error = orderError || itemsError || productsError || invoiceError;
   const isLoading = isLoadingOrder || isLoadingItems || isLoadingProducts || isLoadingInvoice;
+  const error = orderError || itemsError || invoiceError;
   
-  const navigateBack = () => {
-    navigate("/orders");
+  // Funkcija za prevođenje načina plaćanja
+  const getPaymentMethodText = (method: string | undefined, lang: string) => {
+    if (!method) return lang === 'hr' ? 'Nije definirano' : lang === 'de' ? 'Nicht definiert' : 'Not defined';
+    
+    switch(method) {
+      case 'cash': 
+        return lang === 'hr' ? 'Gotovina' : lang === 'de' ? 'Barzahlung' : 'Cash';
+      case 'bank_transfer': 
+        return lang === 'hr' ? 'Bankovni transfer' : lang === 'de' ? 'Banküberweisung' : 'Bank Transfer';
+      case 'paypal': 
+        return 'PayPal';
+      case 'credit_card':
+        return lang === 'hr' ? 'Kreditna kartica' : lang === 'de' ? 'Kreditkarte' : 'Credit Card';
+      default:
+        // Za nepoznati tip, vrati formatiran tekst
+        const formattedMethod = method
+          .replace(/_/g, ' ')
+          .replace(/\b\w/g, (l) => l.toUpperCase());
+        return formattedMethod;
+    }
   };
   
   // Funkcija za generiranje PDF računa
   const generateInvoice = () => {
-    if (!orderWithItems || !user || !orderItems) return;
+    if (!orderWithItems || !user) return;
     
     setGeneratingInvoice(true);
     
@@ -253,8 +277,8 @@ export default function OrderDetailsPage() {
     console.log("Način plaćanja:", orderWithItems.paymentMethod || 'Nije definirano');
     
     // Sigurna provjera stavki narudžbe
-    if (!orderItems || !Array.isArray(orderItems) || orderItems.length === 0) {
-      console.error("Nema stavki narudžbe ili nije ispravan format:", orderItems);
+    if (!orderWithItems.items || !Array.isArray(orderWithItems.items) || orderWithItems.items.length === 0) {
+      console.error("Nema stavki narudžbe ili nije ispravan format:", orderWithItems.items);
       toast({
         title: "Greška pri generiranju računa",
         description: "Nije moguće generirati račun jer nema stavki narudžbe.",
@@ -268,150 +292,405 @@ export default function OrderDetailsPage() {
       // Određivanje jezika računa
       const lang = selectedLanguage || "hr";
       
+      // Definiranje prijevoda za PDF
+      const translations: Record<string, Record<string, string>> = {
+        hr: {
+          title: "RACUN",
+          date: "Datum racuna",
+          invoiceNo: "Broj racuna",
+          buyer: "Podaci o kupcu",
+          seller: "Prodavatelj",
+          item: "Proizvod",
+          quantity: "Kolicina",
+          price: "Cijena/kom",
+          total: "Ukupno",
+          subtotal: "Meduzboj",
+          tax: "PDV (0%)",
+          totalAmount: "UKUPNO",
+          paymentInfo: "Informacije o placanju",
+          paymentMethod: "Nacin placanja",
+          paymentStatus: "Status placanja",
+          cash: "Gotovina",
+          bank: "Bankovni prijenos",
+          paypal: "PayPal",
+          paid: "Placeno",
+          unpaid: "U obradi",
+          deliveryAddress: "Adresa za dostavu",
+          handInvoice: "Rucni racun",
+          thankYou: "Hvala Vam na narudzbi",
+          generatedNote: "Ovo je automatski generirani racun i valjan je bez potpisa i pecata",
+          exemptionNote: "Poduzetnik nije u sustavu PDV-a, PDV nije obracunat temeljem odredbi posebnog postupka oporezivanja za male porezne obveznike.",
+          orderItems: "Stavke narudzbe",
+          shipping: "Dostava",
+          customerNote: "Napomena kupca"
+        },
+        en: {
+          title: "INVOICE",
+          date: "Invoice date",
+          invoiceNo: "Invoice number",
+          buyer: "Buyer information",
+          seller: "Seller",
+          item: "Product",
+          quantity: "Quantity",
+          price: "Price/unit",
+          total: "Total",
+          subtotal: "Subtotal",
+          tax: "VAT (0%)",
+          totalAmount: "TOTAL",
+          paymentInfo: "Payment information",
+          paymentMethod: "Payment method",
+          paymentStatus: "Payment status",
+          cash: "Cash",
+          bank: "Bank transfer",
+          paypal: "PayPal",
+          paid: "Paid",
+          unpaid: "Processing",
+          deliveryAddress: "Delivery address",
+          handInvoice: "Hand invoice",
+          thankYou: "Thank you for your order",
+          generatedNote: "This is an automatically generated invoice and is valid without signature or stamp",
+          exemptionNote: "The entrepreneur is not in the VAT system, VAT is not calculated based on the provisions of the special taxation procedure for small taxpayers.",
+          orderItems: "Order items",
+          shipping: "Shipping",
+          customerNote: "Customer note"
+        },
+        de: {
+          title: "RECHNUNG",
+          date: "Rechnungsdatum",
+          invoiceNo: "Rechnungsnummer",
+          buyer: "Käuferinformationen",
+          seller: "Verkäufer",
+          item: "Produkt",
+          quantity: "Menge",
+          price: "Preis/Stück",
+          total: "Gesamt",
+          subtotal: "Zwischensumme",
+          tax: "MwSt. (0%)",
+          totalAmount: "GESAMTBETRAG",
+          paymentInfo: "Zahlungsinformationen",
+          paymentMethod: "Zahlungsmethode",
+          paymentStatus: "Zahlungsstatus",
+          cash: "Bargeld",
+          bank: "Banküberweisung",
+          paypal: "PayPal",
+          paid: "Bezahlt",
+          unpaid: "In Bearbeitung",
+          deliveryAddress: "Lieferadresse",
+          handInvoice: "Handrechnung",
+          thankYou: "Vielen Dank für Ihre Bestellung",
+          generatedNote: "Dies ist eine automatisch generierte Rechnung und ist ohne Unterschrift und Stempel gültig",
+          exemptionNote: "Der Unternehmer ist nicht im Mehrwertsteuersystem, MwSt. wird nicht berechnet gemäß den Bestimmungen des Kleinunternehmerregelung.",
+          orderItems: "Bestellpositionen",
+          shipping: "Versand",
+          customerNote: "Kundenhinweis"
+        }
+      };
+
+      // Odabir prijevoda
+      const t = translations[lang] || translations.hr;
+      
+      // Funkcija za dobivanje teksta načina plaćanja ovisno o odabranoj vrijednosti i jeziku
+      const getPaymentStatusText = (status: string | undefined) => {
+        if (!status) return t.unpaid;
+        return status === 'completed' ? t.paid : t.unpaid;
+      };
+      
+      // Kreiraj novi PDF dokument
+      const doc = new jsPDF();
+      
+      // Postavljanje osnovnih detalja
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+
+      // Gornji dio - Logo s lijeve strane i naslov na desnoj
+      try {
+        // Dodajemo logo
+        doc.addImage(logoImg, 'PNG', 20, 15, 30, 30);
+      } catch (error) {
+        console.error("Pogreška pri učitavanju loga:", error);
+      }
+      
+      // Formatiranje datuma i broja računa
+      const currentDate = new Date();
+      const formattedDate = format(currentDate, 'dd.MM.yyyy.');
+      
       // Dobivanje broja računa iz baze ili generiranje privremenog ako ne postoji
-      let invoiceNumber = "i450";
+      const baseNumber = 450;
+      let invoiceNumber = `i${baseNumber}`;
       
       // Ako postoji faktura u bazi, koristi njen broj
       if (orderWithItems.invoice && orderWithItems.invoice.invoiceNumber) {
         invoiceNumber = orderWithItems.invoice.invoiceNumber;
         console.log("Korištenje stvarnog broja računa iz baze:", invoiceNumber);
       } else {
-        // Ako nema fakture, koristimo ID narudžbe za generiranje
-        const baseNumber = 450;
+        // Ako nema fakture, koristimo privremeni format
         invoiceNumber = orderWithItems.id < baseNumber ? `i${baseNumber}` : `i${orderWithItems.id}`;
         console.log("Korištenje privremenog broja računa:", invoiceNumber);
       }
       
-      // Priprema podataka za invoice
-      const invoiceItems = orderItems.map(item => ({
-        id: item.id,
-        productName: item.productName,
-        quantity: item.quantity,
-        price: typeof item.price === 'string' ? item.price : item.price.toString(),
-        selectedScent: item.scentName || undefined,
-        selectedColor: item.colorName || undefined,
-        hasMultipleColors: item.hasMultipleColors || (item.colorIds && typeof item.colorIds === 'string' && item.colorIds.includes('['))
-      }));
+      doc.setTextColor(218, 165, 32); // Zlatna boja (RGB)
+      doc.setFontSize(18);
+      doc.setFont("helvetica", "bold");
+      doc.text("Kerzenwelt by Dani", 55, 24);
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0); // Vraćanje na crnu boju
+      doc.setFont("helvetica", "normal");
+      doc.text("Ossiacher Zeile 30, 9500 Villach, Österreich", 55, 30);
+      doc.text("Email: daniela.svoboda2@gmail.com", 55, 35);
       
-      // Formatiranje datuma
-      const orderDate = new Date(orderWithItems.createdAt);
-      const formattedDate = orderDate.toISOString().split('T')[0]; // Format YYYY-MM-DD
+      // Naslov i broj računa na desnoj strani
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.text(t.title, 190, 24, { align: "right" });
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${t.invoiceNo}: ${invoiceNumber}`, 190, 32, { align: "right" });
+      doc.text(`${t.date}: ${formattedDate}`, 190, 38, { align: "right" });
       
-      // Priprema podataka za generiranje PDF-a
-      const invoiceData = {
-        invoiceNumber,
-        createdAt: formattedDate,
-        firstName: user.firstName || '',
-        lastName: user.lastName || '',
-        address: orderWithItems.shippingAddress || user.address || '',
-        city: orderWithItems.shippingCity || user.city || '',
-        postalCode: orderWithItems.shippingPostalCode || user.postalCode || '',
-        country: orderWithItems.shippingCountry || user.country || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        customerNote: orderWithItems.customerNote || undefined,
-        items: invoiceItems,
-        language: lang,
-        paymentMethod: orderWithItems.paymentMethod || 'bank_transfer'
-      };
+      // Horizontalna linija
+      doc.setDrawColor(200, 200, 200);
+      doc.line(20, 45, 190, 45);
       
-      // Koristi zajedničku funkciju za generiranje PDF-a
-      generateInvoicePdf(invoiceData);
+      // Podaci o kupcu
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text(`${t.buyer}:`, 20, 55);
+      doc.setDrawColor(200, 200, 200);
+      doc.line(20, 57, 190, 57);
+      doc.setFont("helvetica", "normal");
       
-      // Uspješno završeno
+      let customerY = 62;
+      
+      // Dodajemo informacije o kupcu ako postoje, inače prikazujemo rukom napisani račun
+      if (user) {
+        const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+        const email = user.email || '';
+        const address = orderWithItems.shippingAddress || user.address || '';
+        const city = orderWithItems.shippingCity || user.city || '';
+        const postalCode = orderWithItems.shippingPostalCode || user.postalCode || '';
+        const country = orderWithItems.shippingCountry || user.country || '';
+        
+        if (fullName) {
+          doc.text(fullName, 20, customerY);
+          customerY += 5;
+        }
+        
+        if (email) {
+          doc.text(`Email: ${email}`, 20, customerY);
+          customerY += 5;
+        }
+        
+        if (address) {
+          doc.text(`${t.deliveryAddress}: ${address}`, 20, customerY);
+          customerY += 5;
+        }
+        
+        if (postalCode || city) {
+          doc.text(`${postalCode} ${city}`, 20, customerY);
+          customerY += 5;
+        }
+        
+        if (country) {
+          doc.text(country, 20, customerY);
+          customerY += 5;
+        }
+      } else {
+        doc.text(`${t.deliveryAddress}: N/A - ${t.handInvoice}`, 20, customerY);
+        customerY += 5;
+      }
+      
+      // Dodajemo napomene kupca u istoj liniji s podacima o kupcu ako postoje
+      if (orderWithItems.customerNote) {
+        // Postavljanje teksta napomene pored podataka o kupcu
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.text(`${t.customerNote}:`, 120, 55); // Ista pozicija (Y) kao i "Podaci o kupcu"
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        
+        // Napravimo potreban broj redova za napomenu - maksimalno 3 reda 
+        const noteLines = doc.splitTextToSize(orderWithItems.customerNote, 65); // Nešto uži prostor za napomene
+        const maxLines = Math.min(3, noteLines.length); // Maksimalno 3 reda
+        
+        for (let i = 0; i < maxLines; i++) {
+          doc.text(noteLines[i], 120, 62 + (i * 5)); // Počinjemo ispod naslova napomene
+        }
+      }
+      
+      // Stavke narudžbe
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text(`${t.orderItems}:`, 20, customerY + 5);
+      doc.setDrawColor(200, 200, 200);
+      doc.line(20, customerY + 7, 190, customerY + 7);
+      
+      // Priprema podataka za tablicu
+      let items = [];
+      
+      if (orderWithItems.items && Array.isArray(orderWithItems.items)) {
+        items = orderWithItems.items.map((item) => {
+          let productName = '';
+          if (item.product && typeof item.product === 'object' && item.product.name) {
+            productName = item.product.name;
+          } else if (item.productName) {
+            productName = item.productName;
+          } else {
+            productName = `Proizvod #${item.productId}`;
+          }
+          
+          let details = [];
+          
+          // Dodaj miris ako postoji
+          if (item.scentName) {
+            // Koristi prijevod za riječ "Miris"
+            const scentLabel = lang === 'hr' ? 'Miris' : lang === 'de' ? 'Duft' : 'Scent';
+            details.push(`${scentLabel}: ${item.scentName}`);
+          }
+          
+          // Dodaj boju/boje
+          if (item.colorName) {
+            // Koristi prijevod za riječ "Boja" ili "Boje"
+            const colorSingular = lang === 'hr' ? 'Boja' : lang === 'de' ? 'Farbe' : 'Color';
+            const colorPlural = lang === 'hr' ? 'Boje' : lang === 'de' ? 'Farben' : 'Colors';
+            const colorPrefix = item.hasMultipleColors ? colorPlural : colorSingular;
+            details.push(`${colorPrefix}: ${item.colorName}`);
+          }
+          
+          // Spoji naziv proizvoda s detaljima
+          const detailsText = details.length > 0 ? `\n${details.join('\n')}` : '';
+          const fullName = `${productName}${detailsText}`;
+          const price = parseFloat(item.price).toFixed(2);
+          const total = (parseFloat(item.price) * item.quantity).toFixed(2);
+          
+          return [fullName, item.quantity, `${price} €`, `${total} €`];
+        });
+      } else {
+        // Dodajemo ručno barem jednu stavku ako nema podataka
+        items = [["Proizvod nije specificiran", 1, "0.00 €", "0.00 €"]];
+      }
+      
+      // Dodavanje tablice
+      autoTable(doc, {
+        head: [[
+          t.item, 
+          t.quantity.replace(/\s+/g, ' '), // Osigurajmo da nema višestrukih razmaka
+          t.price, 
+          t.total
+        ]],
+        body: items,
+        startY: customerY + 10,
+        margin: { left: 20, right: 20 },
+        headStyles: {
+          fillColor: [245, 245, 245],
+          textColor: [0, 0, 0],
+          fontStyle: 'bold',
+          halign: 'left',
+          valign: 'middle',
+          fontSize: 10,
+          cellPadding: 5,
+          minCellWidth: 30, // Osigurajmo da ćelije zaglavlja budu dovoljno široke
+          overflow: 'visible', // Osigurajmo da tekst ne bude prekinut
+        },
+        bodyStyles: {
+          textColor: [0, 0, 0],
+          fontSize: 10,
+          cellPadding: 5,
+        },
+        columnStyles: {
+          0: { cellWidth: 'auto' },
+          1: { cellWidth: 30, halign: 'center' }, // Povećali smo širinu stupca "Menge" s 20 na 30
+          2: { cellWidth: 30, halign: 'right' },
+          3: { cellWidth: 30, halign: 'right' },
+        },
+        alternateRowStyles: {
+          fillColor: [250, 250, 250],
+        },
+      });
+      
+      // Izračunavanje ukupnog iznosa
+      let subtotal = orderWithItems.items && Array.isArray(orderWithItems.items)
+        ? orderWithItems.items.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0)
+        : 0;
+      
+      // Sigurnosna provjera za shippingCost - ako ne postoji, stavi 0
+      const shippingCost = orderWithItems.shippingCost 
+        ? parseFloat(orderWithItems.shippingCost) 
+        : 0;
+      
+      // Ukupan iznos s dostavom
+      const total = parseFloat(orderWithItems.total) || (subtotal + shippingCost);
+      
+      // Dohvati poziciju nakon tablice
+      const finalY = (doc as any).lastAutoTable.finalY || 200;
+      
+      // Dodavanje ukupnog iznosa
+      doc.setFontSize(10);
+      doc.text(`${t.subtotal}:`, 160, finalY + 10, { align: "right" });
+      doc.text(`${subtotal.toFixed(2)} €`, 190, finalY + 10, { align: "right" });
+      
+      // Dodaj troškove dostave ako postoje
+      doc.text(`${t.shipping}:`, 160, finalY + 15, { align: "right" });
+      doc.text(`${shippingCost.toFixed(2)} €`, 190, finalY + 15, { align: "right" });
+      
+      // Zbog jednostavnosti porezni model, stavljamo PDV 0%
+      doc.text(`${t.tax}:`, 160, finalY + 20, { align: "right" });
+      doc.text("0.00 €", 190, finalY + 20, { align: "right" });
+      
+      // Ukupan iznos
+      doc.setFont("helvetica", "bold");
+      doc.text(`${t.totalAmount}:`, 160, finalY + 25, { align: "right" });
+      doc.text(`${total.toFixed(2)} €`, 190, finalY + 25, { align: "right" });
+      doc.setFont("helvetica", "normal");
+      
+      // Informacije o plaćanju
+      doc.setDrawColor(200, 200, 200);
+      doc.line(20, finalY + 30, 190, finalY + 30);
+      
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text(`${t.paymentInfo}:`, 20, finalY + 38);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      
+      const paymentMethod = getPaymentMethodText(orderWithItems.paymentMethod || 'bank_transfer', lang);
+      const paymentStatus = getPaymentStatusText(orderWithItems.paymentStatus);
+      
+      doc.text(`${t.paymentMethod}: ${paymentMethod}`, 20, finalY + 45);
+      doc.text(`${t.paymentStatus}: ${paymentStatus}`, 20, finalY + 50);
+      
+      // Napomene kupca prikazujemo samo u plavom okviru na vrhu dokumenta
+      
+      // Zahvala za narudžbu
+      doc.setFontSize(10);
+      doc.text(`${t.thankYou}!`, 105, finalY + 65, { align: "center" });
+      
+      // Podnožje s informacijama o tvrtki
+      doc.setFontSize(8);
+      doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 004366038787621", 105, finalY + 75, { align: "center" });
+      doc.text(`${t.generatedNote}.`, 105, finalY + 80, { align: "center" });
+      doc.text("Steuernummer: 61 154/7175", 105, finalY + 85, { align: "center" });
+      doc.text(`${t.exemptionNote}`, 105, finalY + 90, { align: "center" });
+      
+      // Spremi i preuzmi PDF
+      doc.save(`invoice-${invoiceNumber}.pdf`);
+      
       toast({
-        title: lang === 'hr' ? "Račun preuzet" : lang === 'de' ? "Rechnung heruntergeladen" : "Invoice downloaded",
-        description: lang === 'hr' ? "Račun je uspješno preuzet" : lang === 'de' ? "Rechnung wurde erfolgreich heruntergeladen" : "Invoice has been successfully downloaded",
+        title: "Uspjeh",
+        description: "Račun je uspješno generiran",
       });
     } catch (error) {
-      console.error("Pogreška pri generiranju PDF-a:", error);
+      console.error("Greška pri generiranju PDF-a:", error);
       toast({
         title: "Greška pri generiranju računa",
-        description: "Došlo je do pogreške prilikom generiranja PDF računa.",
+        description: "Došlo je do pogreške prilikom generiranja računa. Pokušajte ponovno kasnije.",
         variant: "destructive",
       });
     } finally {
       setGeneratingInvoice(false);
     }
   };
-  
-  // Prijevodi za UI
-  const translations = {
-    hr: {
-      downloadInvoice: "Preuzmi račun",
-      generateInvoice: "Generiraj račun",
-      selectLanguage: "Odaberi jezik",
-      croatian: "Hrvatski",
-      english: "Engleski",
-      german: "Njemački",
-      orderDetails: "Detalji narudžbe",
-      orderNumber: "Broj narudžbe",
-      orderDate: "Datum narudžbe",
-      orderStatus: "Status narudžbe",
-      paymentMethod: "Način plaćanja",
-      paymentStatus: "Status plaćanja",
-      shippingAddress: "Adresa za dostavu",
-      customerNote: "Napomena kupca",
-      orderItems: "Stavke narudžbe",
-      product: "Proizvod",
-      quantity: "Količina",
-      price: "Cijena",
-      total: "Ukupno",
-      back: "Natrag na moje narudžbe",
-      includingVAT: "Prikazane cijene uključuju PDV."
-    },
-    en: {
-      downloadInvoice: "Download Invoice",
-      generateInvoice: "Generate Invoice",
-      selectLanguage: "Select Language",
-      croatian: "Croatian",
-      english: "English",
-      german: "German",
-      orderDetails: "Order Details",
-      orderNumber: "Order Number",
-      orderDate: "Order Date",
-      orderStatus: "Order Status",
-      paymentMethod: "Payment Method",
-      paymentStatus: "Payment Status",
-      shippingAddress: "Shipping Address",
-      customerNote: "Customer Note",
-      orderItems: "Order Items",
-      product: "Product",
-      quantity: "Quantity",
-      price: "Price",
-      total: "Total",
-      back: "Back to My Orders",
-      includingVAT: "Prices shown include VAT."
-    },
-    de: {
-      downloadInvoice: "Rechnung herunterladen",
-      generateInvoice: "Rechnung generieren",
-      selectLanguage: "Sprache auswählen",
-      croatian: "Kroatisch",
-      english: "Englisch",
-      german: "Deutsch",
-      orderDetails: "Bestelldetails",
-      orderNumber: "Bestellnummer",
-      orderDate: "Bestelldatum",
-      orderStatus: "Bestellstatus",
-      paymentMethod: "Zahlungsart",
-      paymentStatus: "Zahlungsstatus",
-      shippingAddress: "Lieferadresse",
-      customerNote: "Kundenhinweis",
-      orderItems: "Bestellpositionen",
-      product: "Produkt",
-      quantity: "Menge",
-      price: "Preis",
-      total: "Gesamt",
-      back: "Zurück zu Meinen Bestellungen",
-      includingVAT: "Angezeigte Preise inklusive MwSt."
-    }
-  };
-  
-  // Lokalizirani tekstovi
-  const t = translations[selectedLanguage];
-  
-  // Provjera stanja učitavanja i greške
+
   if (isLoading) {
     return (
       <div className="container mx-auto py-10 flex justify-center items-center min-h-[60vh]">
@@ -422,63 +701,54 @@ export default function OrderDetailsPage() {
 
   if (error || !orderWithItems) {
     return (
-      <div className="container mx-auto py-10">
-        <Card>
-          <CardHeader>
-            <CardTitle>Greška</CardTitle>
-            <CardDescription>
-              Narudžba nije pronađena ili nemate pristup ovoj narudžbi.
-            </CardDescription>
-          </CardHeader>
-          <CardFooter>
-            <Button onClick={navigateBack} variant="outline">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Natrag na moje narudžbe
-            </Button>
-          </CardFooter>
-        </Card>
+      <div className="container mx-auto py-10 text-center">
+        <h2 className="text-2xl font-bold mb-4">Greška pri učitavanju narudžbe</h2>
+        <p className="mb-4">Došlo je do greške prilikom učitavanja podataka o narudžbi.</p>
+        <Button variant="outline" onClick={() => navigate('/orders')}>
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Povratak na popis narudžbi
+        </Button>
       </div>
     );
   }
 
-  // Izračun ukupne cijene svake stavke
-  const orderItemsWithTotals = orderItems?.map(item => {
-    const itemPrice = typeof item.price === 'number' ? item.price : parseFloat(item.price);
-    const itemTotal = itemPrice * item.quantity;
-    return { ...item, total: itemTotal };
-  }) || [];
-
+  const totalItems = orderWithItems.items.reduce((sum, item) => sum + item.quantity, 0);
+  
   return (
     <>
       <Helmet>
-        <title>Detalji narudžbe #{orderWithItems.id} | Kerzenwelt by Dani</title>
+        <title>{`Narudžba #${orderWithItems.id} | Kerzenwelt by Dani`}</title>
+        <meta name="description" content={`Detalji narudžbe #${orderWithItems.id} - Kerzenwelt by Dani`} />
       </Helmet>
       
       <Header />
       
-      <div className="container mx-auto py-10">
-        <div className="flex flex-col sm:flex-row justify-between items-start mb-6">
-          <Button 
-            onClick={navigateBack}
-            variant="outline" 
-            className="mb-4 sm:mb-0"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            {t.back}
-          </Button>
+      <div className="container mx-auto py-8">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">
+            Narudžba #{orderWithItems.id}
+            <OrderStatusBadge status={orderWithItems.status} />
+          </h1>
           
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Select
-              value={selectedLanguage}
-              onValueChange={(value) => setSelectedLanguage(value as "hr" | "en" | "de")}
+          <Button variant="outline" onClick={() => navigate('/orders')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Natrag na narudžbe
+          </Button>
+        </div>
+        
+        {orderWithItems && (
+          <div className="flex items-center gap-3">
+            <Select 
+              value={selectedLanguage} 
+              onValueChange={(value: 'hr' | 'en' | 'de') => setSelectedLanguage(value)}
             >
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder={t.selectLanguage} />
+                <SelectValue placeholder="Jezik računa" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="hr">{t.croatian}</SelectItem>
-                <SelectItem value="en">{t.english}</SelectItem>
-                <SelectItem value="de">{t.german}</SelectItem>
+                <SelectItem value="hr">Hrvatski</SelectItem>
+                <SelectItem value="en">Engleski</SelectItem>
+                <SelectItem value="de">Njemački</SelectItem>
               </SelectContent>
             </Select>
             
@@ -489,118 +759,284 @@ export default function OrderDetailsPage() {
               {generatingInvoice ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  {t.generateInvoice}...
+                  Generiranje...
                 </>
               ) : (
                 <>
-                  <Download className="h-4 w-4 mr-2" />
-                  {orderWithItems.invoice ? t.downloadInvoice : t.generateInvoice}
+                  <FileText className="h-4 w-4 mr-2" />
+                  Preuzmi račun
                 </>
               )}
             </Button>
           </div>
-        </div>
+        )}
         
-        <Card>
-          <CardHeader>
-            <CardTitle>{t.orderDetails}</CardTitle>
-            <CardDescription>
-              {t.orderNumber}: #{orderWithItems.id} 
-              {orderWithItems.invoice && (
-                <> | {t.downloadInvoice}: {orderWithItems.invoice.invoiceNumber}</>
-              )}
-            </CardDescription>
-          </CardHeader>
-          
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div>
-                <h3 className="text-lg font-semibold mb-2">{t.orderDetails}</h3>
-                <div className="space-y-2">
-                  <div>
-                    <span className="font-medium">{t.orderDate}:</span>{" "}
-                    {format(new Date(orderWithItems.createdAt), 'dd.MM.yyyy.')}
-                  </div>
-                  <div>
-                    <span className="font-medium">{t.orderStatus}:</span>{" "}
-                    <OrderStatusBadge status={orderWithItems.status} />
-                  </div>
-                  <div>
-                    <span className="font-medium">{t.paymentMethod}:</span>{" "}
-                    {getPaymentMethodText(orderWithItems.paymentMethod)}
-                  </div>
-                  <div>
-                    <span className="font-medium">{t.paymentStatus}:</span>{" "}
-                    {orderWithItems.paymentStatus === 'completed' ? 'Plaćeno' : 'Na čekanju'}
-                  </div>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Podaci o narudžbi</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Datum:</span>
+                <span>{format(new Date(orderWithItems.createdAt), 'dd.MM.yyyy. HH:mm')}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Status:</span>
+                <span className="flex items-center">
+                  <OrderStatusIcon status={orderWithItems.status} />
+                  <span className="ml-2">{getStatusText(orderWithItems.status)}</span>
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Ukupno stavki:</span>
+                <span>{totalItems}</span>
               </div>
               
-              <div>
-                <h3 className="text-lg font-semibold mb-2">{t.shippingAddress}</h3>
-                <div className="space-y-1">
-                  {orderWithItems.shippingFullName && <div>{orderWithItems.shippingFullName}</div>}
-                  {orderWithItems.shippingAddress && <div>{orderWithItems.shippingAddress}</div>}
-                  {orderWithItems.shippingPostalCode && orderWithItems.shippingCity && (
-                    <div>{orderWithItems.shippingPostalCode} {orderWithItems.shippingCity}</div>
-                  )}
-                  {orderWithItems.shippingCountry && <div>{orderWithItems.shippingCountry}</div>}
-                  {orderWithItems.shippingPhone && <div>{orderWithItems.shippingPhone}</div>}
+              {orderWithItems.invoice && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{translate('invoiceNumber')}:</span>
+                  <span className="font-medium text-primary">{orderWithItems.invoice.invoiceNumber}</span>
                 </div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Način plaćanja:</span>
+                <span>
+                  {orderWithItems.paymentMethod ? getPaymentMethodText(orderWithItems.paymentMethod, 'hr') : 'Nije specificirano'}
+                </span>
               </div>
-            </div>
-            
-            {orderWithItems.customerNote && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-2">{t.customerNote}</h3>
-                <p>{orderWithItems.customerNote}</p>
+              {orderWithItems.paymentStatus && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Status plaćanja:</span>
+                  <span>{orderWithItems.paymentStatus === 'completed' ? 'Plaćeno' : 'Na čekanju'}</span>
+                </div>
+              )}
+              {orderWithItems.transactionId && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">ID transakcije:</span>
+                  <span className="font-mono text-xs">{orderWithItems.transactionId}</span>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Dostava</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {orderWithItems.shippingFullName && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Ime:</span>
+                  <span>{orderWithItems.shippingFullName}</span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Adresa:</span>
+                <span>{orderWithItems.shippingAddress || 'N/A'}</span>
               </div>
-            )}
-            
-            <Separator className="my-6" />
-            
-            <h3 className="text-lg font-semibold mb-4">{t.orderItems}</h3>
-            
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Grad:</span>
+                <span>{orderWithItems.shippingCity || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Poštanski broj:</span>
+                <span>{orderWithItems.shippingPostalCode || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Država:</span>
+                <span>{orderWithItems.shippingCountry || 'N/A'}</span>
+              </div>
+              {orderWithItems.shippingPhone && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Telefon:</span>
+                  <span>{orderWithItems.shippingPhone}</span>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          
+          {orderWithItems.customerNote && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Napomena kupca</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="p-3 bg-neutral-50 rounded-md border border-neutral-100 text-neutral-800">
+                  {orderWithItems.customerNote}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Sažetak cijene</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Podzbir:</span>
+                <span>{orderWithItems.subtotal || '0.00'} €</span>
+              </div>
+              {orderWithItems.discountAmount && parseFloat(orderWithItems.discountAmount) > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Popust:</span>
+                  <span className="text-red-500">-{orderWithItems.discountAmount} €</span>
+                </div>
+              )}
+              {orderWithItems.shippingCost && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Dostava:</span>
+                  <span>{orderWithItems.shippingCost} €</span>
+                </div>
+              )}
+              {orderWithItems.taxAmount && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">PDV (25%):</span>
+                  <span>{orderWithItems.taxAmount} €</span>
+                </div>
+              )}
+              <Separator />
+              <div className="flex justify-between font-semibold">
+                <span>Ukupno:</span>
+                <span>{orderWithItems.total} €</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>Stavke narudžbe</CardTitle>
+            <CardDescription>
+              {orderWithItems.items.length} {orderWithItems.items.length === 1 ? 'proizvod' : 'proizvoda'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[50%]">{t.product}</TableHead>
-                  <TableHead className="text-center">{t.quantity}</TableHead>
-                  <TableHead className="text-right">{t.price}</TableHead>
-                  <TableHead className="text-right">{t.total}</TableHead>
+                  <TableHead className="w-[80px]"></TableHead>
+                  <TableHead className="w-[200px]">Proizvod</TableHead>
+                  <TableHead className="w-[250px]">Detalji</TableHead>
+                  <TableHead className="text-center">Količina</TableHead>
+                  <TableHead className="text-right">Cijena</TableHead>
+                  <TableHead className="text-right">Ukupno</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {orderItemsWithTotals.map((item) => {
-                  const itemTotal = parseFloat(typeof item.price === 'string' ? item.price : item.price.toString()) * item.quantity;
+                {orderWithItems.items.map((item) => {
+                  const productName = item.product?.name || 'Proizvod';
+                  const scent = item.scentName || '';
+                  const color = item.colorName || '';
+                  const itemTotal = parseFloat(item.price) * item.quantity;
+                  const imageUrl = item.product?.imageUrl || null;
                   
                   return (
                     <TableRow key={item.id}>
-                      <TableCell className="align-top">
-                        <div className="font-medium">{item.productName}</div>
-                        <div className="flex flex-col text-sm text-muted-foreground mt-1">
-                          {item.scentName && (
-                            <span>Miris: {item.scentName}</span>
+                      <TableCell className="align-middle">
+                        {imageUrl && (
+                          <div className="relative h-16 w-16 rounded-md overflow-hidden">
+                            <img 
+                              src={imageUrl} 
+                              alt={productName} 
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell className="align-middle">
+                        <div className="font-medium">{productName}</div>
+                      </TableCell>
+                      <TableCell className="align-middle">
+                        <div className="flex flex-col gap-1">
+                          {/* Prikaz mirisa */}
+                          {scent && (
+                            <div className="inline-flex items-center text-sm bg-amber-50 rounded-full px-2 py-0.5 border border-amber-100">
+                              <span className="font-medium text-amber-800 mr-1">{translate('scent')}:</span> {scent}
+                            </div>
                           )}
                           
-                          {item.colorName && (
-                            <div className="flex flex-wrap items-center gap-1">
-                              <span>
-                                {item.hasMultipleColors ? 'Boje:' : 'Boja:'}
-                              </span>
-                              {/* Ako imamo više boja, razdvojene su zarezom */}
-                              {item.colorName.split(',').map((color, index) => {
-                                const trimmedColor = color.trim();
-                                // Traži po imenu boje među svim proizvodima
+                          {/* Prikaz jedne boje */}
+                          {color && !item.hasMultipleColors && (
+                            <div className="inline-flex items-center text-sm bg-blue-50 rounded-full px-2 py-0.5 border border-blue-100">
+                              <span className="font-medium text-blue-800 mr-1">{translate('color')}:</span>
+                              {products?.flatMap(p => 
+                                p.id === item.productId ? (p as any).colors || [] : []
+                              ).find(c => c?.name === color)?.hexValue ? (
+                                <div 
+                                  className="w-3 h-3 rounded-full inline-block border border-gray-200 mx-1" 
+                                  style={{ backgroundColor: products?.flatMap(p => 
+                                    p.id === item.productId ? (p as any).colors || [] : []
+                                  ).find(c => c?.name === color)?.hexValue }}
+                                />
+                              ) : null}
+                              {color}
+                            </div>
+                          )}
+                          
+                          {/* Prikaz višestrukih boja */}
+                          {item.hasMultipleColors && item.colorName && (
+                            <div className="flex flex-col gap-1">
+                              <div className="inline-flex items-center text-sm bg-purple-50 rounded-full px-2 py-0.5 border border-purple-100">
+                                <span className="font-medium text-purple-800 mr-1">{translate('colors')}:</span>
+                                {item.colorName}
+                              </div>
+                              
+                              {/* Prikaz indikatori boja */}
+                              {item.colorIds && (
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {(() => {
+                                    try {
+                                      // Pokušaj parsirati colorIds string
+                                      const colorIdArray = JSON.parse(item.colorIds);
+                                      
+                                      // Ako je uspješno parsirano, prikaži indikatore boja
+                                      if (Array.isArray(colorIdArray)) {
+                                        return colorIdArray.map((colorId) => {
+                                          // Pronađi informacije o boji u proizvodima
+                                          const colorInfo = products?.flatMap(p => 
+                                            p.id === item.productId ? (p as any).colors || [] : []
+                                          ).find(c => c?.id === colorId);
+                                          
+                                          if (colorInfo?.hexValue) {
+                                            return (
+                                              <div 
+                                                key={colorId}
+                                                className="w-4 h-4 rounded-full inline-block border border-gray-300" 
+                                                style={{ backgroundColor: colorInfo.hexValue }}
+                                                title={colorInfo.name}
+                                              />
+                                            );
+                                          }
+                                          return null;
+                                        });
+                                      }
+                                    } catch (e) {
+                                      console.error("Greška pri parsiranju colorIds:", e);
+                                    }
+                                    return null;
+                                  })()}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          
+                          {/* Falback za stare načine prikaza (ako postoji) */}
+                          {item.hasMultipleColors && color && !item.colorIds && (
+                            <div className="inline-flex items-center text-sm bg-blue-50 rounded-full px-2 py-0.5 border border-blue-100 flex-wrap">
+                              <span className="font-medium text-blue-800 mr-1">{translate('colors')}:</span>
+                              {color.split(',').map((colorName, index) => {
+                                const trimmedColor = colorName.trim();
                                 const productColor = products?.flatMap(p => 
-                                  p.colors?.filter(c => c.name.toLowerCase() === trimmedColor.toLowerCase()) || []
-                                )[0];
+                                  p.id === item.productId ? (p as any).colors || [] : []
+                                ).find(c => c?.name === trimmedColor);
                                 
                                 return (
-                                  <span key={index} className="flex items-center gap-1">
-                                    {productColor && (
-                                      <span 
-                                        className="inline-block w-3 h-3 rounded-full" 
+                                  <span key={index} className="inline-flex items-center mx-0.5">
+                                    {productColor?.hexValue && (
+                                      <div 
+                                        className="w-3 h-3 rounded-full inline-block border border-gray-200 mr-0.5" 
                                         style={{ backgroundColor: productColor.hexValue }}
                                       />
                                     )}
@@ -623,7 +1059,7 @@ export default function OrderDetailsPage() {
           </CardContent>
           <CardFooter className="border-t p-4 flex justify-end">
             <div className="text-sm text-muted-foreground">
-              {t.includingVAT}
+              Prikazane cijene uključuju PDV.
             </div>
           </CardFooter>
         </Card>

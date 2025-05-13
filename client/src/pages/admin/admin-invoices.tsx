@@ -69,7 +69,7 @@ import { Order, Product, Scent, Color } from "@shared/schema";
 import logoImg from "@assets/Kerzenwelt by Dani.png";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import DocumentManager from "@/components/admin/DocumentManager";
-import { generateInvoicePdf, getPaymentMethodText } from "@/lib/generate-invoice-pdf";
+import { generateInvoicePdf, getPaymentMethodText } from "./new-invoice-generator";
 
 // Pomoćna funkcija za generiranje broja fakture
 const createInvoiceNumber = async (orderId?: number) => {
@@ -239,8 +239,8 @@ export default function AdminInvoices() {
   
   // Funkcija za generiranje PDF-a
   const generatePdf = (data: any) => {
-    // Koristimo zajedničku funkciju za generiranje PDF-a iz lib/generate-invoice-pdf.ts
-    generateInvoicePdf(data);
+    // Koristimo novu metodu iz new-invoice-generator.ts koja daje identičan izgled kao u korisničkom dijelu
+    generateInvoicePdf(data, toast);
   };
   
   // Dodaj proizvod u listu
@@ -623,15 +623,13 @@ export default function AdminInvoices() {
           country: invoice.customerCountry || "Hrvatska",
           email: invoice.customerEmail || "",
           phone: invoice.customerPhone || "",
-          customerNote: invoice.customerNote || "",
           items: data.items || [], // Koristimo stavke dohvaćene sa servera
           language: language, // Koristimo odabrani jezik
           paymentMethod: invoice.paymentMethod || "cash" // Koristimo način plaćanja iz postojećeg računa
         };
         
         console.log("Priprema podataka za PDF:", invoiceData);
-        // Koristimo zajedničku funkciju za generiranje PDF-a koja je identična onoj u korisničkom sučelju
-        generateInvoicePdf(invoiceData);
+        generatePdf(invoiceData);
       })
       .catch(error => {
         console.error("Greška kod dohvaćanja stavki računa:", error);
@@ -708,7 +706,12 @@ export default function AdminInvoices() {
                           <TableCell>{invoice.customerName}</TableCell>
                           <TableCell>{invoice.total} €</TableCell>
                           <TableCell>
-                            {getPaymentMethodText(invoice.paymentMethod, "hr")}
+                            {getPaymentMethodText(invoice.paymentMethod, "hr", {
+                              cash: "Gotovina",
+                              bank: "Bankovni prijenos",
+                              paypal: "PayPal",
+                              credit_card: "Kreditna kartica"
+                            })}
                           </TableCell>
                           <TableCell>
                             <div className="flex space-x-2">
