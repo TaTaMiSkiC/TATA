@@ -258,6 +258,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'testimonials.browseProducts': 'Pregledaj proizvode i dodaj recenziju',
     'testimonials.loginToReview': 'Prijavi se i dodaj recenziju',
     
+    // Dialog komponente
+    'dialog.areYouSure': 'Jeste li sigurni?',
+    'dialog.cannotUndo': 'Ova radnja se ne može poništiti.',
+    'dialog.delete': 'Izbriši',
+    'dialog.cancel': 'Odustani',
+    'dialog.confirm': 'Potvrdi',
+    
     // Newsletter
     'newsletter.title': 'Pretplatite se na novosti',
     'newsletter.description': 'Budite prvi koji će saznati o našim novim proizvodima, posebnim ponudama i popustima. Pretplatite se na naš newsletter i dobijte 10% popusta na vašu prvu narudžbu.',
@@ -519,6 +526,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'testimonials.browseProducts': 'Sfoglia i prodotti e aggiungi una recensione',
     'testimonials.loginToReview': 'Accedi e aggiungi una recensione',
     
+    // Dialog components
+    'dialog.areYouSure': 'Sei sicuro?',
+    'dialog.cannotUndo': 'Questa azione non può essere annullata.',
+    'dialog.delete': 'Elimina',
+    'dialog.cancel': 'Annulla',
+    'dialog.confirm': 'Conferma',
+    
     // Newsletter
     'newsletter.title': 'Iscriviti alla nostra newsletter',
     'newsletter.description': 'Sii il primo a conoscere i nostri nuovi prodotti, offerte speciali e sconti. Iscriviti alla nostra newsletter e ottieni il 10% di sconto sul tuo primo ordine.',
@@ -645,6 +659,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'testimonials.empty': 'Trenutno nimamo ocen. Bodite prvi, ki bo delil svojo izkušnjo!',
     'testimonials.browseProducts': 'Preglejte izdelke in dodajte oceno',
     'testimonials.loginToReview': 'Prijavite se in dodajte oceno',
+    
+    // Dialog components
+    'dialog.areYouSure': 'Ali ste prepričani?',
+    'dialog.cannotUndo': 'Te akcije ni mogoče razveljaviti.',
+    'dialog.delete': 'Izbriši',
+    'dialog.cancel': 'Prekliči',
+    'dialog.confirm': 'Potrdi',
     
     // Newsletter
     'newsletter.title': 'Naročite se na naše novice',

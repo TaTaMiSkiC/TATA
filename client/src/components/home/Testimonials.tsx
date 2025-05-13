@@ -134,9 +134,9 @@ export default function Testimonials() {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Jeste li sigurni?</AlertDialogTitle>
+                            <AlertDialogTitle>{t('dialog.areYouSure')}</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Ova akcija je nepovratna. Recenzija će biti trajno izbrisana iz sustava.
+                              {t('dialog.cannotUndo')}
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
