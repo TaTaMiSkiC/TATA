@@ -18,7 +18,8 @@ import {
   pages,
   settings,
   invoices,
-  invoiceItems
+  invoiceItems,
+  pageVisits
 } from "@shared/schema";
 
 import type { 
@@ -57,6 +58,8 @@ import type {
   InsertInvoice,
   InvoiceItem, 
   InsertInvoiceItem,
+  PageVisit,
+  InsertPageVisit,
   SelectedColorInfo
 } from "@shared/schema";
 

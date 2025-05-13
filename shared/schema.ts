@@ -546,3 +546,21 @@ export const companyDocumentsRelations = relations(companyDocuments, ({ one }) =
     references: [users.id],
   }),
 }));
+
+// Tablica za praćenje posjeta na stranici
+export const pageVisits = pgTable("page_visits", {
+  id: serial("id").primaryKey(),
+  path: text("path").notNull(),
+  count: integer("count").default(0).notNull(),
+  lastVisited: timestamp("last_visited").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertPageVisitSchema = createInsertSchema(pageVisits).omit({
+  id: true,
+  createdAt: true,
+  lastVisited: true,
+});
+
+export type PageVisit = typeof pageVisits.$inferSelect;
+export type InsertPageVisit = z.infer<typeof insertPageVisitSchema>;
