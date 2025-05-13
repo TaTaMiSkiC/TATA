@@ -140,7 +140,9 @@ export default function Testimonials() {
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel onClick={() => setReviewToDelete(null)}>Odustani</AlertDialogCancel>
+                            <AlertDialogCancel onClick={() => setReviewToDelete(null)}>
+                              {t('dialog.cancel')}
+                            </AlertDialogCancel>
                             <AlertDialogAction 
                               onClick={() => {
                                 if (reviewToDelete) {
@@ -152,7 +154,7 @@ export default function Testimonials() {
                               {deleteReviewMutation.isPending ? (
                                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
                               ) : null}
-                              Izbriši
+                              {t('dialog.delete')}
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
