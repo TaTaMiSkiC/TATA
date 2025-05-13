@@ -635,7 +635,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                 htmlFor="featured"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Istaknuti proizvod
+                {t("admin.product.featuredProduct")}
               </label>
             </div>
             
@@ -682,10 +682,10 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                 htmlFor="active"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Proizvod aktivan
+                {t("admin.product.productActive")}
               </label>
               <span className="text-xs text-muted-foreground ml-2">
-                (Ako je isključeno, proizvod neće biti vidljiv kupcima)
+                {t("admin.product.productActiveHint")}
               </span>
             </div>
             
@@ -793,11 +793,11 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               onClick={() => form.reset()}
               disabled={isSubmitting}
             >
-              Poništi
+              {t("admin.product.cancel")}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
-              {product ? "Spremi promjene" : "Kreiraj proizvod"}
+              {product ? t("admin.product.saveChanges") : t("admin.product.createProduct")}
             </Button>
           </div>
         </form>
