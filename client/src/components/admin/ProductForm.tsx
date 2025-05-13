@@ -456,9 +456,9 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                         ) : (
                           <>
                             <ImageIcon className="h-10 w-10 text-muted-foreground mb-2" />
-                            <p className="text-sm font-medium mb-1">Kliknite za upload</p>
-                            <p className="text-xs text-muted-foreground">JPEG, PNG, GIF - max 10MB</p>
-                            <p className="text-xs text-muted-foreground mt-1">(Slika će biti smanjena na 800x800px)</p>
+                            <p className="text-sm font-medium mb-1">{t("admin.product.clickToUpload")}</p>
+                            <p className="text-xs text-muted-foreground">{t("admin.product.imageFormats")}</p>
+                            <p className="text-xs text-muted-foreground mt-1">({t("admin.product.imageResizeInfo")})</p>
                           </>
                         )}
                       </div>
@@ -495,10 +495,10 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               name="description"
               render={({ field }) => (
                 <FormItem className="col-span-full">
-                  <FormLabel>Opis *</FormLabel>
+                  <FormLabel>{t("admin.product.description")} *</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Opišite proizvod..." 
+                      placeholder={t("admin.product.descriptionPlaceholder")} 
                       className="min-h-32" 
                       {...field} 
                     />
@@ -514,10 +514,10 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               name="burnTime"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Vrijeme gorenja</FormLabel>
+                  <FormLabel>{t("admin.product.burnTime")}</FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="Npr. 40-45 sati" 
+                      placeholder={t("admin.product.burnTimePlaceholder")} 
                       {...field} 
                       value={field.value || ""}
                     />
@@ -533,10 +533,10 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               name="dimensions"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Dimenzije</FormLabel>
+                  <FormLabel>{t("admin.product.dimensions")}</FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="Npr. 10 x 8 x 8 cm" 
+                      placeholder={t("admin.product.dimensionsPlaceholder")} 
                       {...field} 
                       value={field.value || ""}
                     />
