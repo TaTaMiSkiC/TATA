@@ -11,18 +11,22 @@ import {
 import { useCart } from "@/hooks/use-cart";
 import { useToast } from "@/hooks/use-toast";
 import ProductViewModal from "@/components/product/ProductViewModal";
+import { useLanguage } from "@/hooks/use-language";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const { t, translateText } = useLanguage();
   const { addToCart } = useCart();
   const { toast } = useToast();
   const [isHovered, setIsHovered] = useState(false);
   const [productViewModalOpen, setProductViewModalOpen] = useState(false);
   
-  const { id, name, price, imageUrl = '', categoryId } = product;
+  // Prevedi naziv proizvoda i ostala tekstualna svojstva
+  const { id, price, imageUrl = '', categoryId } = product;
+  const name = translateText(product.name, "de");
   
   // Mock data for ratings
   const rating = 4.5;
@@ -52,7 +56,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {product.stock < 5 && (
           <div className="absolute top-3 left-3">
             <span className="bg-error text-white text-xs font-bold py-1 px-2 rounded">
-              ZADNJI KOMADI
+              {translateText("ZADNJI KOMADI", "hr")}
             </span>
           </div>
         )}
@@ -97,9 +101,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         </Link>
         
         <div className="text-sm text-muted-foreground mb-2">
-          {categoryId === 1 ? "Mirisna svijeća" : 
-           categoryId === 2 ? "Dekorativna svijeća" : 
-           categoryId === 3 ? "Personalizirana svijeća" : "Svijeća"}
+          {categoryId === 1 ? translateText("Mirisna svijeća", "hr") : 
+           categoryId === 2 ? translateText("Dekorativna svijeća", "hr") : 
+           categoryId === 3 ? translateText("Personalizirana svijeća", "hr") : translateText("Svijeća", "hr")}
         </div>
         
         <div className="flex items-center mb-3">
@@ -124,7 +128,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             onClick={handleShowOptions}
             className="text-sm bg-primary hover:bg-opacity-90 text-white py-1 px-3 rounded transition"
           >
-            Odaberi opcije
+            {translateText("Odaberi opcije", "hr")}
           </Button>
         </div>
       </CardContent>

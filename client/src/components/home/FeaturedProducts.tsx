@@ -6,13 +6,16 @@ import ProductGrid from "../products/ProductGrid";
 import { useLanguage } from "@/hooks/use-language";
 
 export default function FeaturedProducts() {
-  const { t } = useLanguage();
-  const { data: products, isLoading, error } = useQuery<Product[]>({
+  const { t, translateArray } = useLanguage();
+  const { data: rawProducts, isLoading, error } = useQuery<Product[]>({
     queryKey: ["/api/products/featured"],
   });
   
   // Dodatno filtriranje neaktivnih proizvoda na klijentskoj strani
-  const activeProducts = products?.filter(product => product.active !== false) || [];
+  const rawActiveProducts = rawProducts?.filter(product => product.active !== false) || [];
+  
+  // Automatski prevedeni proizvodi na trenutni jezik
+  const activeProducts = translateArray(rawActiveProducts, "de");
 
   return (
     <section className="py-16 bg-muted/30">

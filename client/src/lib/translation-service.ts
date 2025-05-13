@@ -137,6 +137,52 @@ const translationDictionaries: Record<string, Record<Language, string>> = {
     sl: "Sivka"
   },
   
+  // Kategorije proizvoda/svijeća
+  "Mirisna svijeća": {
+    de: "Duftkerze",
+    hr: "Mirisna svijeća",
+    en: "Scented Candle",
+    it: "Candela profumata",
+    sl: "Dišeča sveča"
+  },
+  "Dekorativna svijeća": {
+    de: "Dekorative Kerze",
+    hr: "Dekorativna svijeća",
+    en: "Decorative Candle",
+    it: "Candela decorativa",
+    sl: "Dekorativna sveča"
+  },
+  "Personalizirana svijeća": {
+    de: "Personalisierte Kerze",
+    hr: "Personalizirana svijeća",
+    en: "Personalized Candle",
+    it: "Candela personalizzata",
+    sl: "Personalizirana sveča"
+  },
+  "Svijeća": {
+    de: "Kerze",
+    hr: "Svijeća",
+    en: "Candle",
+    it: "Candela",
+    sl: "Sveča"
+  },
+  
+  // Tekst za gumbe i oznake
+  "Odaberi opcije": {
+    de: "Optionen wählen",
+    hr: "Odaberi opcije",
+    en: "Choose options",
+    it: "Scegli opzioni",
+    sl: "Izberi možnosti"
+  },
+  "ZADNJI KOMADI": {
+    de: "LETZTE STÜCKE",
+    hr: "ZADNJI KOMADI",
+    en: "LAST PIECES",
+    it: "ULTIMI PEZZI",
+    sl: "ZADNJI KOSI"
+  },
+  
   // Status narudžbe
   "In Bearbeitung": {
     de: "In Bearbeitung",
@@ -202,13 +248,16 @@ export function translateObject<T extends Record<string, any>>(
   targetLanguage: Language, 
   sourceLanguage?: Language
 ): T {
-  const result = { ...obj };
+  const result = { ...obj } as T;
   
   for (const key in result) {
-    if (typeof result[key] === 'string') {
-      result[key] = translateText(result[key], targetLanguage, sourceLanguage);
-    } else if (typeof result[key] === 'object' && result[key] !== null) {
-      result[key] = translateObject(result[key], targetLanguage, sourceLanguage);
+    if (Object.prototype.hasOwnProperty.call(result, key)) {
+      if (typeof result[key] === 'string') {
+        // Koristeći as any sprječavamo type error
+        (result as any)[key] = translateText(result[key], targetLanguage, sourceLanguage);
+      } else if (typeof result[key] === 'object' && result[key] !== null) {
+        (result as any)[key] = translateObject(result[key], targetLanguage, sourceLanguage);
+      }
     }
   }
   
