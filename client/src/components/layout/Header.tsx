@@ -193,22 +193,22 @@ export default function Header() {
                   {user.isAdmin && (
                     <DropdownMenuItem>
                       <div className="cursor-pointer w-full" onClick={() => window.location.href = '/admin'}>
-                        Admin Panel
+                        {t('nav.adminPanel')}
                       </div>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem>
                     <div className="cursor-pointer w-full" onClick={() => window.location.href = '/profile'}>
-                      Moj profil
+                      {t('nav.myProfile')}
                     </div>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link href="/orders" className="cursor-pointer w-full">
-                      Moje narudžbe
+                      {t('nav.myOrders')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>
-                    Odjava
+                    {t('nav.logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

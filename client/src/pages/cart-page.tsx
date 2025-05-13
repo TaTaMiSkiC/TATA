@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { useCart } from "@/hooks/use-cart";
 import { useAuth } from "@/hooks/use-auth";
 import { useSettings } from "@/hooks/use-settings-api";
+import { useLanguage } from "@/hooks/use-language";
 import { queryClient } from "@/lib/queryClient";
 import { Helmet } from 'react-helmet';
 import Layout from "@/components/layout/Layout";
@@ -30,6 +31,7 @@ import {
 export default function CartPage() {
   const { cartItems, cartTotal, clearCart, isLoading } = useCart();
   const { user } = useAuth();
+  const { t, translateText } = useLanguage();
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [shippingSettings, setShippingSettings] = useState<{
