@@ -51,6 +51,9 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { user, loginMutation, registerMutation } = useAuth();
   const [, navigate] = useLocation();
 
@@ -141,7 +144,30 @@ export default function AuthPage() {
                               <FormItem>
                                 <FormLabel>Lozinka</FormLabel>
                                 <FormControl>
-                                  <Input type="password" placeholder="Unesite lozinku" {...field} />
+                                  <div className="relative">
+                                    <Input 
+                                      type={showLoginPassword ? "text" : "password"} 
+                                      placeholder="Unesite lozinku" 
+                                      {...field}
+                                    />
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                      onClick={() => setShowLoginPassword(!showLoginPassword)}
+                                      tabIndex={-1}
+                                    >
+                                      {showLoginPassword ? (
+                                        <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                      ) : (
+                                        <Eye className="h-4 w-4 text-muted-foreground" />
+                                      )}
+                                      <span className="sr-only">
+                                        {showLoginPassword ? "Sakrij lozinku" : "Prikaži lozinku"}
+                                      </span>
+                                    </Button>
+                                  </div>
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -222,7 +248,30 @@ export default function AuthPage() {
                               <FormItem>
                                 <FormLabel>Lozinka</FormLabel>
                                 <FormControl>
-                                  <Input type="password" placeholder="Unesite lozinku" {...field} />
+                                  <div className="relative">
+                                    <Input 
+                                      type={showRegisterPassword ? "text" : "password"} 
+                                      placeholder="Unesite lozinku" 
+                                      {...field}
+                                    />
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                      onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                                      tabIndex={-1}
+                                    >
+                                      {showRegisterPassword ? (
+                                        <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                      ) : (
+                                        <Eye className="h-4 w-4 text-muted-foreground" />
+                                      )}
+                                      <span className="sr-only">
+                                        {showRegisterPassword ? "Sakrij lozinku" : "Prikaži lozinku"}
+                                      </span>
+                                    </Button>
+                                  </div>
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -236,7 +285,30 @@ export default function AuthPage() {
                               <FormItem>
                                 <FormLabel>Potvrdite lozinku</FormLabel>
                                 <FormControl>
-                                  <Input type="password" placeholder="Potvrdite lozinku" {...field} />
+                                  <div className="relative">
+                                    <Input 
+                                      type={showConfirmPassword ? "text" : "password"} 
+                                      placeholder="Potvrdite lozinku" 
+                                      {...field}
+                                    />
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                      tabIndex={-1}
+                                    >
+                                      {showConfirmPassword ? (
+                                        <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                      ) : (
+                                        <Eye className="h-4 w-4 text-muted-foreground" />
+                                      )}
+                                      <span className="sr-only">
+                                        {showConfirmPassword ? "Sakrij lozinku" : "Prikaži lozinku"}
+                                      </span>
+                                    </Button>
+                                  </div>
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
