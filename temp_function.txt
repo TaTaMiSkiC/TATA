@@ -1,41 +1,60 @@
-async getOrderItems(orderId: number): Promise<OrderItemWithProduct[]> {
-  try {
-    // Prvo dohvati sve stavke narudžbe
-    const items = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId));
     
-    // Dohvati podatke o proizvodima za svaku stavku
-    const result = await Promise.all(
-      items.map(async (item) => {
-        // Dohvati proizvod
-        const [product] = await db.select().from(products).where(eq(products.id, item.productId));
-        
-        // Ako proizvod postoji, koristi njegove podatke, inače koristi podatke iz narudžbe
-        const productData = product || {
-          id: item.productId,
-          name: item.productName || "Proizvod nije dostupan",
-          description: "",
-          price: "0",
-          categoryId: 0,
-          imageUrl: null,
-          featured: false,
-          inventory: 0,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        };
-        
-        // Vrati stavku s podacima o proizvodu
+    try {
+      // Određivanje jezika računa
+      const lang = selectedLanguage || "hr";
+      
+      // Pripremi podatke za zajedničku funkciju za generiranje PDF-a
+      const invoiceItems = orderItems.map(item => {
         return {
-          ...item,
-          product: productData,
+          id: item.id,
+          productName: item.productName || (item.product && item.product.name) || `Proizvod #${item.productId}`,
+          quantity: item.quantity,
+          price: item.price,
           selectedScent: item.scentName,
-          selectedColor: item.colorName
+          selectedColor: item.colorName,
+          hasMultipleColors: item.hasMultipleColors
         };
-      })
-    );
-    
-    return result;
-  } catch (error) {
-    console.error(`Greška prilikom dohvaćanja stavki narudžbe: ${error}`);
-    return [];
-  }
-}
+      });
+      
+      // Dobivanje broja računa iz baze ili generiranje privremenog ako ne postoji
+      let invoiceNumber = '';
+      
+      // Ako postoji faktura u bazi, koristi njen broj
+      if (orderWithItems.invoice && orderWithItems.invoice.invoiceNumber) {
+        invoiceNumber = orderWithItems.invoice.invoiceNumber;
+        console.log("Korištenje stvarnog broja računa iz baze:", invoiceNumber);
+      } else {
+        // Ako nema fakture, koristimo privremeni format s ID-om narudžbe
+        const baseNumber = 450;
+        invoiceNumber = orderWithItems.id < baseNumber ? `i${baseNumber}` : `i${orderWithItems.id}`;
+        console.log("Korištenje privremenog broja računa:", invoiceNumber);
+      }
+      
+      // Pripremi podatke za PDF
+      const invoiceData = {
+        invoiceNumber: invoiceNumber,
+        createdAt: format(new Date(orderWithItems.createdAt), 'yyyy-MM-dd'),
+        firstName: user.firstName || (user.name?.split(' ')[0]) || user.username || 'Korisnik',
+        lastName: user.lastName || (user.name?.split(' ').slice(1).join(' ')) || '',
+        address: orderWithItems.shippingAddress || user.address || '',
+        city: orderWithItems.shippingCity || user.city || '',
+        postalCode: orderWithItems.shippingPostalCode || user.postalCode || '',
+        country: orderWithItems.shippingCountry || user.country || '',
+        email: user.email || '',
+        phone: orderWithItems.shippingPhone || '',
+        customerNote: orderWithItems.customerNote || '',
+        items: invoiceItems,
+        language: lang,
+        paymentMethod: orderWithItems.paymentMethod || 'cash'
+      };
+      
+      console.log('Pripremljeni podaci za PDF:', JSON.stringify(invoiceData));
+      
+      // Koristi zajedničku funkciju za generiranje PDF-a
+      generateInvoicePdf(invoiceData);
+      
+      toast({
+        title: lang === 'hr' ? "Račun je generiran" : lang === 'de' ? "Rechnung wurde generiert" : "Invoice has been generated",
+        description: lang === 'hr' ? "Račun je uspješno preuzet" : lang === 'de' ? "Rechnung wurde erfolgreich heruntergeladen" : "Invoice has been successfully downloaded",
+      });
+      
