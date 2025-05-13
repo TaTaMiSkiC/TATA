@@ -467,7 +467,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                         <div className="rounded-lg overflow-hidden border border-input">
                           <img 
                             src={form.watch('imageUrl') as string} 
-                            alt="Preview" 
+                            alt={t("admin.product.preview")} 
                             className="w-full h-auto object-cover" 
                           />
                         </div>
@@ -482,7 +482,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                 <div className="rounded-lg overflow-hidden border border-input mt-4">
                   <img 
                     src={form.watch('imageUrl') as string} 
-                    alt="Preview" 
+                    alt={t("admin.product.preview")} 
                     className="w-full h-auto object-cover max-h-64" 
                   />
                 </div>
