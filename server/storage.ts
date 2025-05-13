@@ -164,6 +164,7 @@ export class MemStorage implements IStorage {
   private productCollections: ProductCollection[] = [];
   private invoices: Map<number, Invoice> = new Map();
   private invoiceItems: Map<number, InvoiceItem> = new Map();
+  private pageVisits: Map<number, PageVisit> = new Map();
   
   private userIdCounter: number;
   private productIdCounter: number;
@@ -181,6 +182,7 @@ export class MemStorage implements IStorage {
   private productCollectionIdCounter: number;
   private invoiceIdCounter: number;
   private invoiceItemIdCounter: number;
+  private pageVisitIdCounter: number;
   
   sessionStore: SessionStore;
   
@@ -217,6 +219,7 @@ export class MemStorage implements IStorage {
     this.productCollectionIdCounter = 1;
     this.invoiceIdCounter = 1;
     this.invoiceItemIdCounter = 1;
+    this.pageVisitIdCounter = 1;
     
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000, // prune expired entries every 24h
@@ -435,6 +438,60 @@ export class MemStorage implements IStorage {
     
     // Delete the invoice
     this.invoices.delete(id);
+  }
+  
+  // Metode za praćenje posjeta stranica
+  async incrementPageVisit(path: string): Promise<PageVisit> {
+    // Potraži postojeću posjetu za ovu putanju
+    let existingVisit: PageVisit | undefined;
+    
+    for (const visit of this.pageVisits.values()) {
+      if (visit.path === path) {
+        existingVisit = visit;
+        break;
+      }
+    }
+    
+    if (existingVisit) {
+      // Ako posjet postoji, povećaj broj
+      const updatedVisit: PageVisit = {
+        ...existingVisit,
+        count: existingVisit.count + 1,
+        lastVisited: new Date()
+      };
+      
+      this.pageVisits.set(existingVisit.id, updatedVisit);
+      return updatedVisit;
+    } else {
+      // Ako posjet ne postoji, kreiraj novi
+      const id = this.pageVisitIdCounter++;
+      const now = new Date();
+      
+      const newVisit: PageVisit = {
+        id,
+        path,
+        count: 1,
+        firstVisited: now,
+        lastVisited: now
+      };
+      
+      this.pageVisits.set(id, newVisit);
+      return newVisit;
+    }
+  }
+  
+  async getPageVisit(path: string): Promise<PageVisit | undefined> {
+    for (const visit of this.pageVisits.values()) {
+      if (visit.path === path) {
+        return visit;
+      }
+    }
+    return undefined;
+  }
+  
+  async getAllPageVisits(): Promise<PageVisit[]> {
+    return Array.from(this.pageVisits.values())
+      .sort((a, b) => b.count - a.count);
   }
   
   // ... rest of MemStorage implementation
