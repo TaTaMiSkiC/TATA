@@ -1,10 +1,29 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-
 // Podržani jezici
-export type Language = "de" | "hr" | "en" | "it" | "sl";
+export type Language = 'de' | 'hr' | 'en' | 'it' | 'sl';
 
-// Prijevodi po jezicima
-export const translations: Record<Language, Record<string, string>> = {
+// Struktura prijevoda
+export type Translations = {
+  [key: string]: string;
+};
+
+// Tip za višejezični kontekst
+export interface I18nContextType {
+  currentLanguage: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
+}
+
+// Svi podržani jezici s njihovim imenima
+export const languages: Record<Language, string> = {
+  de: 'Deutsch',
+  hr: 'Hrvatski',
+  en: 'English',
+  it: 'Italiano',
+  sl: 'Slovensko'
+};
+
+// Prijevodi po ključevima za sve jezike
+export const translations: Record<Language, Translations> = {
   de: {
     // Navigacija
     'nav.home': 'Startseite',
@@ -52,6 +71,25 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.contact': 'Kontakt',
     'footer.followUs': 'Folgen Sie uns',
     'footer.copyright': '© 2023 Kerzenwelt by Dani. Alle Rechte vorbehalten.',
+    
+    // Korisničke poruke
+    'message.addedToCart': 'Produkt wurde in den Warenkorb gelegt',
+    'message.removedFromCart': 'Produkt wurde aus dem Warenkorb entfernt',
+    'message.errorOccurred': 'Ein Fehler ist aufgetreten',
+    'message.thankYou': 'Vielen Dank für Ihre Bestellung!',
+    
+    // Autentifikacija
+    'auth.login': 'Anmelden',
+    'auth.register': 'Registrieren',
+    'auth.username': 'Benutzername',
+    'auth.password': 'Passwort',
+    'auth.email': 'E-Mail',
+    'auth.firstname': 'Vorname',
+    'auth.lastname': 'Nachname',
+    'auth.submit': 'Absenden',
+    'auth.haveAccount': 'Haben Sie bereits ein Konto?',
+    'auth.noAccount': 'Noch kein Konto?',
+    'auth.forgotPassword': 'Passwort vergessen?',
   },
   
   hr: {
@@ -101,6 +139,25 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.contact': 'Kontakt',
     'footer.followUs': 'Pratite nas',
     'footer.copyright': '© 2023 Kerzenwelt by Dani. Sva prava pridržana.',
+    
+    // Korisničke poruke
+    'message.addedToCart': 'Proizvod je dodan u košaricu',
+    'message.removedFromCart': 'Proizvod je uklonjen iz košarice',
+    'message.errorOccurred': 'Došlo je do pogreške',
+    'message.thankYou': 'Hvala na vašoj narudžbi!',
+    
+    // Autentifikacija
+    'auth.login': 'Prijava',
+    'auth.register': 'Registracija',
+    'auth.username': 'Korisničko ime',
+    'auth.password': 'Lozinka',
+    'auth.email': 'E-mail',
+    'auth.firstname': 'Ime',
+    'auth.lastname': 'Prezime',
+    'auth.submit': 'Pošalji',
+    'auth.haveAccount': 'Već imate račun?',
+    'auth.noAccount': 'Nemate račun?',
+    'auth.forgotPassword': 'Zaboravili ste lozinku?',
   },
   
   en: {
@@ -150,6 +207,25 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.contact': 'Contact',
     'footer.followUs': 'Follow Us',
     'footer.copyright': '© 2023 Kerzenwelt by Dani. All rights reserved.',
+    
+    // User messages
+    'message.addedToCart': 'Product added to cart',
+    'message.removedFromCart': 'Product removed from cart',
+    'message.errorOccurred': 'An error occurred',
+    'message.thankYou': 'Thank you for your order!',
+    
+    // Authentication
+    'auth.login': 'Login',
+    'auth.register': 'Register',
+    'auth.username': 'Username',
+    'auth.password': 'Password',
+    'auth.email': 'Email',
+    'auth.firstname': 'First Name',
+    'auth.lastname': 'Last Name',
+    'auth.submit': 'Submit',
+    'auth.haveAccount': 'Already have an account?',
+    'auth.noAccount': 'Don\'t have an account?',
+    'auth.forgotPassword': 'Forgot Password?',
   },
   
   it: {
@@ -199,6 +275,25 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.contact': 'Contatti',
     'footer.followUs': 'Seguici',
     'footer.copyright': '© 2023 Kerzenwelt by Dani. Tutti i diritti riservati.',
+    
+    // Messaggi all\'utente
+    'message.addedToCart': 'Prodotto aggiunto al carrello',
+    'message.removedFromCart': 'Prodotto rimosso dal carrello',
+    'message.errorOccurred': 'Si è verificato un errore',
+    'message.thankYou': 'Grazie per il tuo ordine!',
+    
+    // Autenticazione
+    'auth.login': 'Accedi',
+    'auth.register': 'Registrati',
+    'auth.username': 'Nome utente',
+    'auth.password': 'Password',
+    'auth.email': 'Email',
+    'auth.firstname': 'Nome',
+    'auth.lastname': 'Cognome',
+    'auth.submit': 'Invia',
+    'auth.haveAccount': 'Hai già un account?',
+    'auth.noAccount': 'Non hai un account?',
+    'auth.forgotPassword': 'Hai dimenticato la password?',
   },
   
   sl: {
@@ -248,73 +343,24 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.contact': 'Kontakt',
     'footer.followUs': 'Sledite nam',
     'footer.copyright': '© 2023 Kerzenwelt by Dani. Vse pravice pridržane.',
+    
+    // Sporočila uporabnikom
+    'message.addedToCart': 'Izdelek dodan v košarico',
+    'message.removedFromCart': 'Izdelek odstranjen iz košarice',
+    'message.errorOccurred': 'Prišlo je do napake',
+    'message.thankYou': 'Hvala za vaše naročilo!',
+    
+    // Avtentikacija
+    'auth.login': 'Prijava',
+    'auth.register': 'Registracija',
+    'auth.username': 'Uporabniško ime',
+    'auth.password': 'Geslo',
+    'auth.email': 'E-pošta',
+    'auth.firstname': 'Ime',
+    'auth.lastname': 'Priimek',
+    'auth.submit': 'Pošlji',
+    'auth.haveAccount': 'Že imate račun?',
+    'auth.noAccount': 'Nimate računa?',
+    'auth.forgotPassword': 'Ste pozabili geslo?',
   }
 };
-
-// Imena jezika za prikaz u izborniku
-export const languageNames: Record<Language, string> = {
-  de: 'Deutsch',
-  hr: 'Hrvatski',
-  en: 'English',
-  it: 'Italiano',
-  sl: 'Slovensko'
-};
-
-interface LanguageContextType {
-  language: Language;
-  setLanguage: (language: Language) => void;
-  t: (key: string) => string;
-}
-
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
-
-// Funkcija za primjenu jezika na HTML element
-function applyLanguage(language: Language) {
-  if (typeof window !== "undefined") {
-    document.documentElement.lang = language;
-  }
-}
-
-// Dohvati početni jezik iz localStorage
-function getInitialLanguage(): Language {
-  if (typeof window === "undefined") return "de"; // Zadani jezik je njemački
-  
-  const savedLanguage = localStorage.getItem("language") as Language;
-  return (savedLanguage && ["de", "hr", "en", "it", "sl"].includes(savedLanguage))
-    ? savedLanguage
-    : "de"; // Zadani jezik je njemački
-}
-
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
-  
-  const setLanguage = (newLanguage: Language) => {
-    localStorage.setItem("language", newLanguage);
-    setLanguageState(newLanguage);
-    applyLanguage(newLanguage);
-  };
-  
-  // Funkcija za prijevod
-  const t = (key: string): string => {
-    return translations[language][key] || key;
-  };
-  
-  // Inicijalno postavi jezik
-  useEffect(() => {
-    applyLanguage(language);
-  }, [language]);
-  
-  return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
-      {children}
-    </LanguageContext.Provider>
-  );
-}
-
-export function useLanguage() {
-  const context = useContext(LanguageContext);
-  if (context === undefined) {
-    throw new Error("useLanguage must be used within a LanguageProvider");
-  }
-  return context;
-}

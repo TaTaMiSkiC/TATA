@@ -20,6 +20,8 @@ import { MobileMenu } from "@/components/ui/mobile-menu";
 import { SearchDialog } from "@/components/layout/SearchDialog";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
+import { useLanguage } from "@/hooks/use-language";
+import LanguageSwitcher from "@/components/language-switcher";
 import logoImage from "@/assets/new-logo.png";
 import { useQuery } from "@tanstack/react-query";
 import { Category } from "@shared/schema";
@@ -29,7 +31,7 @@ export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, logoutMutation } = useAuth();
   const { cartItems } = useCart();
-  // Uklonili smo korištenje teme
+  const { language, t } = useLanguage();
   const [location] = useLocation();
   const dropdownRef = useRef<HTMLDivElement>(null);
   
