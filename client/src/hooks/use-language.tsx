@@ -700,6 +700,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // General admin elements
     "admin.general.uploading": "Uploading...",
     "admin.product.preview": "Preview",
+    "admin.product.imagePreview": "Image preview",
     
     // Navigation
     "nav.home": "Home",

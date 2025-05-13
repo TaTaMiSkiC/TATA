@@ -775,7 +775,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                 <p className="text-sm text-gray-500 mb-2">{t("admin.product.imagePreview")}:</p>
                 <img 
                   src={form.watch("imageUrl")} 
-                  alt="Preview" 
+                  alt={t("admin.product.preview")} 
                   className="max-h-48 rounded-md object-contain mx-auto"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
