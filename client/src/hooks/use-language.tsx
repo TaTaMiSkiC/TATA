@@ -26,6 +26,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.welcome': 'Willkommen bei Kerzenwelt by Dani',
     'home.subtitle': 'Handgemachte Kerzen mit natürlichen Zutaten',
     'home.shopNow': 'Jetzt einkaufen',
+    'home.categories': 'Unsere Kategorien',
+    'home.categoriesSubtitle': 'Entdecken Sie unsere vielfältige Auswahl an handgefertigten Kerzen für jeden Anlass',
     
     // Proizvodi
     'product.addToCart': 'In den Warenkorb',
@@ -78,6 +80,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.welcome': 'Dobrodošli u Kerzenwelt by Dani',
     'home.subtitle': 'Ručno izrađene svijeće od prirodnih sastojaka',
     'home.shopNow': 'Kupite odmah',
+    'home.categories': 'Naše kategorije',
+    'home.categoriesSubtitle': 'Istražite našu bogatu ponudu ručno izrađenih svijeća za svaku priliku',
     
     // Proizvodi
     'product.addToCart': 'Dodaj u košaricu',
@@ -130,6 +134,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.welcome': 'Welcome to Kerzenwelt by Dani',
     'home.subtitle': 'Handmade candles with natural ingredients',
     'home.shopNow': 'Shop Now',
+    'home.categories': 'Our Categories',
+    'home.categoriesSubtitle': 'Explore our rich selection of handmade candles for every occasion',
     
     // Products
     'product.addToCart': 'Add to Cart',
@@ -182,6 +188,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.welcome': 'Benvenuti a Kerzenwelt by Dani',
     'home.subtitle': 'Candele artigianali con ingredienti naturali',
     'home.shopNow': 'Acquista ora',
+    'home.categories': 'Le nostre categorie',
+    'home.categoriesSubtitle': 'Esplora la nostra ricca selezione di candele fatte a mano per ogni occasione',
     
     // Prodotti
     'product.addToCart': 'Aggiungi al carrello',
@@ -234,6 +242,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.welcome': 'Dobrodošli v Kerzenwelt by Dani',
     'home.subtitle': 'Ročno izdelane sveče iz naravnih sestavin',
     'home.shopNow': 'Nakupujte zdaj',
+    'home.categories': 'Naše kategorije',
+    'home.categoriesSubtitle': 'Raziščite našo bogato izbiro ročno izdelanih sveč za vsako priložnost',
     
     // Izdelki
     'product.addToCart': 'Dodaj v košarico',
