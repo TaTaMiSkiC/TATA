@@ -93,7 +93,7 @@ export default function Header() {
               className={`font-body hover:text-[#D4AF37] transition cursor-pointer ${location === '/' ? 'text-[#D4AF37]' : 'text-foreground'}`}
               onClick={() => window.location.href = '/'}
             >
-              Početna
+              {t('nav.home')}
             </div>
             
             <div className="relative dropdown-container" ref={dropdownRef}>
@@ -104,7 +104,7 @@ export default function Header() {
                   setDropdownOpen(!dropdownOpen);
                 }}
               >
-                Proizvodi
+                {t('nav.products')}
                 <ChevronDown size={14} />
               </button>
               <div 
@@ -128,11 +128,11 @@ export default function Header() {
                       className="block px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
                       onClick={() => setDropdownOpen(false)}
                     >
-                      Sve kategorije
+                      {t('nav.allCategories')}
                     </Link>
                   </>
                 ) : (
-                  <div className="px-4 py-2 text-gray-500">Učitavanje kategorija...</div>
+                  <div className="px-4 py-2 text-gray-500">{t('nav.loadingCategories')}</div>
                 )}
               </div>
             </div>
@@ -141,28 +141,28 @@ export default function Header() {
               className={`font-body hover:text-[#D4AF37] transition cursor-pointer ${location === '/about' ? 'text-[#D4AF37]' : 'text-foreground'}`}
               onClick={() => window.location.href = '/about'}
             >
-              O nama
+              {t('nav.about')}
             </div>
             
             <div 
               className={`font-body hover:text-[#D4AF37] transition cursor-pointer ${location === '/blog' ? 'text-[#D4AF37]' : 'text-foreground'}`}
               onClick={() => window.location.href = '/blog'}
             >
-              Slike
+              {t('nav.pictures')}
             </div>
             
             <div 
               className={`font-body hover:text-[#D4AF37] transition cursor-pointer ${location === '/contact' ? 'text-[#D4AF37]' : 'text-foreground'}`}
               onClick={() => window.location.href = '/contact'}
             >
-              Kontakt
+              {t('nav.contact')}
             </div>
           </nav>
           
           {/* User actions */}
           <div className="flex items-center space-x-4 md:space-x-4">
             <div className="hidden md:flex items-center gap-1 mr-2">
-              <span className="text-foreground text-sm font-medium">Pratite nas:</span>
+              <span className="text-foreground text-sm font-medium">{t('footer.followUs')}:</span>
               <a 
                 href="https://www.instagram.com/kerzenwelt_by_dani/" 
                 target="_blank" 
@@ -171,6 +171,11 @@ export default function Header() {
               >
                 <Instagram size={20} />
               </a>
+            </div>
+            
+            {/* Language Switcher */}
+            <div className="hidden md:block">
+              <LanguageSwitcher />
             </div>
             
             <div className="ml-auto mr-4 md:ml-0 md:mr-0">
