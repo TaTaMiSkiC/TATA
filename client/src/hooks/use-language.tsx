@@ -842,6 +842,13 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.actionsColumn": "Actions",
     "admin.product.inStock": "In Stock",
     "admin.product.active": "Active",
+    "admin.product.descriptionPlaceholder": "Enter a detailed description of the product...",
+    "admin.product.preview": "Preview",
+    "admin.product.imageUrlDescription": "Enter the direct link to the product image",
+    "admin.product.imageUrlPlaceholder": "https://example.com/image.jpg",
+    "admin.general.uploading": "Uploading...",
+    "admin.product.clickToUpload": "Click to upload image",
+    "admin.product.imageFormats": "SVG, PNG, JPG or GIF (max. 5MB)",
     
     // Admin Orders Page
     "admin.orderDetails": "Order Details",
