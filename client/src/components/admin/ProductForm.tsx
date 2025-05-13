@@ -650,7 +650,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                 htmlFor="hasColorOptions"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Omogući odabir boje
+                {t("admin.product.enableColorSelection")}
               </label>
             </div>
             
@@ -666,7 +666,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                   htmlFor="allowMultipleColors"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  Omogući odabir više boja
+                  {t("admin.product.enableMultipleColors")}
                 </label>
               </div>
             )}
@@ -689,16 +689,16 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               </span>
             </div>
             
-            {/* Dostupni mirisi */}
+            {/* Available scents */}
             <div className="col-span-full">
-              <FormLabel>Dostupni mirisi</FormLabel>
+              <FormLabel>{t("admin.product.availableScents")}</FormLabel>
               <div className="mt-2 border rounded-md p-4">
                 <div className="text-sm text-gray-500 mb-3">
-                  Odaberite sve mirise koji su dostupni za ovaj proizvod:
+                  {t("admin.product.selectScents")}
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {scentsLoading ? (
-                    <div>Učitavanje mirisa...</div>
+                    <div>{t("admin.product.loadingScents")}</div>
                   ) : (
                     scents?.map((scent: any) => (
                       <div key={scent.id} className="flex items-center space-x-2">
@@ -726,16 +726,16 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               </div>
             </div>
             
-            {/* Dostupne boje */}
+            {/* Available colors */}
             <div className="col-span-full">
-              <FormLabel>Dostupne boje</FormLabel>
+              <FormLabel>{t("admin.product.availableColors")}</FormLabel>
               <div className="mt-2 border rounded-md p-4">
                 <div className="text-sm text-gray-500 mb-3">
-                  Odaberite sve boje koje su dostupne za ovaj proizvod:
+                  {t("admin.product.selectColors")}
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {colorsLoading ? (
-                    <div>Učitavanje boja...</div>
+                    <div>{t("admin.product.loadingColors")}</div>
                   ) : (
                     colors?.map((color: any) => (
                       <div key={color.id} className="flex items-center space-x-2">
