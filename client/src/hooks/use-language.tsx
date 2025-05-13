@@ -165,6 +165,8 @@ export const translations: Record<Language, Record<string, string>> = {
     // Admin panel
     "admin.search": "Suchen...",
     "admin.backToStore": "Zurück zum Shop",
+    "admin.panel": "Admin-Panel",
+    "admin.payments": "Zahlungen",
   },
 
   hr: {

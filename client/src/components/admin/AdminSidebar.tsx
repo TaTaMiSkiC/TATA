@@ -18,6 +18,7 @@ import {
   Layers,
   FileCog
 } from "lucide-react";
+import { useLanguage } from "@/hooks/use-language";
 
 interface AdminSidebarProps {
   onItemClick?: () => void;
@@ -25,6 +26,7 @@ interface AdminSidebarProps {
 
 export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
   const [location] = useLocation();
+  const { t } = useLanguage();
   
   const isActive = (path: string) => {
     return location === path;
@@ -32,73 +34,73 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
   
   const menuItems = [
     {
-      name: "Nadzorna ploča",
+      name: t("admin.dashboard"),
       path: "/admin",
       icon: <LayoutDashboard size={20} />
     },
     {
-      name: "Proizvodi",
+      name: t("admin.products"),
       path: "/admin/products",
       icon: <Package size={20} />
     },
     {
-      name: "Kategorije",
+      name: t("admin.categories"),
       path: "/admin/categories",
       icon: <TagsIcon size={20} />
     },
     {
-      name: "Mirisi",
+      name: t("admin.scents"),
       path: "/admin/scents",
       icon: <Sparkles size={20} />
     },
     {
-      name: "Boje",
+      name: t("admin.colors"),
       path: "/admin/colors",
       icon: <Palette size={20} />
     },
     {
-      name: "Kolekcije",
+      name: t("admin.collections"),
       path: "/admin/collections",
       icon: <Layers size={20} />
     },
     {
-      name: "Narudžbe",
+      name: t("admin.orders"),
       path: "/admin/orders",
       icon: <ShoppingCart size={20} />
     },
     {
-      name: "Računi",
+      name: t("admin.invoices"),
       path: "/admin/invoices",
       icon: <FileText size={20} />
     },
     {
-      name: "Korisnici",
+      name: t("admin.users"),
       path: "/admin/users",
       icon: <Users size={20} />
     },
     {
-      name: "Plaćanja",
+      name: t("admin.payments") || "Plaćanja",
       path: "/admin/payments",
       icon: <CreditCard size={20} />
     },
     // Postavke grupa
     {
-      name: "Postavke stranica",
+      name: t("admin.pageSettings"),
       path: "/admin/page-settings",
       icon: <Settings size={20} />
     },
     {
-      name: "Kontakt podaci",
+      name: t("admin.contactSettings"),
       path: "/admin/contact-settings",
       icon: <Mail size={20} />
     },
     {
-      name: "Postavke dostave",
+      name: t("admin.delivery"),
       path: "/admin/delivery-settings",
       icon: <Truck size={20} />
     },
     {
-      name: "Dokumenti tvrtke",
+      name: t("admin.documents"),
       path: "/admin/documents",
       icon: <FileCog size={20} />
     },
@@ -109,7 +111,7 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
       {/* Header */}
       <div className="flex items-center px-6 py-6 border-b border-primary-foreground/10">
         <Flame size={24} className="mr-2" />
-        <span className="text-xl font-bold">Kerzenwelt Admin</span>
+        <span className="text-xl font-bold">{t("admin.panel") || "Kerzenwelt Admin"}</span>
       </div>
       
       {/* Navigation */}
@@ -138,7 +140,7 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
           className="flex items-center text-sm text-primary-foreground/70 hover:text-white"
           onClick={onItemClick}
         >
-          ← Povratak na trgovinu
+          ← {t("admin.backToStore")}
         </Link>
       </div>
     </div>
