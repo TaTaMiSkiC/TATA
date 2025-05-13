@@ -338,7 +338,7 @@ const OrderDetailsPage = () => {
   if (!orderWithItems || !orderWithItems.id) {
     return (
       <div className="container mx-auto py-10">
-        <OrdersHeader />
+        <Header />
         <div className="mt-8 text-center">
           <AlertTriangle className="h-12 w-12 mx-auto text-amber-500 mb-4" />
           <h2 className="text-xl font-bold mb-2">Nije moguće prikazati narudžbu</h2>
