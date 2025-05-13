@@ -17,6 +17,10 @@ import {
 } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/hooks/use-language";
+import LanguageSwitcher from "@/components/language-switcher";
+import { useQuery } from "@tanstack/react-query";
+import { Category } from "@shared/schema";
 import logoImage from "@/assets/logo.png";
 
 interface MobileMenuProps {
@@ -25,6 +29,13 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+  const { t } = useLanguage();
+  
+  // Dohvaćanje kategorija iz baze podataka
+  const { data: categories = [] } = useQuery<Category[]>({
+    queryKey: ['/api/categories'],
+  });
+  
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="left" className="w-[300px] sm:w-[350px] p-0">
@@ -46,41 +57,37 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           <nav className="flex flex-col space-y-1">
             <Link href="/">
               <a className="font-body text-text-dark py-2 hover:text-primary" onClick={onClose}>
-                Početna
+                {t('nav.home')}
               </a>
             </Link>
             
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="products" className="border-b-0">
                 <AccordionTrigger className="font-body text-text-dark py-2 hover:text-primary hover:no-underline">
-                  Proizvodi
+                  {t('nav.products')}
                 </AccordionTrigger>
                 <AccordionContent className="pl-4">
                   <div className="flex flex-col space-y-2">
-                    <Link href="/products?category=1">
-                      <a className="font-body text-text-dark py-1 hover:text-primary flex items-center" onClick={onClose}>
-                        <ChevronRight size={14} className="mr-1" />
-                        Mirisne svijeće
-                      </a>
-                    </Link>
-                    <Link href="/products?category=2">
-                      <a className="font-body text-text-dark py-1 hover:text-primary flex items-center" onClick={onClose}>
-                        <ChevronRight size={14} className="mr-1" />
-                        Dekorativne svijeće
-                      </a>
-                    </Link>
-                    <Link href="/products?category=3">
-                      <a className="font-body text-text-dark py-1 hover:text-primary flex items-center" onClick={onClose}>
-                        <ChevronRight size={14} className="mr-1" />
-                        Personalizirane svijeće
-                      </a>
-                    </Link>
-                    <Link href="/products">
-                      <a className="font-body text-text-dark py-1 hover:text-primary flex items-center" onClick={onClose}>
-                        <ChevronRight size={14} className="mr-1" />
-                        Posebne ponude
-                      </a>
-                    </Link>
+                    {categories && categories.length > 0 ? (
+                      <>
+                        {categories.map((category) => (
+                          <Link key={category.id} href={`/products?category=${category.id}`}>
+                            <a className="font-body text-text-dark py-1 hover:text-primary flex items-center" onClick={onClose}>
+                              <ChevronRight size={14} className="mr-1" />
+                              {category.name}
+                            </a>
+                          </Link>
+                        ))}
+                        <Link href="/products">
+                          <a className="font-body text-text-dark py-1 hover:text-primary flex items-center" onClick={onClose}>
+                            <ChevronRight size={14} className="mr-1" />
+                            {t('nav.allCategories')}
+                          </a>
+                        </Link>
+                      </>
+                    ) : (
+                      <div className="px-4 py-2 text-gray-500">{t('nav.loadingCategories')}</div>
+                    )}
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -88,24 +95,29 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             
             <Link href="/about">
               <a className="font-body text-text-dark py-2 hover:text-primary" onClick={onClose}>
-                O nama
+                {t('nav.about')}
               </a>
             </Link>
             <Link href="/blog">
               <a className="font-body text-text-dark py-2 hover:text-primary" onClick={onClose}>
-                Slike
+                {t('nav.pictures')}
               </a>
             </Link>
             <Link href="/contact">
               <a className="font-body text-text-dark py-2 hover:text-primary" onClick={onClose}>
-                Kontakt
+                {t('nav.contact')}
               </a>
             </Link>
             
             <Separator className="my-4" />
             
+            {/* Jezični izbornik za mobilni prikaz */}
+            <div className="py-2">
+              <LanguageSwitcher />
+            </div>
+            
             <div className="flex items-center py-2">
-              <span className="font-body text-text-dark mr-2">Pratite nas:</span>
+              <span className="font-body text-text-dark mr-2">{t('footer.followUs')}:</span>
               <a 
                 href="https://www.instagram.com/kerzenwelt_by_dani/" 
                 target="_blank" 
@@ -121,12 +133,12 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             
             <Link href="/auth">
               <a className="font-body text-text-dark py-2 hover:text-primary" onClick={onClose}>
-                Prijava / Registracija
+                {t('nav.login')}
               </a>
             </Link>
             <Link href="/cart">
               <a className="font-body text-text-dark py-2 hover:text-primary" onClick={onClose}>
-                Košarica
+                {t('nav.cart')}
               </a>
             </Link>
           </nav>
