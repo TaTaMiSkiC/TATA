@@ -15,6 +15,7 @@ import {
 import AdminNotifications from "./AdminNotifications";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import AdminSidebar from "./AdminSidebar";
+import LanguageSwitcher from "@/components/language-switcher";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -75,6 +76,10 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
             </div>
             
             <AdminNotifications />
+            
+            <div className="hidden sm:block">
+              <LanguageSwitcher />
+            </div>
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
