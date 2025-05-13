@@ -161,6 +161,10 @@ export const translations: Record<Language, Record<string, string>> = {
     "newsletter.success":
       "Vielen Dank für Ihr Abonnement! Sie erhalten in Kürze unseren Newsletter.",
     "newsletter.error": "Bitte geben Sie Ihre E-Mail-Adresse ein.",
+    
+    // Admin panel
+    "admin.search": "Suchen...",
+    "admin.backToStore": "Zurück zum Shop",
   },
 
   hr: {
@@ -310,6 +314,10 @@ export const translations: Record<Language, Record<string, string>> = {
     "newsletter.success":
       "Hvala na prijavi! Uskoro ćete primiti naš newsletter.",
     "newsletter.error": "Molimo unesite vašu email adresu.",
+    
+    // Admin panel
+    "admin.search": "Pretraži...",
+    "admin.backToStore": "Natrag na trgovinu",
   },
 
   en: {
