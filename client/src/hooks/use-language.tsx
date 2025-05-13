@@ -106,10 +106,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.about': 'Über Kerzenwelt by Dani',
     'footer.about.text': 'Handgefertigte Kerzen aus natürlichen Inhaltsstoffen. Von unserer Familie zu Ihrem Zuhause.',
     'footer.quickLinks': 'Schnelllinks',
-    'footer.support': 'Kundenservice',
+    'footer.customerSupport': 'Kundenservice',
     'footer.contact': 'Kontakt',
     'footer.followUs': 'Folgen Sie uns',
-    'footer.copyright': '© 2023 Kerzenwelt by Dani. Alle Rechte vorbehalten.',
+    'footer.copyright': 'Alle Rechte vorbehalten.',
+    'footer.tagline': 'Handgefertigte Kerzen aus natürlichen Inhaltsstoffen. Von unserer Familie zu Ihrem Zuhause.',
+    'footer.myAccount': 'Mein Konto',
+    'footer.paymentMethods': 'Zahlungsmethoden',
   },
   
   hr: {
@@ -213,10 +216,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.about': 'O Kerzenwelt by Dani',
     'footer.about.text': 'Ručno izrađene svijeće od prirodnih sastojaka. Od naše obitelji do vašeg doma.',
     'footer.quickLinks': 'Brzi linkovi',
-    'footer.support': 'Korisnička podrška',
+    'footer.customerSupport': 'Korisnička podrška',
     'footer.contact': 'Kontakt',
     'footer.followUs': 'Pratite nas',
-    'footer.copyright': '© 2023 Kerzenwelt by Dani. Sva prava pridržana.',
+    'footer.copyright': 'Sva prava pridržana.',
+    'footer.tagline': 'Ručno izrađene svijeće od prirodnih sastojaka. Od naše obitelji do vašeg doma.',
+    'footer.myAccount': 'Moj račun',
+    'footer.paymentMethods': 'Načini plaćanja',
   },
   
   en: {
@@ -320,10 +326,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.about': 'About Kerzenwelt by Dani',
     'footer.about.text': 'Handmade candles with natural ingredients. From our family to your home.',
     'footer.quickLinks': 'Quick Links',
-    'footer.support': 'Customer Support',
+    'footer.customerSupport': 'Customer Support',
     'footer.contact': 'Contact',
     'footer.followUs': 'Follow Us',
-    'footer.copyright': '© 2023 Kerzenwelt by Dani. All rights reserved.',
+    'footer.copyright': 'All rights reserved.',
+    'footer.tagline': 'Handmade candles with natural ingredients. From our family to your home.',
+    'footer.myAccount': 'My Account',
+    'footer.paymentMethods': 'Payment Methods',
   },
   
   it: {
