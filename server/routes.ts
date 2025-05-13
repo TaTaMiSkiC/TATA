@@ -2428,6 +2428,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Rute za praćenje posjeta 
+  app.post("/api/page-visits", async (req, res) => {
+    try {
+      if (!req.body.path) {
+        return res.status(400).json({ error: "Missing path parameter" });
+      }
+      
+      // Povećaj broj posjeta za putanju
+      const visit = await storage.incrementPageVisit(req.body.path);
+      res.status(200).json(visit);
+    } catch (error) {
+      console.error("Error incrementing page visit:", error);
+      res.status(500).json({ error: "Failed to increment page visit" });
+    }
+  });
+  
+  app.get("/api/page-visits/:path", async (req, res) => {
+    try {
+      // Samo admin može pregledati posjete
+      if (!req.isAuthenticated() || !req.user.isAdmin) {
+        return res.status(403).json({ error: "Forbidden" });
+      }
+      
+      const visit = await storage.getPageVisit(req.params.path);
+      if (!visit) {
+        return res.status(404).json({ error: "No visits found for this path" });
+      }
+      
+      res.status(200).json(visit);
+    } catch (error) {
+      console.error("Error getting page visit:", error);
+      res.status(500).json({ error: "Failed to get page visit" });
+    }
+  });
+  
+  app.get("/api/page-visits", async (req, res) => {
+    try {
+      // Samo admin može pregledati posjete
+      if (!req.isAuthenticated() || !req.user.isAdmin) {
+        return res.status(403).json({ error: "Forbidden" });
+      }
+      
+      const visits = await storage.getAllPageVisits();
+      res.status(200).json(visits);
+    } catch (error) {
+      console.error("Error getting all page visits:", error);
+      res.status(500).json({ error: "Failed to get page visits" });
+    }
+  });
+
   // Create HTTP server
   const httpServer = createServer(app);
   return httpServer;

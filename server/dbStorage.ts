@@ -1033,4 +1033,51 @@ export class DatabaseStorage implements IStorage {
     // Then delete the invoice
     await db.delete(invoices).where(eq(invoices.id, id));
   }
+  
+  // Metode za rukovanje posjetima stranice
+  async incrementPageVisit(path: string): Promise<PageVisit> {
+    // Prvo pokušaj pronaći postojeći zapis za putanju
+    const [existingVisit] = await db
+      .select()
+      .from(pageVisits)
+      .where(eq(pageVisits.path, path));
+      
+    if (existingVisit) {
+      // Ažuriraj broj posjeta ako postoji
+      const [updatedVisit] = await db
+        .update(pageVisits)
+        .set({ 
+          count: existingVisit.count + 1,
+          lastVisited: new Date()
+        })
+        .where(eq(pageVisits.id, existingVisit.id))
+        .returning();
+      return updatedVisit;
+    } else {
+      // Kreiraj novi zapis ako ne postoji
+      const [newVisit] = await db
+        .insert(pageVisits)
+        .values({
+          path,
+          count: 1
+        })
+        .returning();
+      return newVisit;
+    }
+  }
+  
+  async getPageVisit(path: string): Promise<PageVisit | undefined> {
+    const [visit] = await db
+      .select()
+      .from(pageVisits)
+      .where(eq(pageVisits.path, path));
+    return visit;
+  }
+  
+  async getAllPageVisits(): Promise<PageVisit[]> {
+    return db
+      .select()
+      .from(pageVisits)
+      .orderBy(desc(pageVisits.count));
+  }
 }
