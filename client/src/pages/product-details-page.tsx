@@ -319,14 +319,14 @@ export default function ProductDetailsPage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center text-sm text-muted-foreground">
             <Link href="/">
-              <div className="hover:text-primary cursor-pointer">Početna</div>
+              <div className="hover:text-primary cursor-pointer">{translateText("Početna", "hr")}</div>
             </Link>
             <ChevronRight size={14} className="mx-2" />
             <Link href="/products">
-              <div className="hover:text-primary cursor-pointer">Proizvodi</div>
+              <div className="hover:text-primary cursor-pointer">{translateText("Proizvodi", "hr")}</div>
             </Link>
             <ChevronRight size={14} className="mx-2" />
-            <span className="text-foreground font-medium">{product.name}</span>
+            <span className="text-foreground font-medium">{translateText(product.name, "de")}</span>
           </div>
         </div>
       </div>
@@ -348,7 +348,7 @@ export default function ProductDetailsPage() {
             
             {/* Product info */}
             <div className="w-full md:w-1/2">
-              <h1 className="heading text-3xl font-bold text-foreground mb-2">{product.name}</h1>
+              <h1 className="heading text-3xl font-bold text-foreground mb-2">{translateText(product.name, "de")}</h1>
               
               {/* Ratings */}
               <div className="flex items-center mb-4">
@@ -364,7 +364,7 @@ export default function ProductDetailsPage() {
                   })}
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  {averageRating.toFixed(1)} ({reviews?.length || 0} recenzija)
+                  {averageRating.toFixed(1)} ({reviews?.length || 0} {translateText("recenzija", "hr")})
                 </span>
               </div>
               
@@ -374,7 +374,7 @@ export default function ProductDetailsPage() {
               </div>
               
               {/* Short description */}
-              <p className="text-muted-foreground mb-6">{product.description}</p>
+              <p className="text-muted-foreground mb-6">{translateText(product.description, "de")}</p>
               
               {/* Product attributes */}
               <div className="grid grid-cols-2 gap-4 mb-6">
@@ -384,8 +384,8 @@ export default function ProductDetailsPage() {
                       <Flame size={18} className="text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Miris</p>
-                      <p className="font-medium text-foreground">{product.scent}</p>
+                      <p className="text-sm text-muted-foreground">{translateText("Miris", "hr")}</p>
+                      <p className="font-medium text-foreground">{translateText(product.scent, "de")}</p>
                     </div>
                   </div>
                 )}
@@ -399,8 +399,8 @@ export default function ProductDetailsPage() {
                       ></div>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Boja</p>
-                      <p className="font-medium text-foreground">{product.color}</p>
+                      <p className="text-sm text-muted-foreground">{translateText("Boja", "hr")}</p>
+                      <p className="font-medium text-foreground">{translateText(product.color, "de")}</p>
                     </div>
                   </div>
                 )}
@@ -411,8 +411,8 @@ export default function ProductDetailsPage() {
                       <Clock size={18} className="text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Trajanje</p>
-                      <p className="font-medium text-foreground">{product.burnTime}</p>
+                      <p className="text-sm text-muted-foreground">{translateText("Trajanje", "hr")}</p>
+                      <p className="font-medium text-foreground">{translateText(product.burnTime, "de")}</p>
                     </div>
                   </div>
                 )}
