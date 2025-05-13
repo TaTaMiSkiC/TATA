@@ -516,11 +516,11 @@ export default function ProductDetailsPage() {
               <div className="mt-8 pt-6 border-t border-input">
                 <div className="flex items-center mb-3">
                   <Truck size={18} className="text-primary mr-2" />
-                  <span className="text-sm text-muted-foreground">Besplatna dostava za narudžbe iznad 50€</span>
+                  <span className="text-sm text-muted-foreground">{translateText("Besplatna dostava za narudžbe iznad 50€", "hr")}</span>
                 </div>
                 <div className="flex items-center">
                   <RefreshCw size={18} className="text-primary mr-2" />
-                  <span className="text-sm text-muted-foreground">Povrat u roku od 14 dana</span>
+                  <span className="text-sm text-muted-foreground">{translateText("Povrat u roku od 14 dana", "hr")}</span>
                 </div>
               </div>
             </div>
@@ -533,33 +533,33 @@ export default function ProductDetailsPage() {
         <div className="container mx-auto px-4">
           <Tabs defaultValue="description">
             <TabsList className="w-full flex mb-8 bg-card">
-              <TabsTrigger value="description" className="flex-1 py-3">Opis</TabsTrigger>
-              <TabsTrigger value="details" className="flex-1 py-3">Detalji</TabsTrigger>
+              <TabsTrigger value="description" className="flex-1 py-3">{translateText("Opis", "hr")}</TabsTrigger>
+              <TabsTrigger value="details" className="flex-1 py-3">{translateText("Detalji", "hr")}</TabsTrigger>
               <TabsTrigger value="reviews" className="flex-1 py-3">
-                Recenzije ({reviews?.length || 0})
+                {translateText("Recenzije", "hr")} ({reviews?.length || 0})
               </TabsTrigger>
             </TabsList>
             
             <TabsContent value="description" className="bg-card p-6 rounded-lg shadow-sm">
-              <h2 className="heading text-xl font-semibold mb-4">Opis proizvoda</h2>
+              <h2 className="heading text-xl font-semibold mb-4">{translateText("Opis proizvoda", "hr")}</h2>
               <div className="prose max-w-none">
-                <p>{product.description}</p>
+                <p>{translateText(product.description, "hr")}</p>
               </div>
             </TabsContent>
             
             <TabsContent value="details" className="bg-card p-6 rounded-lg shadow-sm">
-              <h2 className="heading text-xl font-semibold mb-4">Specifikacije proizvoda</h2>
+              <h2 className="heading text-xl font-semibold mb-4">{translateText("Specifikacije proizvoda", "hr")}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Accordion type="single" collapsible>
                     {/* Prikazujemo sekciju Dimenzije i težina samo ako postoje ti podaci */}
                     {(product.dimensions || product.weight) && (
                       <AccordionItem value="dimensions">
-                        <AccordionTrigger>Dimenzije i težina</AccordionTrigger>
+                        <AccordionTrigger>{translateText("Dimenzije i težina", "hr")}</AccordionTrigger>
                         <AccordionContent>
                           <ul className="space-y-2 list-disc list-inside text-muted-foreground">
-                            {product.dimensions && <li>{product.dimensions}</li>}
-                            {product.weight && <li>Težina: {product.weight}</li>}
+                            {product.dimensions && <li>{translateText(product.dimensions, "hr")}</li>}
+                            {product.weight && <li>{translateText("Težina", "hr")}: {translateText(product.weight, "hr")}</li>}
                           </ul>
                         </AccordionContent>
                       </AccordionItem>
@@ -568,10 +568,10 @@ export default function ProductDetailsPage() {
                     {/* Prikazujemo sekciju Materijali samo ako postoje ti podaci */}
                     {product.materials && (
                       <AccordionItem value="materials">
-                        <AccordionTrigger>Materijali</AccordionTrigger>
+                        <AccordionTrigger>{translateText("Materijali", "hr")}</AccordionTrigger>
                         <AccordionContent>
                           <div className="text-muted-foreground">
-                            {product.materials}
+                            {translateText(product.materials, "hr")}
                           </div>
                         </AccordionContent>
                       </AccordionItem>
@@ -583,10 +583,10 @@ export default function ProductDetailsPage() {
                     {/* Prikazujemo sekciju Upute za korištenje samo ako postoje ti podaci */}
                     {product.instructions && (
                       <AccordionItem value="usage">
-                        <AccordionTrigger>Upute za korištenje</AccordionTrigger>
+                        <AccordionTrigger>{translateText("Upute za korištenje", "hr")}</AccordionTrigger>
                         <AccordionContent>
                           <div className="text-muted-foreground">
-                            {product.instructions}
+                            {translateText(product.instructions, "hr")}
                           </div>
                         </AccordionContent>
                       </AccordionItem>
@@ -595,10 +595,10 @@ export default function ProductDetailsPage() {
                     {/* Prikazujemo sekciju Održavanje samo ako postoje ti podaci */}
                     {product.maintenance && (
                       <AccordionItem value="care">
-                        <AccordionTrigger>Održavanje</AccordionTrigger>
+                        <AccordionTrigger>{translateText("Održavanje", "hr")}</AccordionTrigger>
                         <AccordionContent>
                           <div className="text-muted-foreground">
-                            {product.maintenance}
+                            {translateText(product.maintenance, "hr")}
                           </div>
                         </AccordionContent>
                       </AccordionItem>
@@ -610,13 +610,13 @@ export default function ProductDetailsPage() {
               {/* Ako nema nijednog podatka za prikaz, prikazujemo poruku */}
               {!product.dimensions && !product.weight && !product.materials && !product.instructions && !product.maintenance && (
                 <div className="text-center text-muted-foreground py-6">
-                  Detalji o ovom proizvodu trenutno nisu dostupni.
+                  {translateText("Detalji o ovom proizvodu trenutno nisu dostupni.", "hr")}
                 </div>
               )}
             </TabsContent>
             
             <TabsContent value="reviews" className="bg-card p-6 rounded-lg shadow-sm">
-              <h2 className="heading text-xl font-semibold mb-4">Recenzije kupaca</h2>
+              <h2 className="heading text-xl font-semibold mb-4">{translateText("Recenzije kupaca", "hr")}</h2>
               
               {/* Reviews list */}
               {reviews?.length ? (
@@ -690,11 +690,11 @@ export default function ProductDetailsPage() {
                 </div>
               ) : reviewsLoading ? (
                 <div className="text-center py-8">
-                  <p className="text-muted-foreground">Učitavanje recenzija...</p>
+                  <p className="text-muted-foreground">{translateText("Učitavanje recenzija...", "hr")}</p>
                 </div>
               ) : (
                 <div className="text-center py-8 mb-8">
-                  <p className="text-muted-foreground">Još nema recenzija za ovaj proizvod.</p>
+                  <p className="text-muted-foreground">{translateText("Još nema recenzija za ovaj proizvod.", "hr")}</p>
                 </div>
               )}
               
@@ -702,7 +702,7 @@ export default function ProductDetailsPage() {
               {user ? (
                 <div>
                   <Separator className="my-8" />
-                  <h3 className="heading text-lg font-semibold mb-4">Napišite recenziju</h3>
+                  <h3 className="heading text-lg font-semibold mb-4">{translateText("Napišite recenziju", "hr")}</h3>
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmitReview)} className="space-y-4">
                       <FormField
