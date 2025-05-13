@@ -552,10 +552,10 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               name="weight"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Težina</FormLabel>
+                  <FormLabel>{t("admin.product.weight")}</FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="Npr. 350g" 
+                      placeholder={t("admin.product.weightPlaceholder")} 
                       {...field} 
                       value={field.value || ""}
                     />
@@ -571,10 +571,10 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               name="materials"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Materijali</FormLabel>
+                  <FormLabel>{t("admin.product.materials")}</FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="Npr. Sojin vosak, pamučni fitilj" 
+                      placeholder={t("admin.product.materialsPlaceholder")} 
                       {...field} 
                       value={field.value || ""}
                     />
@@ -590,10 +590,10 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               name="instructions"
               render={({ field }) => (
                 <FormItem className="col-span-full">
-                  <FormLabel>Upute za korištenje</FormLabel>
+                  <FormLabel>{t("admin.product.instructions")}</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Unesite upute za korištenje proizvoda..." 
+                      placeholder={t("admin.product.instructionsPlaceholder")} 
                       className="min-h-24" 
                       {...field} 
                       value={field.value || ""}
@@ -610,10 +610,10 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               name="maintenance"
               render={({ field }) => (
                 <FormItem className="col-span-full">
-                  <FormLabel>Održavanje</FormLabel>
+                  <FormLabel>{t("admin.product.maintenance")}</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Unesite upute za održavanje proizvoda..." 
+                      placeholder={t("admin.product.maintenancePlaceholder")} 
                       className="min-h-24" 
                       {...field} 
                       value={field.value || ""}
