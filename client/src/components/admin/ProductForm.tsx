@@ -6,6 +6,7 @@ import { z } from "zod";
 import { Product, insertProductSchema } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/use-language";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -42,6 +43,7 @@ interface ProductFormProps {
 
 export default function ProductForm({ product, onSuccess }: ProductFormProps) {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedScents, setSelectedScents] = useState<number[]>([]);
   const [selectedColors, setSelectedColors] = useState<number[]>([]);
@@ -60,13 +62,13 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
     allowMultipleColors: z.boolean().optional(),
     active: z.boolean().optional(),
     price: z.string().refine((val) => !isNaN(parseFloat(val)), {
-      message: "Cijena mora biti validan broj",
+      message: t("admin.product.validation.price"),
     }),
     stock: z.coerce.number().int().min(0, {
-      message: "Zaliha mora biti pozitivan broj",
+      message: t("admin.product.validation.stock"),
     }),
     categoryId: z.number({
-      required_error: "Kategorija je obavezna",
+      required_error: t("admin.product.validation.category"),
     }),
     // Ova polja imamo samo zbog defaultValues, ali su zamijenjena checkbox listama
     scent: z.string().optional().nullable(),
@@ -308,9 +310,9 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Naziv proizvoda *</FormLabel>
+                  <FormLabel>{t("admin.product.name")} *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Npr. Vanilla Dreams" {...field} />
+                    <Input placeholder={t("admin.product.namePlaceholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
