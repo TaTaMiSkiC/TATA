@@ -3,8 +3,11 @@ import { Facebook, Instagram, Linkedin, MessageCircle, MapPin, Phone, Mail, Cloc
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { PageVisitCounter } from "@/components/admin/PageVisitCounter";
+import { useLanguage } from "@/hooks/use-language";
 
 export default function Footer() {
+  const { t, translateText } = useLanguage();
+  
   // Dohvaćanje kontakt podataka iz API-ja
   const { data: contactData, isLoading } = useQuery({
     queryKey: ["/api/settings/contact"],
@@ -30,11 +33,11 @@ export default function Footer() {
           <div>
             <h3 className="heading text-xl font-semibold mb-4">Kerzenwelt by Dani</h3>
             <p className="text-gray-400 mb-6">
-              Ručno izrađene svijeće od prirodnih sastojaka. Od naše obitelji do vašeg doma.
+              {t('footer.tagline')}
             </p>
             
             <div className="flex items-center mb-4">
-              <span className="text-white mr-2 font-medium">Pratite nas:</span>
+              <span className="text-white mr-2 font-medium">{t('footer.followUs')}:</span>
               <a 
                 href="https://www.instagram.com/kerzenwelt_by_dani/" 
                 target="_blank" 
@@ -48,26 +51,26 @@ export default function Footer() {
           
           {/* Column 2: Quick Links */}
           <div>
-            <h3 className="heading text-xl font-semibold mb-4">Brzi linkovi</h3>
+            <h3 className="heading text-xl font-semibold mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/products">
                   <div className="text-gray-400 hover:text-white transition cursor-pointer">
-                    Naši proizvodi
+                    {t('nav.products')}
                   </div>
                 </Link>
               </li>
               <li>
                 <Link href="/about">
                   <div className="text-gray-400 hover:text-white transition cursor-pointer">
-                    O nama
+                    {t('nav.about')}
                   </div>
                 </Link>
               </li>
               <li>
                 <Link href="/blog">
                   <div className="text-gray-400 hover:text-white transition cursor-pointer">
-                    Slike
+                    {t('nav.pictures')}
                   </div>
                 </Link>
               </li>
@@ -75,7 +78,7 @@ export default function Footer() {
               <li>
                 <Link href="/contact">
                   <div className="text-gray-400 hover:text-white transition cursor-pointer">
-                    Kontakt
+                    {t('nav.contact')}
                   </div>
                 </Link>
               </li>
@@ -84,12 +87,12 @@ export default function Footer() {
           
           {/* Column 3: Customer Service */}
           <div>
-            <h3 className="heading text-xl font-semibold mb-4">Korisnička podrška</h3>
+            <h3 className="heading text-xl font-semibold mb-4">{t('footer.customerSupport')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/profile">
                   <div className="text-gray-400 hover:text-white transition cursor-pointer">
-                    Moj račun
+                    {t('footer.myAccount')}
                   </div>
                 </Link>
               </li>
@@ -97,7 +100,7 @@ export default function Footer() {
               <li>
                 <Link href="/payment">
                   <div className="text-gray-400 hover:text-white transition cursor-pointer">
-                    Načini plaćanja
+                    {t('footer.paymentMethods')}
                   </div>
                 </Link>
               </li>
@@ -106,7 +109,7 @@ export default function Footer() {
           
           {/* Column 4: Contact */}
           <div>
-            <h3 className="heading text-xl font-semibold mb-4">Kontakt</h3>
+            <h3 className="heading text-xl font-semibold mb-4">{t('nav.contact')}</h3>
             
             {isLoading ? (
               <div className="flex justify-center py-4">
@@ -139,7 +142,7 @@ export default function Footer() {
         
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div>
-            <p className="text-gray-500 text-sm mb-1">&copy; 2023 Kerzenwelt by Dani. Sva prava pridržana.</p>
+            <p className="text-gray-500 text-sm mb-1">&copy; 2023 Kerzenwelt by Dani. {t('footer.copyright')}</p>
             <PageVisitCounter />
           </div>
           <div className="flex items-center space-x-4 mt-4 md:mt-0">
