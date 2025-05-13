@@ -50,6 +50,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { generateInvoicePdf } from "@/lib/generate-invoice-pdf";
 import { format } from "date-fns";
 import { prepareInvoiceDataFromOrder, generateOrderInvoice } from "@/lib/generate-invoice-functions";
 
