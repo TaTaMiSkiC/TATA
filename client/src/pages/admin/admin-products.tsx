@@ -359,7 +359,7 @@ export default function AdminProducts() {
                                     </>
                                   ) : (
                                     <>
-                                      <Eye className="mr-2 h-4 w-4" /> Aktiviraj
+                                      <Eye className="mr-2 h-4 w-4" /> {t("admin.product.activate")}
                                     </>
                                   )}
                                 </DropdownMenuItem>
@@ -367,7 +367,7 @@ export default function AdminProducts() {
                                   onClick={() => handleDeleteProduct(product)}
                                   className="text-destructive focus:text-destructive"
                                 >
-                                  <Trash2 className="mr-2 h-4 w-4" /> Izbriši
+                                  <Trash2 className="mr-2 h-4 w-4" /> {t("admin.product.delete")}
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
@@ -408,19 +408,18 @@ export default function AdminProducts() {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Potvrda brisanja</DialogTitle>
+            <DialogTitle>{t("admin.product.deleteConfirmation")}</DialogTitle>
             <DialogDescription>
-              Jeste li sigurni da želite izbrisati proizvod "{productToDelete?.name}"? 
-              Ova akcija se ne može poništiti.
+              {t("admin.product.deleteConfirmationMessage").replace("{name}", productToDelete?.name || "")}
             </DialogDescription>
           </DialogHeader>
           
           <DialogFooter className="mt-6">
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-              Odustani
+              {t("common.cancel")}
             </Button>
             <Button variant="destructive" onClick={confirmDelete}>
-              Izbriši
+              {t("admin.product.delete")}
             </Button>
           </DialogFooter>
         </DialogContent>
