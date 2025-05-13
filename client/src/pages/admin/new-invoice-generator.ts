@@ -27,7 +27,7 @@ export const getPaymentMethodText = (method: string, lang: string, translations:
   }
 };
 
-// Funkcija za generiranje PDF-a s identičnim izgledom kao u invoice-i451.pdf primjeru
+// Funkcija za generiranje PDF-a identična onoj u order-details-page.tsx
 export const generateInvoicePdf = (data: any, toast: any) => {
   try {
     console.log("Početak generiranja PDF-a, dobiveni podaci:", JSON.stringify(data, null, 2));
@@ -35,6 +35,13 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     // Određivanje jezika računa
     const lang = data.language || "hr";
     console.log("Korišteni jezik:", lang);
+    
+    // Određivanje datuma
+    const currentDate = new Date();
+    const formattedDate = format(currentDate, 'dd.MM.yyyy.');
+    
+    // Broj računa
+    const invoiceNumber = data.invoiceNumber || 'i450';
     
     // Definiranje prijevoda za PDF
     const translations: Record<string, Record<string, string>> = {
@@ -49,8 +56,8 @@ export const generateInvoicePdf = (data: any, toast: any) => {
         price: "Cijena/kom",
         total: "Ukupno",
         subtotal: "Međuzbroj",
-        tax: "MwSt. (0%)",
-        totalAmount: "GESAMTBETRAG",
+        tax: "PDV (0%)",
+        totalAmount: "UKUPNO",
         paymentInfo: "Informacije o plaćanju",
         paymentMethod: "Način plaćanja",
         paymentStatus: "Status plaćanja",
@@ -66,7 +73,8 @@ export const generateInvoicePdf = (data: any, toast: any) => {
         generatedNote: "Ovo je automatski generirani račun i valjan je bez potpisa i pečata",
         exemptionNote: "Poduzetnik nije u sustavu PDV-a, PDV nije obračunat temeljem odredbi posebnog postupka oporezivanja za male porezne obveznike.",
         orderItems: "Stavke narudžbe",
-        shipping: "Dostava"
+        shipping: "Dostava",
+        customerNote: "Napomena kupca"
       },
       en: {
         title: "INVOICE",
@@ -79,7 +87,7 @@ export const generateInvoicePdf = (data: any, toast: any) => {
         price: "Price/unit",
         total: "Total",
         subtotal: "Subtotal",
-        tax: "MwSt. (0%)",
+        tax: "VAT (0%)",
         totalAmount: "TOTAL",
         paymentInfo: "Payment information",
         paymentMethod: "Payment method",
@@ -96,7 +104,8 @@ export const generateInvoicePdf = (data: any, toast: any) => {
         generatedNote: "This is an automatically generated invoice and is valid without signature or stamp",
         exemptionNote: "The entrepreneur is not in the VAT system, VAT is not calculated based on the provisions of the special taxation procedure for small taxpayers.",
         orderItems: "Order items",
-        shipping: "Shipping"
+        shipping: "Shipping",
+        customerNote: "Customer note"
       },
       de: {
         title: "RECHNUNG",
@@ -126,12 +135,19 @@ export const generateInvoicePdf = (data: any, toast: any) => {
         generatedNote: "Dies ist eine automatisch generierte Rechnung und ist ohne Unterschrift und Stempel gültig",
         exemptionNote: "Der Unternehmer ist nicht im Mehrwertsteuersystem, MwSt. wird nicht berechnet gemäß den Bestimmungen des Kleinunternehmerregelung.",
         orderItems: "Bestellpositionen",
-        shipping: "Versand"
+        shipping: "Versand",
+        customerNote: "Kundenhinweis"
       }
     };
     
     // Odabir prijevoda
     const t = translations[lang] || translations.hr;
+    
+    // Funkcija za dobivanje teksta načina plaćanja ovisno o odabranoj vrijednosti i jeziku
+    const getPaymentStatusText = (status: string | undefined) => {
+      if (!status) return t.unpaid;
+      return status === 'completed' ? t.paid : t.unpaid;
+    };
     
     // Proširujemo jsPDF s lastAutoTable interfejsom
     interface ExtendedJsPDF extends jsPDF {
@@ -140,6 +156,7 @@ export const generateInvoicePdf = (data: any, toast: any) => {
       };
     }
     
+    // Kreiraj novi PDF dokument
     const doc = new jsPDF() as ExtendedJsPDF;
     
     // Postavljanje osnovnih detalja
@@ -148,16 +165,13 @@ export const generateInvoicePdf = (data: any, toast: any) => {
 
     // Gornji dio - Logo s lijeve strane i naslov na desnoj
     try {
-      // Dodajemo logo ako je dostupan
-      if (logoImg) {
-        doc.addImage(logoImg, 'PNG', 20, 15, 30, 30);
-      } else {
-        console.log("Logo nije dostupan, preskačem dodavanje.");
-      }
+      // Dodajemo logo
+      doc.addImage(logoImg, 'PNG', 20, 15, 30, 30);
     } catch (error) {
       console.error("Pogreška pri učitavanju loga:", error);
     }
     
+    // Formatiranje datuma i broja računa
     doc.setTextColor(218, 165, 32); // Zlatna boja (RGB)
     doc.setFontSize(18);
     doc.setFont("helvetica", "bold");
@@ -168,247 +182,221 @@ export const generateInvoicePdf = (data: any, toast: any) => {
     doc.text("Ossiacher Zeile 30, 9500 Villach, Österreich", 55, 30);
     doc.text("Email: daniela.svoboda2@gmail.com", 55, 35);
     
-    // Naslov i broj računa na desnoj strani - poravnato prema template-u
+    // Naslov i broj računa na desnoj strani
     doc.setTextColor(0, 0, 0);
-    doc.setFontSize(14);
+    doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
     doc.text(t.title, 190, 24, { align: "right" });
-    doc.setFontSize(10);
+    doc.setFontSize(11);
     doc.setFont("helvetica", "normal");
-    doc.text(`${t.invoiceNo}: ${data.invoiceNumber}`, 190, 32, { align: "right" });
-    doc.text(`${t.date}: ${format(new Date(data.createdAt || new Date()), "dd.MM.yyyy.")}`, 190, 38, { align: "right" });
+    doc.text(`${t.invoiceNo}: ${invoiceNumber}`, 190, 32, { align: "right" });
+    doc.text(`${t.date}: ${formattedDate}`, 190, 38, { align: "right" });
     
     // Horizontalna linija
     doc.setDrawColor(200, 200, 200);
     doc.line(20, 45, 190, 45);
     
-    // Podaci o kupcu - koristimo razmak od lijeve margine
+    // Podaci o kupcu
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
     doc.text(`${t.buyer}:`, 20, 55);
     doc.setDrawColor(200, 200, 200);
-    // Nema linije kao u templatu
+    doc.line(20, 57, 190, 57);
     doc.setFont("helvetica", "normal");
     
-    // Pomaknuti smo desno kao u templatu
-    const customerIndent = 20;
     let customerY = 62;
     
-    // Zaštitimo se od nedostajućih imena i prezimena
-    const firstName = data.firstName || '';
-    const lastName = data.lastName || '';
-    doc.text(`${firstName} ${lastName}`.trim() || 'Kupac', customerIndent, customerY);
-    customerY += 5;
-    
-    if (data.email) {
-      doc.text(`Email: ${data.email}`, customerIndent, customerY);
+    // Dodajemo informacije o kupcu
+    if (data.customerName) {
+      doc.text(data.customerName, 20, customerY);
       customerY += 5;
     }
     
-    if (data.address) {
-      doc.text(`${t.deliveryAddress}: ${data.address}`, customerIndent, customerY);
-      customerY += 5;
-      
-      if (data.city && data.postalCode) {
-        doc.text(`${data.postalCode} ${data.city}`, customerIndent, customerY);
-        customerY += 5;
-      }
-      
-      if (data.country) {
-        doc.text(data.country, customerIndent, customerY);
-        customerY += 5;
-      }
-    } else {
-      doc.text(`${t.deliveryAddress}: N/A - ${t.handInvoice}`, customerIndent, customerY);
+    if (data.customerEmail) {
+      doc.text(`Email: ${data.customerEmail}`, 20, customerY);
       customerY += 5;
     }
     
-    // Dodajemo više prostora nakon podataka o kupcu
-    customerY += 5;
+    if (data.customerAddress) {
+      doc.text(`${t.deliveryAddress}: ${data.customerAddress}`, 20, customerY);
+      customerY += 5;
+    }
     
-    // Stavke narudžbe - dodajemo malo više razmaka nego u originalnoj metodi
-    // kao u primjeru invoice-i451.pdf
+    if (data.customerPostalCode || data.customerCity) {
+      doc.text(`${data.customerPostalCode || ''} ${data.customerCity || ''}`, 20, customerY);
+      customerY += 5;
+    }
+    
+    if (data.customerCountry) {
+      doc.text(data.customerCountry, 20, customerY);
+      customerY += 5;
+    }
+    
+    // Dodajemo napomene kupca u istoj liniji s podacima o kupcu ako postoje
+    if (data.customerNote) {
+      // Postavljanje teksta napomene pored podataka o kupcu
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text(`${t.customerNote}:`, 120, 55); // Ista pozicija (Y) kao i "Podaci o kupcu"
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      
+      // Napravimo potreban broj redova za napomenu - maksimalno 3 reda 
+      const noteLines = doc.splitTextToSize(data.customerNote, 65); // Nešto uži prostor za napomene
+      const maxLines = Math.min(3, noteLines.length); // Maksimalno 3 reda
+      
+      for (let i = 0; i < maxLines; i++) {
+        doc.text(noteLines[i], 120, 62 + (i * 5)); // Počinjemo ispod naslova napomene
+      }
+    }
+    
+    // Stavke narudžbe
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
     doc.text(`${t.orderItems}:`, 20, customerY + 5);
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, customerY + 7, 190, customerY + 7);
     
-    // Priprema podataka za ručno crtanje tablice - pozicije prema priloženom templatu
-    // Definicija pozicija za svaku kolonu - precizno usklađene s PDFom
-    const columnPositions = {
-      product: 30,  // Proizvod - uvučeno udесno
-      quantity: 143, // Količina - centrirana daleko od proizvoda
-      price: 165,    // Cijena - desno poravnata prije ukupno
-      total: 190     // Ukupno - desno poravnato
-    };
+    // Priprema podataka za tablicu
+    let items = [];
     
-    // Razmak između zaglavlja tablice i podataka
-    const startY = customerY + 15;
-    
-    // Iscrtavanje zaglavlja tablice - sve s dodatnim razmacima kao u PDF-u
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "bold");
-    
-    // Postavimo zaglavlje s većim razmakom na vrhu, i bez linije na dnu
-    doc.text(t.item, columnPositions.product, startY);
-    doc.text(t.quantity, columnPositions.quantity, startY, { align: "center" });
-    doc.text(t.price, columnPositions.price, startY, { align: "right" });
-    doc.text(t.total, columnPositions.total, startY, { align: "right" });
-    
-    // Veći razmak nakon zaglavlja - u predlošku je vrlo velik razmak
-    let currentY = startY + 20;
-    
-    // Ručno iscrtavanje svake stavke
     if (data.items && Array.isArray(data.items)) {
-      data.items.forEach((item: any) => {
-        const productName = item.productName || '';
-        const price = parseFloat(item.price).toFixed(2);
-        const quantity = item.quantity;
-        const total = (parseFloat(item.price) * quantity).toFixed(2);
+      items = data.items.map((item: any) => {
+        let productName = item.productName || '';
         
-        // Iscrtaj naziv proizvoda - uvučeno kao u template-u
-        doc.setFont("helvetica", "normal");
-        // Dodajemo 5px razmaka ispred naziva proizvoda da dobijemo uvlačenje kao u primjeru
-        doc.text(productName, columnPositions.product, currentY);
-        currentY += 6; // Veći razmak nakon naziva proizvoda
+        let details = [];
         
-        // Opcija "Duft:" za miris
+        // Dodaj miris ako postoji
         if (item.scentName || item.selectedScent) {
-          const scentName = item.scentName || item.selectedScent;
-          let scentText = '';
-          
-          if (lang === 'de') {
-            scentText = `Duft: ${scentName}`;
-          } else if (lang === 'en') {
-            scentText = `Scent: ${scentName}`;
-          } else {
-            scentText = `Miris: ${scentName}`;
-          }
-          
-          doc.text(scentText, columnPositions.product, currentY);
-          currentY += 6; // Veći razmak nakon mirisa
+          // Koristi prijevod za riječ "Miris"
+          const scentLabel = lang === 'hr' ? 'Miris' : lang === 'de' ? 'Duft' : 'Scent';
+          details.push(`${scentLabel}: ${item.scentName || item.selectedScent}`);
         }
         
-        // Opcija "Farben:" za boje
+        // Dodaj boju/boje
         if (item.colorName || item.selectedColor) {
-          const colorName = item.colorName || item.selectedColor;
-          let colorText = '';
-          
-          if (lang === 'de') {
-            colorText = `Farben: ${colorName}`;
-          } else if (lang === 'en') {
-            colorText = `Colors: ${colorName}`;
-          } else {
-            colorText = `Boje: ${colorName}`;
-          }
-          
-          doc.text(colorText, columnPositions.product, currentY);
-          currentY += 6; // Veći razmak nakon boja
+          // Koristi prijevod za riječ "Boja" ili "Boje"
+          const colorSingular = lang === 'hr' ? 'Boja' : lang === 'de' ? 'Farbe' : 'Color';
+          const colorPlural = lang === 'hr' ? 'Boje' : lang === 'de' ? 'Farben' : 'Colors';
+          const colorPrefix = item.hasMultipleColors ? colorPlural : colorSingular;
+          details.push(`${colorPrefix}: ${item.colorName || item.selectedColor}`);
         }
         
-        // Dodatni razmak nakon stavke - vrlo velik razmak kao u PDF predlošku
-        currentY += 18;
+        // Spoji naziv proizvoda s detaljima
+        const detailsText = details.length > 0 ? `\n${details.join('\n')}` : '';
+        const fullName = `${productName}${detailsText}`;
+        const price = parseFloat(item.price).toFixed(2);
+        const total = (parseFloat(item.price) * item.quantity).toFixed(2);
         
-        // Količina, cijena i ukupno se prikazuju na istoj visini kao naziv proizvoda
-        // Pozicija je točno usklađena s primjerom - razlika je značajna
-        
-        // Pozicija cijene i količine menjana da odgovara predlošku
-        // Ovu vrijednost sam precizno namjestio prema PDF-u
-        const verticalPosition = currentY - 28;
-        
-        // Iscrtaj količinu, cijenu i ukupno za trenutnu stavku, poravnato kao u primjeru
-        doc.text(quantity.toString(), columnPositions.quantity, verticalPosition, { align: "center" });
-        doc.text(`${price} €`, columnPositions.price, verticalPosition, { align: "right" });
-        doc.text(`${total} €`, columnPositions.total, verticalPosition, { align: "right" });
+        return [fullName, item.quantity, `${price} €`, `${total} €`];
       });
     } else {
-      doc.text("N/A - " + t.handInvoice, columnPositions.product, currentY);
-      doc.text("1", columnPositions.quantity, currentY, { align: "center" });
-      doc.text("0.00 €", columnPositions.price, currentY, { align: "right" });
-      doc.text("0.00 €", columnPositions.total, currentY, { align: "right" });
-      currentY += 10;
+      // Dodajemo ručno barem jednu stavku ako nema podataka
+      items = [["Proizvod nije specificiran", 1, "0.00 €", "0.00 €"]];
     }
     
-    // Puno više prostora prije sažetka - u predlošku je vrlo veliki razmak
-    currentY += 30;
-    
-    console.log("Pozicija nakon tablice:", currentY);
+    // Dodavanje tablice
+    autoTable(doc, {
+      head: [[
+        t.item, 
+        t.quantity.replace(/\s+/g, ' '), // Osigurajmo da nema višestrukih razmaka
+        t.price, 
+        t.total
+      ]],
+      body: items,
+      startY: customerY + 10,
+      margin: { left: 20, right: 20 },
+      headStyles: {
+        fillColor: [245, 245, 245],
+        textColor: [0, 0, 0],
+        fontStyle: 'bold',
+        halign: 'left',
+        valign: 'middle',
+        fontSize: 10,
+        cellPadding: 5,
+        minCellWidth: 30, // Osigurajmo da ćelije zaglavlja budu dovoljno široke
+        overflow: 'visible', // Osigurajmo da tekst ne bude prekinut
+      },
+      bodyStyles: {
+        textColor: [0, 0, 0],
+        fontSize: 10,
+        cellPadding: 5,
+      },
+      columnStyles: {
+        0: { cellWidth: 'auto' },
+        1: { cellWidth: 30, halign: 'center' }, // Povećali smo širinu stupca "Menge" s 20 na 30
+        2: { cellWidth: 30, halign: 'right' },
+        3: { cellWidth: 30, halign: 'right' },
+      },
+      alternateRowStyles: {
+        fillColor: [250, 250, 250],
+      },
+    });
     
     // Izračunavanje ukupnog iznosa
-    const subtotal = data.items && Array.isArray(data.items)
-      ? data.items.reduce((sum: number, item: any) => sum + (parseFloat(item.price) * item.quantity), 0).toFixed(2)
-      : "0.00";
-      
-    const tax = "0.00"; // PDV je 0% za male poduzetnike
-    const shipping = data.shippingCost ? parseFloat(data.shippingCost).toFixed(2) : "5.00";
-    const total = (parseFloat(subtotal) + parseFloat(shipping)).toFixed(2); 
+    let subtotal = data.items && Array.isArray(data.items)
+      ? data.items.reduce((sum: number, item: any) => sum + (parseFloat(item.price) * item.quantity), 0)
+      : 0;
     
+    // Sigurnosna provjera za shippingCost - ako ne postoji, stavi 0
+    const shippingCost = data.shippingCost 
+      ? parseFloat(data.shippingCost) 
+      : 5.00;
+    
+    // Ukupan iznos s dostavom
+    const total = parseFloat(data.total) || (subtotal + shippingCost);
+    
+    // Dohvati poziciju nakon tablice
+    const finalY = (doc as any).lastAutoTable.finalY || 200;
+    
+    // Dodavanje ukupnog iznosa
     doc.setFontSize(10);
+    doc.text(`${t.subtotal}:`, 160, finalY + 10, { align: "right" });
+    doc.text(`${subtotal.toFixed(2)} €`, 190, finalY + 10, { align: "right" });
+    
+    // Dodaj troškove dostave ako postoje
+    doc.text(`${t.shipping}:`, 160, finalY + 15, { align: "right" });
+    doc.text(`${shippingCost.toFixed(2)} €`, 190, finalY + 15, { align: "right" });
+    
+    // Zbog jednostavnosti porezni model, stavljamo PDV 0%
+    doc.text(`${t.tax}:`, 160, finalY + 20, { align: "right" });
+    doc.text("0.00 €", 190, finalY + 20, { align: "right" });
+    
+    // Ukupan iznos
+    doc.setFont("helvetica", "bold");
+    doc.text(`${t.totalAmount}:`, 160, finalY + 25, { align: "right" });
+    doc.text(`${total.toFixed(2)} €`, 190, finalY + 25, { align: "right" });
     doc.setFont("helvetica", "normal");
     
-    // Poravnanje desne kolone s vrijednostima - precizno namješteno kao u predlošku
-    const valueX = 190;
-    const labelX = 145; // Pomičem još više lijevo za predloška
+    // Informacije o plaćanju
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, finalY + 30, 190, finalY + 30);
     
-    // Međuzbroj - s više razmaka
-    doc.text(`${t.subtotal}:`, labelX, currentY, { align: "right" });
-    doc.text(`${subtotal} €`, valueX, currentY, { align: "right" });
-    
-    // Dostava - više razmaka u predlošku
-    doc.text(`${t.shipping}:`, labelX, currentY + 8, { align: "right" });
-    doc.text(`${shipping} €`, valueX, currentY + 8, { align: "right" });
-    
-    // PDV (0%) - više razmaka u predlošku
-    doc.text(`${t.tax}:`, labelX, currentY + 16, { align: "right" });
-    doc.text(`0.00 €`, valueX, currentY + 16, { align: "right" });
-    
-    // Ukupan iznos - podebljan s dodatnim razmakom - još veći razmak
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
-    
-    // Dodatni razmak prije totala - u predlošku je posebno velik razmak
-    doc.text(`${t.totalAmount}:`, labelX, currentY + 26, { align: "right" });
-    doc.text(`${total} €`, valueX, currentY + 26, { align: "right" });
-    
-    // Informacije o plaćanju - veliki razmak kao u predlošku
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
-    doc.text(`${t.paymentInfo}:`, 20, currentY + 40); // Povećan razmak prije informacija o plaćanju
-    // Nema linije u template-u 
-    
+    doc.text(`${t.paymentInfo}:`, 20, finalY + 38);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     
-    // Prikaži odabrani način plaćanja
-    const paymentMethodText = getPaymentMethodText(data.paymentMethod, lang, t);
+    const paymentMethod = getPaymentMethodText(data.paymentMethod || 'bank_transfer', lang, t);
+    const paymentStatus = getPaymentStatusText(data.paymentStatus);
     
-    // Rzmak između naslova i podataka - povećan kao u predlošku
-    doc.text(`${t.paymentMethod}: ${paymentMethodText}`, 20, currentY + 48);
-    doc.text(`${t.paymentStatus}: ${t.paid}`, 20, currentY + 54);
+    doc.text(`${t.paymentMethod}: ${paymentMethod}`, 20, finalY + 45);
+    doc.text(`${t.paymentStatus}: ${paymentStatus}`, 20, finalY + 50);
     
-    // Veći razmak prije zahvale - vrlo veliki razmak prema predlošku
-    // Zahvala
-    doc.setFontSize(11);
-    doc.setFont("helvetica", "bold");
-    doc.text(`${t.thankYou}!`, 105, currentY + 85, { align: "center" });
+    // Zahvala za narudžbu
+    doc.setFontSize(10);
+    doc.text(`${t.thankYou}!`, 105, finalY + 65, { align: "center" });
     
-    // Podnožje s kontakt informacijama - razmak je veći
+    // Podnožje s informacijama o tvrtki
     doc.setFontSize(8);
-    doc.setFont("helvetica", "normal");
+    doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 004366038787621", 105, finalY + 75, { align: "center" });
+    doc.text(`${t.generatedNote}.`, 105, finalY + 80, { align: "center" });
+    doc.text("Steuernummer: 61 154/7175", 105, finalY + 85, { align: "center" });
+    doc.text(`${t.exemptionNote}`, 105, finalY + 90, { align: "center" });
     
-    // Velika margina prije podnožja kao u primjeru PDF-a
-    const footerY = currentY + 100; 
-    
-    doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Österreich | Email: daniela.svoboda2@gmail.com | Telefon: 004366038787621", 105, footerY, { align: "center" });
-    
-    // Napomena o automatskom generiranju - centrirana i manja
-    doc.text(`${t.generatedNote}.`, 105, footerY + 5, { align: "center" });
-    
-    // Napomena o malim poreznim obveznicima
-    doc.text("Steuernummer: 61 154/7175", 105, footerY + 10, { align: "center" });
-    doc.text(t.exemptionNote, 105, footerY + 15, { align: "center" });
-    
-    // Spremanje PDF-a
-    doc.save(`${t.title.toLowerCase()}_${data.invoiceNumber}.pdf`);
+    // Spremi i preuzmi PDF
+    doc.save(`invoice-${invoiceNumber}.pdf`);
   } catch (error) {
     console.error("Greška pri generiranju PDF-a:", error);
     console.log("Stack trace:", error instanceof Error ? error.stack : 'Nema stack trace-a');
