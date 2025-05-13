@@ -16,6 +16,7 @@ import AdminNotifications from "./AdminNotifications";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import AdminSidebar from "./AdminSidebar";
 import LanguageSwitcher from "@/components/language-switcher";
+import { useLanguage } from "@/hooks/use-language";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -26,6 +27,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const { user, logoutMutation } = useAuth();
   const [, navigate] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t } = useLanguage();
   
   // Redirect if user is not admin
   if (!user) {
@@ -72,7 +74,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
           <div className="flex items-center space-x-4">
             <div className="relative hidden sm:block w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-              <Input placeholder="Pretraži..." className="pl-8" />
+              <Input placeholder={t("admin.search")} className="pl-8" />
             </div>
             
             <AdminNotifications />
@@ -91,10 +93,10 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                 <DropdownMenuLabel>{user.username}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate("/")}>
-                  Natrag na trgovinu
+                  {t("admin.backToStore")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>
-                  Odjava
+                  {t("auth.logout")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
