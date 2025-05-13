@@ -120,7 +120,7 @@ export default function CartPage() {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-12">
-          <h1 className="heading text-3xl font-bold mb-8 text-center">Učitavanje košarice...</h1>
+          <h1 className="heading text-3xl font-bold mb-8 text-center">{t('cart.loading')}</h1>
         </div>
       </Layout>
     );
@@ -130,21 +130,20 @@ export default function CartPage() {
     return (
       <Layout>
         <Helmet>
-          <title>{`Košarica | Kerzenwelt by Dani`}</title>
-          <meta name="description" content="Pregledajte proizvode u vašoj košarici i dovršite narudžbu." />
+          <title>{`${t('cart.title')} | Kerzenwelt by Dani`}</title>
+          <meta name="description" content={t('cart.metaDescription')} />
         </Helmet>
         
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-2xl mx-auto text-center">
             <ShoppingBasket size={64} className="mx-auto mb-6 text-gray-300" />
-            <h1 className="heading text-3xl font-bold mb-4">Vaša košarica je prazna</h1>
+            <h1 className="heading text-3xl font-bold mb-4">{t('cart.empty')}</h1>
             <p className="text-gray-500 mb-8">
-              Izgleda da još niste dodali proizvode u svoju košaricu.
-              Istražite našu ponudu i pronađite savršene svijeće za svoj dom.
+              {t('cart.emptyMessage')}
             </p>
             <Button size="lg" asChild>
               <Link href="/products">
-                Pregledajte proizvode
+                {t('cart.browseProducts')}
               </Link>
             </Button>
           </div>
@@ -156,19 +155,19 @@ export default function CartPage() {
   return (
     <Layout>
       <Helmet>
-        <title>{`Košarica (${cartItems.length}) | Kerzenwelt by Dani`}</title>
-        <meta name="description" content="Pregledajte proizvode u vašoj košarici i dovršite narudžbu." />
+        <title>{`${t('cart.title')} (${cartItems.length}) | Kerzenwelt by Dani`}</title>
+        <meta name="description" content={t('cart.metaDescription')} />
       </Helmet>
       
       <div className="bg-white py-8">
         <div className="container mx-auto px-4">
-          <h1 className="heading text-3xl font-bold mb-2">Košarica</h1>
+          <h1 className="heading text-3xl font-bold mb-2">{t('cart.title')}</h1>
           <div className="flex items-center text-sm text-gray-500 mb-8">
             <Link href="/" className="hover:text-primary">
-              Početna
+              {t('breadcrumbs.home')}
             </Link>
             <ChevronRight size={14} className="mx-2" />
-            <span className="text-gray-800 font-medium">Košarica</span>
+            <span className="text-gray-800 font-medium">{t('cart.title')}</span>
           </div>
           
           <div className="flex flex-col lg:flex-row gap-8">
@@ -176,10 +175,9 @@ export default function CartPage() {
             <div className="w-full lg:w-2/3">
               <Card>
                 <CardHeader className="pb-3">
-                  <CardTitle>Proizvodi u košarici</CardTitle>
+                  <CardTitle>{t('cart.itemsInCart')}</CardTitle>
                   <CardDescription>
-                    {cartItems.length} {cartItems.length === 1 ? 'proizvod' : 
-                     cartItems.length % 10 >= 2 && cartItems.length % 10 <= 4 ? 'proizvoda' : 'proizvoda'}
+                    {cartItems.length} {t('cart.productsCount')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -193,11 +191,11 @@ export default function CartPage() {
                     onClick={() => clearCart.mutate()}
                     disabled={clearCart.isPending}
                   >
-                    {clearCart.isPending ? "Čišćenje..." : "Očisti košaricu"}
+                    {clearCart.isPending ? t('cart.clearing') : t('cart.clearCart')}
                   </Button>
                   <Button asChild>
                     <Link href="/products">
-                      Nastavi kupovinu
+                      {t('cart.continueShopping')}
                     </Link>
                   </Button>
                 </CardFooter>
