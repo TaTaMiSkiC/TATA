@@ -422,16 +422,16 @@ export default function ProductDetailsPage() {
                     <PackageCheck size={18} className="text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Dostupnost</p>
+                    <p className="text-sm text-muted-foreground">{translateText("Dostupnost", "hr")}</p>
                     <p className="font-medium text-foreground">
                       {product.stock > 0 ? (
                         product.stock > 10 ? (
-                          <span className="text-success">Na zalihi</span>
+                          <span className="text-success">{translateText("Na zalihi", "hr")}</span>
                         ) : (
-                          <span className="text-warning">Zadnjih {product.stock} komada</span>
+                          <span className="text-warning">{translateText(`Zadnjih ${product.stock} komada`, "hr")}</span>
                         )
                       ) : (
-                        <span className="text-destructive">Nije na zalihi</span>
+                        <span className="text-destructive">{translateText("Nije na zalihi", "hr")}</span>
                       )}
                     </p>
                   </div>
@@ -446,8 +446,10 @@ export default function ProductDetailsPage() {
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
                     </div>
                     <div>
-                      <p className="text-sm font-medium">Ovaj proizvod ima dostupne opcije</p>
-                      <p className="text-xs text-muted-foreground">Kliknite na "Odaberi opcije" da biste izabrali željeni {productScents && productScents.length > 0 ? "miris" : ""}{(productScents && productScents.length > 0) && (product.hasColorOptions && productColors && productColors.length > 0) ? " i " : ""}{(product.hasColorOptions && productColors && productColors.length > 0) ? "boju" : ""} prije dodavanja u košaricu.</p>
+                      <p className="text-sm font-medium">{translateText("Ovaj proizvod ima dostupne opcije", "hr")}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {translateText(`Kliknite na "Odaberi opcije" da biste izabrali željeni ${productScents && productScents.length > 0 ? "miris" : ""}${(productScents && productScents.length > 0) && (product.hasColorOptions && productColors && productColors.length > 0) ? " i " : ""}${(product.hasColorOptions && productColors && productColors.length > 0) ? "boju" : ""} prije dodavanja u košaricu.`, "hr")}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -501,11 +503,11 @@ export default function ProductDetailsPage() {
                 <div className="flex space-x-3">
                   <Button variant="outline" className="flex-1">
                     <Heart size={18} className="mr-2" />
-                    Dodaj u favorite
+                    {translateText("Dodaj u favorite", "hr")}
                   </Button>
                   <Button variant="outline" className="flex-1">
                     <Share2 size={18} className="mr-2" />
-                    Podijeli
+                    {translateText("Podijeli", "hr")}
                   </Button>
                 </div>
               </div>
