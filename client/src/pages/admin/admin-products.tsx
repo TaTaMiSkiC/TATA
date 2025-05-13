@@ -269,20 +269,20 @@ export default function AdminProducts() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Slika</TableHead>
-                      <TableHead>Naziv</TableHead>
-                      <TableHead>Kategorija</TableHead>
-                      <TableHead>Cijena</TableHead>
-                      <TableHead>Zaliha</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="w-[100px]">Akcije</TableHead>
+                      <TableHead>{t("admin.product.image")}</TableHead>
+                      <TableHead>{t("admin.product.name")}</TableHead>
+                      <TableHead>{t("admin.product.category")}</TableHead>
+                      <TableHead>{t("admin.product.price")}</TableHead>
+                      <TableHead>{t("admin.product.stock")}</TableHead>
+                      <TableHead>{t("admin.product.status")}</TableHead>
+                      <TableHead className="w-[100px]">{t("admin.product.actions")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredProducts?.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                          Nema pronađenih proizvoda
+                          {t("admin.product.noProductsFound")}
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -320,14 +320,22 @@ export default function AdminProducts() {
                                 variant={product.stock > 0 ? "default" : "destructive"}
                                 className={product.stock > 10 ? "bg-green-500" : product.stock > 0 ? "bg-yellow-500" : ""}
                               >
-                                {product.stock > 10 ? "Na zalihi" : product.stock > 0 ? "Niska zaliha" : "Nije dostupno"}
+                                {product.stock > 10 
+                                  ? t("admin.product.inStock") 
+                                  : product.stock > 0 
+                                    ? t("admin.product.lowStock") 
+                                    : t("admin.product.outOfStock")
+                                }
                               </Badge>
                               
                               <Badge 
                                 variant={product.active !== false ? "outline" : "destructive"}
                                 className={product.active !== false ? "border-green-500 text-green-600" : ""}
                               >
-                                {product.active !== false ? "Aktivan" : "Neaktivan"}
+                                {product.active !== false 
+                                    ? t("admin.product.active") 
+                                    : t("admin.product.inactive")
+                                }
                               </Badge>
                             </div>
                           </TableCell>
@@ -339,15 +347,15 @@ export default function AdminProducts() {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Akcije</DropdownMenuLabel>
+                                <DropdownMenuLabel>{t("admin.product.actions")}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => handleEditProduct(product)}>
-                                  <Edit className="mr-2 h-4 w-4" /> Uredi
+                                  <Edit className="mr-2 h-4 w-4" /> {t("admin.product.edit")}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => handleToggleActivation(product)}>
                                   {product.active !== false ? (
                                     <>
-                                      <EyeOff className="mr-2 h-4 w-4" /> Deaktiviraj
+                                      <EyeOff className="mr-2 h-4 w-4" /> {t("admin.product.deactivate")}
                                     </>
                                   ) : (
                                     <>
