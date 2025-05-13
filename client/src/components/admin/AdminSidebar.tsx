@@ -79,7 +79,7 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
       icon: <Users size={20} />
     },
     {
-      name: t("admin.payments") || "Plaćanja",
+      name: t("admin.payments"),
       path: "/admin/payments",
       icon: <CreditCard size={20} />
     },
@@ -111,7 +111,7 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
       {/* Header */}
       <div className="flex items-center px-6 py-6 border-b border-primary-foreground/10">
         <Flame size={24} className="mr-2" />
-        <span className="text-xl font-bold">{t("admin.panel") || "Kerzenwelt Admin"}</span>
+        <span className="text-xl font-bold">{t("admin.panel")}</span>
       </div>
       
       {/* Navigation */}
