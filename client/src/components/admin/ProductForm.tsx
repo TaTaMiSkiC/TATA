@@ -325,7 +325,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               name="categoryId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Kategorija *</FormLabel>
+                  <FormLabel>{t("admin.product.category")} *</FormLabel>
                   <Select
                     onValueChange={(value) => field.onChange(parseInt(value))}
                     defaultValue={field.value?.toString()}
@@ -333,12 +333,12 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Odaberite kategoriju" />
+                        <SelectValue placeholder={t("admin.product.categoryPlaceholder")} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {categoriesLoading ? (
-                        <div className="py-2 text-center">Učitavanje...</div>
+                        <div className="py-2 text-center">{t("admin.general.loading")}</div>
                       ) : (
                         categories?.map((category: any) => (
                           <SelectItem 
@@ -362,10 +362,10 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cijena (€) *</FormLabel>
+                  <FormLabel>{t("admin.product.price")} (€) *</FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="Npr. 24.99" 
+                      placeholder={t("admin.product.pricePlaceholder")} 
                       {...field} 
                     />
                   </FormControl>
@@ -380,12 +380,12 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
               name="stock"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Zaliha *</FormLabel>
+                  <FormLabel>{t("admin.product.stock")} *</FormLabel>
                   <FormControl>
                     <Input 
                       type="number" 
                       min="0" 
-                      placeholder="Npr. 50" 
+                      placeholder={t("admin.product.stockPlaceholder")} 
                       {...field} 
                     />
                   </FormControl>
@@ -397,7 +397,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
             {/* Image Upload/URL */}
             <div className="col-span-full space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium">Slika proizvoda *</h3>
+                <h3 className="text-lg font-medium">{t("admin.product.image")} *</h3>
                 <Tabs 
                   defaultValue={uploadMethod} 
                   onValueChange={(value) => setUploadMethod(value as 'url' | 'file')}
@@ -410,7 +410,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                     </TabsTrigger>
                     <TabsTrigger value="file" className="flex items-center gap-1">
                       <Upload className="h-4 w-4" />
-                      Upload
+                      {t("admin.product.upload")}
                     </TabsTrigger>
                   </TabsList>
                   
@@ -422,13 +422,13 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                         <FormItem>
                           <FormControl>
                             <Input 
-                              placeholder="https://example.com/image.jpg" 
+                              placeholder={t("admin.product.imageUrlPlaceholder")} 
                               {...field} 
                               value={field.value || ''}
                             />
                           </FormControl>
                           <FormDescription>
-                            URL do slike proizvoda. Preporučene dimenzije: 800x800px.
+                            {t("admin.product.imageUrlDescription")}
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
@@ -451,7 +451,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                         {isUploading ? (
                           <div className="flex flex-col items-center">
                             <LoaderCircle className="h-10 w-10 text-primary animate-spin mb-2" />
-                            <p className="text-sm text-muted-foreground">Uploading...</p>
+                            <p className="text-sm text-muted-foreground">{t("admin.general.uploading")}</p>
                           </div>
                         ) : (
                           <>
