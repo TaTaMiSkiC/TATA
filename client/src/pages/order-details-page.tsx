@@ -69,6 +69,7 @@ interface Invoice {
 interface OrderWithItems extends Order {
   items: OrderItemWithProduct[];
   invoice?: Invoice;
+  notes?: string; // Dodano notes polje
 }
 
 // Komponenta za prikaz statusa narudžbe pomoću Badge
