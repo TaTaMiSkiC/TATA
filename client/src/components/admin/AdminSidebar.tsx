@@ -34,7 +34,7 @@ export default function AdminSidebar({ onItemClick }: AdminSidebarProps) {
   
   const menuItems = [
     {
-      name: t("admin.dashboard"),
+      name: t("admin.dashboard.title"),
       path: "/admin",
       icon: <LayoutDashboard size={20} />
     },

@@ -143,7 +143,7 @@ const AdminNotifications = () => {
                             {notification.title}
                             {!notification.read && (
                               <Badge variant="outline" className="ml-2 bg-primary text-primary-foreground">
-                                Novo
+                                {t("admin.notification.new")}
                               </Badge>
                             )}
                           </p>
@@ -151,10 +151,10 @@ const AdminNotifications = () => {
                           <p className="text-xs text-muted-foreground mt-1">{formatDate(notification.date)}</p>
                         </div>
                         {notification.type === "order" && (
-                          <Badge variant="outline" className="ml-2">Narudžba</Badge>
+                          <Badge variant="outline" className="ml-2">{t("admin.notification.order")}</Badge>
                         )}
                         {notification.type === "invoice" && (
-                          <Badge variant="outline" className="ml-2">Račun</Badge>
+                          <Badge variant="outline" className="ml-2">{t("admin.notification.invoice")}</Badge>
                         )}
                       </div>
                     </a>
@@ -162,7 +162,7 @@ const AdminNotifications = () => {
                 </div>
               ) : (
                 <div className="py-6 text-center">
-                  <p className="text-sm text-muted-foreground">Nema obavijesti</p>
+                  <p className="text-sm text-muted-foreground">{t("admin.notification.noNotifications")}</p>
                 </div>
               )}
             </ScrollArea>
