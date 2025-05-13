@@ -406,7 +406,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
                   <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="url" className="flex items-center gap-1">
                       <Link className="h-4 w-4" />
-                      URL
+                      {t("admin.product.url")}
                     </TabsTrigger>
                     <TabsTrigger value="file" className="flex items-center gap-1">
                       <Upload className="h-4 w-4" />
