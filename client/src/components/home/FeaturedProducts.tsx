@@ -3,8 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import { Product } from "@shared/schema";
 import ProductGrid from "../products/ProductGrid";
+import { useLanguage } from "@/hooks/use-language";
 
 export default function FeaturedProducts() {
+  const { t } = useLanguage();
   const { data: products, isLoading, error } = useQuery<Product[]>({
     queryKey: ["/api/products/featured"],
   });
@@ -17,12 +19,12 @@ export default function FeaturedProducts() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-end mb-10">
           <div>
-            <h2 className="heading text-3xl md:text-4xl font-bold text-foreground">Istaknuti proizvodi</h2>
-            <p className="mt-3 text-muted-foreground">Naši najpopularniji proizvodi koje naši kupci vole</p>
+            <h2 className="heading text-3xl md:text-4xl font-bold text-foreground">{t('home.featured')}</h2>
+            <p className="mt-3 text-muted-foreground">{t('home.featuredSubtitle')}</p>
           </div>
           <Link href="/products">
             <div className="hidden md:inline-flex items-center font-accent text-primary hover:text-opacity-80 transition cursor-pointer">
-              Vidi sve proizvode
+              {t('home.viewAllProducts')}
               <ArrowRight className="ml-2" size={16} />
             </div>
           </Link>
@@ -30,7 +32,7 @@ export default function FeaturedProducts() {
         
         {error ? (
           <div className="text-center py-8">
-            <p className="text-red-500">Došlo je do greške prilikom učitavanja proizvoda.</p>
+            <p className="text-red-500">{t('home.errorLoading')}</p>
           </div>
         ) : (
           <ProductGrid 
@@ -42,7 +44,7 @@ export default function FeaturedProducts() {
         <div className="mt-8 text-center md:hidden">
           <Link href="/products">
             <div className="inline-flex items-center font-accent text-primary hover:text-opacity-80 transition cursor-pointer">
-              Vidi sve proizvode
+              {t('home.viewAllProducts')}
               <ArrowRight className="ml-2" size={16} />
             </div>
           </Link>

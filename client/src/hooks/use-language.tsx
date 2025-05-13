@@ -35,6 +35,17 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.featuredSubtitle': 'Unsere beliebtesten Produkte, die unsere Kunden lieben',
     'home.viewAllProducts': 'Alle Produkte anzeigen',
     'home.errorLoading': 'Beim Laden der Produkte ist ein Fehler aufgetreten.',
+    'home.ourStory': 'Unsere Geschichte',
+    'home.storyDescription': 'Jede unserer Kerzen wird mit Sorgfalt und Liebe hergestellt, wobei auf jedes Detail geachtet wird - von der Auswahl der besten Düfte bis zur Vollendung des ästhetischen Erscheinungsbildes. Wir sind stolz auf unser Handwerk und die Leidenschaft, mit der wir an jedes Produkt herangehen.',
+    'home.naturalIngredients': 'Natürliche Zutaten',
+    'home.naturalIngredientsDesc': 'Wir verwenden nur natürliches Sojawachs und ätherische Öle',
+    'home.handmade': 'Handgefertigt',
+    'home.handmadeDesc': 'Jede Kerze wird sorgfältig und von Hand hergestellt',
+    'home.sustainability': 'Nachhaltigkeit',
+    'home.sustainabilityDesc': 'Umweltfreundliche Verpackung und Materialien',
+    'home.homeComfort': 'Wohnkomfort',
+    'home.homeComfortDesc': 'Schaffen Sie eine gemütliche Atmosphäre in Ihrem Raum',
+    'home.learnMore': 'Mehr über uns erfahren',
     
     // Proizvodi
     'product.addToCart': 'In den Warenkorb',
@@ -96,6 +107,17 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.featuredSubtitle': 'Naši najpopularniji proizvodi koje naši kupci vole',
     'home.viewAllProducts': 'Vidi sve proizvode',
     'home.errorLoading': 'Došlo je do greške prilikom učitavanja proizvoda.',
+    'home.ourStory': 'Naša priča',
+    'home.storyDescription': 'Svaka naša svijeća je izrađena s pažnjom i ljubavlju, pazeći na svaki detalj - od odabira najboljih mirisa do dovršavanja estetskog izgleda. Ponosni smo na naš obrt i strast kojom pristupamo svakom proizvodu.',
+    'home.naturalIngredients': 'Prirodni sastojci',
+    'home.naturalIngredientsDesc': 'Koristimo samo prirodni sojin vosak i esencijalna ulja',
+    'home.handmade': 'Ručna izrada',
+    'home.handmadeDesc': 'Svaka svijeća je pažljivo i ručno izrađena',
+    'home.sustainability': 'Održivost',
+    'home.sustainabilityDesc': 'Ekološki prihvatljiva ambalaža i materijali',
+    'home.homeComfort': 'Udobnost doma',
+    'home.homeComfortDesc': 'Stvorite ugodnu atmosferu u svom prostoru',
+    'home.learnMore': 'Saznajte više o nama',
     
     // Proizvodi
     'product.addToCart': 'Dodaj u košaricu',
@@ -154,6 +176,20 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.heroSubtitle': 'Discover our collection of premium scented candles made with love',
     'home.exploreCollection': 'Explore Collection',
     'home.aboutUs': 'About Us',
+    'home.featuredSubtitle': 'Our most popular products that our customers love',
+    'home.viewAllProducts': 'View all products',
+    'home.errorLoading': 'An error occurred while loading products.',
+    'home.ourStory': 'Our Story',
+    'home.storyDescription': 'Each of our candles is crafted with care and love, paying attention to every detail - from selecting the best scents to finishing the aesthetic appearance. We take pride in our craft and the passion with which we approach every product.',
+    'home.naturalIngredients': 'Natural Ingredients',
+    'home.naturalIngredientsDesc': 'We use only natural soy wax and essential oils',
+    'home.handmade': 'Handmade',
+    'home.handmadeDesc': 'Each candle is carefully and handcrafted',
+    'home.sustainability': 'Sustainability',
+    'home.sustainabilityDesc': 'Environmentally friendly packaging and materials',
+    'home.homeComfort': 'Home Comfort',
+    'home.homeComfortDesc': 'Create a cozy atmosphere in your space',
+    'home.learnMore': 'Learn more about us',
     
     // Products
     'product.addToCart': 'Add to Cart',
@@ -212,6 +248,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.heroSubtitle': 'Scopri la nostra collezione di candele profumate premium realizzate con amore',
     'home.exploreCollection': 'Esplora la collezione',
     'home.aboutUs': 'Chi siamo',
+    'home.featuredSubtitle': 'I nostri prodotti più popolari che i nostri clienti amano',
+    'home.viewAllProducts': 'Vedi tutti i prodotti',
+    'home.errorLoading': 'Si è verificato un errore durante il caricamento dei prodotti.',
     
     // Prodotti
     'product.addToCart': 'Aggiungi al carrello',
@@ -270,6 +309,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.heroSubtitle': 'Odkrijte našo kolekcijo vrhunskih dišečih sveč, narejenih z ljubeznijo',
     'home.exploreCollection': 'Raziščite kolekcijo',
     'home.aboutUs': 'O nas',
+    'home.featuredSubtitle': 'Naši najbolj priljubljeni izdelki, ki jih naše stranke obožujejo',
+    'home.viewAllProducts': 'Oglejte si vse izdelke',
+    'home.errorLoading': 'Pri nalaganju izdelkov je prišlo do napake.',
     
     // Izdelki
     'product.addToCart': 'Dodaj v košarico',
