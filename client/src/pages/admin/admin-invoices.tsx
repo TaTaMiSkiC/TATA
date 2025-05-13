@@ -74,289 +74,127 @@ import { generateInvoicePdf, getPaymentMethodText } from "./new-invoice-generato
 // Pomoćna funkcija za generiranje broja fakture
 const createInvoiceNumber = async (orderId?: number) => {
   // Generiranje broja računa u formatu i450, i451, itd.
-  const baseNumber = 450;
-  
   try {
-    // Dohvati posljednji račun iz baze da vidimo koji je najveći broj
     const response = await fetch('/api/invoices/last');
-    if (response.ok) {
-      const lastInvoice = await response.json();
-      
-      // Ako postoji prethodni račun, izvuci broj iz njegovog broja računa
-      let lastInvoiceNumber = baseNumber - 1; // Početno stanje ako nema prethodnih računa
-      
-      if (lastInvoice && lastInvoice.invoiceNumber) {
-        // Izvuci broj iz formata "i450" -> 450
-        const matches = lastInvoice.invoiceNumber.match(/i(\d+)/);
-        if (matches && matches[1]) {
-          lastInvoiceNumber = parseInt(matches[1]);
-        }
-      }
-      
-      // Generiraj sljedeći broj računa
-      if (orderId) {
-        // Ako je narudžba poznata, koristimo njen ID za formiranje broja računa
-        // ali osiguravamo i da je veći od posljednjeg korištenog broja
-        const nextInvoiceNumber = Math.max(lastInvoiceNumber + 1, baseNumber, orderId);
-        return `i${nextInvoiceNumber}`;
-      } else {
-        // Ako nema narudžbe, jednostavno povećavamo za jedan od posljednjeg
-        const nextInvoiceNumber = Math.max(lastInvoiceNumber + 1, baseNumber);
-        return `i${nextInvoiceNumber}`;
-      }
+    const lastInvoice = await response.json();
+    
+    console.log("Dohvaćen posljednji račun:", lastInvoice);
+    
+    if (lastInvoice && lastInvoice.invoiceNumber) {
+      // Parsiranje postojećeg broja računa
+      const currentNumber = lastInvoice.invoiceNumber.substring(1); // Isključi 'i' prefix
+      const nextNumber = parseInt(currentNumber) + 1;
+      return `i${nextNumber}`;
+    } else {
+      // Ako nema postojećih računa, počni od 450
+      return "i450";
     }
   } catch (error) {
     console.error("Greška pri dohvaćanju posljednjeg broja računa:", error);
-  }
-  
-  // Fallback - koristi sessionstorage kao prije ako API nije dostupan
-  if (orderId) {
-    return orderId < baseNumber ? `i${baseNumber}` : `i${orderId}`;
-  } else {
-    const currentTime = new Date().getTime();
-    const currentNextNumber = parseInt(sessionStorage.getItem('next_invoice_number') || '0');
-    const newInvoiceNumber = Math.max(baseNumber, currentNextNumber, Math.floor(currentTime / 1000) % 10000 + baseNumber);
-    
-    sessionStorage.setItem('next_invoice_number', (newInvoiceNumber + 1).toString());
-    
-    return `i${newInvoiceNumber}`;
+    return orderId ? `i${orderId + 450}` : "i450";
   }
 };
 
+// Komponenta za odabir jezika računa
+function LanguageSelector({ invoice, onSelectLanguage }: { invoice: any, onSelectLanguage: (invoice: any, language: string) => void }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="sm">
+          <Download className="h-4 w-4 mr-2" />
+          Preuzmi PDF
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem onClick={() => onSelectLanguage(invoice, "hr")}>
+          <img 
+            src="https://flagcdn.com/24x18/hr.png" 
+            width="24" 
+            height="18" 
+            alt="Croatian flag"
+            className="mr-2"
+          />
+          Hrvatski
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onSelectLanguage(invoice, "en")}>
+          <img 
+            src="https://flagcdn.com/24x18/gb.png" 
+            width="24" 
+            height="18" 
+            alt="English flag"
+            className="mr-2"
+          />
+          Engleski
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onSelectLanguage(invoice, "de")}>
+          <img 
+            src="https://flagcdn.com/24x18/de.png" 
+            width="24" 
+            height="18" 
+            alt="German flag"
+            className="mr-2"
+          />
+          Njemački
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+// Tipovi za fakture
 interface Invoice {
   id: number;
   invoiceNumber: string;
-  orderId: number | null;
+  orderId: number;
   userId: number;
   customerName: string;
-  customerEmail: string | null;
+  customerEmail: string;
   customerAddress: string | null;
   customerCity: string | null;
   customerPostalCode: string | null;
   customerCountry: string | null;
   customerPhone: string | null;
+  customerNote: string | null;
+  paymentMethod: string;
   total: string;
   subtotal: string;
   tax: string;
   language: string;
-  paymentMethod: string;
-  createdAt: Date;
-  items: InvoiceItem[];
+  createdAt: string;
 }
 
-interface InvoiceItem {
-  id: number;
-  invoiceId: number;
-  productId: number;
-  productName: string;
-  quantity: number;
-  price: string;
-  selectedScent: string | null;
-  selectedColor: string | null;
-}
-
+// Odabrani proizvod
 interface SelectedProduct {
-  productId: number;
-  productName: string;
-  quantity: number;
+  id: number;
+  name: string;
   price: string;
-  selectedScent: string | null;
-  selectedColor: string | null;
+  quantity: number;
+  scentId?: number | null;
+  scentName?: string | null;
+  colorId?: number | null;
+  colorName?: string | null;
+  colorIds?: string | null;
+  hasMultipleColors?: boolean;
 }
 
-// Validacijska shema za formu
+// Schema za kreiranje računa
 const createInvoiceSchema = z.object({
-  firstName: z.string().min(2, "Ime je obavezno"),
-  lastName: z.string().min(2, "Prezime je obavezno"),
+  firstName: z.string().min(1, "Ime je obavezno"),
+  lastName: z.string().min(1, "Prezime je obavezno"),
   address: z.string().optional(),
   city: z.string().optional(),
   postalCode: z.string().optional(),
   country: z.string().optional(),
-  email: z.string().email("Unesite valjanu email adresu").optional().or(z.literal('')),
+  email: z.string().email("Unesite ispravnu email adresu").optional(),
   phone: z.string().optional(),
   invoiceNumber: z.string().min(1, "Broj računa je obavezan"),
-  language: z.string().min(1, "Odaberite jezik računa"),
-  paymentMethod: z.string().min(1, "Odaberite način plaćanja"),
-  selectedProducts: z.array(z.any()).optional(),
+  paymentMethod: z.string().min(1, "Način plaćanja je obavezan"),
+  language: z.string().min(1, "Jezik računa je obavezan"),
+  customerNote: z.string().optional(),
 });
 
+// Tipovi za form
 type CreateInvoiceFormValues = z.infer<typeof createInvoiceSchema>;
-
-// Komponenta za odabir proizvoda
-function ProductSelector({
-  addProduct
-}: {
-  addProduct: (product: SelectedProduct) => void
-}) {
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-  const [quantity, setQuantity] = useState(1);
-  const [price, setPrice] = useState<string>("");
-  const [selectedScent, setSelectedScent] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  
-  // Dohvati sve proizvode
-  const { data: products = [] } = useQuery<Product[]>({
-    queryKey: ['/api/products'],
-  });
-  
-  // Dohvati mirise za odabrani proizvod
-  const { data: productScents = [] } = useQuery<Scent[]>({
-    queryKey: [`/api/products/${selectedProductId}/scents`],
-    enabled: !!selectedProductId,
-  });
-  
-  // Dohvati boje za odabrani proizvod
-  const { data: productColors = [] } = useQuery<Color[]>({
-    queryKey: [`/api/products/${selectedProductId}/colors`],
-    enabled: !!selectedProductId,
-  });
-  
-  // Postavi cijenu kada se odabere proizvod
-  const handleProductChange = async (productId: string) => {
-    const id = parseInt(productId);
-    setSelectedProductId(id);
-    
-    const product = products.find(p => p.id === id);
-    if (product) {
-      setPrice(product.price);
-    }
-    
-    // Reset scent and color
-    setSelectedScent(null);
-    setSelectedColor(null);
-    
-    console.log("Odabrani proizvod ID:", id);
-    
-    // Ručno dohvaćanje mirisa i boja
-    try {
-      const scentsResponse = await fetch(`/api/products/${id}/scents`);
-      const scentsData = await scentsResponse.json();
-      console.log("Dohvaćeni mirisi:", scentsData);
-      
-      const colorsResponse = await fetch(`/api/products/${id}/colors`);
-      const colorsData = await colorsResponse.json();
-      console.log("Dohvaćene boje:", colorsData);
-    } catch (error) {
-      console.error("Greška pri dohvaćanju opcija:", error);
-    }
-  };
-  
-  // Dodaj proizvod u listu
-  const handleAddProduct = () => {
-    if (!selectedProductId) {
-      return;
-    }
-    
-    const product = products.find(p => p.id === selectedProductId);
-    if (!product) {
-      return;
-    }
-    
-    addProduct({
-      productId: selectedProductId,
-      productName: product.name,
-      quantity,
-      price,
-      selectedScent,
-      selectedColor
-    });
-    
-    // Reset form
-    setSelectedProductId(null);
-    setQuantity(1);
-    setPrice("");
-    setSelectedScent(null);
-    setSelectedColor(null);
-  };
-  
-  return (
-    <div className="bg-background border rounded-lg p-4 space-y-4">
-      <h3 className="font-medium">Dodaj proizvod</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Proizvod</label>
-          <Select onValueChange={handleProductChange} value={selectedProductId?.toString() || ""}>
-            <SelectTrigger>
-              <SelectValue placeholder="Odaberi proizvod" />
-            </SelectTrigger>
-            <SelectContent>
-              {products.map(product => (
-                <SelectItem key={product.id} value={product.id.toString()}>
-                  {product.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        
-        {productScents && productScents.length > 0 && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Miris</label>
-            <Select onValueChange={setSelectedScent} value={selectedScent || ""}>
-              <SelectTrigger>
-                <SelectValue placeholder="Odaberi miris" />
-              </SelectTrigger>
-              <SelectContent>
-                {productScents.map(scent => (
-                  <SelectItem key={scent.id} value={scent.name}>
-                    {scent.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-        
-        {productColors && productColors.length > 0 && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Boja</label>
-            <Select onValueChange={setSelectedColor} value={selectedColor || ""}>
-              <SelectTrigger>
-                <SelectValue placeholder="Odaberi boju" />
-              </SelectTrigger>
-              <SelectContent>
-                {productColors.map(color => (
-                  <SelectItem key={color.id} value={color.name}>
-                    {color.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-        
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Količina</label>
-          <Input 
-            type="number" 
-            min="1" 
-            value={quantity} 
-            onChange={e => setQuantity(parseInt(e.target.value))} 
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Cijena (€)</label>
-          <Input 
-            type="text" 
-            value={price} 
-            onChange={e => setPrice(e.target.value)} 
-          />
-        </div>
-      </div>
-      
-      <Button 
-        type="button" 
-        onClick={handleAddProduct} 
-        disabled={!selectedProductId}
-        className="w-full md:w-auto"
-      >
-        <Plus className="h-4 w-4 mr-2" />
-        Dodaj proizvod
-      </Button>
-    </div>
-  );
-}
 
 // Komponenta za cijeli admin modul računa
 export default function AdminInvoices() {
@@ -401,494 +239,8 @@ export default function AdminInvoices() {
   
   // Funkcija za generiranje PDF-a
   const generatePdf = (data: any) => {
+    // Koristimo novu metodu iz new-invoice-generator.ts koja daje identičan izgled kao u korisničkom dijelu
     generateInvoicePdf(data, toast);
-    return;
-    try {
-      // STARI KOD - NE KORISTI SE VIŠE
-      // Određivanje jezika računa
-      const lang = data.language || "hr";
-      
-      // Definiranje prijevoda za PDF
-      const translations: Record<string, Record<string, string>> = {
-        hr: {
-          title: "RACUN",
-          date: "Datum racuna",
-          invoiceNo: "Broj racuna",
-          buyer: "Podaci o kupcu",
-          seller: "Prodavatelj",
-          item: "Proizvod",
-          quantity: "Kolicina",
-          price: "Cijena/kom",
-          total: "Ukupno",
-          subtotal: "Meduzboj",
-          tax: "PDV (0%)",
-          totalAmount: "UKUPNO",
-          paymentInfo: "Informacije o placanju",
-          paymentMethod: "Nacin placanja",
-          paymentStatus: "Status placanja",
-          cash: "Gotovina",
-          bank: "Bankovni prijenos",
-          paypal: "PayPal",
-          paid: "Placeno",
-          unpaid: "U obradi",
-          deliveryAddress: "Adresa za dostavu",
-          handInvoice: "Rucni racun",
-          thankYou: "Hvala Vam na narudzbi",
-          generatedNote: "Ovo je automatski generirani racun i valjan je bez potpisa i pecata",
-          exemptionNote: "Poduzetnik nije u sustavu PDV-a, PDV nije obracunat temeljem odredbi posebnog postupka oporezivanja za male porezne obveznike.",
-          orderItems: "Stavke narudzbe"
-        },
-        en: {
-          title: "INVOICE",
-          date: "Invoice date",
-          invoiceNo: "Invoice number",
-          buyer: "Buyer information",
-          seller: "Seller",
-          item: "Product",
-          quantity: "Quantity",
-          price: "Price/unit",
-          total: "Total",
-          subtotal: "Subtotal",
-          tax: "VAT (0%)",
-          totalAmount: "TOTAL",
-          paymentInfo: "Payment information",
-          paymentMethod: "Payment method",
-          paymentStatus: "Payment status",
-          cash: "Cash",
-          bank: "Bank transfer",
-          paypal: "PayPal",
-          paid: "Paid",
-          unpaid: "Processing",
-          deliveryAddress: "Delivery address",
-          handInvoice: "Hand invoice",
-          thankYou: "Thank you for your order",
-          generatedNote: "This is an automatically generated invoice and is valid without signature or stamp",
-          exemptionNote: "The entrepreneur is not in the VAT system, VAT is not calculated based on the provisions of the special taxation procedure for small taxpayers.",
-          orderItems: "Order items"
-        },
-        de: {
-          title: "RECHNUNG",
-          date: "Rechnungsdatum",
-          invoiceNo: "Rechnungsnummer",
-          buyer: "Käuferinformationen",
-          seller: "Verkäufer",
-          item: "Produkt",
-          quantity: "Menge",
-          price: "Preis/Stück",
-          total: "Gesamt",
-          subtotal: "Zwischensumme",
-          tax: "MwSt. (0%)",
-          totalAmount: "GESAMTBETRAG",
-          paymentInfo: "Zahlungsinformationen",
-          paymentMethod: "Zahlungsmethode",
-          paymentStatus: "Zahlungsstatus",
-          cash: "Bargeld",
-          bank: "Banküberweisung",
-          paypal: "PayPal",
-          paid: "Bezahlt",
-          unpaid: "In Bearbeitung",
-          deliveryAddress: "Lieferadresse",
-          handInvoice: "Handrechnung",
-          thankYou: "Vielen Dank für Ihre Bestellung",
-          generatedNote: "Dies ist eine automatisch generierte Rechnung und ist ohne Unterschrift und Stempel gültig",
-          exemptionNote: "Der Unternehmer ist nicht im Mehrwertsteuersystem, MwSt. wird nicht berechnet gemäß den Bestimmungen des Kleinunternehmerregelung.",
-          orderItems: "Bestellpositionen"
-        }
-      };
-
-      // Odabir prijevoda
-      const t = translations[lang] || translations.hr;
-      
-      // Funkcija za dobivanje teksta načina plaćanja ovisno o odabranoj vrijednosti i jeziku
-      const getPaymentMethodText = (paymentMethod: string, langCode: string, translations: Record<string, string>) => {
-        if (!paymentMethod) return translations.cash; // Default vrijednost ako nije postavljen način plaćanja
-        
-        // Provjeri ako postoji prijevod za odabrani način plaćanja
-        if (translations[paymentMethod]) {
-          return translations[paymentMethod];
-        }
-        
-        // Fallback na hrvatske nazive ako nema prijevoda
-        if (langCode === 'hr') {
-          switch (paymentMethod) {
-            case 'cash': return 'Gotovina';
-            case 'bank': return 'Bankovni prijenos';
-            case 'paypal': return 'PayPal';
-            default: return 'Gotovina';
-          }
-        }
-        
-        // Ako ne postoji prijevod, vrati cash kao default
-        return translations.cash;
-      };
-      
-      const doc = new jsPDF();
-      
-      // Postavljanje osnovnih detalja
-      doc.setFontSize(10);
-      doc.setTextColor(0, 0, 0);
-
-      // Gornji dio - Logo s lijeve strane i naslov na desnoj
-      try {
-        // Dodajemo logo
-        doc.addImage(logoImg, 'PNG', 20, 15, 30, 30);
-      } catch (error) {
-        console.error("Pogreška pri učitavanju loga:", error);
-      }
-      
-      doc.setTextColor(218, 165, 32); // Zlatna boja (RGB)
-      doc.setFontSize(18);
-      doc.setFont("helvetica", "bold");
-      doc.text("Kerzenwelt by Dani", 55, 24);
-      doc.setFontSize(10);
-      doc.setTextColor(0, 0, 0); // Vraćanje na crnu boju
-      doc.setFont("helvetica", "normal");
-      doc.text("Ossiacher Zeile 30, 9500 Villach, Österreich", 55, 30);
-      doc.text("Email: daniela.svoboda2@gmail.com", 55, 35);
-      
-      // Naslov i broj računa na desnoj strani
-      doc.setTextColor(0, 0, 0);
-      doc.setFontSize(16);
-      doc.setFont("helvetica", "bold");
-      doc.text(t.title, 190, 24, { align: "right" });
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "normal");
-      doc.text(`${t.invoiceNo}: ${data.invoiceNumber}`, 190, 32, { align: "right" });
-      doc.text(`${t.date}: ${format(new Date(data.createdAt || new Date()), "dd.MM.yyyy.")}`, 190, 38, { align: "right" });
-      
-      // Horizontalna linija
-      doc.setDrawColor(200, 200, 200);
-      doc.line(20, 45, 190, 45);
-      
-      // Podaci o kupcu
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "bold");
-      if (lang === 'hr') {
-        doc.text("Podaci o kupcu:", 20, 55);
-      } else {
-        doc.text(`${t.buyer}:`, 20, 55);
-      }
-      doc.setDrawColor(200, 200, 200);
-      doc.line(20, 57, 190, 57);
-      doc.setFont("helvetica", "normal");
-      
-      let customerY = 62;
-      // Filtriraj hrvatske znakove u imenu i prezimenu ako je jezik hrvatski
-      let firstName = data.firstName;
-      let lastName = data.lastName;
-      
-      if (lang === "hr") {
-        firstName = firstName
-          .replace(/č/g, "c")
-          .replace(/Č/g, "C")
-          .replace(/ć/g, "c")
-          .replace(/Ć/g, "C")
-          .replace(/đ/g, "d")
-          .replace(/Đ/g, "D")
-          .replace(/š/g, "s")
-          .replace(/Š/g, "S")
-          .replace(/ž/g, "z")
-          .replace(/Ž/g, "Z");
-        
-        lastName = lastName
-          .replace(/č/g, "c")
-          .replace(/Č/g, "C")
-          .replace(/ć/g, "c")
-          .replace(/Ć/g, "C")
-          .replace(/đ/g, "d")
-          .replace(/Đ/g, "D")
-          .replace(/š/g, "s")
-          .replace(/Š/g, "S")
-          .replace(/ž/g, "z")
-          .replace(/Ž/g, "Z");
-      }
-      
-      doc.text(`${firstName} ${lastName}`, 20, customerY);
-      customerY += 5;
-      
-      if (data.email) {
-        doc.text(`Email: ${data.email}`, 20, customerY);
-        customerY += 5;
-      }
-      
-      if (data.address) {
-        let address = data.address;
-        // Filtriraj hrvatske znakove u adresi ako je jezik hrvatski
-        if (lang === "hr") {
-          address = address
-            .replace(/č/g, "c")
-            .replace(/Č/g, "C")
-            .replace(/ć/g, "c")
-            .replace(/Ć/g, "C")
-            .replace(/đ/g, "d")
-            .replace(/Đ/g, "D")
-            .replace(/š/g, "s")
-            .replace(/Š/g, "S")
-            .replace(/ž/g, "z")
-            .replace(/Ž/g, "Z");
-          doc.text(`Adresa za dostavu: ${address}`, 20, customerY);
-        } else {
-          doc.text(`${t.deliveryAddress}: ${address}`, 20, customerY);
-        }
-        customerY += 5;
-        
-        let city = data.city;
-        let country = data.country;
-        
-        if (lang === "hr") {
-          // Filtriraj hrvatske znakove u gradu i zemlji
-          if (city) {
-            city = city
-              .replace(/č/g, "c")
-              .replace(/Č/g, "C")
-              .replace(/ć/g, "c")
-              .replace(/Ć/g, "C")
-              .replace(/đ/g, "d")
-              .replace(/Đ/g, "D")
-              .replace(/š/g, "s")
-              .replace(/Š/g, "S")
-              .replace(/ž/g, "z")
-              .replace(/Ž/g, "Z");
-          }
-          
-          if (country) {
-            country = country
-              .replace(/č/g, "c")
-              .replace(/Č/g, "C")
-              .replace(/ć/g, "c")
-              .replace(/Ć/g, "C")
-              .replace(/đ/g, "d")
-              .replace(/Đ/g, "D")
-              .replace(/š/g, "s")
-              .replace(/Š/g, "S")
-              .replace(/ž/g, "z")
-              .replace(/Ž/g, "Z");
-          }
-        }
-        
-        if (city && data.postalCode) {
-          doc.text(`${data.postalCode} ${city}`, 20, customerY);
-          customerY += 5;
-        } else if (city) {
-          doc.text(city, 20, customerY);
-          customerY += 5;
-        }
-        
-        if (country) {
-          doc.text(country, 20, customerY);
-          customerY += 5;
-        }
-      } else {
-        doc.text(`${t.deliveryAddress}: N/A - ${t.handInvoice}`, 20, customerY);
-        customerY += 5;
-      }
-      
-      // Stavke narudžbe
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "bold");
-      // Koristi prijevod za naslov ovisno o jeziku
-      if (lang === 'hr') {
-        doc.text("Stavke narudzbe:", 20, customerY + 5);
-      } else {
-        doc.text(t.orderItems + ":", 20, customerY + 5);
-      }
-      doc.setDrawColor(200, 200, 200);
-      doc.line(20, customerY + 7, 190, customerY + 7);
-      
-      // Priprema podataka za tablicu
-      let items = [];
-      
-      console.log("Generiram stavke za PDF s podacima:", data);
-      
-      if (data.items && Array.isArray(data.items)) {
-        console.log("PDF Items:", data.items);
-        items = data.items.map((item: any) => {
-          console.log("Processing item:", item);
-          const itemName = item.productName || '';
-          let details = '';
-          
-          if (item.selectedScent) {
-            if (lang === 'de') {
-              details += `Duft: ${item.selectedScent}`;
-            } else if (lang === 'en') {
-              details += `Scent: ${item.selectedScent}`;
-            } else {
-              details += `Miris: ${item.selectedScent}`;
-            }
-          }
-          
-          if (item.selectedColor) {
-            if (details) details += '\n';
-            
-            if (lang === 'de') {
-              details += `Farben: ${item.selectedColor}`;
-            } else if (lang === 'en') {
-              details += `Colors: ${item.selectedColor}`;
-            } else {
-              details += `Boje: ${item.selectedColor}`;
-            }
-          }
-          
-          const fullName = itemName + (details ? `\n${details}` : '');
-          const price = parseFloat(item.price).toFixed(2);
-          const total = (parseFloat(item.price) * item.quantity).toFixed(2);
-          
-          console.log("Formatted item:", [fullName, item.quantity, `${price} €`, `${total} €`]);
-          return [fullName, item.quantity, `${price} €`, `${total} €`];
-        });
-      } else {
-        console.log("No items found in data or items is not an array:", data);
-        
-        // Dodajemo ručno barem jednu stavku ako nema podataka
-        items = [["Proizvod nije specificiran", 1, "0.00 €", "0.00 €"]];
-      }
-      
-      // Dodavanje tablice
-      autoTable(doc, {
-        head: [[t.item, t.quantity, t.price, t.total]],
-        body: items,
-        startY: customerY + 10,
-        margin: { left: 20, right: 20 },
-        headStyles: {
-          fillColor: [245, 245, 245],
-          textColor: [0, 0, 0],
-          fontStyle: 'bold',
-          halign: 'left',
-          valign: 'middle',
-          fontSize: 10,
-          cellPadding: 5,
-        },
-        bodyStyles: {
-          textColor: [0, 0, 0],
-          fontSize: 10,
-          cellPadding: 5,
-        },
-        columnStyles: {
-          0: { cellWidth: 'auto' },
-          1: { cellWidth: 20, halign: 'center' },
-          2: { cellWidth: 30, halign: 'right' },
-          3: { cellWidth: 30, halign: 'right' },
-        },
-        alternateRowStyles: {
-          fillColor: [250, 250, 250],
-        },
-      });
-      
-      // Izračunavanje ukupnog iznosa
-      const subtotal = data.items && Array.isArray(data.items)
-        ? data.items.reduce((sum: number, item: any) => sum + (parseFloat(item.price) * item.quantity), 0).toFixed(2)
-        : "0.00";
-        
-      const tax = "0.00"; // PDV je 0% za male poduzetnike
-      const total = subtotal; // Ukupan iznos je jednak međuzbroju jer je PDV 0%
-      
-      // Dodavanje ukupnog iznosa
-      const finalY = (doc as any).lastAutoTable.finalY + 10;
-      
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      
-      // Prikaz međuzbroja, dostave i ukupnog iznosa s desne strane
-      doc.setFontSize(10);
-      if (lang === 'hr') {
-        doc.text("Meduzboj:", 120, finalY);
-      } else {
-        doc.text(`${t.subtotal}:`, 120, finalY);
-      }
-      doc.text(`${subtotal} €`, 190, finalY, { align: "right" });
-      
-      // Dostava
-      if (lang === 'hr') {
-        doc.text("Dostava:", 120, finalY + 5);
-      } else {
-        doc.text("Dostava:", 120, finalY + 5);
-      }
-      doc.text("0.00 €", 190, finalY + 5, { align: "right" });
-      
-      // Ukupan iznos - podebljan
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(12);
-      
-      // Dodajemo box za ukupan iznos
-      doc.setFillColor(245, 245, 245);
-      doc.roundedRect(120, finalY + 7, 70, 10, 1, 1, 'F');
-      
-      doc.setFontSize(11);
-      if (lang === 'hr') {
-        doc.text("UKUPNO:", 125, finalY + 14);
-      } else {
-        doc.text(`${t.totalAmount}:`, 125, finalY + 14);
-      }
-      doc.text(`${total} €`, 185, finalY + 14, { align: "right" });
-      
-      // Informacije o plaćanju
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "bold");
-      if (lang === 'hr') {
-        doc.text("Informacije o placanju:", 20, finalY + 25);
-      } else {
-        doc.text(`${t.paymentInfo}:`, 20, finalY + 25);
-      }
-      doc.line(20, finalY + 27, 190, finalY + 27);
-      
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(10);
-      
-      // Prikaži odabrani način plaćanja
-      const paymentMethodText = getPaymentMethodText(data.paymentMethod, lang, t);
-      
-      if (lang === 'hr') {
-        doc.text(`Nacin placanja: ${paymentMethodText}`, 20, finalY + 32);
-        doc.text(`Status placanja: Placeno`, 20, finalY + 37);
-      } else {
-        doc.text(`${t.paymentMethod}: ${paymentMethodText}`, 20, finalY + 32);
-        doc.text(`${t.paymentStatus}: ${t.paid}`, 20, finalY + 37);
-      }
-      
-      // Zahvala i napomena o automatskom generiranju
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "bold");
-      if (lang === 'hr') {
-        doc.text("Hvala Vam na narudzbi!", 105, finalY + 50, { align: "center" });
-      } else {
-        doc.text(t.thankYou + "!", 105, finalY + 50, { align: "center" });
-      }
-      
-      // Podnožje s kontakt informacijama
-      doc.setFontSize(8);
-      doc.text("Kerzenwelt by Dani | Ossiacher Zeile 30, 9500 Villach, Osterreich | Email: daniela.svoboda2@gmail.com | Telefon: 0043660387821", 105, finalY + 60, { align: "center" });
-      
-      // Napomena o automatskom generiranju
-      doc.setFontSize(8);
-      doc.setFont("helvetica", "normal");
-      if (lang === 'hr') {
-        doc.text("Ovo je automatski generirani racun i valjan je bez potpisa i pecata.", 105, finalY + 65, { align: "center" });
-      } else {
-        doc.text(t.generatedNote + ".", 105, finalY + 65, { align: "center" });
-      }
-      
-      // Porezni broj i napomena o oslobođenju
-      doc.text("Steuernummer: 61 154/7175", 105, finalY + 70, { align: "center" });
-      
-      if (lang === "de") {
-        doc.text("Gemass § 6 Abs. 1 Z 27 UStG. (Kleinunternehmerregelung) wird keine Umsatzsteuer berechnet.", 105, finalY + 75, { align: "center" });
-      } else if (lang === "en") {
-        doc.text("According to § 6 para. 1 no. 27 of the Austrian VAT Act (small business regulation), no VAT is calculated.", 105, finalY + 75, { align: "center" });
-      } else {
-        doc.text("Prema § 6 st. 1 br. 27 austrijskog Zakona o PDV-u (propis o malim poduzetnicima), PDV nije obracunat.", 105, finalY + 75, { align: "center" });
-      }
-      
-      // Spremanje PDF-a
-      doc.save(`Invoice_${data.invoiceNumber}.pdf`);
-      
-    } catch (error) {
-      console.error("Greška pri generiranju PDF-a:", error);
-      toast({
-        title: "Greška",
-        description: "Došlo je do greške prilikom generiranja PDF-a",
-        variant: "destructive"
-      });
-    }
   };
   
   // Dodaj proizvod u listu
@@ -912,139 +264,295 @@ export default function AdminInvoices() {
     if (userId) {
       // Ovdje bismo mogli dohvatiti korisničke podatke iz API-ja
       // Za sada samo postavljamo dostupne vrijednosti
-      form.setValue("firstName", "");
-      form.setValue("lastName", "");
-      form.setValue("address", "");
-      form.setValue("city", "");
-      form.setValue("postalCode", "");
-      form.setValue("country", "");
-      form.setValue("email", "");
-      form.setValue("phone", "");
+      form.setValue('firstName', order.firstName || '');
+      form.setValue('lastName', order.lastName || '');
+      form.setValue('address', order.shippingAddress || '');
+      form.setValue('city', order.shippingCity || '');
+      form.setValue('postalCode', order.shippingPostalCode || '');
+      form.setValue('country', order.shippingCountry || '');
+      form.setValue('email', order.email || '');
+      form.setValue('phone', order.phone || '');
+      form.setValue('paymentMethod', order.paymentMethod || 'cash');
     }
     
-    // Prazna implementacija - trebali bismo dohvatiti stavke iz API-ja
-    // Za sada samo postavljamo praznu listu
-    setSelectedProducts([]);
+    // Postavi proizvode iz narudžbe
+    apiRequest('GET', `/api/orders/${order.id}/items`)
+      .then(response => response.json())
+      .then(items => {
+        console.log("Dohvaćene stavke narudžbe:", items);
+        
+        // Pripremi odabrane proizvode za račun
+        const orderProducts: SelectedProduct[] = items.map((item: any) => ({
+          id: item.productId,
+          name: item.productName,
+          price: item.price,
+          quantity: item.quantity,
+          scentId: item.scentId,
+          scentName: item.scentName,
+          colorId: item.colorId,
+          colorName: item.colorName,
+          colorIds: item.colorIds,
+          hasMultipleColors: item.hasMultipleColors
+        }));
+        
+        setSelectedProducts(orderProducts);
+      })
+      .catch(error => {
+        console.error("Greška pri dohvaćanju stavki narudžbe:", error);
+      });
   };
   
-  // Kreiranje novog računa
-  const handleCreateInvoice = (data: CreateInvoiceFormValues) => {
-    console.log("handleCreateInvoice pokrenut s podacima:", data);
+  // Očisti formu i resetiraj podatke
+  const resetForm = () => {
+    form.reset();
+    setSelectedProducts([]);
+    setSelectedOrder(null);
     
+    // Dohvati novi broj računa
+    createInvoiceNumber().then(invoiceNumber => {
+      form.setValue('invoiceNumber', invoiceNumber);
+    });
+  };
+  
+  // Dohvaćanje podataka za izdelavo PDF-a
+  const [productId, setSelectedProductId] = useState<number | null>(null);
+  const [price, setPrice] = useState<string>("");
+  const [quantity, setQuantity] = useState<number>(1);
+  const [selectedScent, setSelectedScent] = useState<number | null>(null);
+  const [selectedColor, setSelectedColor] = useState<number | null>(null);
+  const [selectedColors, setSelectedColors] = useState<number[]>([]);
+  const [colorSelectionMode, setColorSelectionMode] = useState<'single' | 'multiple'>('single');
+  const [orderSearchTerm, setOrderSearchTerm] = useState<string>('');
+  
+  // Dohvati proizvode
+  const { data: products = [] } = useQuery<Product[]>({
+    queryKey: ['/api/products'],
+  });
+  
+  // Dohvati korisnike
+  const { data: users = [] } = useQuery<any[]>({
+    queryKey: ['/api/users'],
+  });
+  
+  // Dohvati mirise za odabrani proizvod
+  const { data: productScents = [] } = useQuery<Scent[]>({
+    queryKey: [`/api/products/${productId}/scents`],
+    enabled: !!productId,
+  });
+  
+  // Dohvati boje za odabrani proizvod
+  const { data: productColors = [] } = useQuery<Color[]>({
+    queryKey: [`/api/products/${productId}/colors`],
+    enabled: !!productId,
+  });
+  
+  // Postavi cijenu kada se odabere proizvod
+  const handleProductChange = async (productId: string) => {
+    const id = parseInt(productId);
+    setSelectedProductId(id);
+    
+    const product = products.find(p => p.id === id);
+    if (product) {
+      setPrice(product.price);
+    }
+    
+    // Reset scent and color
+    setSelectedScent(null);
+    setSelectedColor(null);
+    
+    console.log("Odabrani proizvod ID:", id);
+    
+    // Ručno dohvaćanje mirisa i boja
     try {
-      // Ažuriraj form podatke sa odabranim proizvodima
-      data.selectedProducts = selectedProducts;
+      const scentsResponse = await fetch(`/api/products/${id}/scents`);
+      const scentsData = await scentsResponse.json();
+      console.log("Dohvaćeni mirisi:", scentsData);
       
+      const colorsResponse = await fetch(`/api/products/${id}/colors`);
+      const colorsData = await colorsResponse.json();
+      console.log("Dohvaćene boje:", colorsData);
+    } catch (error) {
+      console.error("Greška pri dohvaćanju opcija:", error);
+    }
+  };
+  
+  // Dodaj proizvod u listu
+  const handleAddProduct = () => {
+    if (!productId) {
+      return;
+    }
+    
+    const product = products.find(p => p.id === productId);
+    if (!product) {
+      return;
+    }
+    
+    let colorInfo;
+    if (colorSelectionMode === 'multiple' && selectedColors.length > 0) {
+      const colorNames = selectedColors.map(colorId => {
+        const color = productColors.find(c => c.id === colorId);
+        return color ? color.name : '';
+      }).filter(Boolean);
+      
+      colorInfo = {
+        colorId: null, // Multiple colors don't have a single ID
+        colorName: colorNames.join(', '),
+        colorIds: JSON.stringify(selectedColors),
+        hasMultipleColors: true
+      };
+    } else {
+      const color = productColors.find(c => c.id === selectedColor);
+      colorInfo = {
+        colorId: selectedColor,
+        colorName: color ? color.name : null,
+        colorIds: selectedColor ? JSON.stringify([selectedColor]) : null,
+        hasMultipleColors: false
+      };
+    }
+    
+    const scent = productScents.find(s => s.id === selectedScent);
+    
+    const newProduct: SelectedProduct = {
+      id: product.id,
+      name: product.name,
+      price: price || product.price,
+      quantity: quantity,
+      scentId: selectedScent,
+      scentName: scent ? scent.name : null,
+      ...colorInfo
+    };
+    
+    console.log("Dodajem proizvod:", newProduct);
+    
+    addProduct(newProduct);
+    
+    // Resetiraj odabire
+    setSelectedProductId(null);
+    setSelectedScent(null);
+    setSelectedColor(null);
+    setSelectedColors([]);
+    setPrice("");
+    setQuantity(1);
+    setColorSelectionMode('single');
+  };
+  
+  // Filtriraj narudžbe prema uvjetima pretraživanja
+  const filteredOrders = orders.filter(order => {
+    if (!orderSearchTerm) return true;
+    
+    // Pretraži po ID-u narudžbe
+    if (order.id.toString().includes(orderSearchTerm)) return true;
+    
+    // Pretraži po imenu korisnika
+    const user = users.find(u => u.id === order.userId);
+    if (user && `${user.firstName} ${user.lastName}`.toLowerCase().includes(orderSearchTerm.toLowerCase())) return true;
+    
+    return false;
+  });
+  
+  // Formatiraj status narudžbe
+  const formatOrderStatus = (status: string) => {
+    switch (status) {
+      case 'pending': return 'Čeka se';
+      case 'processing': return 'U obradi';
+      case 'completed': return 'Završeno';
+      case 'cancelled': return 'Otkazano';
+      default: return status;
+    }
+  };
+  
+  // Kreiraj novi račun
+  const onSubmit = async (data: CreateInvoiceFormValues) => {
+    try {
+      // Validacija proizvoda
       if (selectedProducts.length === 0) {
         toast({
-          title: "Greška",
-          description: "Morate dodati barem jedan proizvod",
+          title: "Prazna lista proizvoda",
+          description: "Dodajte barem jedan proizvod za kreiranje računa",
           variant: "destructive"
         });
         return;
       }
       
-      // Izračunaj ukupni iznos
-      const total = selectedProducts.reduce(
-        (sum, product) => sum + parseFloat(product.price) * product.quantity, 
-        0
-      ).toFixed(2);
+      // Priprema podataka za API
+      const subtotal = selectedProducts
+        .reduce((sum, p) => sum + (parseFloat(p.price) * p.quantity), 0)
+        .toFixed(2);
+        
+      const tax = "0.00";
+      const total = (parseFloat(subtotal) + 5.00).toFixed(2); // Dodaj 5€ za dostavu
       
-      // Pripremi podatke za API
+      // Kreiraj podatke korisnika
+      const customerName = `${data.firstName} ${data.lastName}`;
+      
+      // Priprema podataka za API
       const invoiceData = {
-        invoice: {
-          orderId: selectedOrder?.id || null,
-          invoiceNumber: data.invoiceNumber,
-          customerName: `${data.firstName} ${data.lastName}`,
-          customerEmail: data.email || null,
-          customerAddress: data.address || null,
-          customerCity: data.city || null,
-          customerPostalCode: data.postalCode || null,
-          customerCountry: data.country || null,
-          customerPhone: data.phone || null,
-          subtotal: total,
-          tax: "0.00",
-          total: total,
-          language: data.language || "hr",
-          paymentMethod: data.paymentMethod || "cash"
-        },
-        items: selectedProducts.map(product => ({
-          productId: product.productId,
-          productName: product.productName,
-          quantity: product.quantity,
-          price: product.price,
-          selectedScent: product.selectedScent || null,
-          selectedColor: product.selectedColor || null
+        invoiceNumber: data.invoiceNumber,
+        orderId: selectedOrder ? selectedOrder.id : null,
+        userId: selectedOrder ? selectedOrder.userId : 1, // Default admin korisnik ako nema narudžbe
+        customerName,
+        customerEmail: data.email || "",
+        customerAddress: data.address || "",
+        customerCity: data.city || "",
+        customerPostalCode: data.postalCode || "",
+        customerCountry: data.country || "",
+        customerPhone: data.phone || "",
+        customerNote: data.customerNote || "",
+        paymentMethod: data.paymentMethod,
+        total,
+        subtotal,
+        tax,
+        language: data.language,
+        items: selectedProducts.map(p => ({
+          productId: p.id,
+          productName: p.name,
+          quantity: p.quantity,
+          price: p.price,
+          selectedScent: p.scentName,
+          selectedColor: p.colorName,
+          colorIds: p.colorIds,
+          hasMultipleColors: p.hasMultipleColors
         }))
       };
       
-      console.log("Šaljem na API:", invoiceData);
+      console.log("Šaljem podatke za kreiranje računa:", invoiceData);
       
-      // Direktno pozivam API umjesto fetch-a i XMLHttpRequest - koristim apiRequest umjesto
+      // Pošalji zahtjev za kreiranje računa
       apiRequest('POST', '/api/invoices', invoiceData)
         .then(response => {
-          console.log("API odgovor status:", response.status);
+          if (!response.ok) {
+            return response.text().then(text => {
+              throw new Error(text || "Greška prilikom kreiranja računa");
+            });
+          }
           return response.json();
         })
-        .then(data => {
-          console.log("API odgovor uspješan:", data);
+        .then(result => {
+          toast({
+            title: "Račun kreiran",
+            description: `Račun ${result.invoiceNumber} je uspješno kreiran`
+          });
+          
+          // Osvježi popis računa i resetiraj formu
+          refetchInvoices();
+          resetForm();
+          
+          // Prebaci na tab "Postojeći računi"
+          setActiveTab("existing");
+        })
+        .catch(errorResponse => {
+          let errorMessage = "Greška prilikom kreiranja računa";
           
           try {
-            // Generiranje PDF-a s dodatnim informacijama
-            const pdfData = {
-              ...data,
-              firstName: form.getValues("firstName"),
-              lastName: form.getValues("lastName"),
-              address: form.getValues("address"),
-              city: form.getValues("city"),
-              postalCode: form.getValues("postalCode"),
-              country: form.getValues("country"),
-              email: form.getValues("email"),
-              phone: form.getValues("phone"),
-              paymentMethod: form.getValues("paymentMethod") || "cash",
-              items: selectedProducts,  // Ključni dio - koristimo stvarno odabrane proizvode
-              createdAt: data.createdAt || new Date()
-            };
-            
-            console.log("Generiram PDF s podacima:", pdfData);
-            
-            generatePdf(pdfData);
-            
-            toast({
-              title: "Uspješno kreiran račun",
-              description: `Račun ${data.invoiceNumber} je uspješno kreiran i preuzet`,
-            });
-            
-            // Osvježi popis računa
-            refetchInvoices();
-            
-            // Reset forme
-            form.reset();
-            
-            // Dohvati novi broj računa i ažuriraj formu
-            createInvoiceNumber().then(newInvoiceNumber => {
-              form.setValue("invoiceNumber", newInvoiceNumber);
-            });
-            
-            form.setValue("language", "hr");
-            setSelectedProducts([]);
-            setSelectedOrder(null);
-            
-            // Prebaci na karticu s postojećim računima
-            setActiveTab("existing");
+            // Pokušaj parsirati JSON odgovor
+            const errorObj = JSON.parse(errorResponse.message);
+            errorMessage = errorObj.message || errorMessage;
           } catch (error) {
-            console.error("Greška pri generiranju PDF-a:", error);
+            // Ako nije JSON, koristi original poruku
+            errorMessage = errorResponse.message || errorMessage;
           }
-        })
-        .catch(error => {
-          console.error("Greška pri kreiranju računa:", error);
           
-          // Detaljnija poruka o grešci za lakše debugiranje
-          let errorMessage = "Došlo je do greške prilikom spremanja računa";
-          
-          if (error.message) {
-            errorMessage += `: ${error.message}`;
-          }
+          console.error("Greška pri kreiranju računa:", errorResponse);
           
           toast({
             title: "Greška",
@@ -1155,476 +663,660 @@ export default function AdminInvoices() {
               Kreiraj novi račun
             </TabsTrigger>
             <TabsTrigger value="documents">
-              <FileText className="h-4 w-4 mr-2" />
-              Dokumenti firme
+              <File className="h-4 w-4 mr-2" />
+              Dokumenti tvrtke
             </TabsTrigger>
           </TabsList>
           
           <TabsContent value="existing" className="space-y-4">
-            <div className="rounded-md border">
-              <Table>
-                <TableCaption>Lista svih računa</TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Broj računa</TableHead>
-                    <TableHead>Datum</TableHead>
-                    <TableHead>Kupac</TableHead>
-                    <TableHead>Iznos</TableHead>
-                    <TableHead>Jezik</TableHead>
-                    <TableHead>Akcije</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {invoices.length > 0 ? (
-                    invoices.map(invoice => (
-                      <TableRow key={invoice.id}>
-                        <TableCell className="font-medium">{invoice.invoiceNumber}</TableCell>
-                        <TableCell>{format(new Date(invoice.createdAt), "dd.MM.yyyy")}</TableCell>
-                        <TableCell>{invoice.customerName}</TableCell>
-                        <TableCell>{parseFloat(invoice.total).toFixed(2)} €</TableCell>
-                        <TableCell>
-                          {invoice.language === "hr" && "Hrvatski"}
-                          {invoice.language === "en" && "Engleski"}
-                          {invoice.language === "de" && "Njemački"}
-                        </TableCell>
-                        <TableCell className="flex space-x-2">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button 
-                                variant="outline" 
-                                size="icon" 
-                                title="Preuzmi PDF"
-                              >
-                                <Download className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                              <DropdownMenuItem onClick={() => handleDownloadInvoiceWithLanguage(invoice, "hr")}>
-                                Preuzmi na hrvatskom
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleDownloadInvoiceWithLanguage(invoice, "en")}>
-                                Preuzmi na engleskom
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleDownloadInvoiceWithLanguage(invoice, "de")}>
-                                Preuzmi na njemačkom
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                          
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button 
-                                variant="destructive" 
-                                size="icon"
-                                title="Obriši račun"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Jeste li sigurni?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Ova akcija će trajno obrisati račun {invoice.invoiceNumber} iz sustava.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Odustani</AlertDialogCancel>
-                                <AlertDialogAction 
-                                  onClick={() => handleDeleteInvoice(invoice.id)}
-                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                >
-                                  Obriši
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center py-4">
-                        Nema pronađenih računa
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="documents" className="space-y-6">
-            <DocumentManager />
-          </TabsContent>
-          
-          <TabsContent value="create" className="space-y-6">
-            <div className="bg-background border rounded-md p-4">
-              <h3 className="text-lg font-medium mb-4">Izaberi narudžbu (opcionalno)</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Možete kreirati račun na temelju postojeće narudžbe ili ručno unijeti podatke.
-              </p>
-              
-              <div className="rounded-md border">
+            <Card>
+              <CardHeader>
+                <CardTitle>Postojeći računi</CardTitle>
+                <CardDescription>
+                  Pregled svih kreiranih računa u sustavu
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
                 <Table>
-                  <TableCaption>Lista nedavnih narudžbi</TableCaption>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>ID</TableHead>
+                      <TableHead>Broj računa</TableHead>
                       <TableHead>Datum</TableHead>
-                      <TableHead>Status</TableHead>
+                      <TableHead>Kupac</TableHead>
                       <TableHead>Iznos</TableHead>
-                      <TableHead>Akcija</TableHead>
+                      <TableHead>Način plaćanja</TableHead>
+                      <TableHead>Akcije</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {orders.length > 0 ? (
-                      orders.map(order => (
-                        <TableRow key={order.id}>
-                          <TableCell className="font-medium">{order.id}</TableCell>
-                          <TableCell>{format(new Date(order.createdAt), "dd.MM.yyyy")}</TableCell>
+                    {invoices.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center">
+                          Nema kreiranih računa
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      [...invoices].sort((a, b) => {
+                        // Sortiraj po ID-u (najnoviji prvi)
+                        return b.id - a.id;
+                      }).map(invoice => (
+                        <TableRow key={invoice.id}>
+                          <TableCell className="font-medium">{invoice.invoiceNumber}</TableCell>
+                          <TableCell>{format(new Date(invoice.createdAt), 'dd.MM.yyyy')}</TableCell>
+                          <TableCell>{invoice.customerName}</TableCell>
+                          <TableCell>{invoice.total} €</TableCell>
                           <TableCell>
-                            <div className="flex items-center">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                order.status === "completed" ? "bg-green-100 text-green-800" : 
-                                order.status === "pending" ? "bg-yellow-100 text-yellow-800" : 
-                                "bg-gray-100 text-gray-800"
-                              }`}>
-                                {order.status === "completed" ? "Završeno" :
-                                 order.status === "pending" ? "U obradi" :
-                                 order.status}
-                              </span>
-                            </div>
+                            {getPaymentMethodText(invoice.paymentMethod, "hr", {
+                              cash: "Gotovina",
+                              bank: "Bankovni prijenos",
+                              paypal: "PayPal",
+                              credit_card: "Kreditna kartica"
+                            })}
                           </TableCell>
-                          <TableCell>{parseFloat(order.total).toFixed(2)} €</TableCell>
                           <TableCell>
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => setOrderData(order)}
-                            >
-                              <ShoppingCart className="h-4 w-4 mr-2" />
-                              Odaberi
-                            </Button>
+                            <div className="flex space-x-2">
+                              <LanguageSelector 
+                                invoice={invoice} 
+                                onSelectLanguage={handleDownloadInvoiceWithLanguage} 
+                              />
+                              
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="destructive" size="sm">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Jeste li sigurni?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Ova akcija će trajno obrisati račun {invoice.invoiceNumber} i ne može se poništiti.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Odustani</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleDeleteInvoice(invoice.id)}>
+                                      Obriši
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center py-4">
-                          Nema pronađenih narudžbi
-                        </TableCell>
-                      </TableRow>
                     )}
                   </TableBody>
                 </Table>
-              </div>
-            </div>
-            
-            <Form {...form}>
-              <form 
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  console.log("Form submit event:", e);
-                  form.handleSubmit((data) => {
-                    console.log("Form handleSubmit callback s podacima:", data);
-                    handleCreateInvoice(data);
-                  })(e);
-                }} 
-                className="space-y-6"
-              >
-                {/* Podaci o kupcu */}
-                <div className="bg-background border rounded-md p-4 space-y-4">
-                  <h3 className="text-lg font-medium">Podaci o kupcu</h3>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="firstName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Ime*</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Ime kupca" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="lastName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Prezime*</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Prezime kupca" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Email kupca" type="email" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Telefon</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Telefon kupca" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="address"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Adresa</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Adresa kupca" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="city"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Grad</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Grad kupca" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="postalCode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Poštanski broj</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Poštanski broj" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="country"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Država</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Država kupca" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-                
-                {/* Podaci o računu */}
-                <div className="bg-background border rounded-md p-4 space-y-4">
-                  <h3 className="text-lg font-medium">Podaci o računu</h3>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="invoiceNumber"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Broj računa*</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="language"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Jezik računa*</FormLabel>
-                          <Select 
-                            onValueChange={field.onChange} 
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Odaberi jezik" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="hr">Hrvatski</SelectItem>
-                              <SelectItem value="en">Engleski</SelectItem>
-                              <SelectItem value="de">Njemački</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="paymentMethod"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Način plaćanja*</FormLabel>
-                          <Select 
-                            onValueChange={field.onChange} 
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Odaberi način plaćanja" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="cash">Gotovina</SelectItem>
-                              <SelectItem value="bank">Bankovni transfer</SelectItem>
-                              <SelectItem value="paypal">PayPal</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-                
-                {/* Stavke računa */}
-                <div className="bg-background border rounded-md p-4 space-y-4">
-                  <h3 className="text-lg font-medium">Stavke računa</h3>
-                  
-                  <ProductSelector addProduct={addProduct} />
-                  
-                  <Separator className="my-4" />
-                  
-                  <div className="rounded-md border">
-                    <Table>
-                      <TableCaption>Odabrane stavke za račun</TableCaption>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Proizvod</TableHead>
-                          <TableHead>Miris</TableHead>
-                          <TableHead>Boja</TableHead>
-                          <TableHead>Količina</TableHead>
-                          <TableHead>Cijena</TableHead>
-                          <TableHead>Ukupno</TableHead>
-                          <TableHead>Akcija</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {selectedProducts.length > 0 ? (
-                          selectedProducts.map((product, index) => (
-                            <TableRow key={index}>
-                              <TableCell className="font-medium">{product.productName}</TableCell>
-                              <TableCell>{product.selectedScent || '-'}</TableCell>
-                              <TableCell>{product.selectedColor || '-'}</TableCell>
-                              <TableCell>{product.quantity}</TableCell>
-                              <TableCell>{parseFloat(product.price).toFixed(2)} €</TableCell>
-                              <TableCell>
-                                {(parseFloat(product.price) * product.quantity).toFixed(2)} €
-                              </TableCell>
-                              <TableCell>
-                                <Button 
-                                  variant="destructive" 
-                                  size="icon"
-                                  onClick={() => removeProduct(index)}
-                                  title="Ukloni stavku"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        ) : (
-                          <TableRow>
-                            <TableCell colSpan={7} className="text-center py-4">
-                              Nema odabranih proizvoda
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </div>
-                  
-                  {selectedProducts.length > 0 && (
-                    <div className="flex flex-col items-end mt-4 space-y-2">
-                      <div className="flex justify-between w-full max-w-xs">
-                        <span className="font-medium">Međuzbroj:</span>
-                        <span>
-                          {selectedProducts.reduce(
-                            (sum, product) => sum + parseFloat(product.price) * product.quantity, 
-                            0
-                          ).toFixed(2)} €
-                        </span>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="create" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Kreiraj novi račun</CardTitle>
+                <CardDescription>
+                  Popunite podatke za kreiranje novog računa
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-medium">Podaci o kupcu</h3>
+                        
+                        <FormField
+                          control={form.control}
+                          name="firstName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Ime</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="lastName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Prezime</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Email</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="phone"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Telefon</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="address"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Adresa</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="postalCode"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Poštanski broj</FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={form.control}
+                            name="city"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Grad</FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        
+                        <FormField
+                          control={form.control}
+                          name="country"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Država</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
-                      <div className="flex justify-between w-full max-w-xs">
-                        <span className="font-medium">PDV (0%):</span>
-                        <span>0.00 €</span>
-                      </div>
-                      <div className="flex justify-between w-full max-w-xs font-bold text-lg">
-                        <span>Ukupno:</span>
-                        <span>
-                          {selectedProducts.reduce(
-                            (sum, product) => sum + parseFloat(product.price) * product.quantity, 
-                            0
-                          ).toFixed(2)} €
-                        </span>
+                      
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-medium">Podaci o računu</h3>
+                        
+                        <FormField
+                          control={form.control}
+                          name="invoiceNumber"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Broj računa</FormLabel>
+                              <FormControl>
+                                <Input {...field} readOnly />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="language"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Jezik računa</FormLabel>
+                              <Select 
+                                onValueChange={field.onChange} 
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Odaberite jezik" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="hr">Hrvatski</SelectItem>
+                                  <SelectItem value="en">Engleski</SelectItem>
+                                  <SelectItem value="de">Njemački</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="paymentMethod"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Način plaćanja</FormLabel>
+                              <Select 
+                                onValueChange={field.onChange} 
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Odaberite način plaćanja" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="cash">Gotovina</SelectItem>
+                                  <SelectItem value="bank_transfer">Bankovni prijenos</SelectItem>
+                                  <SelectItem value="paypal">PayPal</SelectItem>
+                                  <SelectItem value="credit_card">Kreditna kartica</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="customerNote"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Napomena</FormLabel>
+                              <FormControl>
+                                <Textarea 
+                                  {...field} 
+                                  placeholder="Napomena za račun"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <div className="space-y-4 mt-8">
+                          <h3 className="text-lg font-medium">Odabir iz postojećih narudžbi</h3>
+                          
+                          <div className="flex space-x-2 mb-4">
+                            <Input
+                              placeholder="Pretraži narudžbe po ID-u ili imenu kupca"
+                              value={orderSearchTerm}
+                              onChange={(e) => setOrderSearchTerm(e.target.value)}
+                              className="flex-1"
+                            />
+                          </div>
+                          
+                          <div className="max-h-64 overflow-y-auto border rounded-md">
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead className="w-12">#</TableHead>
+                                  <TableHead>Kupac</TableHead>
+                                  <TableHead>Status</TableHead>
+                                  <TableHead>Iznos</TableHead>
+                                  <TableHead className="w-20">Akcija</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {filteredOrders.length === 0 ? (
+                                  <TableRow>
+                                    <TableCell colSpan={5} className="text-center">
+                                      Nema narudžbi koje odgovaraju kriterijima pretrage
+                                    </TableCell>
+                                  </TableRow>
+                                ) : (
+                                  filteredOrders.map(order => {
+                                    const user = users.find(u => u.id === order.userId);
+                                    return (
+                                      <TableRow key={order.id}>
+                                        <TableCell>{order.id}</TableCell>
+                                        <TableCell>
+                                          {user ? `${user.firstName} ${user.lastName}` : 'Nepoznati korisnik'}
+                                        </TableCell>
+                                        <TableCell>
+                                          <Badge variant={
+                                            order.status === 'completed' ? 'default' :
+                                            order.status === 'pending' ? 'secondary' :
+                                            order.status === 'cancelled' ? 'destructive' : 'outline'
+                                          }>
+                                            {formatOrderStatus(order.status)}
+                                          </Badge>
+                                        </TableCell>
+                                        <TableCell>{order.total} €</TableCell>
+                                        <TableCell>
+                                          <Button 
+                                            variant="outline" 
+                                            size="sm"
+                                            onClick={() => setOrderData(order)}
+                                          >
+                                            Odaberi
+                                          </Button>
+                                        </TableCell>
+                                      </TableRow>
+                                    );
+                                  })
+                                )}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  )}
-                </div>
-                
-                <div className="flex justify-end">
-                  <Button 
-                    type="submit"
-                    disabled={selectedProducts.length === 0}
-                    onClick={(e) => {
-                      console.log("Klik na gumb za kreiranje računa");
-                      // Ne moramo ništa činiti, samo dodatno logiranje
-                    }}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Kreiraj račun
-                  </Button>
-                </div>
-              </form>
-            </Form>
+                    
+                    <Separator />
+                    
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-lg font-medium">Stavke računa</h3>
+                        
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button size="sm">
+                              <Plus className="h-4 w-4 mr-2" />
+                              Dodaj stavku
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[550px]">
+                            <DialogHeader>
+                              <DialogTitle>Dodaj stavku na račun</DialogTitle>
+                              <DialogDescription>
+                                Odaberite proizvod i količinu
+                              </DialogDescription>
+                            </DialogHeader>
+                            
+                            <div className="space-y-4 py-4">
+                              <div className="space-y-2">
+                                <label htmlFor="product" className="text-sm font-medium">
+                                  Proizvod
+                                </label>
+                                <Select 
+                                  onValueChange={(value) => handleProductChange(value)}
+                                >
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Odaberite proizvod" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {products.map(product => (
+                                      <SelectItem key={product.id} value={product.id.toString()}>
+                                        {product.name} - {product.price} €
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              {productId && (
+                                <>
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                      <label htmlFor="price" className="text-sm font-medium">
+                                        Cijena (€)
+                                      </label>
+                                      <Input
+                                        id="price"
+                                        value={price}
+                                        onChange={(e) => setPrice(e.target.value)}
+                                      />
+                                    </div>
+                                    
+                                    <div className="space-y-2">
+                                      <label htmlFor="quantity" className="text-sm font-medium">
+                                        Količina
+                                      </label>
+                                      <Input
+                                        id="quantity"
+                                        type="number"
+                                        min="1"
+                                        value={quantity}
+                                        onChange={(e) => setQuantity(parseInt(e.target.value))}
+                                      />
+                                    </div>
+                                  </div>
+                                  
+                                  {productScents.length > 0 && (
+                                    <div className="space-y-2">
+                                      <label htmlFor="scent" className="text-sm font-medium">
+                                        Miris
+                                      </label>
+                                      <Select 
+                                        onValueChange={(value) => setSelectedScent(parseInt(value))}
+                                      >
+                                        <SelectTrigger className="w-full">
+                                          <SelectValue placeholder="Odaberite miris" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {productScents.map(scent => (
+                                            <SelectItem key={scent.id} value={scent.id.toString()}>
+                                              {scent.name}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
+                                  )}
+                                  
+                                  {productColors.length > 0 && (
+                                    <>
+                                      <div className="flex items-center space-x-4">
+                                        <label className="text-sm font-medium">
+                                          Način odabira boja:
+                                        </label>
+                                        <div className="flex space-x-2">
+                                          <Button 
+                                            variant={colorSelectionMode === 'single' ? "default" : "outline"}
+                                            size="sm"
+                                            onClick={() => setColorSelectionMode('single')}
+                                            type="button"
+                                          >
+                                            Jedna boja
+                                          </Button>
+                                          <Button 
+                                            variant={colorSelectionMode === 'multiple' ? "default" : "outline"}
+                                            size="sm"
+                                            onClick={() => setColorSelectionMode('multiple')}
+                                            type="button"
+                                          >
+                                            Više boja
+                                          </Button>
+                                        </div>
+                                      </div>
+                                      
+                                      {colorSelectionMode === 'single' ? (
+                                        <div className="space-y-2">
+                                          <label htmlFor="color" className="text-sm font-medium">
+                                            Boja
+                                          </label>
+                                          <Select 
+                                            onValueChange={(value) => setSelectedColor(parseInt(value))}
+                                          >
+                                            <SelectTrigger className="w-full">
+                                              <SelectValue placeholder="Odaberite boju" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              {productColors.map(color => (
+                                                <SelectItem key={color.id} value={color.id.toString()}>
+                                                  {color.name}
+                                                </SelectItem>
+                                              ))}
+                                            </SelectContent>
+                                          </Select>
+                                        </div>
+                                      ) : (
+                                        <div className="space-y-2">
+                                          <label className="text-sm font-medium">
+                                            Odaberite više boja
+                                          </label>
+                                          <div className="grid grid-cols-2 gap-2">
+                                            {productColors.map(color => (
+                                              <div key={color.id} className="flex items-center space-x-2">
+                                                <input
+                                                  type="checkbox"
+                                                  id={`color-${color.id}`}
+                                                  checked={selectedColors.includes(color.id)}
+                                                  onChange={(e) => {
+                                                    if (e.target.checked) {
+                                                      setSelectedColors([...selectedColors, color.id]);
+                                                    } else {
+                                                      setSelectedColors(selectedColors.filter(id => id !== color.id));
+                                                    }
+                                                  }}
+                                                  className="h-4 w-4"
+                                                />
+                                                <label htmlFor={`color-${color.id}`} className="text-sm">
+                                                  {color.name}
+                                                </label>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      )}
+                                    </>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                            
+                            <DialogFooter>
+                              <DialogClose asChild>
+                                <Button variant="outline">Odustani</Button>
+                              </DialogClose>
+                              <DialogClose asChild>
+                                <Button type="button" onClick={handleAddProduct}>Dodaj</Button>
+                              </DialogClose>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                      
+                      <div className="border rounded-md">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Proizvod</TableHead>
+                              <TableHead>Cijena/kom</TableHead>
+                              <TableHead>Količina</TableHead>
+                              <TableHead>Ukupno</TableHead>
+                              <TableHead className="w-12"></TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {selectedProducts.length === 0 ? (
+                              <TableRow>
+                                <TableCell colSpan={5} className="text-center py-6">
+                                  Nema dodanih stavki
+                                </TableCell>
+                              </TableRow>
+                            ) : (
+                              selectedProducts.map((product, index) => (
+                                <TableRow key={index}>
+                                  <TableCell>
+                                    <div>
+                                      <div className="font-medium">{product.name}</div>
+                                      {product.scentName && (
+                                        <div className="text-sm text-muted-foreground">
+                                          Miris: {product.scentName}
+                                        </div>
+                                      )}
+                                      {product.colorName && (
+                                        <div className="text-sm text-muted-foreground">
+                                          Boja: {product.colorName}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>{product.price} €</TableCell>
+                                  <TableCell>{product.quantity}</TableCell>
+                                  <TableCell>{(parseFloat(product.price) * product.quantity).toFixed(2)} €</TableCell>
+                                  <TableCell>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm"
+                                      onClick={() => removeProduct(index)}
+                                    >
+                                      <X className="h-4 w-4 text-destructive" />
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))
+                            )}
+                          </TableBody>
+                          <TableFooter>
+                            <TableRow>
+                              <TableCell colSpan={3}>Međuzbroj</TableCell>
+                              <TableCell colSpan={2} className="text-right">
+                                {selectedProducts
+                                  .reduce((sum, p) => sum + (parseFloat(p.price) * p.quantity), 0)
+                                  .toFixed(2)} €
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell colSpan={3}>Dostava</TableCell>
+                              <TableCell colSpan={2} className="text-right">5.00 €</TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell colSpan={3}>UKUPNO</TableCell>
+                              <TableCell colSpan={2} className="text-right font-bold">
+                                {(selectedProducts
+                                  .reduce((sum, p) => sum + (parseFloat(p.price) * p.quantity), 0) + 5.00)
+                                  .toFixed(2)} €
+                              </TableCell>
+                            </TableRow>
+                          </TableFooter>
+                        </Table>
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-end space-x-2">
+                      <Button type="button" variant="outline" onClick={resetForm}>
+                        Poništi
+                      </Button>
+                      <Button type="submit">
+                        Kreiraj račun
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="documents" className="space-y-4">
+            <DocumentManager />
           </TabsContent>
         </Tabs>
       </div>
