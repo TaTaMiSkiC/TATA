@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import ProductViewModal from "@/components/product/ProductViewModal";
+import { useLanguage } from "@/hooks/use-language";
 import {
   Minus,
   Plus,
@@ -95,6 +96,7 @@ export default function ProductDetailsPage() {
   const { addToCart } = useCart();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t, translateText, translateObject } = useLanguage();
   
   // Fetch product details
   const { data: product, isLoading: productLoading } = useQuery<Product>({
@@ -147,8 +149,8 @@ export default function ProductDetailsPage() {
     // Provjeri jesu li odabrani potrebni mirisi
     if (productScents && productScents.length > 0 && selectedScentId === null) {
       toast({
-        title: "Potreban odabir",
-        description: "Molimo odaberite miris prije dodavanja u košaricu.",
+        title: translateText("Potreban odabir", "hr"),
+        description: translateText("Molimo odaberite miris prije dodavanja u košaricu.", "hr"),
         variant: "destructive",
       });
       return;
@@ -157,12 +159,15 @@ export default function ProductDetailsPage() {
     // Provjeri jesu li odabrane potrebne boje samo ako proizvod ima opcije boja
     if (product.hasColorOptions && productColors && productColors.length > 0 && selectedColorId === null) {
       toast({
-        title: "Potreban odabir",
-        description: "Molimo odaberite boju prije dodavanja u košaricu.",
+        title: translateText("Potreban odabir", "hr"),
+        description: translateText("Molimo odaberite boju prije dodavanja u košaricu.", "hr"),
         variant: "destructive",
       });
       return;
     }
+    
+    // Get translated product name
+    const translatedName = translateText(product.name, "de");
     
     addToCart.mutate(
       { 
@@ -174,8 +179,8 @@ export default function ProductDetailsPage() {
       {
         onSuccess: () => {
           toast({
-            title: "Dodano u košaricu",
-            description: `${product.name} (${quantity}x) je dodan u vašu košaricu.`,
+            title: translateText("Dodano u košaricu", "hr"),
+            description: translateText(`${translatedName} (${quantity}x) je dodan u vašu košaricu.`, "hr"),
           });
         },
       }
@@ -200,16 +205,16 @@ export default function ProductDetailsPage() {
       });
       
       toast({
-        title: "Recenzija poslana",
-        description: "Hvala na vašoj recenziji!",
+        title: translateText("Recenzija poslana", "hr"),
+        description: translateText("Hvala na vašoj recenziji!", "hr"),
       });
       
       form.reset();
       refetchReviews();
     } catch (error) {
       toast({
-        title: "Greška",
-        description: "Recenziju nije moguće poslati. Pokušajte ponovno kasnije.",
+        title: translateText("Greška", "hr"),
+        description: translateText("Recenziju nije moguće poslati. Pokušajte ponovno kasnije.", "hr"),
         variant: "destructive",
       });
     }
