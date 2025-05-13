@@ -9,10 +9,10 @@ export function PageVisitCounter() {
   const [hasRegisteredVisit, setHasRegisteredVisit] = useState(false);
   
   // Samo dohvati broj posjeta ako je admin prijavljen
-  const { data: visitData, isLoading } = useQuery<PageVisit>({
-    queryKey: ["/api/page-visits/", "/"],
+  const { data: visitData, isLoading } = useQuery<PageVisit[]>({
+    queryKey: ["/api/page-visits"],
     queryFn: async () => {
-      const res = await fetch("/api/page-visits/");
+      const res = await fetch("/api/page-visits");
       if (!res.ok) {
         throw new Error("Neuspješno dohvaćanje broja posjeta");
       }
