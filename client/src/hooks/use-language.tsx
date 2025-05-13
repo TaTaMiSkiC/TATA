@@ -399,6 +399,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'testimonials.browseProducts': 'Browse products and add a review',
     'testimonials.loginToReview': 'Log in and add a review',
     
+    // Dialog components
+    'dialog.areYouSure': 'Are you sure?',
+    'dialog.cannotUndo': 'This action cannot be undone.',
+    'dialog.delete': 'Delete',
+    'dialog.cancel': 'Cancel',
+    'dialog.confirm': 'Confirm',
+    
     // Newsletter
     'newsletter.title': 'Subscribe to our newsletter',
     'newsletter.description': 'Be the first to know about our new products, special offers and discounts. Subscribe to our newsletter and get 10% off your first order.',
