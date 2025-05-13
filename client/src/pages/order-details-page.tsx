@@ -230,9 +230,16 @@ const OrderDetailsPage = () => {
   });
   
   // Funkcija za formatiranje datuma u čitljiv format
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return format(date, 'dd.MM.yyyy. HH:mm');
+  const formatDate = (dateString: string | Date) => {
+    if (!dateString) return ''; // Sigurnosna provjera za undefined/null
+    const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
+    return date.toLocaleDateString('hr-HR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
   
   // Funkcija za pretvaranje načina plaćanja u čitljiv tekst
@@ -410,12 +417,12 @@ const OrderDetailsPage = () => {
             <CardContent className="space-y-2">
               <div>
                 <span className="text-gray-500 font-medium text-sm">Datum narudžbe:</span>
-                <p>{formatDate(orderWithItems.createdAt)}</p>
+                <p>{orderWithItems?.createdAt ? formatDate(orderWithItems.createdAt) : ''}</p>
               </div>
               <div>
                 <span className="text-gray-500 font-medium text-sm">Status narudžbe:</span>
                 <div className="mt-1">
-                  <OrderStatusInfo status={orderWithItems.status} />
+                  <OrderStatusInfo status={orderWithItems?.status || 'pending'} />
                 </div>
               </div>
               <div>
@@ -467,7 +474,7 @@ const OrderDetailsPage = () => {
                 <p>{user?.postalCode} {user?.city}</p>
                 <p>{user?.country}</p>
               </div>
-              {orderWithItems.notes && (
+              {orderWithItems?.notes && (
                 <div className="mt-4">
                   <span className="text-gray-500 font-medium text-sm">Napomena:</span>
                   <p className="text-sm mt-1 bg-gray-50 p-2 rounded">
