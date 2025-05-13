@@ -6,8 +6,6 @@ import { Activity, Box, DollarSign, Users, PackageOpen, ShoppingCart, ArrowUpRig
 import { 
   LineChart, 
   Line, 
-  BarChart, 
-  Bar, 
   XAxis, 
   YAxis, 
   CartesianGrid, 
@@ -18,33 +16,36 @@ import {
   Cell,
   Legend
 } from "recharts";
-
-// Sales data for chart (mock data to demonstrate UI)
-const salesData = [
-  { name: "Siječanj", sales: 4000 },
-  { name: "Veljača", sales: 3000 },
-  { name: "Ožujak", sales: 5000 },
-  { name: "Travanj", sales: 2780 },
-  { name: "Svibanj", sales: 1890 },
-  { name: "Lipanj", sales: 2390 },
-  { name: "Srpanj", sales: 3490 },
-  { name: "Kolovoz", sales: 2900 },
-  { name: "Rujan", sales: 3200 },
-  { name: "Listopad", sales: 4000 },
-  { name: "Studeni", sales: 4500 },
-  { name: "Prosinac", sales: 6000 },
-];
-
-// Product category distribution
-const categoryData = [
-  { name: "Mirisne svijeće", value: 55 },
-  { name: "Dekorativne svijeće", value: 30 },
-  { name: "Personalizirane svijeće", value: 15 },
-];
+import { useLanguage } from "@/hooks/use-language";
 
 const COLORS = ['#8B5A2B', '#D4B996', '#F1E3D3'];
 
 export default function AdminDashboard() {
+  const { t } = useLanguage();
+  
+  // Sales data for chart (mock data to demonstrate UI)
+  const salesData = [
+    { name: t("month.january"), sales: 4000 },
+    { name: t("month.february"), sales: 3000 },
+    { name: t("month.march"), sales: 5000 },
+    { name: t("month.april"), sales: 2780 },
+    { name: t("month.may"), sales: 1890 },
+    { name: t("month.june"), sales: 2390 },
+    { name: t("month.july"), sales: 3490 },
+    { name: t("month.august"), sales: 2900 },
+    { name: t("month.september"), sales: 3200 },
+    { name: t("month.october"), sales: 4000 },
+    { name: t("month.november"), sales: 4500 },
+    { name: t("month.december"), sales: 6000 },
+  ];
+
+  // Product category distribution
+  const categoryData = [
+    { name: t("admin.dashboard.scentedCandles"), value: 55 },
+    { name: t("admin.dashboard.decorativeCandles"), value: 30 },
+    { name: t("admin.dashboard.personalizedCandles"), value: 15 },
+  ];
+  
   // Fetch summary data
   const { data: products } = useQuery({
     queryKey: ["/api/products"],
@@ -65,9 +66,9 @@ export default function AdminDashboard() {
   const totalRevenue = orders?.reduce((sum, order) => sum + parseFloat(order.total), 0) || 0;
 
   return (
-    <AdminLayout title="Nadzorna ploča">
+    <AdminLayout title={t("admin.dashboard.title")}>
       <Helmet>
-        <title>Nadzorna ploča | Admin Panel | Kerzenwelt by Dani</title>
+        <title>{t("admin.dashboard.title")} | Admin Panel | Kerzenwelt by Dani</title>
       </Helmet>
       
       <div className="space-y-6">
@@ -77,7 +78,7 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Ukupna zarada</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t("admin.dashboard.totalRevenue")}</p>
                   <h3 className="text-2xl font-bold mt-1">{totalRevenue.toFixed(2)} €</h3>
                 </div>
                 <div className="bg-primary/10 p-3 rounded-full">
@@ -87,7 +88,7 @@ export default function AdminDashboard() {
               <div className="flex items-center mt-4 text-sm">
                 <ArrowUpRight className="h-4 w-4 text-green-500 mr-1" />
                 <span className="text-green-500 font-medium">12%</span>
-                <span className="text-muted-foreground ml-1">u odnosu na prošli mjesec</span>
+                <span className="text-muted-foreground ml-1">{t("admin.dashboard.comparedToLastMonth")}</span>
               </div>
             </CardContent>
           </Card>
@@ -96,7 +97,7 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Narudžbe</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t("admin.dashboard.orders")}</p>
                   <h3 className="text-2xl font-bold mt-1">{totalOrders}</h3>
                 </div>
                 <div className="bg-blue-100 p-3 rounded-full">
@@ -106,7 +107,7 @@ export default function AdminDashboard() {
               <div className="flex items-center mt-4 text-sm">
                 <ArrowUpRight className="h-4 w-4 text-green-500 mr-1" />
                 <span className="text-green-500 font-medium">8%</span>
-                <span className="text-muted-foreground ml-1">u odnosu na prošli mjesec</span>
+                <span className="text-muted-foreground ml-1">{t("admin.dashboard.comparedToLastMonth")}</span>
               </div>
             </CardContent>
           </Card>
@@ -115,7 +116,7 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Korisnici</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t("admin.dashboard.users")}</p>
                   <h3 className="text-2xl font-bold mt-1">{totalUsers}</h3>
                 </div>
                 <div className="bg-violet-100 p-3 rounded-full">
@@ -125,7 +126,7 @@ export default function AdminDashboard() {
               <div className="flex items-center mt-4 text-sm">
                 <ArrowUpRight className="h-4 w-4 text-green-500 mr-1" />
                 <span className="text-green-500 font-medium">5%</span>
-                <span className="text-muted-foreground ml-1">u odnosu na prošli mjesec</span>
+                <span className="text-muted-foreground ml-1">{t("admin.dashboard.comparedToLastMonth")}</span>
               </div>
             </CardContent>
           </Card>
@@ -134,7 +135,7 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Proizvodi</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t("admin.dashboard.products")}</p>
                   <h3 className="text-2xl font-bold mt-1">{totalProducts}</h3>
                 </div>
                 <div className="bg-amber-100 p-3 rounded-full">
@@ -144,7 +145,7 @@ export default function AdminDashboard() {
               <div className="flex items-center mt-4 text-sm">
                 <ArrowDownRight className="h-4 w-4 text-red-500 mr-1" />
                 <span className="text-red-500 font-medium">3%</span>
-                <span className="text-muted-foreground ml-1">u odnosu na prošli mjesec</span>
+                <span className="text-muted-foreground ml-1">{t("admin.dashboard.comparedToLastMonth")}</span>
               </div>
             </CardContent>
           </Card>
@@ -157,7 +158,7 @@ export default function AdminDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Activity className="h-5 w-5 mr-2" />
-                Prodaja kroz vrijeme
+                {t("admin.dashboard.salesOverTime")}
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
@@ -184,7 +185,7 @@ export default function AdminDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <PackageOpen className="h-5 w-5 mr-2" />
-                Distribucija kategorija proizvoda
+                {t("admin.dashboard.productCategoryDistribution")}
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
@@ -218,7 +219,7 @@ export default function AdminDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <ShoppingCart className="h-5 w-5 mr-2" />
-                Nedavne narudžbe
+                {t("admin.dashboard.recentOrders")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -226,11 +227,11 @@ export default function AdminDashboard() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b">
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Korisnik</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Datum</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Iznos</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("admin.dashboard.id")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("admin.dashboard.user")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("admin.dashboard.date")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("admin.dashboard.status")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("admin.dashboard.amount")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y">
@@ -260,7 +261,7 @@ export default function AdminDashboard() {
                     {(!orders || orders.length === 0) && (
                       <tr>
                         <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
-                          Nema narudžbi za prikaz
+                          {t("admin.dashboard.noOrders")}
                         </td>
                       </tr>
                     )}
