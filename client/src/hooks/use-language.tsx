@@ -448,6 +448,36 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.loadingCategories': 'Nalaganje kategorij...',
     'nav.pictures': 'Slike',
     
+    // Admin meni
+    'admin.dashboard': 'Nadzorna plošča',
+    'admin.products': 'Izdelki',
+    'admin.categories': 'Kategorije',
+    'admin.scents': 'Dišave',
+    'admin.colors': 'Barve',
+    'admin.collections': 'Kolekcije',
+    'admin.orders': 'Naročila',
+    'admin.invoices': 'Računi',
+    'admin.users': 'Uporabniki',
+    'admin.delivery': 'Nastavitve dostave',
+    'admin.settings': 'Nastavitve',
+    'admin.pageSettings': 'Nastavitve strani',
+    'admin.contactSettings': 'Kontaktne nastavitve',
+    'admin.documents': 'Dokumenti podjetja',
+    'admin.notifications': 'Obvestila',
+    'admin.newOrder': 'Novo naročilo',
+    'admin.statistics': 'Statistika',
+    'admin.visits': 'Obiski strani',
+    'admin.addNew': 'Dodaj novo',
+    'admin.edit': 'Uredi',
+    'admin.delete': 'Izbriši',
+    'admin.save': 'Shrani',
+    'admin.cancel': 'Prekliči',
+    'admin.actions': 'Dejanja',
+    'admin.status': 'Status',
+    'admin.active': 'Aktivno',
+    'admin.inactive': 'Neaktivno',
+    'admin.selectLanguage': 'Izberi jezik',
+    
     // Domača stran
     'home.featured': 'Izpostavljeni izdelki',
     'home.collections': 'Kolekcije',
@@ -524,6 +554,9 @@ interface LanguageContextType {
   language: Language;
   setLanguage: (language: Language) => void;
   t: (key: string) => string;
+  translateText: (text: string, sourceLanguage?: Language) => string;
+  translateObject: <T extends Record<string, any>>(obj: T, sourceLanguage?: Language) => T;
+  translateArray: <T extends Record<string, any>>(array: T[], sourceLanguage?: Language) => T[];
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -545,6 +578,8 @@ function getInitialLanguage(): Language {
     : "de"; // Zadani jezik je njemački
 }
 
+import { translateArray, translateObject, translateText as translateTextService } from '@/lib/translation-service';
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(getInitialLanguage);
   
@@ -559,13 +594,27 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     return translations[language][key] || key;
   };
   
+  // Funkcija za prevođenje teksta
+  const translateText = (text: string, sourceLanguage?: Language): string => {
+    return translateTextService(text, language, sourceLanguage);
+  };
+  
   // Inicijalno postavi jezik
   useEffect(() => {
     applyLanguage(language);
   }, [language]);
   
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider 
+      value={{ 
+        language, 
+        setLanguage, 
+        t, 
+        translateText,
+        translateObject: (obj, sourceLanguage) => translateObject(obj, language, sourceLanguage),
+        translateArray: (array, sourceLanguage) => translateArray(array, language, sourceLanguage)
+      }}
+    >
       {children}
     </LanguageContext.Provider>
   );
