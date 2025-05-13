@@ -431,7 +431,7 @@ const OrderDetailsPage = () => {
               </div>
               <div>
                 <span className="text-gray-500 font-medium text-sm">Ukupan iznos:</span>
-                <p className="font-semibold">{parseFloat(orderWithItems.total).toFixed(2)} €</p>
+                <p className="font-semibold">{orderWithItems?.total ? parseFloat(orderWithItems.total).toFixed(2) : "0.00"} €</p>
               </div>
             </CardContent>
           </Card>
@@ -445,7 +445,7 @@ const OrderDetailsPage = () => {
               <div>
                 <span className="text-gray-500 font-medium text-sm">Način plaćanja:</span>
                 <div className="mt-1">
-                  <PaymentMethodInfo method={orderWithItems.paymentMethod || 'Nije definirano'} />
+                  <PaymentMethodInfo method={orderWithItems?.paymentMethod || 'Nije definirano'} />
                 </div>
               </div>
               <div>
@@ -541,19 +541,21 @@ const OrderDetailsPage = () => {
               <div className="flex justify-between py-2">
                 <span>Međuzbroj:</span>
                 <span className="font-medium">
-                  {orderWithItems.items.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0).toFixed(2)} €
+                  {orderWithItems?.items && Array.isArray(orderWithItems.items) 
+                    ? orderWithItems.items.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0).toFixed(2) 
+                    : '0.00'} €
                 </span>
               </div>
               <div className="flex justify-between py-2">
                 <span>Dostava:</span>
                 <span className="font-medium">
-                  {orderWithItems.shippingCost ? parseFloat(orderWithItems.shippingCost).toFixed(2) : "0.00"} €
+                  {orderWithItems?.shippingCost ? parseFloat(orderWithItems.shippingCost).toFixed(2) : "0.00"} €
                 </span>
               </div>
               <Separator className="my-2" />
               <div className="flex justify-between py-2 font-bold">
                 <span>Ukupno:</span>
-                <span>{parseFloat(orderWithItems.total).toFixed(2)} €</span>
+                <span>{orderWithItems?.total ? parseFloat(orderWithItems.total).toFixed(2) : "0.00"} €</span>
               </div>
             </div>
           </div>
