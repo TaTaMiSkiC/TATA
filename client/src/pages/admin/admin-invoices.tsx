@@ -611,18 +611,18 @@ export default function AdminInvoices() {
       .then(data => {
         console.log("Dohvaćeni podaci za PDF računa:", data);
         
-        // Pripremi podatke za PDF
+        // Pripremi podatke za PDF s ispravnim nazivima polja koja očekuje funkcija za generiranje PDF-a
         const invoiceData = {
           invoiceNumber: invoice.invoiceNumber,
           createdAt: invoice.createdAt,
-          firstName: invoice.customerName.split(' ')[0],
-          lastName: invoice.customerName.split(' ').slice(1).join(' '),
-          address: invoice.customerAddress || "Adresa kupca",
-          city: invoice.customerCity || "Grad kupca",
-          postalCode: invoice.customerPostalCode || "12345",
-          country: invoice.customerCountry || "Hrvatska",
-          email: invoice.customerEmail || "",
-          phone: invoice.customerPhone || "",
+          customerName: invoice.customerName,
+          customerAddress: invoice.customerAddress || "Adresa kupca",
+          customerCity: invoice.customerCity || "Grad kupca",
+          customerPostalCode: invoice.customerPostalCode || "12345",
+          customerCountry: invoice.customerCountry || "Hrvatska",
+          customerEmail: invoice.customerEmail || "",
+          customerPhone: invoice.customerPhone || "",
+          customerNote: invoice.customerNote || "",
           items: data.items || [], // Koristimo stavke dohvaćene sa servera
           language: language, // Koristimo odabrani jezik
           paymentMethod: invoice.paymentMethod || "cash" // Koristimo način plaćanja iz postojećeg računa
