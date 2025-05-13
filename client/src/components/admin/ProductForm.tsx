@@ -181,8 +181,8 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
       form.setValue('imageUrl', data.imageUrl);
       
       toast({
-        title: 'Slika uspješno uploadana',
-        description: 'Slika je automatski smanjena na 800x800px.'
+        title: t("admin.product.imageUploadSuccess"),
+        description: t("admin.product.imageResizeSuccess")
       });
       
       return data.imageUrl;
