@@ -51,8 +51,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
-import { jsPDF } from "jspdf";
-import autoTable from "jspdf-autotable";
+import { generateInvoicePdf } from "@/lib/generate-invoice-pdf";
 
 // Logo import
 import logoImg from "@assets/Kerzenwelt by Dani.png";
@@ -268,7 +267,7 @@ export default function OrderDetailsPage() {
   
   // Funkcija za generiranje PDF računa
   const generateInvoice = () => {
-    if (!orderWithItems || !user) return;
+    if (!orderWithItems || !user || !orderItems) return;
     
     setGeneratingInvoice(true);
     
@@ -277,8 +276,8 @@ export default function OrderDetailsPage() {
     console.log("Način plaćanja:", orderWithItems.paymentMethod || 'Nije definirano');
     
     // Sigurna provjera stavki narudžbe
-    if (!orderWithItems.items || !Array.isArray(orderWithItems.items) || orderWithItems.items.length === 0) {
-      console.error("Nema stavki narudžbe ili nije ispravan format:", orderWithItems.items);
+    if (!orderItems || !Array.isArray(orderItems) || orderItems.length === 0) {
+      console.error("Nema stavki narudžbe ili nije ispravan format:", orderItems);
       toast({
         title: "Greška pri generiranju računa",
         description: "Nije moguće generirati račun jer nema stavki narudžbe.",
