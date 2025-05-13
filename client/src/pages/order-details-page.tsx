@@ -52,6 +52,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
 import { prepareInvoiceDataFromOrder, generateOrderInvoice } from "@/lib/generate-invoice-functions";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 // Logo import
 import logoImg from "@assets/Kerzenwelt by Dani.png";
