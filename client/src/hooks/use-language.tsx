@@ -496,7 +496,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.loadingColors": "Učitavanje boja...",
     "admin.product.enableColorSelection": "Omogući odabir boja",
     "admin.product.enableMultipleColors": "Omogući odabir više boja",
-    "admin.product.imagePreview": "Pregled slike",
+
     "admin.product.category": "Kategorija",
     "admin.product.burnTime": "Vrijeme gorenja",
     "admin.product.instructions": "Upute",
@@ -700,7 +700,6 @@ export const translations: Record<Language, Record<string, string>> = {
     // General admin elements
     "admin.general.uploading": "Uploading...",
     "admin.product.preview": "Preview",
-    "admin.product.imagePreview": "Image preview",
     
     // Navigation
     "nav.home": "Home",
@@ -838,7 +837,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.loadingColors": "Loading colors...",
     "admin.product.enableColorSelection": "Enable color selection",
     "admin.product.enableMultipleColors": "Enable multiple color selection",
-    "admin.product.imagePreview": "Image preview",
     "admin.product.category": "Category",
     "admin.product.burnTime": "Burn Time",
     "admin.product.instructions": "Instructions",
