@@ -4,7 +4,7 @@ import {
   Tabs, TabsList, TabsTrigger, TabsContent 
 } from "@/components/ui/tabs";
 import { 
-  Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow 
+  Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
@@ -1242,61 +1242,63 @@ export default function AdminInvoices() {
                                 </TableCell>
                               </TableRow>
                             ) : (
-                              selectedProducts.map((product, index) => (
-                                <TableRow key={index}>
-                                  <TableCell>
-                                    <div>
-                                      <div className="font-medium">{product.name}</div>
-                                      {product.scentName && (
-                                        <div className="text-sm text-muted-foreground">
-                                          Miris: {product.scentName}
-                                        </div>
-                                      )}
-                                      {product.colorName && (
-                                        <div className="text-sm text-muted-foreground">
-                                          Boja: {product.colorName}
-                                        </div>
-                                      )}
-                                    </div>
-                                  </TableCell>
-                                  <TableCell>{product.price} €</TableCell>
-                                  <TableCell>{product.quantity}</TableCell>
-                                  <TableCell>{(parseFloat(product.price) * product.quantity).toFixed(2)} €</TableCell>
-                                  <TableCell>
-                                    <Button 
-                                      variant="ghost" 
-                                      size="sm"
-                                      onClick={() => removeProduct(index)}
-                                    >
-                                      <X className="h-4 w-4 text-destructive" />
-                                    </Button>
+                              <>
+                                {selectedProducts.map((product, index) => (
+                                  <TableRow key={index}>
+                                    <TableCell>
+                                      <div>
+                                        <div className="font-medium">{product.name}</div>
+                                        {product.scentName && (
+                                          <div className="text-sm text-muted-foreground">
+                                            Miris: {product.scentName}
+                                          </div>
+                                        )}
+                                        {product.colorName && (
+                                          <div className="text-sm text-muted-foreground">
+                                            Boja: {product.colorName}
+                                          </div>
+                                        )}
+                                      </div>
+                                    </TableCell>
+                                    <TableCell>{product.price} €</TableCell>
+                                    <TableCell>{product.quantity}</TableCell>
+                                    <TableCell>{(parseFloat(product.price) * product.quantity).toFixed(2)} €</TableCell>
+                                    <TableCell>
+                                      <Button 
+                                        variant="ghost" 
+                                        size="sm"
+                                        onClick={() => removeProduct(index)}
+                                      >
+                                        <X className="h-4 w-4 text-destructive" />
+                                      </Button>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+
+                                {/* Totals section */}
+                                <TableRow className="bg-muted/50">
+                                  <TableCell colSpan={3} className="font-medium">Međuzbroj</TableCell>
+                                  <TableCell colSpan={2} className="text-right">
+                                    {selectedProducts
+                                      .reduce((sum, p) => sum + (parseFloat(p.price) * p.quantity), 0)
+                                      .toFixed(2)} €
                                   </TableCell>
                                 </TableRow>
-                              ))
+                                <TableRow className="bg-muted/50">
+                                  <TableCell colSpan={3} className="font-medium">Dostava</TableCell>
+                                  <TableCell colSpan={2} className="text-right">5.00 €</TableCell>
+                                </TableRow>
+                                <TableRow className="bg-muted/50">
+                                  <TableCell colSpan={3} className="font-medium">UKUPNO</TableCell>
+                                  <TableCell colSpan={2} className="text-right font-bold">
+                                    {(selectedProducts
+                                      .reduce((sum, p) => sum + (parseFloat(p.price) * p.quantity), 0) + 5.00)
+                                      .toFixed(2)} €
+                                  </TableCell>
+                                </TableRow>
+                              </>
                             )}
                           </TableBody>
-                          <TableFooter>
-                            <TableRow>
-                              <TableCell colSpan={3}>Međuzbroj</TableCell>
-                              <TableCell colSpan={2} className="text-right">
-                                {selectedProducts
-                                  .reduce((sum, p) => sum + (parseFloat(p.price) * p.quantity), 0)
-                                  .toFixed(2)} €
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell colSpan={3}>Dostava</TableCell>
-                              <TableCell colSpan={2} className="text-right">5.00 €</TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell colSpan={3}>UKUPNO</TableCell>
-                              <TableCell colSpan={2} className="text-right font-bold">
-                                {(selectedProducts
-                                  .reduce((sum, p) => sum + (parseFloat(p.price) * p.quantity), 0) + 5.00)
-                                  .toFixed(2)} €
-                              </TableCell>
-                            </TableRow>
-                          </TableFooter>
                         </Table>
                       </div>
                     </div>
