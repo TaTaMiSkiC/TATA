@@ -78,12 +78,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-const reviewSchema = z.object({
+// Koristimo funkciju za stvaranje sheme jer nam treba pristup translateText funkciji
+const createReviewSchema = (translateText: (text: string, sourceLanguage: string) => string) => z.object({
   rating: z.number().min(1).max(5),
-  comment: z.string().min(10, "Komentar mora sadržavati barem 10 znakova").max(500, "Komentar može sadržavati najviše 500 znakova"),
+  comment: z.string()
+    .min(10, translateText("Komentar mora sadržavati barem 10 znakova", "hr"))
+    .max(500, translateText("Komentar može sadržavati najviše 500 znakova", "hr")),
 });
 
-type ReviewFormValues = z.infer<typeof reviewSchema>;
+type ReviewFormValues = z.infer<ReturnType<typeof createReviewSchema>>;
 
 export default function ProductDetailsPage() {
   const [, params] = useRoute("/products/:id");
@@ -134,6 +137,9 @@ export default function ProductDetailsPage() {
   }, [productScents, productColors, product]);
   
   // Review form
+  // Kreiramo reviewSchema sa funkcijom translateText
+  const reviewSchema = createReviewSchema(translateText);
+  
   const form = useForm<ReviewFormValues>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
@@ -229,7 +235,7 @@ export default function ProductDetailsPage() {
       });
       
       if (!response.ok) {
-        throw new Error('Neuspješno brisanje recenzije');
+        throw new Error(translateText('Neuspješno brisanje recenzije', 'hr'));
       }
       
       return id;
