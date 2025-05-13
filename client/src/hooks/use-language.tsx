@@ -148,6 +148,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.loadingColors": "Farben werden geladen...",
     "admin.product.enableColorSelection": "Farbauswahl aktivieren",
     "admin.product.enableMultipleColors": "Mehrfachauswahl von Farben ermöglichen",
+    "admin.product.imagePreview": "Bildvorschau",
     
     // Admin Orders Page
     "admin.orderDetails": "Bestelldetails",
@@ -471,6 +472,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.loadingColors": "Učitavanje boja...",
     "admin.product.enableColorSelection": "Omogući odabir boja",
     "admin.product.enableMultipleColors": "Omogući odabir više boja",
+    "admin.product.imagePreview": "Pregled slike",
     
     // Admin Orders Page
     "admin.orderDetails": "Detalji narudžbe",
@@ -791,6 +793,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.loadingColors": "Loading colors...",
     "admin.product.enableColorSelection": "Enable color selection",
     "admin.product.enableMultipleColors": "Enable multiple color selection",
+    "admin.product.imagePreview": "Image preview",
     
     // Admin Orders Page
     "admin.orderDetails": "Order Details",
@@ -1109,6 +1112,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.loadingColors": "Caricamento colori...",
     "admin.product.enableColorSelection": "Abilita selezione colori",
     "admin.product.enableMultipleColors": "Abilita selezione di più colori",
+    "admin.product.imagePreview": "Anteprima immagine",
     
     // Admin Orders Page
     "admin.orderDetails": "Dettagli ordine",
@@ -1429,6 +1433,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.loadingColors": "Nalaganje barv...",
     "admin.product.enableColorSelection": "Omogoči izbiro barv",
     "admin.product.enableMultipleColors": "Omogoči izbiro več barv",
+    "admin.product.imagePreview": "Predogled slike",
     
     // Admin Orders Page
     "admin.orderDetails": "Podrobnosti naročila",
