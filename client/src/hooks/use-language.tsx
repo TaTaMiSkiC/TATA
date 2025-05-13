@@ -14,6 +14,9 @@ export const translations: Record<Language, Record<string, string>> = {
   de: {
     // Allgemeine Admin-Elemente
     "admin.general.uploading": "Wird hochgeladen...",
+    "admin.general.error": "Fehler",
+    "admin.product.items": "Produkte",
+    "admin.product.searchPlaceholder": "Produkte suchen...",
     "admin.product.preview": "Vorschau",
     "admin.product.newProduct": "Neues Produkt",
     "admin.product.newProductSubtitle": "Fügen Sie ein neues Produkt zum Katalog hinzu",
@@ -377,6 +380,9 @@ export const translations: Record<Language, Record<string, string>> = {
   hr: {
     // Opći admin elementi
     "admin.general.uploading": "Učitavanje...",
+    "admin.general.error": "Greška",
+    "admin.product.items": "Proizvodi",
+    "admin.product.searchPlaceholder": "Pretražite proizvode...",
     "admin.product.preview": "Pregled",
     "admin.product.newProduct": "Novi proizvod",
     "admin.product.newProductSubtitle": "Dodajte novi proizvod u katalog",
@@ -737,6 +743,9 @@ export const translations: Record<Language, Record<string, string>> = {
   en: {
     // General admin elements
     "admin.general.uploading": "Uploading...",
+    "admin.general.error": "Error",
+    "admin.product.items": "Products",
+    "admin.product.searchPlaceholder": "Search products...",
     "admin.product.preview": "Preview",
     "admin.product.newProduct": "New Product",
     "admin.product.newProductSubtitle": "Add a new product to the catalog",
@@ -1097,6 +1106,9 @@ export const translations: Record<Language, Record<string, string>> = {
   it: {
     // Elementi amministrativi generali
     "admin.general.uploading": "Caricamento in corso...",
+    "admin.general.error": "Errore",
+    "admin.product.items": "Prodotti",
+    "admin.product.searchPlaceholder": "Cerca prodotti...",
     "admin.product.preview": "Anteprima",
     "admin.product.newProduct": "Nuovo Prodotto",
     "admin.product.newProductSubtitle": "Aggiungi un nuovo prodotto al catalogo",
@@ -1457,6 +1469,9 @@ export const translations: Record<Language, Record<string, string>> = {
   sl: {
     // Splošni admin elementi
     "admin.general.uploading": "Nalaganje...",
+    "admin.general.error": "Napaka",
+    "admin.product.items": "Izdelki",
+    "admin.product.searchPlaceholder": "Išči izdelke...",
     "admin.product.preview": "Predogled",
     "admin.product.newProduct": "Nov Izdelek",
     "admin.product.newProductSubtitle": "Dodajte nov izdelek v katalog",
