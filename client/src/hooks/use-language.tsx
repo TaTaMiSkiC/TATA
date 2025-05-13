@@ -28,6 +28,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.shopNow': 'Jetzt einkaufen',
     'home.categories': 'Unsere Kategorien',
     'home.categoriesSubtitle': 'Entdecken Sie unsere vielfältige Auswahl an handgefertigten Kerzen für jeden Anlass',
+    'home.heroTitle': 'Handgefertigte Kerzen für besondere Momente',
+    'home.heroSubtitle': 'Entdecken Sie unsere Kollektion von Premium-Duftkerzen, die mit Liebe hergestellt werden',
+    'home.exploreCollection': 'Kollektion erkunden',
+    'home.aboutUs': 'Über uns',
+    'home.featuredSubtitle': 'Unsere beliebtesten Produkte, die unsere Kunden lieben',
+    'home.viewAllProducts': 'Alle Produkte anzeigen',
+    'home.errorLoading': 'Beim Laden der Produkte ist ein Fehler aufgetreten.',
     
     // Proizvodi
     'product.addToCart': 'In den Warenkorb',
@@ -82,6 +89,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.shopNow': 'Kupite odmah',
     'home.categories': 'Naše kategorije',
     'home.categoriesSubtitle': 'Istražite našu bogatu ponudu ručno izrađenih svijeća za svaku priliku',
+    'home.heroTitle': 'Ručno izrađene svijeće za posebne trenutke',
+    'home.heroSubtitle': 'Otkrijte našu kolekciju premium mirisnih svijeća izrađenih s ljubavlju',
+    'home.exploreCollection': 'Istraži kolekciju',
+    'home.aboutUs': 'O nama',
+    'home.featuredSubtitle': 'Naši najpopularniji proizvodi koje naši kupci vole',
+    'home.viewAllProducts': 'Vidi sve proizvode',
+    'home.errorLoading': 'Došlo je do greške prilikom učitavanja proizvoda.',
     
     // Proizvodi
     'product.addToCart': 'Dodaj u košaricu',
@@ -136,6 +150,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.shopNow': 'Shop Now',
     'home.categories': 'Our Categories',
     'home.categoriesSubtitle': 'Explore our rich selection of handmade candles for every occasion',
+    'home.heroTitle': 'Handmade Candles for Special Moments',
+    'home.heroSubtitle': 'Discover our collection of premium scented candles made with love',
+    'home.exploreCollection': 'Explore Collection',
+    'home.aboutUs': 'About Us',
     
     // Products
     'product.addToCart': 'Add to Cart',
@@ -190,6 +208,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.shopNow': 'Acquista ora',
     'home.categories': 'Le nostre categorie',
     'home.categoriesSubtitle': 'Esplora la nostra ricca selezione di candele fatte a mano per ogni occasione',
+    'home.heroTitle': 'Candele artigianali per momenti speciali',
+    'home.heroSubtitle': 'Scopri la nostra collezione di candele profumate premium realizzate con amore',
+    'home.exploreCollection': 'Esplora la collezione',
+    'home.aboutUs': 'Chi siamo',
     
     // Prodotti
     'product.addToCart': 'Aggiungi al carrello',
@@ -244,6 +266,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.shopNow': 'Nakupujte zdaj',
     'home.categories': 'Naše kategorije',
     'home.categoriesSubtitle': 'Raziščite našo bogato izbiro ročno izdelanih sveč za vsako priložnost',
+    'home.heroTitle': 'Ročno izdelane sveče za posebne trenutke',
+    'home.heroSubtitle': 'Odkrijte našo kolekcijo vrhunskih dišečih sveč, narejenih z ljubeznijo',
+    'home.exploreCollection': 'Raziščite kolekcijo',
+    'home.aboutUs': 'O nas',
     
     // Izdelki
     'product.addToCart': 'Dodaj v košarico',

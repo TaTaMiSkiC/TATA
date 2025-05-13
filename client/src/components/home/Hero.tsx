@@ -1,18 +1,21 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import candleBackground from "@/assets/candle-background.jpg";
+import { useLanguage } from "@/hooks/use-language";
 
 export default function Hero() {
+  const { t } = useLanguage();
+  
   return (
     <section className="relative h-[70vh] md:h-[80vh] bg-cover bg-center" style={{ backgroundImage: `url(${candleBackground})` }}>
       <div className="absolute inset-0 bg-black bg-opacity-40"></div>
       <div className="container mx-auto px-4 h-full flex items-center relative z-10">
         <div className="max-w-xl">
           <h1 className="heading text-white text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-            Ručno izrađene svijeće za posebne trenutke
+            {t('home.heroTitle')}
           </h1>
           <p className="text-white text-lg md:text-xl opacity-90 mb-8">
-            Otkrijte našu kolekciju premium mirisnih svijeća izrađenih s ljubavlju
+            {t('home.heroSubtitle')}
           </p>
           <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
             <Link href="/products">
@@ -20,7 +23,7 @@ export default function Hero() {
                 size="lg" 
                 className="w-full sm:w-auto"
               >
-                Istraži kolekciju
+                {t('home.exploreCollection')}
               </Button>
             </Link>
             <Link href="/about">
@@ -29,7 +32,7 @@ export default function Hero() {
                 variant="outline" 
                 className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary w-full sm:w-auto"
               >
-                O nama
+                {t('home.aboutUs')}
               </Button>
             </Link>
           </div>
