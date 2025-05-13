@@ -107,6 +107,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.chooseColors": "Farben auswählen",
     "admin.productSaved": "Produkt erfolgreich gespeichert",
     "admin.productDeleted": "Produkt erfolgreich gelöscht",
+    "admin.product.featuredProduct": "Produkt auf Startseite hervorheben",
+    "admin.product.productActive": "Produkt aktiv",
+    "admin.product.productActiveHint": "(Wenn deaktiviert, ist das Produkt für Kunden nicht sichtbar)",
+    "admin.product.saveChanges": "Änderungen speichern",
+    "admin.product.createProduct": "Produkt erstellen",
+    "admin.product.cancel": "Abbrechen",
     
     // Admin Orders Page
     "admin.orderDetails": "Bestelldetails",
@@ -389,6 +395,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.chooseColors": "Odaberi boje",
     "admin.productSaved": "Proizvod uspješno spremljen",
     "admin.productDeleted": "Proizvod uspješno obrisan",
+    "admin.product.featuredProduct": "Istaknuti proizvod",
+    "admin.product.productActive": "Proizvod aktivan",
+    "admin.product.productActiveHint": "(Ako je isključeno, proizvod neće biti vidljiv kupcima)",
+    "admin.product.saveChanges": "Spremi promjene",
+    "admin.product.createProduct": "Kreiraj proizvod",
+    "admin.product.cancel": "Poništi",
     
     // Admin Orders Page
     "admin.orderDetails": "Detalji narudžbe",
@@ -668,6 +680,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.chooseColors": "Choose Colors",
     "admin.productSaved": "Product Successfully Saved",
     "admin.productDeleted": "Product Successfully Deleted",
+    "admin.product.featuredProduct": "Featured on Homepage",
+    "admin.product.productActive": "Product Active",
+    "admin.product.productActiveHint": "(If disabled, the product will not be visible to customers)",
+    "admin.product.saveChanges": "Save Changes",
+    "admin.product.createProduct": "Create Product",
+    "admin.product.cancel": "Cancel",
     
     // Admin Orders Page
     "admin.orderDetails": "Order Details",
@@ -945,6 +963,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.chooseColors": "Scegli colori",
     "admin.productSaved": "Prodotto salvato con successo",
     "admin.productDeleted": "Prodotto eliminato con successo",
+    "admin.product.featuredProduct": "In evidenza sulla homepage",
+    "admin.product.productActive": "Prodotto attivo",
+    "admin.product.productActiveHint": "(Se disabilitato, il prodotto non sarà visibile ai clienti)",
+    "admin.product.saveChanges": "Salva modifiche",
+    "admin.product.createProduct": "Crea prodotto",
+    "admin.product.cancel": "Annulla",
     
     // Admin Orders Page
     "admin.orderDetails": "Dettagli ordine",
@@ -1224,6 +1248,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.chooseColors": "Izberi barve",
     "admin.productSaved": "Izdelek uspešno shranjen",
     "admin.productDeleted": "Izdelek uspešno izbrisan",
+    "admin.product.featuredProduct": "Izpostavljeno na domači strani",
+    "admin.product.productActive": "Izdelek aktiven",
+    "admin.product.productActiveHint": "(Če je onemogočeno, izdelek ne bo viden strankam)",
+    "admin.product.saveChanges": "Shrani spremembe",
+    "admin.product.createProduct": "Ustvari izdelek",
+    "admin.product.cancel": "Prekliči",
     
     // Admin Orders Page
     "admin.orderDetails": "Podrobnosti naročila",
