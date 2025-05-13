@@ -124,6 +124,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'testimonials.browseProducts': 'Produkte durchsuchen und eine Bewertung hinzufügen',
     'testimonials.loginToReview': 'Einloggen und eine Bewertung hinzufügen',
     
+    // Dialog components
+    'dialog.areYouSure': 'Sind Sie sicher?',
+    'dialog.cannotUndo': 'Diese Aktion kann nicht rückgängig gemacht werden.',
+    'dialog.delete': 'Löschen',
+    'dialog.cancel': 'Abbrechen',
+    'dialog.confirm': 'Bestätigen',
+    
     // Newsletter
     'newsletter.title': 'Abonnieren Sie unseren Newsletter',
     'newsletter.description': 'Erfahren Sie als Erster von unseren neuen Produkten, Sonderangeboten und Rabatten. Abonnieren Sie unseren Newsletter und erhalten Sie 10% Rabatt auf Ihre erste Bestellung.',
@@ -306,6 +313,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'admin.active': 'Active',
     'admin.inactive': 'Inactive',
     'admin.selectLanguage': 'Select Language',
+    
+    // Dialog components
+    'dialog.areYouSure': 'Are you sure?',
+    'dialog.cannotUndo': 'This action cannot be undone.',
+    'dialog.delete': 'Delete',
+    'dialog.cancel': 'Cancel',
+    'dialog.confirm': 'Confirm',
     
     // Home page
     'home.featured': 'Featured Products',

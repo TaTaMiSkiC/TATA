@@ -197,21 +197,21 @@ export default function Testimonials() {
             
             <div className="text-center mt-12">
               <Button asChild variant="outline">
-                <Link href="/products">Pregledaj proizvode i dodaj recenziju</Link>
+                <Link href="/products">{t('testimonials.browseProducts')}</Link>
               </Button>
             </div>
           </>
         ) : (
           <div className="bg-card p-8 rounded-lg shadow-md text-center">
-            <p className="text-muted-foreground mb-6">Trenutno nemamo recenzija. Budite prvi koji će ostaviti svoje iskustvo!</p>
+            <p className="text-muted-foreground mb-6">{t('testimonials.empty')}</p>
             
             {user ? (
               <Button asChild>
-                <Link href="/products">Pregledaj proizvode i dodaj recenziju</Link>
+                <Link href="/products">{t('testimonials.browseProducts')}</Link>
               </Button>
             ) : (
               <Button asChild>
-                <Link href="/auth">Prijavi se i dodaj recenziju</Link>
+                <Link href="/auth">{t('testimonials.loginToReview')}</Link>
               </Button>
             )}
           </div>
