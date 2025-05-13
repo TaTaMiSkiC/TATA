@@ -3,19 +3,22 @@ import { Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { Collection, Product } from "@shared/schema";
+import { useLanguage } from "@/hooks/use-language";
 
 export default function CollectionBanner() {
-  // Dohvati istaknute kolekcije
+  const { t } = useLanguage();
+  
+  // Fetch featured collections
   const { data: featuredCollections, isLoading: isLoadingCollections } = useQuery<Collection[]>({
     queryKey: ["/api/collections/featured"],
   });
 
-  // Uzmi prvu istaknutu kolekciju (ako postoji)
+  // Get the first featured collection (if exists)
   const collection = featuredCollections && featuredCollections.length > 0 
     ? featuredCollections[0] 
     : null;
 
-  // Dohvati proizvode za tu kolekciju
+  // Fetch products for that collection
   const { data: collectionProducts, isLoading: isLoadingProducts } = useQuery<Product[]>({
     queryKey: ["/api/collections", collection?.id, "products"],
     queryFn: () => {
@@ -25,7 +28,7 @@ export default function CollectionBanner() {
     enabled: !!collection,
   });
 
-  // Prikaz učitavanja
+  // Loading display
   if (isLoadingCollections) {
     return (
       <section className="py-16 bg-muted">
@@ -36,17 +39,16 @@ export default function CollectionBanner() {
     );
   }
 
-  // Ako nema istaknutih kolekcija, prikaži predefiniranu Jesensku kolekciju
+  // If no featured collections, show predefined Autumn collection
   if (!collection) {
     return (
       <section className="py-16 bg-cover bg-center relative" style={{ backgroundImage: "url('https://pixabay.com/get/g8e2f0ab9fd933a4f95a13e49fdf8085b52ca4a5bedcb5ce350d22dc4ea759bff5b101615776d64d0ace352b4ee82b8d59b79a7333527cda411e43f4a66b85e42_1280.jpg')" }}>
         <div className="absolute inset-0 bg-primary bg-opacity-60"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-lg bg-card p-10 rounded-lg shadow-lg ml-auto">
-            <h2 className="heading text-3xl font-bold text-foreground mb-4">Jesenska kolekcija</h2>
+            <h2 className="heading text-3xl font-bold text-foreground mb-4">{t('home.autumnCollection')}</h2>
             <p className="text-muted-foreground mb-6">
-              Otkrijte našu novu kolekciju jesenskih mirisa. Topli i ugodni mirisi koji će vaš dom ispuniti 
-              osjećajem udobnosti i topline tijekom hladnijih dana.
+              {t('home.autumnCollectionDesc')}
             </p>
             <ul className="mb-8 text-foreground">
               <li className="flex items-center mb-2">
@@ -68,7 +70,7 @@ export default function CollectionBanner() {
             </ul>
             <Link href="/products?collection=autumn">
               <Button size="lg">
-                Pregledaj kolekciju
+                {t('home.viewCollection')}
               </Button>
             </Link>
           </div>
@@ -77,7 +79,7 @@ export default function CollectionBanner() {
     );
   }
 
-  // Prikaži istaknutu kolekciju iz baze
+  // Display featured collection from database
   return (
     <section className="py-16 bg-cover bg-center relative" style={{ 
       backgroundImage: collection.imageUrl 
@@ -104,14 +106,14 @@ export default function CollectionBanner() {
                   </li>
                 ))
               ) : (
-                <li className="text-muted-foreground">Još nisu dodani proizvodi u ovu kolekciju.</li>
+                <li className="text-muted-foreground">{t('home.noProducts')}</li>
               )}
             </ul>
           )}
           
           <Link href={`/products?collection=${collection.id}`}>
             <Button size="lg">
-              Pregledaj kolekciju
+              {t('home.viewCollection')}
             </Button>
           </Link>
         </div>
