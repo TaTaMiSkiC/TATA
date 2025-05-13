@@ -239,8 +239,8 @@ export default function AdminInvoices() {
   
   // Funkcija za generiranje PDF-a
   const generatePdf = (data: any) => {
-    // Koristimo novu metodu iz new-invoice-generator.ts koja daje identičan izgled kao u korisničkom dijelu
-    generateInvoicePdf(data, toast);
+    // Koristimo zajedničku funkciju za generiranje PDF-a iz lib/generate-invoice-pdf.ts
+    generateInvoicePdf(data);
   };
   
   // Dodaj proizvod u listu
@@ -623,6 +623,7 @@ export default function AdminInvoices() {
           country: invoice.customerCountry || "Hrvatska",
           email: invoice.customerEmail || "",
           phone: invoice.customerPhone || "",
+          customerNote: invoice.customerNote || "",
           items: data.items || [], // Koristimo stavke dohvaćene sa servera
           language: language, // Koristimo odabrani jezik
           paymentMethod: invoice.paymentMethod || "cash" // Koristimo način plaćanja iz postojećeg računa
@@ -707,12 +708,7 @@ export default function AdminInvoices() {
                           <TableCell>{invoice.customerName}</TableCell>
                           <TableCell>{invoice.total} €</TableCell>
                           <TableCell>
-                            {getPaymentMethodText(invoice.paymentMethod, "hr", {
-                              cash: "Gotovina",
-                              bank: "Bankovni prijenos",
-                              paypal: "PayPal",
-                              credit_card: "Kreditna kartica"
-                            })}
+                            {getPaymentMethodText(invoice.paymentMethod, "hr")}
                           </TableCell>
                           <TableCell>
                             <div className="flex space-x-2">
