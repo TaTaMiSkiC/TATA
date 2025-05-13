@@ -158,8 +158,8 @@ export default function AdminProducts() {
       await apiRequest("DELETE", `/api/products/${productToDelete.id}`);
       
       toast({
-        title: "Proizvod izbrisan",
-        description: `${productToDelete.name} je uspješno izbrisan.`,
+        title: t("admin.product.deleteSuccess"),
+        description: `${productToDelete.name} ${t("admin.product.deleteSuccessDescription")}`,
       });
       
       // Refresh products list
@@ -170,8 +170,8 @@ export default function AdminProducts() {
       setProductToDelete(null);
     } catch (error) {
       toast({
-        title: "Greška",
-        description: "Došlo je do greške prilikom brisanja proizvoda.",
+        title: t("admin.error"),
+        description: t("admin.product.deleteError"),
         variant: "destructive",
       });
     }
@@ -219,7 +219,7 @@ export default function AdminProducts() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="w-full sm:w-auto">
-                    <Filter className="mr-2 h-4 w-4" /> Kategorija
+                    <Filter className="mr-2 h-4 w-4" /> {t("admin.product.category")}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -227,7 +227,7 @@ export default function AdminProducts() {
                     onClick={() => setCategoryFilter(null)}
                     className={!categoryFilter ? "bg-accent/50" : ""}
                   >
-                    Sve kategorije
+                    {t("admin.product.allCategories")}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   {categories?.map((category) => (
@@ -248,9 +248,11 @@ export default function AdminProducts() {
         {/* Products Table */}
         <Card>
           <CardHeader>
-            <CardTitle>Lista proizvoda</CardTitle>
+            <CardTitle>{t("admin.product.productsList")}</CardTitle>
             <CardDescription>
-              {filteredProducts ? `${filteredProducts.length} proizvoda` : "Učitavanje proizvoda..."}
+              {filteredProducts 
+                ? `${filteredProducts.length} ${t("admin.product.items")}` 
+                : t("admin.product.loadingProducts")}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0">
@@ -260,7 +262,7 @@ export default function AdminProducts() {
               </div>
             ) : error ? (
               <div className="text-center p-8 text-destructive">
-                Došlo je do greške prilikom učitavanja proizvoda.
+                {t("admin.product.loadingError")}
               </div>
             ) : (
               <div className="overflow-x-auto">
