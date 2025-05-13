@@ -16,6 +16,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.account': 'Mein Konto',
     'nav.admin': 'Administration',
     'nav.logout': 'Abmelden',
+    'nav.allCategories': 'Alle Kategorien',
+    'nav.loadingCategories': 'Kategorien werden geladen...',
+    'nav.pictures': 'Bilder',
     
     // Naslovna stranica
     'home.featured': 'Ausgewählte Produkte',
@@ -65,6 +68,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.account': 'Moj račun',
     'nav.admin': 'Administracija',
     'nav.logout': 'Odjava',
+    'nav.allCategories': 'Sve kategorije',
+    'nav.loadingCategories': 'Učitavanje kategorija...',
+    'nav.pictures': 'Slike',
     
     // Naslovna stranica
     'home.featured': 'Izdvojeni proizvodi',
@@ -114,6 +120,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.account': 'My Account',
     'nav.admin': 'Admin',
     'nav.logout': 'Logout',
+    'nav.allCategories': 'All Categories',
+    'nav.loadingCategories': 'Loading categories...',
+    'nav.pictures': 'Pictures',
     
     // Home page
     'home.featured': 'Featured Products',
@@ -163,6 +172,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.account': 'Il mio account',
     'nav.admin': 'Amministrazione',
     'nav.logout': 'Esci',
+    'nav.allCategories': 'Tutte le categorie',
+    'nav.loadingCategories': 'Caricamento categorie...',
+    'nav.pictures': 'Immagini',
     
     // Pagina iniziale
     'home.featured': 'Prodotti in evidenza',
@@ -212,6 +224,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.account': 'Moj račun',
     'nav.admin': 'Administracija',
     'nav.logout': 'Odjava',
+    'nav.allCategories': 'Vse kategorije',
+    'nav.loadingCategories': 'Nalaganje kategorij...',
+    'nav.pictures': 'Slike',
     
     // Domača stran
     'home.featured': 'Izpostavljeni izdelki',
