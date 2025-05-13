@@ -118,14 +118,19 @@ export default function AdminProducts() {
     },
     onSuccess: (data) => {
       console.log("Mutation success data:", data);
-      // Ako podatak nije definiran ili nema active polje, koristimo defaultne vrijednosti
+      // If data is not defined or doesn't have active field, use default values
       const isActive = data?.active !== false;
-      const productName = data?.name || "Proizvod";
+      const productName = data?.name || t("admin.product.productDefault");
       
-      const statusText = isActive ? "aktiviran" : "deaktiviran";
+      const statusText = isActive 
+        ? t("admin.product.activated") 
+        : t("admin.product.deactivated");
+        
       toast({
-        title: `Proizvod ${statusText}`,
-        description: `Proizvod "${productName}" je uspješno ${statusText}.`,
+        title: t("admin.product.statusChangeTitle").replace("{status}", statusText),
+        description: t("admin.product.statusChangeDescription")
+          .replace("{name}", productName)
+          .replace("{status}", statusText),
       });
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       queryClient.invalidateQueries({ queryKey: ["/api/products/featured"] });
@@ -135,8 +140,8 @@ export default function AdminProducts() {
     onError: (error: Error) => {
       console.error("Activation error:", error);
       toast({
-        title: "Greška",
-        description: `Došlo je do greške prilikom promjene statusa proizvoda: ${error.message}`,
+        title: t("common.error"),
+        description: t("admin.product.statusChangeError").replace("{error}", error.message),
         variant: "destructive",
       });
     }
@@ -159,7 +164,7 @@ export default function AdminProducts() {
       
       toast({
         title: t("admin.product.deleteSuccess"),
-        description: `${productToDelete.name} ${t("admin.product.deleteSuccessDescription")}`,
+        description: t("admin.product.deleteSuccessDescription").replace("{name}", productToDelete.name),
       });
       
       // Refresh products list
@@ -169,9 +174,10 @@ export default function AdminProducts() {
       setIsDeleteDialogOpen(false);
       setProductToDelete(null);
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       toast({
-        title: t("admin.error"),
-        description: t("admin.product.deleteError"),
+        title: t("common.error"),
+        description: t("admin.product.deleteError").replace("{error}", errorMessage),
         variant: "destructive",
       });
     }
