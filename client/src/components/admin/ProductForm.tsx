@@ -172,7 +172,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
       });
       
       if (!response.ok) {
-        throw new Error('Greška prilikom uploada slike');
+        throw new Error(t("admin.product.imageUploadError"));
       }
       
       const data = await response.json();
@@ -189,8 +189,8 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
     } catch (error) {
       console.error('Image upload error:', error);
       toast({
-        title: 'Greška',
-        description: 'Došlo je do greške prilikom uploada slike.',
+        title: t("admin.general.error"),
+        description: t("admin.product.imageUploadError"),
         variant: 'destructive',
       });
       return null;
@@ -275,10 +275,10 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
       }
       
       toast({
-        title: product ? "Proizvod ažuriran" : "Proizvod kreiran",
+        title: product ? t("admin.product.productUpdated") : t("admin.product.productCreated"),
         description: product
-          ? `Proizvod "${values.name}" je uspješno ažuriran.`
-          : `Proizvod "${values.name}" je uspješno kreiran.`,
+          ? t("admin.product.productUpdatedMessage").replace('{name}', values.name)
+          : t("admin.product.productCreatedMessage").replace('{name}', values.name),
       });
 
       // Invalidate products query cache
@@ -290,8 +290,8 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
     } catch (error) {
       console.error("Form submission error:", error);
       toast({
-        title: "Greška",
-        description: "Došlo je do greške prilikom spremanja proizvoda. Pokušajte ponovno.",
+        title: t("admin.general.error"),
+        description: t("admin.product.savingError"),
         variant: "destructive",
       });
     } finally {
@@ -772,14 +772,14 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
           {form.watch("imageUrl") && (
             <div className="mt-4">
               <div className="border rounded-md p-2 max-w-xs">
-                <p className="text-sm text-gray-500 mb-2">Pregled slike:</p>
+                <p className="text-sm text-gray-500 mb-2">{t("admin.product.imagePreview")}:</p>
                 <img 
                   src={form.watch("imageUrl")} 
                   alt="Preview" 
                   className="max-h-48 rounded-md object-contain mx-auto"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = "https://placehold.co/400x400/gray/white?text=Greška+pri+učitavanju";
+                    target.src = `https://placehold.co/400x400/gray/white?text=${encodeURIComponent(t("admin.product.imageLoadingError"))}`;
                   }}
                 />
               </div>
