@@ -15,6 +15,10 @@ export const translations: Record<Language, Record<string, string>> = {
     // Allgemeine Admin-Elemente
     "admin.general.uploading": "Wird hochgeladen...",
     "admin.product.preview": "Vorschau",
+    "admin.product.newProduct": "Neues Produkt",
+    "admin.product.newProductSubtitle": "Fügen Sie ein neues Produkt zum Katalog hinzu",
+    "admin.product.categoryPlaceholder": "Wählen Sie eine Kategorie",
+    "admin.product.burntimePlaceholder": "Brenndauer in Stunden",
     
     // Navigacija
     "nav.home": "Startseite",
@@ -359,6 +363,10 @@ export const translations: Record<Language, Record<string, string>> = {
     // Opći admin elementi
     "admin.general.uploading": "Učitavanje...",
     "admin.product.preview": "Pregled",
+    "admin.product.newProduct": "Novi proizvod",
+    "admin.product.newProductSubtitle": "Dodajte novi proizvod u katalog",
+    "admin.product.categoryPlaceholder": "Odaberite kategoriju",
+    "admin.product.burntimePlaceholder": "Vrijeme gorenja u satima",
     
     // Navigacija
     "nav.home": "Početna",
@@ -700,6 +708,10 @@ export const translations: Record<Language, Record<string, string>> = {
     // General admin elements
     "admin.general.uploading": "Uploading...",
     "admin.product.preview": "Preview",
+    "admin.product.newProduct": "New Product",
+    "admin.product.newProductSubtitle": "Add a new product to the catalog",
+    "admin.product.categoryPlaceholder": "Select a category",
+    "admin.product.burntimePlaceholder": "Burn time in hours",
     
     // Navigation
     "nav.home": "Home",
@@ -1041,6 +1053,10 @@ export const translations: Record<Language, Record<string, string>> = {
     // Elementi amministrativi generali
     "admin.general.uploading": "Caricamento in corso...",
     "admin.product.preview": "Anteprima",
+    "admin.product.newProduct": "Nuovo Prodotto",
+    "admin.product.newProductSubtitle": "Aggiungi un nuovo prodotto al catalogo",
+    "admin.product.categoryPlaceholder": "Seleziona una categoria",
+    "admin.product.burntimePlaceholder": "Tempo di combustione in ore",
     
     // Navigazione
     "nav.home": "Home",
@@ -1382,6 +1398,10 @@ export const translations: Record<Language, Record<string, string>> = {
     // Splošni admin elementi
     "admin.general.uploading": "Nalaganje...",
     "admin.product.preview": "Predogled",
+    "admin.product.newProduct": "Nov Izdelek",
+    "admin.product.newProductSubtitle": "Dodajte nov izdelek v katalog",
+    "admin.product.categoryPlaceholder": "Izberite kategorijo",
+    "admin.product.burntimePlaceholder": "Čas gorenja v urah",
     
     // Navigacija
     "nav.home": "Domov",
