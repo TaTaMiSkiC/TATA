@@ -47,6 +47,7 @@ import { Loader2, Plus, Search, Filter, MoreVertical, Edit, Trash2, Star, Eye, E
 
 export default function AdminProducts() {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<number | null>(null);
   const [showProductForm, setShowProductForm] = useState(false);
@@ -183,9 +184,9 @@ export default function AdminProducts() {
   };
 
   return (
-    <AdminLayout title="Proizvodi">
+    <AdminLayout title={t("admin.productsTitle")}>
       <Helmet>
-        <title>Upravljanje proizvodima | Admin Panel | Kerzenwelt by Dani</title>
+        <title>{t("admin.productsPageTitle")} | Admin Panel | Kerzenwelt by Dani</title>
       </Helmet>
       
       <div className="space-y-6">
@@ -208,7 +209,7 @@ export default function AdminProducts() {
               <div className="relative flex-1">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
                 <Input
-                  placeholder="Pretraži proizvode..."
+                  placeholder={t("admin.products.searchPlaceholder")}
                   className="pl-8"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -376,11 +377,11 @@ export default function AdminProducts() {
       <Dialog open={showProductForm} onOpenChange={setShowProductForm}>
         <DialogContent className="max-w-4xl max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle>{editingProduct ? "Uredi proizvod" : "Novi proizvod"}</DialogTitle>
+            <DialogTitle>{editingProduct ? t("admin.product.editProduct") : t("admin.product.newProduct")}</DialogTitle>
             <DialogDescription>
               {editingProduct 
-                ? "Uredite informacije o postojećem proizvodu" 
-                : "Dodajte novi proizvod u katalog"}
+                ? t("admin.product.editProductDescription") 
+                : t("admin.product.newProductDescription")}
             </DialogDescription>
           </DialogHeader>
           
