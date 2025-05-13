@@ -339,7 +339,9 @@ const OrderDetailsPage = () => {
     );
   }
 
-  const totalItems = orderWithItems.items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = orderWithItems.items && Array.isArray(orderWithItems.items) 
+    ? orderWithItems.items.reduce((sum, item) => sum + item.quantity, 0)
+    : 0;
   
   return (
     <>
@@ -491,7 +493,7 @@ const OrderDetailsPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {orderWithItems.items.map((item) => (
+                {orderWithItems.items && Array.isArray(orderWithItems.items) && orderWithItems.items.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">
                       {item.productName}
