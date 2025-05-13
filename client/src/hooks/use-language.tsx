@@ -12,6 +12,10 @@ export type Language = "de" | "hr" | "en" | "it" | "sl";
 // Prijevodi po jezicima
 export const translations: Record<Language, Record<string, string>> = {
   de: {
+    // Allgemeine Admin-Elemente
+    "admin.general.uploading": "Wird hochgeladen...",
+    "admin.product.preview": "Vorschau",
+    
     // Navigacija
     "nav.home": "Startseite",
     "nav.products": "Produkte",
@@ -352,6 +356,10 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   hr: {
+    // Opći admin elementi
+    "admin.general.uploading": "Učitavanje...",
+    "admin.product.preview": "Pregled",
+    
     // Navigacija
     "nav.home": "Početna",
     "nav.products": "Proizvodi",
@@ -689,6 +697,10 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   en: {
+    // General admin elements
+    "admin.general.uploading": "Uploading...",
+    "admin.product.preview": "Preview",
+    
     // Navigation
     "nav.home": "Home",
     "nav.products": "Products",
@@ -1027,6 +1039,10 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   it: {
+    // Elementi amministrativi generali
+    "admin.general.uploading": "Caricamento in corso...",
+    "admin.product.preview": "Anteprima",
+    
     // Navigazione
     "nav.home": "Home",
     "nav.products": "Prodotti",
@@ -1364,6 +1380,10 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   sl: {
+    // Splošni admin elementi
+    "admin.general.uploading": "Nalaganje...",
+    "admin.product.preview": "Predogled",
+    
     // Navigacija
     "nav.home": "Domov",
     "nav.products": "Izdelki",
