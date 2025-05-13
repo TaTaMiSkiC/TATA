@@ -224,7 +224,9 @@ const OrderDetailsPage = () => {
     queryFn: async () => {
       const res = await fetch(`/api/orders/${id}`);
       if (!res.ok) throw new Error("Greška pri dohvaćanju narudžbe");
-      return res.json();
+      const data = await res.json();
+      console.log("Podaci narudžbe:", data);
+      return data;
     },
     enabled: !!id,
   });
@@ -292,13 +294,15 @@ const OrderDetailsPage = () => {
           city: user.city || '',
           country: user.country || 'Austrija'
         },
-        items: orderWithItems.items.map(item => ({
-          productName: item.productName,
-          price: item.price,
-          quantity: item.quantity,
-          scentName: item.scentName || '',
-          colorName: item.colorName || ''
-        })),
+        items: (orderWithItems.items && Array.isArray(orderWithItems.items)) 
+          ? orderWithItems.items.map(item => ({
+              productName: item.productName || 'Nepoznat proizvod',
+              price: item.price || '0.00',
+              quantity: item.quantity || 1,
+              scentName: item.scentName || '',
+              colorName: item.colorName || ''
+            }))
+          : [],
         shippingCost: orderWithItems.shippingCost || '0.00'
       };
       
@@ -329,8 +333,26 @@ const OrderDetailsPage = () => {
       </div>
     );
   }
+  
+  // Provjera je li narudžba uspješno dohvaćena i ima li ispravno formirane podatke
+  if (!orderWithItems || !orderWithItems.id) {
+    return (
+      <div className="container mx-auto py-10">
+        <OrdersHeader />
+        <div className="mt-8 text-center">
+          <AlertTriangle className="h-12 w-12 mx-auto text-amber-500 mb-4" />
+          <h2 className="text-xl font-bold mb-2">Nije moguće prikazati narudžbu</h2>
+          <p className="mb-6">Narudžba nije pronađena ili podaci nisu potpuni.</p>
+          <Button onClick={() => navigate("/orders")} variant="outline">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Natrag na popis narudžbi
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
-  if (error || !orderWithItems) {
+  if (error) {
     return (
       <div className="container mx-auto py-10">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
