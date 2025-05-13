@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useLanguage } from "@/hooks/use-language";
 import { Helmet } from 'react-helmet';
 import AdminLayout from "@/components/admin/AdminLayout";
 import ProductForm from "@/components/admin/ProductForm";
@@ -191,12 +192,12 @@ export default function AdminProducts() {
         {/* Header with actions */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold">Proizvodi</h1>
-            <p className="text-muted-foreground">Upravljajte proizvodima u trgovini</p>
+            <h1 className="text-2xl font-bold">{t("admin.productsTitle")}</h1>
+            <p className="text-muted-foreground">{t("admin.productsSubtitle")}</p>
           </div>
           
           <Button onClick={() => setShowProductForm(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Novi proizvod
+            <Plus className="mr-2 h-4 w-4" /> {t("admin.product.newProduct")}
           </Button>
         </div>
         
