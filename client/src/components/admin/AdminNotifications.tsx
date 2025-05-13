@@ -17,6 +17,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Order } from "@shared/schema";
+import { useLanguage } from "@/hooks/use-language";
 
 interface Notification {
   id: number;
@@ -34,6 +35,7 @@ const AdminNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [open, setOpen] = useState(false);
+  const { t, language } = useLanguage();
 
   // Dohvati najnovije narudžbe
   const { data: orders } = useQuery<Order[]>({
@@ -53,8 +55,8 @@ const AdminNotifications = () => {
         return {
           id: order.id,
           type: "order",
-          title: `Nova narudžba #${order.id}`,
-          message: `Zaprimljena je nova narudžba u iznosu od ${order.total} EUR`,
+          title: `${t("admin.notification.newOrder")} #${order.id}`,
+          message: `${t("admin.notification.orderReceived")} ${order.total} EUR`,
           read: index > 1, // prve dvije notifikacije su nepročitane
           date: new Date(order.createdAt),
           link: `/admin/orders/${order.id}`,
@@ -81,7 +83,18 @@ const AdminNotifications = () => {
   };
 
   const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('hr-HR', {
+    // Lokalizacija datuma prema trenutnom jeziku
+    const localeMap: Record<string, string> = {
+      'de': 'de-DE',
+      'hr': 'hr-HR',
+      'en': 'en-US',
+      'it': 'it-IT',
+      'sl': 'sl-SI'
+    };
+    
+    const locale = localeMap[language] || 'de-DE';
+    
+    return new Date(date).toLocaleDateString(locale, {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -105,11 +118,11 @@ const AdminNotifications = () => {
       <PopoverContent className="w-80 p-0" align="end">
         <Card className="border-0">
           <CardHeader className="pb-2 pt-4 px-4">
-            <CardTitle className="text-lg">Obavijesti</CardTitle>
+            <CardTitle className="text-lg">{t("admin.notification.title")}</CardTitle>
             <CardDescription>
               {unreadCount > 0 
-                ? `Imate ${unreadCount} nepročitanih obavijesti` 
-                : 'Nema novih obavijesti'}
+                ? t("admin.notification.unreadCount").replace("{count}", unreadCount.toString())
+                : t("admin.notification.noNew")}
             </CardDescription>
           </CardHeader>
           <CardContent className="px-0">
