@@ -468,6 +468,10 @@ export const translations: Record<Language, Record<string, string>> = {
     "newsletter.success":
       "Thank you for subscribing! You'll receive our newsletter soon.",
     "newsletter.error": "Please enter your email address.",
+    
+    // Admin panel
+    "admin.search": "Search...",
+    "admin.backToStore": "Back to store",
   },
 
   it: {
@@ -617,6 +621,10 @@ export const translations: Record<Language, Record<string, string>> = {
     "newsletter.success":
       "Grazie per l'iscrizione! Riceverai presto la nostra newsletter.",
     "newsletter.error": "Per favore inserisci il tuo indirizzo email.",
+    
+    // Admin panel
+    "admin.search": "Cerca...",
+    "admin.backToStore": "Torna al negozio",
   },
 
   sl: {
@@ -762,6 +770,10 @@ export const translations: Record<Language, Record<string, string>> = {
       "Vaših podatkov nikoli ne bomo delili s tretjimi osebami. Odjava je mogoča kadarkoli.",
     "newsletter.success": "Hvala za prijavo! Kmalu boste prejeli naše novice.",
     "newsletter.error": "Prosimo, vnesite vaš e-poštni naslov.",
+    
+    // Admin panel
+    "admin.search": "Iskanje...",
+    "admin.backToStore": "Nazaj v trgovino",
   },
 };
 
