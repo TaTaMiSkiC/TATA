@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Facebook, Instagram, Linkedin, MessageCircle, MapPin, Phone, Mail, Clock, Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
+import { PageVisitCounter } from "@/components/admin/PageVisitCounter";
 
 export default function Footer() {
   // Dohvaćanje kontakt podataka iz API-ja
@@ -137,8 +138,11 @@ export default function Footer() {
         <Separator className="bg-gray-800 mb-8" />
         
         <div className="flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-500 text-sm mb-4 md:mb-0">&copy; 2023 Kerzenwelt by Dani. Sva prava pridržana.</p>
-          <div className="flex items-center space-x-4">
+          <div>
+            <p className="text-gray-500 text-sm mb-1">&copy; 2023 Kerzenwelt by Dani. Sva prava pridržana.</p>
+            <PageVisitCounter />
+          </div>
+          <div className="flex items-center space-x-4 mt-4 md:mt-0">
             <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" className="h-6" />
             <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-6" />
             <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg" alt="Mastercard" className="h-6" />
