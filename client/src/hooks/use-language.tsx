@@ -490,10 +490,30 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.about': 'Chi è Kerzenwelt by Dani',
     'footer.about.text': 'Candele artigianali con ingredienti naturali. Dalla nostra famiglia alla tua casa.',
     'footer.quickLinks': 'Link rapidi',
-    'footer.support': 'Assistenza clienti',
+    'footer.customerSupport': 'Assistenza clienti',
     'footer.contact': 'Contatti',
     'footer.followUs': 'Seguici',
-    'footer.copyright': '© 2023 Kerzenwelt by Dani. Tutti i diritti riservati.',
+    'footer.copyright': 'Tutti i diritti riservati.',
+    'footer.tagline': 'Candele artigianali con ingredienti naturali. Dalla nostra famiglia alla tua casa.',
+    'footer.myAccount': 'Il mio account',
+    'footer.paymentMethods': 'Metodi di pagamento',
+    
+    // Testimonials
+    'testimonials.title': 'Cosa dicono i nostri clienti',
+    'testimonials.subtitle': 'Esperienze dei nostri clienti soddisfatti',
+    'testimonials.empty': 'Non abbiamo ancora recensioni. Sii il primo a condividere la tua esperienza!',
+    'testimonials.browseProducts': 'Sfoglia i prodotti e aggiungi una recensione',
+    'testimonials.loginToReview': 'Accedi e aggiungi una recensione',
+    
+    // Newsletter
+    'newsletter.title': 'Iscriviti alla nostra newsletter',
+    'newsletter.description': 'Sii il primo a conoscere i nostri nuovi prodotti, offerte speciali e sconti. Iscriviti alla nostra newsletter e ottieni il 10% di sconto sul tuo primo ordine.',
+    'newsletter.placeholder': 'Il tuo indirizzo email',
+    'newsletter.button': 'Iscriviti',
+    'newsletter.loading': 'Caricamento...',
+    'newsletter.privacy': 'Non condivideremo mai i tuoi dati con terze parti. Puoi cancellarti in qualsiasi momento.',
+    'newsletter.success': 'Grazie per l\'iscrizione! Riceverai presto la nostra newsletter.',
+    'newsletter.error': 'Per favore inserisci il tuo indirizzo email.',
   },
   
   sl: {
@@ -597,10 +617,30 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.about': 'O Kerzenwelt by Dani',
     'footer.about.text': 'Ročno izdelane sveče iz naravnih sestavin. Od naše družine do vašega doma.',
     'footer.quickLinks': 'Hitre povezave',
-    'footer.support': 'Podpora strankam',
+    'footer.customerSupport': 'Podpora strankam',
     'footer.contact': 'Kontakt',
     'footer.followUs': 'Sledite nam',
-    'footer.copyright': '© 2023 Kerzenwelt by Dani. Vse pravice pridržane.',
+    'footer.copyright': 'Vse pravice pridržane.',
+    'footer.tagline': 'Ročno izdelane sveče iz naravnih sestavin. Od naše družine do vašega doma.',
+    'footer.myAccount': 'Moj račun',
+    'footer.paymentMethods': 'Načini plačila',
+    
+    // Testimonials
+    'testimonials.title': 'Kaj pravijo naše stranke',
+    'testimonials.subtitle': 'Izkušnje naših zadovoljnih strank',
+    'testimonials.empty': 'Trenutno nimamo ocen. Bodite prvi, ki bo delil svojo izkušnjo!',
+    'testimonials.browseProducts': 'Preglejte izdelke in dodajte oceno',
+    'testimonials.loginToReview': 'Prijavite se in dodajte oceno',
+    
+    // Newsletter
+    'newsletter.title': 'Naročite se na naše novice',
+    'newsletter.description': 'Bodite prvi, ki bo izvedel za naše nove izdelke, posebne ponudbe in popuste. Naročite se na naše novice in dobite 10% popust na vaše prvo naročilo.',
+    'newsletter.placeholder': 'Vaš e-poštni naslov',
+    'newsletter.button': 'Naroči se',
+    'newsletter.loading': 'Nalaganje...',
+    'newsletter.privacy': 'Vaših podatkov nikoli ne bomo delili s tretjimi osebami. Odjava je mogoča kadarkoli.',
+    'newsletter.success': 'Hvala za prijavo! Kmalu boste prejeli naše novice.',
+    'newsletter.error': 'Prosimo, vnesite vaš e-poštni naslov.',
   }
 };
 

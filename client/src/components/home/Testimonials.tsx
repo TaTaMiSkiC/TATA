@@ -5,6 +5,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/use-language";
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -40,6 +41,7 @@ type ReviewWithUser = {
 export default function Testimonials() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [reviewToDelete, setReviewToDelete] = useState<number | null>(null);
   
   // Dohvati sve recenzije
@@ -104,8 +106,8 @@ export default function Testimonials() {
     <section className="py-16 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="heading text-3xl md:text-4xl font-bold text-foreground">Što kažu naši kupci</h2>
-          <p className="mt-3 text-muted-foreground max-w-xl mx-auto">Iskustva naših zadovoljnih kupaca</p>
+          <h2 className="heading text-3xl md:text-4xl font-bold text-foreground">{t('testimonials.title')}</h2>
+          <p className="mt-3 text-muted-foreground max-w-xl mx-auto">{t('testimonials.subtitle')}</p>
         </div>
         
         {isLoading ? (
