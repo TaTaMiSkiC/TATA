@@ -19,6 +19,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.allCategories': 'Alle Kategorien',
     'nav.loadingCategories': 'Kategorien werden geladen...',
     'nav.pictures': 'Bilder',
+    'nav.adminPanel': 'Adminbereich',
+    'nav.myProfile': 'Mein Profil',
+    'nav.myOrders': 'Meine Bestellungen',
     
     // Admin Menü
     'admin.dashboard': 'Dashboard',
@@ -113,6 +116,23 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.tagline': 'Handgefertigte Kerzen aus natürlichen Inhaltsstoffen. Von unserer Familie zu Ihrem Zuhause.',
     'footer.myAccount': 'Mein Konto',
     'footer.paymentMethods': 'Zahlungsmethoden',
+    
+    // Testimonials
+    'testimonials.title': 'Was unsere Kunden sagen',
+    'testimonials.subtitle': 'Erfahrungen unserer zufriedenen Kunden',
+    'testimonials.empty': 'Wir haben noch keine Bewertungen. Seien Sie der Erste, der seine Erfahrung teilt!',
+    'testimonials.browseProducts': 'Produkte durchsuchen und eine Bewertung hinzufügen',
+    'testimonials.loginToReview': 'Einloggen und eine Bewertung hinzufügen',
+    
+    // Newsletter
+    'newsletter.title': 'Abonnieren Sie unseren Newsletter',
+    'newsletter.description': 'Erfahren Sie als Erster von unseren neuen Produkten, Sonderangeboten und Rabatten. Abonnieren Sie unseren Newsletter und erhalten Sie 10% Rabatt auf Ihre erste Bestellung.',
+    'newsletter.placeholder': 'Ihre E-Mail-Adresse',
+    'newsletter.button': 'Abonnieren',
+    'newsletter.loading': 'Laden...',
+    'newsletter.privacy': 'Wir geben Ihre Daten niemals an Dritte weiter. Sie können sich jederzeit abmelden.',
+    'newsletter.success': 'Vielen Dank für Ihr Abonnement! Sie erhalten in Kürze unseren Newsletter.',
+    'newsletter.error': 'Bitte geben Sie Ihre E-Mail-Adresse ein.',
   },
   
   hr: {
@@ -223,6 +243,23 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.tagline': 'Ručno izrađene svijeće od prirodnih sastojaka. Od naše obitelji do vašeg doma.',
     'footer.myAccount': 'Moj račun',
     'footer.paymentMethods': 'Načini plaćanja',
+    
+    // Testimonials
+    'testimonials.title': 'Što kažu naši kupci',
+    'testimonials.subtitle': 'Iskustva naših zadovoljnih kupaca',
+    'testimonials.empty': 'Trenutno nemamo recenzija. Budite prvi koji će ostaviti svoje iskustvo!',
+    'testimonials.browseProducts': 'Pregledaj proizvode i dodaj recenziju',
+    'testimonials.loginToReview': 'Prijavi se i dodaj recenziju',
+    
+    // Newsletter
+    'newsletter.title': 'Pretplatite se na novosti',
+    'newsletter.description': 'Budite prvi koji će saznati o našim novim proizvodima, posebnim ponudama i popustima. Pretplatite se na naš newsletter i dobijte 10% popusta na vašu prvu narudžbu.',
+    'newsletter.placeholder': 'Vaša email adresa',
+    'newsletter.button': 'Pretplatite se',
+    'newsletter.loading': 'Učitavanje...',
+    'newsletter.privacy': 'Nećemo dijeliti vaše podatke s trećim stranama. Možete se odjaviti u bilo kojem trenutku.',
+    'newsletter.success': 'Hvala na prijavi! Uskoro ćete primiti naš newsletter.',
+    'newsletter.error': 'Molimo unesite vašu email adresu.',
   },
   
   en: {
@@ -333,6 +370,23 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.tagline': 'Handmade candles with natural ingredients. From our family to your home.',
     'footer.myAccount': 'My Account',
     'footer.paymentMethods': 'Payment Methods',
+    
+    // Testimonials
+    'testimonials.title': 'What Our Customers Say',
+    'testimonials.subtitle': 'Experiences from our satisfied customers',
+    'testimonials.empty': 'We don\'t have any reviews yet. Be the first to share your experience!',
+    'testimonials.browseProducts': 'Browse products and add a review',
+    'testimonials.loginToReview': 'Log in and add a review',
+    
+    // Newsletter
+    'newsletter.title': 'Subscribe to our newsletter',
+    'newsletter.description': 'Be the first to know about our new products, special offers and discounts. Subscribe to our newsletter and get 10% off your first order.',
+    'newsletter.placeholder': 'Your email address',
+    'newsletter.button': 'Subscribe',
+    'newsletter.loading': 'Loading...',
+    'newsletter.privacy': 'We\'ll never share your data with third parties. You can unsubscribe at any time.',
+    'newsletter.success': 'Thank you for subscribing! You\'ll receive our newsletter soon.',
+    'newsletter.error': 'Please enter your email address.',
   },
   
   it: {
