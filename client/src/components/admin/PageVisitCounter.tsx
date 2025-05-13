@@ -47,9 +47,12 @@ export function PageVisitCounter() {
     );
   }
 
+  // Nađi broj posjeta za početnu stranicu ('/')
+  const homepageVisit = visitData?.find(visit => visit.path === '/');
+  
   return (
     <div className="text-gray-500 text-xs">
-      Broj posjeta stranice: {visitData?.count || 0}
+      Broj posjeta stranice: {homepageVisit?.count || 0}
     </div>
   );
 }
