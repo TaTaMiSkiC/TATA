@@ -69,6 +69,7 @@ import { Order, Product, Scent, Color } from "@shared/schema";
 import logoImg from "@assets/Kerzenwelt by Dani.png";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import DocumentManager from "@/components/admin/DocumentManager";
+import { generateInvoicePdf, getPaymentMethodText } from "@/lib/generate-invoice-pdf";
 
 // Pomoćna funkcija za generiranje broja fakture
 const createInvoiceNumber = async (orderId?: number) => {
@@ -628,7 +629,8 @@ export default function AdminInvoices() {
         };
         
         console.log("Priprema podataka za PDF:", invoiceData);
-        generatePdf(invoiceData);
+        // Koristimo zajedničku funkciju za generiranje PDF-a koja je identična onoj u korisničkom sučelju
+        generateInvoicePdf(invoiceData);
       })
       .catch(error => {
         console.error("Greška kod dohvaćanja stavki računa:", error);
