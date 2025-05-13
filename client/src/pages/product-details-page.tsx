@@ -638,13 +638,15 @@ export default function ProductDetailsPage() {
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Jeste li sigurni?</AlertDialogTitle>
+                                <AlertDialogTitle>{translateText("Jeste li sigurni?", "hr")}</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  Ova akcija je nepovratna. Recenzija će biti trajno izbrisana iz sustava.
+                                  {translateText("Ova akcija je nepovratna. Recenzija će biti trajno izbrisana iz sustava.", "hr")}
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel onClick={() => setReviewToDelete(null)}>Odustani</AlertDialogCancel>
+                                <AlertDialogCancel onClick={() => setReviewToDelete(null)}>
+                                  {translateText("Odustani", "hr")}
+                                </AlertDialogCancel>
                                 <AlertDialogAction 
                                   onClick={() => {
                                     if (reviewToDelete) {
@@ -656,7 +658,7 @@ export default function ProductDetailsPage() {
                                   {deleteReviewMutation.isPending ? (
                                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
                                   ) : null}
-                                  Izbriši
+                                  {translateText("Izbriši", "hr")}
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
@@ -710,7 +712,7 @@ export default function ProductDetailsPage() {
                         name="rating"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Ocjena</FormLabel>
+                            <FormLabel>{translateText("Ocjena", "hr")}</FormLabel>
                             <div className="flex gap-2">
                               {[1, 2, 3, 4, 5].map((rating) => (
                                 <button
@@ -738,10 +740,10 @@ export default function ProductDetailsPage() {
                         name="comment"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Vaš komentar</FormLabel>
+                            <FormLabel>{translateText("Vaš komentar", "hr")}</FormLabel>
                             <FormControl>
                               <Textarea
-                                placeholder="Podijelite svoje iskustvo s ovim proizvodom..."
+                                placeholder={translateText("Podijelite svoje iskustvo s ovim proizvodom...", "hr")}
                                 className="min-h-32"
                                 {...field}
                               />
@@ -752,16 +754,16 @@ export default function ProductDetailsPage() {
                       />
                       
                       <Button type="submit" disabled={form.formState.isSubmitting}>
-                        {form.formState.isSubmitting ? "Slanje..." : "Objavi recenziju"}
+                        {form.formState.isSubmitting ? translateText("Slanje...", "hr") : translateText("Objavi recenziju", "hr")}
                       </Button>
                     </form>
                   </Form>
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <p className="text-muted-foreground mb-4">Prijavite se kako biste mogli napisati recenziju.</p>
+                  <p className="text-muted-foreground mb-4">{translateText("Prijavite se kako biste mogli napisati recenziju.", "hr")}</p>
                   <Button asChild>
-                    <Link href="/auth">Prijava / Registracija</Link>
+                    <Link href="/auth">{translateText("Prijava / Registracija", "hr")}</Link>
                   </Button>
                 </div>
               )}
