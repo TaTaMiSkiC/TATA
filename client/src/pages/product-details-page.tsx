@@ -236,8 +236,8 @@ export default function ProductDetailsPage() {
     },
     onSuccess: () => {
       toast({
-        title: "Recenzija izbrisana",
-        description: "Recenzija je uspješno izbrisana",
+        title: translateText("Recenzija izbrisana", "hr"),
+        description: translateText("Recenzija je uspješno izbrisana", "hr"),
       });
       // Osvježi podatke
       queryClient.invalidateQueries({ queryKey: [`/api/products/${productId}/reviews`] });
@@ -245,8 +245,8 @@ export default function ProductDetailsPage() {
     },
     onError: (error) => {
       toast({
-        title: "Greška",
-        description: `Neuspješno brisanje recenzije: ${error.message}`,
+        title: translateText("Greška", "hr"),
+        description: `${translateText("Neuspješno brisanje recenzije", "hr")}: ${error.message}`,
         variant: "destructive",
       });
     }
@@ -294,10 +294,10 @@ export default function ProductDetailsPage() {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-12 text-center">
-          <h1 className="heading text-2xl font-bold mb-4">Proizvod nije pronađen</h1>
-          <p className="mb-6">Žao nam je, traženi proizvod ne postoji ili je uklonjen.</p>
+          <h1 className="heading text-2xl font-bold mb-4">{translateText("Proizvod nije pronađen", "hr")}</h1>
+          <p className="mb-6">{translateText("Žao nam je, traženi proizvod ne postoji ili je uklonjen.", "hr")}</p>
           <Button asChild>
-            <Link href="/products">Natrag na proizvode</Link>
+            <Link href="/products">{translateText("Natrag na proizvode", "hr")}</Link>
           </Button>
         </div>
       </Layout>
