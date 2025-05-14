@@ -349,7 +349,7 @@ export default function AdminInvoices() {
   const [colorSelectionMode, setColorSelectionMode] = useState<'single' | 'multiple'>('single');
   const [orderSearchTerm, setOrderSearchTerm] = useState<string>('');
   
-  // Dohvati proizvode
+  // Fetch products
   const { data: products = [] } = useQuery<Product[]>({
     queryKey: ['/api/products'],
   });
@@ -569,11 +569,11 @@ export default function AdminInvoices() {
           let errorMessage = t('admin.invoices.errorCreatingInvoice');
           
           try {
-            // Pokušaj parsirati JSON odgovor
+            // Try to parse JSON response
             const errorObj = JSON.parse(errorResponse.message);
             errorMessage = errorObj.message || errorMessage;
           } catch (error) {
-            // Ako nije JSON, koristi original poruku
+            // If not JSON, use the original message
             errorMessage = errorResponse.message || errorMessage;
           }
           
@@ -636,7 +636,7 @@ export default function AdminInvoices() {
       .then(data => {
         console.log("Retrieved data for PDF invoice:", data);
         
-        // Pripremi podatke za PDF s ispravnim nazivima polja koja očekuje funkcija za generiranje PDF-a
+        // Prepare data for the PDF with correct field names as expected by the PDF generation function
         const invoiceData = {
           invoiceNumber: invoice.invoiceNumber,
           createdAt: invoice.createdAt,
