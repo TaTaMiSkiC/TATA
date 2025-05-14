@@ -112,8 +112,8 @@ export default function AdminCategories() {
     },
     onSuccess: () => {
       toast({
-        title: "Uspjeh",
-        description: "Kategorija je uspješno ažurirana.",
+        title: t("admin.categories.success"),
+        description: t("admin.categories.categoryUpdated"),
       });
       queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
       setIsFormOpen(false);
@@ -122,8 +122,8 @@ export default function AdminCategories() {
     },
     onError: (error: Error) => {
       toast({
-        title: "Greška",
-        description: `Došlo je do greške prilikom ažuriranja kategorije: ${error.message}`,
+        title: t("admin.categories.error"),
+        description: `${t("admin.categories.errorUpdateDesc")}: ${error.message}`,
         variant: "destructive",
       });
     }
@@ -136,8 +136,8 @@ export default function AdminCategories() {
     },
     onSuccess: () => {
       toast({
-        title: "Uspjeh",
-        description: "Kategorija je uspješno obrisana.",
+        title: t("admin.categories.success"),
+        description: t("admin.categories.categoryDeleted"),
       });
       queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
       setIsDeleteDialogOpen(false);
@@ -145,8 +145,8 @@ export default function AdminCategories() {
     },
     onError: (error: Error) => {
       toast({
-        title: "Greška",
-        description: `Došlo je do greške prilikom brisanja kategorije: ${error.message}`,
+        title: t("admin.categories.error"),
+        description: `${t("admin.categories.errorDeleteDesc")}: ${error.message}`,
         variant: "destructive",
       });
     }
@@ -382,17 +382,17 @@ export default function AdminCategories() {
                   onClick={() => setIsFormOpen(false)}
                   disabled={isSubmitting}
                 >
-                  Odustani
+                  {t("admin.categories.cancel")}
                 </Button>
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {currentCategory ? "Ažuriranje..." : "Spremanje..."}
+                      {currentCategory ? t("admin.categories.updating") : t("admin.categories.saving")}
                     </>
                   ) : (
                     <>
-                      {currentCategory ? "Spremi promjene" : "Spremi kategoriju"}
+                      {currentCategory ? t("admin.categories.saveChanges") : t("admin.categories.saveCategory")}
                     </>
                   )}
                 </Button>
@@ -406,14 +406,14 @@ export default function AdminCategories() {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Brisanje kategorije</AlertDialogTitle>
+            <AlertDialogTitle>{t("admin.categories.deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Jeste li sigurni da želite obrisati kategoriju "{currentCategory?.name}"? 
-              Ova radnja je nepovratna i može utjecati na proizvode koji su povezani s ovom kategorijom.
+              {t("admin.categories.deleteConfirmation").replace("{name}", currentCategory?.name || "")}
+              {t("admin.categories.deleteWarning")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteCategoryMutation.isPending}>Odustani</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleteCategoryMutation.isPending}>{t("admin.categories.cancel")}</AlertDialogCancel>
             <AlertDialogAction 
               onClick={confirmDeleteCategory}
               disabled={deleteCategoryMutation.isPending}
@@ -422,10 +422,10 @@ export default function AdminCategories() {
               {deleteCategoryMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Brisanje...
+                  {t("admin.categories.deleting")}
                 </>
               ) : (
-                "Da, obriši"
+                t("admin.categories.confirmDelete")
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

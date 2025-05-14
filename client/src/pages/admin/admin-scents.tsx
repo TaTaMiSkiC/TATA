@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import AdminLayout from "@/components/admin/AdminLayout";
+import { useLanguage } from "@/hooks/use-language";
+import { Helmet } from 'react-helmet';
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -52,6 +54,7 @@ export default function AdminScents() {
   const [open, setOpen] = useState(false);
   const [editScent, setEditScent] = useState<Scent | null>(null);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const { data: scents, isLoading } = useQuery<Scent[]>({
     queryKey: ["/api/scents"],
