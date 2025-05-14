@@ -345,7 +345,7 @@ export class DatabaseStorage implements IStorage {
       
       // Direktni SQL upit za dohvaćanje povezanih mirisa
       const result = await db.execute(
-        sql`SELECT s.id, s.name, s.description, s.active, s.created_at as "createdAt", s.updated_at as "updatedAt"
+        sql`SELECT s.id, s.name, s.description, s.active, s.created_at as "createdAt"
             FROM scents s
             INNER JOIN product_scents ps ON s.id = ps.scent_id
             WHERE ps.product_id = ${productId}`
@@ -357,8 +357,7 @@ export class DatabaseStorage implements IStorage {
         name: String(row.name || ''),
         description: row.description ? String(row.description) : null,
         active: Boolean(row.active),
-        createdAt: row.createdAt,
-        updatedAt: row.updatedAt
+        createdAt: row.createdAt
       }));
       
       console.log(`Dohvaćeno ${mirisi.length} mirisa za proizvod ID: ${productId}`);
@@ -461,20 +460,19 @@ export class DatabaseStorage implements IStorage {
       
       // Direktni SQL upit za dohvaćanje povezanih boja
       const result = await db.execute(
-        sql`SELECT c.id, c.name, c.hex_value as "hexValue", c.active, c.created_at as "createdAt", c.updated_at as "updatedAt"
+        sql`SELECT c.id, c.name, c.hex_value as "hexValue", c.active, c.created_at as "createdAt"
             FROM colors c
             INNER JOIN product_colors pc ON c.id = pc.color_id
             WHERE pc.product_id = ${productId}`
       );
       
-      // Pretvaramo rezultate u odgovarajući format
+      // Pretvaramo rezultate u odgovarajući format s konverzijom tipova
       const bojeLista = result.rows.map(row => ({
-        id: row.id,
-        name: row.name,
-        hexValue: row.hexValue,
-        active: row.active === true,
-        createdAt: row.createdAt,
-        updatedAt: row.updatedAt
+        id: Number(row.id),
+        name: String(row.name || ''),
+        hexValue: String(row.hexValue || ''),
+        active: Boolean(row.active),
+        createdAt: row.createdAt
       }));
       
       console.log(`Dohvaćeno ${bojeLista.length} boja za proizvod ID: ${productId}`);
