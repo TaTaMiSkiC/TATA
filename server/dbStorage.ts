@@ -345,7 +345,10 @@ export class DatabaseStorage implements IStorage {
       
       // Prvo provjeri postoje li povezani mirisi
       const povezaniMirisi = await db
-        .select()
+        .select({
+          productId: productScents.productId,
+          scentId: productScents.scentId
+        })
         .from(productScents)
         .where(eq(productScents.productId, productId));
         
@@ -380,7 +383,10 @@ export class DatabaseStorage implements IStorage {
       
       // Prvo provjerimo postoji li već veza
       const existing = await db
-        .select()
+        .select({
+          productId: productScents.productId,
+          scentId: productScents.scentId
+        })
         .from(productScents)
         .where(and(
           eq(productScents.productId, productId),
@@ -389,18 +395,31 @@ export class DatabaseStorage implements IStorage {
         
       if (existing.length > 0) {
         console.log('Ova veza već postoji, vraćamo postojeću');
-        return existing[0];
+        
+        // Vraćamo prvi pronađeni rezultat
+        return {
+          id: 0, // Stavljamo fiktivni ID
+          productId: existing[0].productId,
+          scentId: existing[0].scentId
+        };
       }
       
-      // Ako veza ne postoji, dodajemo je - specificiramo stupce koji sigurno postoje
+      // Ako veza ne postoji, dodajemo je - izbjegavamo .returning()
       await db
         .insert(productScents)
-        .values({ productId, scentId });
+        .values({ 
+          productId: productId, 
+          scentId: scentId 
+        });
         
-      // Vraćamo ručno kreirani objekt umjesto .returning() jer možda nema id stupac
-      const productScent = { productId, scentId };
+      // Budući da ne možemo dobiti pravi ID, vraćamo fiktivni objekt s proslijeđenim vrijednostima
+      const productScent: ProductScent = {
+        id: 0, // Stavljamo fiktivni ID jer nam nije bitan za klijenta
+        productId: productId,
+        scentId: scentId
+      };
         
-      console.log('Uspješno dodana veza:', productScent);
+      console.log('Uspješno dodana veza s fiktivnim ID-jem:', productScent);
       return productScent;
     } catch (error) {
       console.error('Greška u addScentToProduct:', error);
@@ -457,7 +476,10 @@ export class DatabaseStorage implements IStorage {
       
       // Prvo provjeri postoje li povezane boje
       const povezaneBoje = await db
-        .select()
+        .select({
+          productId: productColors.productId,
+          colorId: productColors.colorId
+        })
         .from(productColors)
         .where(eq(productColors.productId, productId));
         
@@ -492,7 +514,10 @@ export class DatabaseStorage implements IStorage {
       
       // Prvo provjerimo postoji li već veza
       const existing = await db
-        .select()
+        .select({
+          productId: productColors.productId,
+          colorId: productColors.colorId
+        })
         .from(productColors)
         .where(and(
           eq(productColors.productId, productId),
@@ -501,16 +526,31 @@ export class DatabaseStorage implements IStorage {
         
       if (existing.length > 0) {
         console.log('Ova veza boje već postoji, vraćamo postojeću');
-        return existing[0];
+        
+        // Vraćamo prvi pronađeni rezultat
+        return {
+          id: 0, // Stavljamo fiktivni ID
+          productId: existing[0].productId,
+          colorId: existing[0].colorId
+        };
       }
       
-      // Ako veza ne postoji, dodajemo je - bez specificiranja stupaca
-      const [productColor] = await db
+      // Ako veza ne postoji, dodajemo je - izbjegavamo .returning()
+      await db
         .insert(productColors)
-        .values({ productId, colorId })
-        .returning();
+        .values({ 
+          productId: productId, 
+          colorId: colorId 
+        });
         
-      console.log('Uspješno dodana veza boje:', productColor);
+      // Budući da ne možemo dobiti pravi ID, vraćamo fiktivni objekt s proslijeđenim vrijednostima
+      const productColor: ProductColor = {
+        id: 0, // Stavljamo fiktivni ID jer nam nije bitan za klijenta
+        productId: productId,
+        colorId: colorId
+      };
+        
+      console.log('Uspješno dodana veza boje s fiktivnim ID-jem:', productColor);
       return productColor;
     } catch (error) {
       console.error('Greška u addColorToProduct:', error);
