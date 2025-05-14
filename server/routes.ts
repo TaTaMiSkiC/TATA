@@ -1161,13 +1161,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const productId = parseInt(req.params.id);
       const { scentId } = req.body;
       
-      if (!scentId || typeof scentId !== 'number') {
-        return res.status(400).json({ message: "Invalid scent ID" });
+      console.log(`Pokušaj dodavanja mirisa - Product ID: ${productId}, Scent ID:`, scentId, "Tip scentId:", typeof scentId);
+      
+      if (scentId === undefined || scentId === null) {
+        return res.status(400).json({ message: "Missing scent ID" });
       }
       
-      const productScent = await storage.addScentToProduct(productId, scentId);
+      // Pretvorimo scentId u broj ako je potrebno
+      const scentIdNum = typeof scentId === 'string' ? parseInt(scentId) : scentId;
+      
+      if (isNaN(scentIdNum)) {
+        return res.status(400).json({ message: "Invalid scent ID format" });
+      }
+      
+      console.log(`Dodavanje mirisa - Product ID: ${productId}, Scent ID: ${scentIdNum}`);
+      const productScent = await storage.addScentToProduct(productId, scentIdNum);
       res.status(201).json(productScent);
     } catch (error) {
+      console.error("Greška pri dodavanju mirisa:", error);
       res.status(500).json({ message: "Failed to add scent to product" });
     }
   });
@@ -1256,13 +1267,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const productId = parseInt(req.params.id);
       const { colorId } = req.body;
       
-      if (!colorId || typeof colorId !== 'number') {
-        return res.status(400).json({ message: "Invalid color ID" });
+      console.log(`Pokušaj dodavanja boje - Product ID: ${productId}, Color ID:`, colorId, "Tip colorId:", typeof colorId);
+      
+      if (colorId === undefined || colorId === null) {
+        return res.status(400).json({ message: "Missing color ID" });
       }
       
-      const productColor = await storage.addColorToProduct(productId, colorId);
+      // Pretvorimo colorId u broj ako je potrebno
+      const colorIdNum = typeof colorId === 'string' ? parseInt(colorId) : colorId;
+      
+      if (isNaN(colorIdNum)) {
+        return res.status(400).json({ message: "Invalid color ID format" });
+      }
+      
+      console.log(`Dodavanje boje - Product ID: ${productId}, Color ID: ${colorIdNum}`);
+      const productColor = await storage.addColorToProduct(productId, colorIdNum);
       res.status(201).json(productColor);
     } catch (error) {
+      console.error("Greška pri dodavanju boje:", error);
       res.status(500).json({ message: "Failed to add color to product" });
     }
   });
