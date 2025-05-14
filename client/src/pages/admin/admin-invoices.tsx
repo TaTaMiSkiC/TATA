@@ -1221,7 +1221,7 @@ export default function AdminInvoices() {
                                 <Button variant="outline">{t('common.cancel')}</Button>
                               </DialogClose>
                               <DialogClose asChild>
-                                <Button type="button" onClick={handleAddProduct}>Dodaj</Button>
+                                <Button type="button" onClick={handleAddProduct}>{t('common.add')}</Button>
                               </DialogClose>
                             </DialogFooter>
                           </DialogContent>
@@ -1310,10 +1310,10 @@ export default function AdminInvoices() {
                     
                     <div className="flex justify-end space-x-2">
                       <Button type="button" variant="outline" onClick={resetForm}>
-                        Poništi
+                        {t('common.reset')}
                       </Button>
                       <Button type="submit">
-                        Kreiraj račun
+                        {t('admin.invoices.createInvoice')}
                       </Button>
                     </div>
                   </form>
