@@ -302,6 +302,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.successRemoveProducts": "Produkte erfolgreich aus der Kollektion entfernt",
     "admin.collections.errorAddProducts": "Fehler beim Hinzufügen von Produkten zur Kollektion",
     "admin.collections.errorRemoveProducts": "Fehler beim Entfernen von Produkten aus der Kollektion",
+    "admin.collections.createError": "Fehler beim Hinzufügen der Kollektion",
+    "admin.collections.updateError": "Fehler beim Aktualisieren der Kollektion",
+    "admin.collections.deleteError": "Fehler beim Löschen der Kollektion",
     
     // Admin Orders Page
     "admin.orders.title": "Bestellungen",
@@ -1511,6 +1514,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.successRemoveProducts": "Proizvodi uspješno uklonjeni iz kolekcije",
     "admin.collections.errorAddProducts": "Greška prilikom dodavanja proizvoda u kolekciju",
     "admin.collections.errorRemoveProducts": "Greška prilikom uklanjanja proizvoda iz kolekcije",
+    "admin.collections.createError": "Greška pri dodavanju kolekcije",
+    "admin.collections.updateError": "Greška pri ažuriranju kolekcije",
+    "admin.collections.deleteError": "Greška pri brisanju kolekcije",
     
     // Admin Orders Page
     "admin.orders.title": "Narudžbe",
@@ -3763,6 +3769,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.successRemoveProducts": "Prodotti rimossi dalla collezione con successo",
     "admin.collections.errorAddProducts": "Errore durante l'aggiunta di prodotti alla collezione",
     "admin.collections.errorRemoveProducts": "Errore durante la rimozione di prodotti dalla collezione",
+    "admin.collections.createError": "Errore aggiunta collezione",
+    "admin.collections.updateError": "Errore aggiornamento collezione",
+    "admin.collections.deleteError": "Errore eliminazione collezione",
     
     // Admin Orders Page
     "admin.orders.title": "Ordini",
@@ -4498,6 +4507,18 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.productRemovedFromCollection": "Izdelek je bil uspešno odstranjen iz kolekcije.",
     "admin.collections.errorAddingProduct": "Napaka pri dodajanju izdelka v kolekcijo: {error}",
     "admin.collections.errorRemovingProduct": "Napaka pri odstranjevanju izdelka iz kolekcije: {error}",
+    "admin.collections.createError": "Napaka pri dodajanju kolekcije",
+    "admin.collections.updateError": "Napaka pri posodabljanju kolekcije",
+    "admin.collections.deleteError": "Napaka pri brisanju kolekcije",
+    "admin.collections.noProductsInCollection": "V tej kolekciji ni izdelkov",
+    "admin.collections.availableProducts": "Razpoložljivi izdelki",
+    "admin.collections.searchProducts": "Išči izdelke...",
+    "admin.collections.addSelectedProducts": "Dodaj izbrane izdelke",
+    "admin.collections.removeSelectedProducts": "Odstrani izbrane izdelke",
+    "admin.collections.successAddProducts": "Izdelki so bili uspešno dodani v kolekcijo",
+    "admin.collections.successRemoveProducts": "Izdelki so bili uspešno odstranjeni iz kolekcije",
+    "admin.collections.errorAddProducts": "Napaka pri dodajanju izdelkov v kolekcijo",
+    "admin.collections.errorRemoveProducts": "Napaka pri odstranjevanju izdelkov iz kolekcije",
     
     // Admin Orders Page
     "admin.orders.title": "Naročila",
