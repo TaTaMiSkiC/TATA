@@ -179,18 +179,20 @@ interface SelectedProduct {
 }
 
 // Schema za kreiranje računa
+// Note: We can't use t() function here directly since it's outside component
+// Translation keys will be applied in validation error messages inside the form
 const createInvoiceSchema = z.object({
-  firstName: z.string().min(1, "Ime je obavezno"),
-  lastName: z.string().min(1, "Prezime je obavezno"),
+  firstName: z.string().min(1, "admin.invoices.firstNameRequired"),
+  lastName: z.string().min(1, "admin.invoices.lastNameRequired"),
   address: z.string().optional(),
   city: z.string().optional(),
   postalCode: z.string().optional(),
   country: z.string().optional(),
-  email: z.string().email("Unesite ispravnu email adresu").optional(),
+  email: z.string().email("admin.invoices.invalidEmail").optional(),
   phone: z.string().optional(),
-  invoiceNumber: z.string().min(1, "Broj računa je obavezan"),
-  paymentMethod: z.string().min(1, "Način plaćanja je obavezan"),
-  language: z.string().min(1, "Jezik računa je obavezan"),
+  invoiceNumber: z.string().min(1, "admin.invoices.invoiceNumberRequired"),
+  paymentMethod: z.string().min(1, "admin.invoices.paymentMethodRequired"),
+  language: z.string().min(1, "admin.invoices.languageRequired"),
   customerNote: z.string().optional(),
 });
 
@@ -204,6 +206,7 @@ export default function AdminInvoices() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
   
   // Dohvati račune
   const { data: invoices = [], refetch: refetchInvoices } = useQuery<Invoice[]>({
