@@ -139,9 +139,15 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Admin Scents Page
     "admin.scents.title": "Düfte",
+    "admin.scents.pageTitle": "Duftverwaltung",
     "admin.scents.subtitle": "Verwalten Sie Produktdüfte in Ihrem Shop",
     "admin.scents.allScents": "Alle Düfte",
     "admin.scents.allScentsDesc": "Liste aller verfügbaren Düfte für Ihre Produkte",
+    "admin.scents.addNewScent": "Neuen Duft hinzufügen",
+    "admin.scents.nameLabel": "Name",
+    "admin.scents.namePlaceholder": "Duftname eingeben",
+    "admin.scents.descriptionLabel": "Beschreibung",
+    "admin.scents.descriptionPlaceholder": "Duftbeschreibung eingeben",
     "admin.scents.noScents": "Keine Düfte verfügbar. Fügen Sie Ihren ersten Duft hinzu.",
     "admin.scents.id": "ID",
     "admin.scents.name": "Name",

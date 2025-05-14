@@ -241,7 +241,7 @@ export default function AdminScents() {
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                         <div className="space-y-0.5">
-                          <FormLabel>Aktivan</FormLabel>
+                          <FormLabel>{t("admin.scents.active")}</FormLabel>
                         </div>
                         <FormControl>
                           <Switch
@@ -259,7 +259,7 @@ export default function AdminScents() {
                       variant="outline"
                       onClick={handleDialogClose}
                     >
-                      Odustani
+                      {t("admin.scents.cancel")}
                     </Button>
                     <Button
                       type="submit"
@@ -270,7 +270,7 @@ export default function AdminScents() {
                       {(createMutation.isPending || updateMutation.isPending) && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      {editScent ? "Spremi promjene" : "Dodaj miris"}
+                      {editScent ? t("admin.scents.saveChanges") : t("admin.scents.save")}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -288,11 +288,11 @@ export default function AdminScents() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Naziv</TableHead>
-                  <TableHead>Opis</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Akcije</TableHead>
+                  <TableHead>{t("admin.scents.id")}</TableHead>
+                  <TableHead>{t("admin.scents.name")}</TableHead>
+                  <TableHead>{t("admin.scents.description")}</TableHead>
+                  <TableHead>{t("admin.scents.status")}</TableHead>
+                  <TableHead>{t("admin.scents.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -316,7 +316,7 @@ export default function AdminScents() {
                               : "bg-red-100 text-red-800"
                           }`}
                         >
-                          {scent.active ? "Aktivan" : "Neaktivan"}
+                          {scent.active ? t("admin.scents.active") : t("admin.scents.inactive")}
                         </span>
                       </TableCell>
                       <TableCell>
