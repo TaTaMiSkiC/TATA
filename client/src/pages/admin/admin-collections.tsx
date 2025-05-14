@@ -290,12 +290,12 @@ export default function AdminCollections() {
   return (
     <AdminLayout>
       <Helmet>
-        <title>Upravljanje kolekcijama | Kerzenwelt Admin</title>
+        <title>{t("admin.collections.pageTitle")} | Kerzenwelt Admin</title>
       </Helmet>
       
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Upravljanje kolekcijama</h1>
+          <h1 className="text-3xl font-bold">{t("admin.collections.pageTitle")}</h1>
           <Button onClick={() => {
             setCurrentCollection(null);
             form.reset({
@@ -308,7 +308,7 @@ export default function AdminCollections() {
             setIsFormOpen(true);
           }}>
             <Plus className="mr-2 h-4 w-4" />
-            Dodaj kolekciju
+            {t("admin.collections.addCollection")}
           </Button>
         </div>
         
@@ -624,7 +624,7 @@ export default function AdminCollections() {
                           disabled={inCollection}
                           onClick={() => !inCollection && handleAddProductToCollection(product.id)}
                         >
-                          {inCollection ? "Već dodano" : "Dodaj"}
+                          {inCollection ? t("admin.collections.alreadyAdded") : t("common.add")}
                         </Button>
                       </div>
                     );
@@ -632,7 +632,7 @@ export default function AdminCollections() {
                 </div>
               ) : (
                 <p className="text-muted-foreground text-center py-4">
-                  Nema dostupnih proizvoda za dodavanje.
+                  {t("admin.collections.noProductsAvailable")}
                 </p>
               )}
             </div>
@@ -643,7 +643,7 @@ export default function AdminCollections() {
               <Button variant="outline" onClick={() => {
                 setSelectedCollection(null);
               }}>
-                Zatvori
+                {t("common.close")}
               </Button>
             </SheetClose>
           </SheetFooter>
