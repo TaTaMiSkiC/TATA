@@ -562,7 +562,7 @@ export default function AdminInvoices() {
           refetchInvoices();
           resetForm();
           
-          // Prebaci na tab "Postojeći računi"
+          // Switch to "Existing Invoices" tab
           setActiveTab("existing");
         })
         .catch(errorResponse => {
@@ -600,9 +600,9 @@ export default function AdminInvoices() {
     apiRequest('DELETE', `/api/invoices/${id}`)
       .then(response => {
         if (!response.ok) {
-          throw new Error("Greška prilikom brisanja računa");
+          throw new Error("Error while deleting invoice");
         }
-        refetchInvoices(); // Osvježi popis računa nakon brisanja
+        refetchInvoices(); // Refresh invoice list after deletion
         toast({
           title: t('admin.invoices.invoiceDeleted'),
           description: t('admin.invoices.invoiceDeletedSuccess'),
@@ -625,12 +625,12 @@ export default function AdminInvoices() {
   };
 
   const handleDownloadInvoiceWithLanguage = (invoice: Invoice, language: string) => {
-    // Preuzmi račun s odabranim jezikom
+    // Download invoice with selected language
     downloadInvoice(invoice, language);
   };
 
   const downloadInvoice = (invoice: Invoice, language: string) => {
-    // Dohvati stavke računa sa servera
+    // Fetch invoice items from server
     apiRequest('GET', `/api/invoices/${invoice.id}`)
       .then(response => response.json())
       .then(data => {
