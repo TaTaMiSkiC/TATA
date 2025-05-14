@@ -84,14 +84,14 @@ export default function AdminColors() {
       setOpen(false);
       form.reset();
       toast({
-        title: "Uspjeh",
-        description: "Boja je uspješno dodana.",
+        title: t("admin.common.success"),
+        description: t("admin.colors.successCreate"),
       });
     },
     onError: (error) => {
       toast({
-        title: "Greška",
-        description: `Neuspjelo dodavanje boje: ${error.message}`,
+        title: t("admin.common.error"),
+        description: t("admin.colors.createError") + `: ${error.message}`,
         variant: "destructive",
       });
     },
@@ -115,8 +115,8 @@ export default function AdminColors() {
     },
     onError: (error) => {
       toast({
-        title: "Greška",
-        description: `Neuspjelo ažuriranje boje: ${error.message}`,
+        title: t("admin.common.error"),
+        description: t("admin.colors.updateError") + `: ${error.message}`,
         variant: "destructive",
       });
     },
@@ -129,14 +129,14 @@ export default function AdminColors() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/colors"] });
       toast({
-        title: "Uspjeh",
-        description: "Boja je uspješno obrisana.",
+        title: t("admin.common.success"),
+        description: t("admin.colors.successDelete"),
       });
     },
     onError: (error) => {
       toast({
-        title: "Greška",
-        description: `Neuspjelo brisanje boje: ${error.message}`,
+        title: t("admin.common.error"),
+        description: t("admin.colors.deleteError") + `: ${error.message}`,
         variant: "destructive",
       });
     },
@@ -369,7 +369,7 @@ export default function AdminColors() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-6">
-                      Nema dostupnih boja. Dodajte novu boju za početak.
+                      {t("admin.colors.noColors")}
                     </TableCell>
                   </TableRow>
                 )}
