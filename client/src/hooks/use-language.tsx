@@ -3523,11 +3523,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.invoiceCreated": "Račun uspješno kreiran",
     "admin.invoices.invoiceCreationError": "Greška pri kreiranju računa",
     "admin.invoices.amount": "Iznos",
-    "admin.invoices.viewAllInvoicesDescription": "Pregledaj sve kreirane račune",
-    "admin.invoices.existingInvoices": "Postojeći računi",
-    "admin.invoices.createNewInvoice": "Kreiraj novi račun",
-    "admin.invoices.companyDocuments": "Dokumenti tvrtke",
-    "admin.invoices.fillInformationForNewInvoice": "Ispuni podatke za novi račun",
 
   },
 
