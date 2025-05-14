@@ -530,7 +530,7 @@ export default function AdminCollections() {
               setIsDeleteDialogOpen(false);
               setCurrentCollection(null);
             }}>
-              Odustani
+              {t("common.cancel")}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
@@ -543,7 +543,7 @@ export default function AdminCollections() {
               {deleteCollectionMutation.isPending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : null}
-              Obriši
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -553,15 +553,15 @@ export default function AdminCollections() {
       <Sheet open={isProductsSheetOpen} onOpenChange={setIsProductsSheetOpen}>
         <SheetContent className="w-[400px] sm:w-[540px] md:w-[750px]">
           <SheetHeader>
-            <SheetTitle>Proizvodi u kolekciji: {selectedCollection?.name}</SheetTitle>
+            <SheetTitle>{t("admin.collections.productsInCollection")}: {selectedCollection?.name}</SheetTitle>
             <SheetDescription>
-              Pregledajte i upravljajte proizvodima u ovoj kolekciji.
+              {t("admin.collections.manageProductsHelp")}
             </SheetDescription>
           </SheetHeader>
           
           <div className="py-6">
             <div className="mb-8">
-              <h3 className="text-lg font-medium mb-4">Trenutni proizvodi u kolekciji</h3>
+              <h3 className="text-lg font-medium mb-4">{t("admin.collections.currentProducts")}</h3>
               {isProductsLoading ? (
                 <div className="flex justify-center py-4">
                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -585,20 +585,20 @@ export default function AdminCollections() {
                         className="text-destructive hover:text-destructive"
                         onClick={() => handleRemoveProductFromCollection(product.id)}
                       >
-                        Ukloni
+                        {t("common.remove")}
                       </Button>
                     </div>
                   ))}
                 </div>
               ) : (
                 <p className="text-muted-foreground text-center py-4">
-                  Nema proizvoda u ovoj kolekciji.
+                  {t("admin.collections.noProductsInCollection")}
                 </p>
               )}
             </div>
             
             <div className="mt-8">
-              <h3 className="text-lg font-medium mb-4">Dodaj proizvode u kolekciju</h3>
+              <h3 className="text-lg font-medium mb-4">{t("admin.collections.addProductsToCollection")}</h3>
               {isAllProductsLoading ? (
                 <div className="flex justify-center py-4">
                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
