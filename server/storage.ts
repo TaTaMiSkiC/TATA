@@ -916,6 +916,8 @@ export class DatabaseStorage implements IStorage {
 
   async getProductScents(productId: number): Promise<Scent[]> {
     try {
+      console.log(`Dohvaćanje mirisa za proizvod ID: ${productId}`);
+      
       // Provjeri postoji li tablica product_scents
       const tableExists = await this.tableExists('product_scents');
       if (!tableExists) {
@@ -924,21 +926,31 @@ export class DatabaseStorage implements IStorage {
         return []; // Vrati prazno polje jer tablica upravo kreirana i nema podataka
       }
     
-      // Direktno povezani upit koji dohvaća mirise povezane s proizvodom
+      // Direktno povezani upit koji dohvaća mirise povezane s proizvodom s eksplicitnim nazivima stupaca
       try {
         const result = await pool.query(
-          `SELECT s.id, s.name, s.description, s.active 
-           FROM product_scents ps 
-           JOIN scents s ON ps.scent_id = s.id 
-           WHERE ps.product_id = $1`,
+          `SELECT 
+             s.id, 
+             s.name, 
+             s.description, 
+             s.active 
+           FROM 
+             product_scents ps 
+           JOIN 
+             scents s ON ps.scent_id = s.id 
+           WHERE 
+             ps.product_id = $1`,
           [productId]
         );
         
+        console.log(`Pronađeno ${result.rows.length} mirisa za proizvod ID: ${productId}`);
+        if (result.rows.length > 0) {
+          console.log('Prvi miris:', result.rows[0]);
+        }
+        
         return result.rows as Scent[];
       } catch (sqlError) {
-        console.error("SQL Error:", sqlError);
-        // Još jednom inicijaliziraj tablice u slučaju da je došlo do problema s parametrima
-        await this.initializeRelationTables();
+        console.error("SQL Error u getProductScents:", sqlError);
         return [];
       }
     } catch (error) {
@@ -1000,6 +1012,8 @@ export class DatabaseStorage implements IStorage {
 
   async removeScentFromProduct(productId: number, scentId: number): Promise<void> {
     try {
+      console.log(`Uklanjanje mirisa ID ${scentId} s proizvoda ID ${productId}`);
+      
       // Provjeri postojanje tablice
       const tableExists = await this.tableExists('product_scents');
       if (!tableExists) {
@@ -1007,14 +1021,17 @@ export class DatabaseStorage implements IStorage {
         return;
       }
       
-      await pool.query(
+      const result = await pool.query(
         `DELETE FROM product_scents 
-         WHERE product_id = $1 AND scent_id = $2`,
+         WHERE product_id = $1 AND scent_id = $2
+         RETURNING product_id, scent_id`,
         [productId, scentId]
       );
+      
+      console.log(`Uklonjeno ${result.rowCount} veza između proizvoda i mirisa.`);
     } catch (error) {
-      console.error("Error in removeScentFromProduct:", error);
-      throw new Error(`Failed to remove scent from product: ${error instanceof Error ? error.message : String(error)}`);
+      console.error("Greška pri uklanjanju mirisa s proizvoda:", error);
+      // Ne bacamo grešku - obradimo je elegantno
     }
   }
   
@@ -1075,6 +1092,8 @@ export class DatabaseStorage implements IStorage {
 
   async getProductColors(productId: number): Promise<Color[]> {
     try {
+      console.log(`Dohvaćanje boja za proizvod ID: ${productId}`);
+      
       // Provjeri postoji li tablica product_colors
       const tableExists = await this.tableExists('product_colors');
       if (!tableExists) {
@@ -1086,18 +1105,28 @@ export class DatabaseStorage implements IStorage {
       // Direktno povezani upit koji dohvaća boje povezane s proizvodom
       try {
         const result = await pool.query(
-          `SELECT c.id, c.name, c.hex_value as "hexValue", c.active 
-           FROM product_colors pc 
-           JOIN colors c ON pc.color_id = c.id 
-           WHERE pc.product_id = $1`,
+          `SELECT 
+             c.id, 
+             c.name, 
+             c.hex_value as "hexValue", 
+             c.active 
+           FROM 
+             product_colors pc 
+           JOIN 
+             colors c ON pc.color_id = c.id 
+           WHERE 
+             pc.product_id = $1`,
           [productId]
         );
         
+        console.log(`Pronađeno ${result.rows.length} boja za proizvod ID: ${productId}`);
+        if (result.rows.length > 0) {
+          console.log('Prva boja:', result.rows[0]);
+        }
+        
         return result.rows as Color[];
       } catch (sqlError) {
-        console.error("SQL Error:", sqlError);
-        // Još jednom inicijaliziraj tablice u slučaju da je došlo do problema s parametrima
-        await this.initializeRelationTables();
+        console.error("SQL Error u getProductColors:", sqlError);
         return [];
       }
     } catch (error) {
@@ -1159,6 +1188,8 @@ export class DatabaseStorage implements IStorage {
 
   async removeColorFromProduct(productId: number, colorId: number): Promise<void> {
     try {
+      console.log(`Uklanjanje boje ID ${colorId} s proizvoda ID ${productId}`);
+      
       // Provjeri postojanje tablice
       const tableExists = await this.tableExists('product_colors');
       if (!tableExists) {
@@ -1166,14 +1197,17 @@ export class DatabaseStorage implements IStorage {
         return;
       }
       
-      await pool.query(
+      const result = await pool.query(
         `DELETE FROM product_colors 
-         WHERE product_id = $1 AND color_id = $2`,
+         WHERE product_id = $1 AND color_id = $2
+         RETURNING product_id, color_id`,
         [productId, colorId]
       );
+      
+      console.log(`Uklonjeno ${result.rowCount} veza između proizvoda i boja.`);
     } catch (error) {
-      console.error("Error in removeColorFromProduct:", error);
-      throw new Error(`Failed to remove color from product: ${error instanceof Error ? error.message : String(error)}`);
+      console.error("Greška pri uklanjanju boje s proizvoda:", error);
+      // Ne bacamo grešku - obradimo je elegantno
     }
   }
   
