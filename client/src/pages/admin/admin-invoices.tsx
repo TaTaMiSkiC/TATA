@@ -1084,13 +1084,13 @@ export default function AdminInvoices() {
                             <div className="space-y-4 py-4">
                               <div className="space-y-2">
                                 <label htmlFor="product" className="text-sm font-medium">
-                                  Proizvod
+                                  {t('admin.invoices.product')}
                                 </label>
                                 <Select 
                                   onValueChange={(value) => handleProductChange(value)}
                                 >
                                   <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Odaberite proizvod" />
+                                    <SelectValue placeholder={t('admin.invoices.selectProduct')} />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {products.map(product => (
@@ -1107,7 +1107,7 @@ export default function AdminInvoices() {
                                   <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                       <label htmlFor="price" className="text-sm font-medium">
-                                        Cijena (€)
+                                        {t('admin.invoices.priceEuro')}
                                       </label>
                                       <Input
                                         id="price"
@@ -1272,12 +1272,12 @@ export default function AdminInvoices() {
                                         <div className="font-medium">{product.name}</div>
                                         {product.scentName && (
                                           <div className="text-sm text-muted-foreground">
-                                            Miris: {product.scentName}
+                                            {t('common.scent')}: {product.scentName}
                                           </div>
                                         )}
                                         {product.colorName && (
                                           <div className="text-sm text-muted-foreground">
-                                            Boja: {product.colorName}
+                                            {t('common.color')}: {product.colorName}
                                           </div>
                                         )}
                                       </div>
