@@ -98,12 +98,13 @@ const createInvoiceNumber = async (orderId?: number) => {
 
 // Komponenta za odabir jezika računa
 function LanguageSelector({ invoice, onSelectLanguage }: { invoice: any, onSelectLanguage: (invoice: any, language: string) => void }) {
+  const { t } = useLanguage();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm">
           <Download className="h-4 w-4 mr-2" />
-          Preuzmi PDF
+          {t('admin.invoices.downloadPdf')}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
@@ -115,7 +116,7 @@ function LanguageSelector({ invoice, onSelectLanguage }: { invoice: any, onSelec
             alt="Croatian flag"
             className="mr-2"
           />
-          Hrvatski
+          {t('languages.croatian')}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => onSelectLanguage(invoice, "en")}>
           <img 
@@ -125,7 +126,7 @@ function LanguageSelector({ invoice, onSelectLanguage }: { invoice: any, onSelec
             alt="English flag"
             className="mr-2"
           />
-          Engleski
+          {t('languages.english')}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => onSelectLanguage(invoice, "de")}>
           <img 
@@ -675,28 +676,28 @@ export default function AdminInvoices() {
           <TabsContent value="existing" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Postojeći računi</CardTitle>
+                <CardTitle>{t('admin.invoices.existingInvoices')}</CardTitle>
                 <CardDescription>
-                  Pregled svih kreiranih računa u sustavu
+                  {t('admin.invoices.viewAllInvoicesDescription')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Broj računa</TableHead>
-                      <TableHead>Datum</TableHead>
-                      <TableHead>Kupac</TableHead>
-                      <TableHead>Iznos</TableHead>
-                      <TableHead>Način plaćanja</TableHead>
-                      <TableHead>Akcije</TableHead>
+                      <TableHead>{t('admin.invoices.invoiceNumber')}</TableHead>
+                      <TableHead>{t('admin.invoices.date')}</TableHead>
+                      <TableHead>{t('admin.invoices.customer')}</TableHead>
+                      <TableHead>{t('admin.invoices.amount')}</TableHead>
+                      <TableHead>{t('admin.invoices.paymentMethod')}</TableHead>
+                      <TableHead>{t('admin.invoices.actions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {invoices.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={6} className="text-center">
-                          Nema kreiranih računa
+                          {t('admin.invoices.noInvoicesCreated')}
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -759,9 +760,9 @@ export default function AdminInvoices() {
           <TabsContent value="create" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Kreiraj novi račun</CardTitle>
+                <CardTitle>{t('admin.invoices.createNewInvoice')}</CardTitle>
                 <CardDescription>
-                  Popunite podatke za kreiranje novog računa
+                  {t('admin.invoices.fillInformationForNewInvoice')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
