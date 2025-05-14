@@ -177,18 +177,18 @@ export default function AdminColors() {
       </Helmet>
       <div className="p-6 space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Upravljanje bojama</h1>
+          <h1 className="text-2xl font-bold">{t("admin.colors.title")}</h1>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button className="flex items-center gap-2">
                 <PlusCircle size={16} />
-                <span>Dodaj boju</span>
+                <span>{t("admin.colors.addColor")}</span>
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>
-                  {editColor ? "Uredi boju" : "Dodaj novu boju"}
+                  {editColor ? t("admin.colors.editColor") : t("admin.colors.addNewColor")}
                 </DialogTitle>
               </DialogHeader>
               <Form {...form}>
@@ -201,10 +201,10 @@ export default function AdminColors() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Naziv</FormLabel>
+                        <FormLabel>{t("admin.colors.nameLabel")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Naziv boje"
+                            placeholder={t("admin.colors.namePlaceholder")}
                             autoComplete="off"
                             {...field}
                           />
@@ -219,11 +219,11 @@ export default function AdminColors() {
                     name="hexValue"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Hex vrijednost</FormLabel>
+                        <FormLabel>{t("admin.colors.codeLabel")}</FormLabel>
                         <div className="flex items-center gap-3">
                           <FormControl>
                             <Input
-                              placeholder="#FFFFFF"
+                              placeholder={t("admin.colors.codePlaceholder")}
                               autoComplete="off"
                               {...field}
                             />
@@ -244,7 +244,7 @@ export default function AdminColors() {
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                         <div className="space-y-0.5">
-                          <FormLabel>Aktivna</FormLabel>
+                          <FormLabel>{t("admin.colors.active")}</FormLabel>
                         </div>
                         <FormControl>
                           <Switch
@@ -262,7 +262,7 @@ export default function AdminColors() {
                       variant="outline"
                       onClick={handleDialogClose}
                     >
-                      Odustani
+                      {t("admin.colors.cancel")}
                     </Button>
                     <Button
                       type="submit"
@@ -273,7 +273,7 @@ export default function AdminColors() {
                       {(createMutation.isPending || updateMutation.isPending) && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      {editColor ? "Spremi promjene" : "Dodaj boju"}
+                      {editColor ? t("admin.colors.saveChanges") : t("admin.colors.save")}
                     </Button>
                   </DialogFooter>
                 </form>
