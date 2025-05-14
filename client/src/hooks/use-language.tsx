@@ -12,6 +12,29 @@ export type Language = "de" | "hr" | "en" | "it" | "sl";
 // Prijevodi po jezicima
 export const translations: Record<Language, Record<string, string>> = {
   de: {
+    // Products page
+    "products.allProducts": "Alle Produkte",
+    "products.product": "Produkt",
+    "products.products": "Produkte",
+    "products.filters": "Filter",
+    "products.search": "Suche",
+    "products.searchPlaceholder": "Produkte suchen...",
+    "products.categories": "Kategorien",
+    "products.allCategories": "Alle Kategorien",
+    "products.selectCategory": "Kategorie auswählen",
+    "products.price": "Preis",
+    "products.sortBy": "Sortieren nach",
+    "products.newest": "Neueste",
+    "products.priceAsc": "Preis (niedrigste zuerst)",
+    "products.priceDesc": "Preis (höchste zuerst)",
+    "products.nameAZ": "Name (A-Z)",
+    "products.clear": "Löschen",
+    "products.clearFilters": "Filter löschen",
+    "products.applyFilters": "Filter anwenden",
+    "products.noProductsFound": "Keine Produkte gefunden",
+    "products.tryDifferentFilters": "Versuchen Sie andere Filter oder sehen Sie sich unser gesamtes Angebot an.",
+    "products.showAllProducts": "Alle Produkte anzeigen",
+    
     // Instagram
     "instagram.followUs": "Folge uns auf Instagram",
     "instagram.followUsText": "Folge uns auf Instagram für die neuesten Kreationen und Inspirationen",
@@ -1305,6 +1328,29 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   hr: {
+    // Products page
+    "products.allProducts": "Svi proizvodi",
+    "products.product": "Proizvod",
+    "products.products": "Proizvodi",
+    "products.filters": "Filteri",
+    "products.search": "Pretraga",
+    "products.searchPlaceholder": "Traži proizvode...",
+    "products.categories": "Kategorije",
+    "products.allCategories": "Sve kategorije",
+    "products.selectCategory": "Odaberi kategoriju",
+    "products.price": "Cijena",
+    "products.sortBy": "Sortiraj po",
+    "products.newest": "Najnovije",
+    "products.priceAsc": "Cijena (najniža prvo)",
+    "products.priceDesc": "Cijena (najviša prvo)",
+    "products.nameAZ": "Ime (A-Z)",
+    "products.clear": "Očisti",
+    "products.clearFilters": "Očisti filtere",
+    "products.applyFilters": "Primijeni filtere",
+    "products.noProductsFound": "Nema pronađenih proizvoda",
+    "products.tryDifferentFilters": "Pokušajte s drugačijim filterima ili pogledajte našu cjelokupnu ponudu.",
+    "products.showAllProducts": "Prikaži sve proizvode",
+    
     // Instagram
     "instagram.followUs": "Pratite nas na Instagramu",
     "instagram.followUsText": "Pratite nas na Instagramu za najnovije kreacije i inspiracije",
@@ -2557,6 +2603,29 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   en: {
+    // Products page
+    "products.allProducts": "All Products",
+    "products.product": "Product",
+    "products.products": "Products",
+    "products.filters": "Filters",
+    "products.search": "Search",
+    "products.searchPlaceholder": "Search for products...",
+    "products.categories": "Categories",
+    "products.allCategories": "All Categories",
+    "products.selectCategory": "Select Category",
+    "products.price": "Price",
+    "products.sortBy": "Sort By",
+    "products.newest": "Newest",
+    "products.priceAsc": "Price (lowest first)",
+    "products.priceDesc": "Price (highest first)",
+    "products.nameAZ": "Name (A-Z)",
+    "products.clear": "Clear",
+    "products.clearFilters": "Clear Filters",
+    "products.applyFilters": "Apply Filters",
+    "products.noProductsFound": "No Products Found",
+    "products.tryDifferentFilters": "Try different filters or browse our entire collection.",
+    "products.showAllProducts": "Show All Products",
+    
     // Instagram
     "instagram.followUs": "Follow us on Instagram",
     "instagram.followUsText": "Follow us on Instagram for the latest creations and inspirations",
@@ -3472,6 +3541,29 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   it: {
+    // Products page
+    "products.allProducts": "Tutti i Prodotti",
+    "products.product": "Prodotto",
+    "products.products": "Prodotti",
+    "products.filters": "Filtri",
+    "products.search": "Cerca",
+    "products.searchPlaceholder": "Cerca prodotti...",
+    "products.categories": "Categorie",
+    "products.allCategories": "Tutte le Categorie",
+    "products.selectCategory": "Seleziona Categoria",
+    "products.price": "Prezzo",
+    "products.sortBy": "Ordina Per",
+    "products.newest": "Più Recenti",
+    "products.priceAsc": "Prezzo (dal più basso)",
+    "products.priceDesc": "Prezzo (dal più alto)",
+    "products.nameAZ": "Nome (A-Z)",
+    "products.clear": "Cancella",
+    "products.clearFilters": "Cancella Filtri",
+    "products.applyFilters": "Applica Filtri",
+    "products.noProductsFound": "Nessun Prodotto Trovato",
+    "products.tryDifferentFilters": "Prova filtri diversi o sfoglia l'intera collezione.",
+    "products.showAllProducts": "Mostra Tutti i Prodotti",
+    
     // Instagram
     "instagram.followUs": "Seguici su Instagram",
     "instagram.followUsText": "Seguici su Instagram per le ultime creazioni e ispirazioni",
@@ -4406,6 +4498,29 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   sl: {
+    // Products page
+    "products.allProducts": "Vsi Izdelki",
+    "products.product": "Izdelek",
+    "products.products": "Izdelki",
+    "products.filters": "Filtri",
+    "products.search": "Iskanje",
+    "products.searchPlaceholder": "Išči izdelke...",
+    "products.categories": "Kategorije",
+    "products.allCategories": "Vse Kategorije",
+    "products.selectCategory": "Izberi Kategorijo",
+    "products.price": "Cena",
+    "products.sortBy": "Razvrsti Po",
+    "products.newest": "Najnovejše",
+    "products.priceAsc": "Cena (najnižja najprej)",
+    "products.priceDesc": "Cena (najvišja najprej)",
+    "products.nameAZ": "Ime (A-Z)",
+    "products.clear": "Počisti",
+    "products.clearFilters": "Počisti Filtre",
+    "products.applyFilters": "Uporabi Filtre",
+    "products.noProductsFound": "Ni Najdenih Izdelkov",
+    "products.tryDifferentFilters": "Poskusite z drugačnimi filtri ali si oglejte našo celotno kolekcijo.",
+    "products.showAllProducts": "Prikaži Vse Izdelke",
+    
     // Instagram
     "instagram.followUs": "Sledite nam na Instagramu",
     "instagram.followUsText": "Sledite nam na Instagramu za najnovejše izdelke in inspiracije",

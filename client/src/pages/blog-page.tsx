@@ -6,8 +6,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import InstagramGallery from "@/components/InstagramGallery";
 import { Instagram } from "lucide-react";
+import { useLanguage } from "@/hooks/use-language";
 
 export default function SlikePage() {
+  const { t } = useLanguage();
+  
   // Dohvati sadržaj slike stranice iz baze
   const { data: pageData, isLoading, error } = useQuery({
     queryKey: ["/api/pages/blog"],
@@ -52,7 +55,7 @@ export default function SlikePage() {
               ) : (
                 <div className="flex items-center justify-center gap-2">
                   <Instagram size={18} /> 
-                  <span>Pratite nas na Instagramu za najnovije kreacije i inspiracije</span>
+                  <span>{t("instagram.followUsText")}</span>
                 </div>
               )}
             </div>
