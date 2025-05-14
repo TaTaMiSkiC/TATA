@@ -175,7 +175,7 @@ export default function AdminScents() {
   return (
     <AdminLayout title={t("admin.scents.title")}>
       <Helmet>
-        <title>{t("admin.scents.pageTitle")} | {t("admin.panel")} | Kerzenwelt by Dani</title>
+        <title>{t("admin.scents.pageTitle")} | {t("admin.panelTitle")} | Kerzenwelt by Dani</title>
       </Helmet>
       <div className="p-6 space-y-6">
         <div className="flex justify-between items-center">
@@ -337,21 +337,19 @@ export default function AdminScents() {
                             <AlertDialogContent>
                               <AlertDialogHeader>
                                 <AlertDialogTitle>
-                                  Jeste li sigurni?
+                                  {t("admin.scents.deleteScent")}
                                 </AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  Ova radnja će trajno obrisati miris "{scent.name}" i
-                                  ukloniti ga iz svih proizvoda koji ga koriste. 
-                                  Ovu radnju nije moguće poništiti.
+                                  {t("admin.scents.deleteConfirmation").replace("{name}", scent.name)}
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>Odustani</AlertDialogCancel>
+                                <AlertDialogCancel>{t("admin.scents.cancelDelete")}</AlertDialogCancel>
                                 <AlertDialogAction
                                   onClick={() => handleDelete(scent.id)}
                                   className="bg-red-500 hover:bg-red-600"
                                 >
-                                  Obriši
+                                  {t("admin.scents.confirmDelete")}
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
@@ -363,7 +361,7 @@ export default function AdminScents() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={5} className="text-center py-6">
-                      Nema dostupnih mirisa. Dodajte novi miris za početak.
+                      {t("admin.scents.noScents")}
                     </TableCell>
                   </TableRow>
                 )}

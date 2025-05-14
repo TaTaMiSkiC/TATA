@@ -56,6 +56,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.categoryPlaceholder": "Wählen Sie eine Kategorie",
     "admin.product.burntimePlaceholder": "Brenndauer in Stunden",
     
+    // AdminPanel PageTitle
+    "admin.panelTitle": "Admin Panel",
+    
     // Navigacija
     "nav.home": "Startseite",
     "nav.products": "Produkte",
