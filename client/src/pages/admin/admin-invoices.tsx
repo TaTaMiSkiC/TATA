@@ -268,27 +268,27 @@ export default function AdminInvoices() {
     generateInvoicePdf(data, toast);
   };
   
-  // Dodaj proizvod u listu
+  // Add product to the list
   const addProduct = (product: SelectedProduct) => {
     setSelectedProducts([...selectedProducts, product]);
   };
   
-  // Ukloni proizvod iz liste
+  // Remove product from the list
   const removeProduct = (index: number) => {
     const newProducts = [...selectedProducts];
     newProducts.splice(index, 1);
     setSelectedProducts(newProducts);
   };
   
-  // Postavi podatke iz narudžbe
+  // Set data from order
   const setOrderData = (order: any) => {
     setSelectedOrder(order);
     
-    // Dohvati podatke za korisnika iz API-ja
+    // Get user data from API
     const userId = order.userId;
     if (userId) {
-      // Ovdje bismo mogli dohvatiti korisničke podatke iz API-ja
-      // Za sada samo postavljamo dostupne vrijednosti
+      // Here we could fetch user data from the API
+      // For now we just set available values
       form.setValue('firstName', order.firstName || '');
       form.setValue('lastName', order.lastName || '');
       form.setValue('address', order.shippingAddress || '');
@@ -300,13 +300,13 @@ export default function AdminInvoices() {
       form.setValue('paymentMethod', order.paymentMethod || 'cash');
     }
     
-    // Postavi proizvode iz narudžbe
+    // Set products from order
     apiRequest('GET', `/api/orders/${order.id}/items`)
       .then(response => response.json())
       .then(items => {
         console.log("Order items retrieved:", items);
         
-        // Pripremi odabrane proizvode za račun
+        // Prepare selected products for invoice
         const orderProducts: SelectedProduct[] = items.map((item: any) => ({
           id: item.productId,
           name: item.productName,
