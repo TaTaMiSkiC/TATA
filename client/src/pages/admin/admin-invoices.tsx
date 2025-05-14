@@ -136,7 +136,7 @@ function LanguageSelector({ invoice, onSelectLanguage }: { invoice: any, onSelec
             alt="German flag"
             className="mr-2"
           />
-          Njemački
+          {t('languages.german')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -472,8 +472,8 @@ export default function AdminInvoices() {
       // Validacija proizvoda
       if (selectedProducts.length === 0) {
         toast({
-          title: "Prazna lista proizvoda",
-          description: "Dodajte barem jedan proizvod za kreiranje računa",
+          title: t('admin.invoices.emptyProductList'),
+          description: t('admin.invoices.addProductsForInvoice'),
           variant: "destructive"
         });
         return;
@@ -733,15 +733,15 @@ export default function AdminInvoices() {
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                   <AlertDialogHeader>
-                                    <AlertDialogTitle>Jeste li sigurni?</AlertDialogTitle>
+                                    <AlertDialogTitle>{t('admin.invoices.areYouSure')}</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                      Ova akcija će trajno obrisati račun {invoice.invoiceNumber} i ne može se poništiti.
+                                      {t('admin.invoices.deleteInvoiceConfirmation').replace('{invoiceNumber}', invoice.invoiceNumber)}
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
-                                    <AlertDialogCancel>Odustani</AlertDialogCancel>
+                                    <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
                                     <AlertDialogAction onClick={() => handleDeleteInvoice(invoice.id)}>
-                                      Obriši
+                                      {t('common.delete')}
                                     </AlertDialogAction>
                                   </AlertDialogFooter>
                                 </AlertDialogContent>
