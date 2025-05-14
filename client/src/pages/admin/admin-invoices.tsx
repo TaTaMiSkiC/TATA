@@ -649,12 +649,12 @@ export default function AdminInvoices() {
   return (
     <AdminLayout>
       <Helmet>
-        <title>Upravljanje računima | Kerzenwelt by Dani</title>
+        <title>{t('admin.invoices.pageTitle')} | Kerzenwelt by Dani</title>
       </Helmet>
       
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold tracking-tight">Računi</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('admin.invoices.title')}</h1>
         </div>
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
@@ -923,6 +923,8 @@ export default function AdminInvoices() {
                                   <SelectItem value="hr">{t('languages.croatian')}</SelectItem>
                                   <SelectItem value="en">{t('languages.english')}</SelectItem>
                                   <SelectItem value="de">{t('languages.german')}</SelectItem>
+                                  <SelectItem value="it">{t('languages.italian')}</SelectItem>
+                                  <SelectItem value="sl">{t('languages.slovenian')}</SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormMessage />
