@@ -916,13 +916,13 @@ export default function AdminInvoices() {
                               >
                                 <FormControl>
                                   <SelectTrigger>
-                                    <SelectValue placeholder="Odaberite jezik" />
+                                    <SelectValue placeholder={t('common.selectLanguage')} />
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="hr">Hrvatski</SelectItem>
-                                  <SelectItem value="en">Engleski</SelectItem>
-                                  <SelectItem value="de">Njemački</SelectItem>
+                                  <SelectItem value="hr">{t('languages.croatian')}</SelectItem>
+                                  <SelectItem value="en">{t('languages.english')}</SelectItem>
+                                  <SelectItem value="de">{t('languages.german')}</SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormMessage />
@@ -942,14 +942,14 @@ export default function AdminInvoices() {
                               >
                                 <FormControl>
                                   <SelectTrigger>
-                                    <SelectValue placeholder="Odaberite način plaćanja" />
+                                    <SelectValue placeholder={t('common.selectPaymentMethod')} />
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="cash">Gotovina</SelectItem>
-                                  <SelectItem value="bank_transfer">Bankovni prijenos</SelectItem>
+                                  <SelectItem value="cash">{t('paymentMethods.cash')}</SelectItem>
+                                  <SelectItem value="bank_transfer">{t('paymentMethods.bankTransfer')}</SelectItem>
                                   <SelectItem value="paypal">PayPal</SelectItem>
-                                  <SelectItem value="credit_card">Kreditna kartica</SelectItem>
+                                  <SelectItem value="credit_card">{t('paymentMethods.creditCard')}</SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormMessage />
@@ -966,7 +966,7 @@ export default function AdminInvoices() {
                               <FormControl>
                                 <Textarea 
                                   {...field} 
-                                  placeholder="Napomena za račun"
+                                  placeholder={t('admin.invoices.noteForInvoice')}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -1218,7 +1218,7 @@ export default function AdminInvoices() {
                             
                             <DialogFooter>
                               <DialogClose asChild>
-                                <Button variant="outline">Odustani</Button>
+                                <Button variant="outline">{t('common.cancel')}</Button>
                               </DialogClose>
                               <DialogClose asChild>
                                 <Button type="button" onClick={handleAddProduct}>Dodaj</Button>
