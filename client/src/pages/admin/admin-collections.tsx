@@ -5,6 +5,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { Collection, InsertCollection, Product } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/use-language";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -112,6 +113,7 @@ export default function AdminCollections() {
   });
   
   // Mutacija za dodavanje kolekcije
+  const { t } = useLanguage();
   const createCollectionMutation = useMutation({
     mutationFn: async (data: CollectionFormValues) => {
       const response = await apiRequest("POST", "/api/collections", data);
@@ -119,8 +121,8 @@ export default function AdminCollections() {
     },
     onSuccess: () => {
       toast({
-        title: "Uspjeh",
-        description: "Kolekcija je uspješno dodana.",
+        title: t("admin.collections.successCreate"),
+        description: t("admin.collections.successCreateDesc"),
       });
       queryClient.invalidateQueries({ queryKey: ["/api/collections"] });
       setIsFormOpen(false);
@@ -128,8 +130,8 @@ export default function AdminCollections() {
     },
     onError: (error: Error) => {
       toast({
-        title: "Greška",
-        description: `Došlo je do greške prilikom dodavanja kolekcije: ${error.message}`,
+        title: t("admin.collections.errorCreate"),
+        description: t("admin.collections.errorCreateDesc").replace("{error}", error.message),
         variant: "destructive",
       });
     },
@@ -143,8 +145,8 @@ export default function AdminCollections() {
     },
     onSuccess: () => {
       toast({
-        title: "Uspjeh",
-        description: "Kolekcija je uspješno ažurirana.",
+        title: t("admin.collections.successUpdate"),
+        description: t("admin.collections.successUpdateDesc"),
       });
       queryClient.invalidateQueries({ queryKey: ["/api/collections"] });
       setIsFormOpen(false);
@@ -153,8 +155,8 @@ export default function AdminCollections() {
     },
     onError: (error: Error) => {
       toast({
-        title: "Greška",
-        description: `Došlo je do greške prilikom ažuriranja kolekcije: ${error.message}`,
+        title: t("admin.collections.errorUpdate"),
+        description: t("admin.collections.errorUpdateDesc").replace("{error}", error.message),
         variant: "destructive",
       });
     },
@@ -167,8 +169,8 @@ export default function AdminCollections() {
     },
     onSuccess: () => {
       toast({
-        title: "Uspjeh",
-        description: "Kolekcija je uspješno obrisana.",
+        title: t("admin.collections.successDelete"),
+        description: t("admin.collections.successDeleteDesc"),
       });
       queryClient.invalidateQueries({ queryKey: ["/api/collections"] });
       setIsDeleteDialogOpen(false);
@@ -176,8 +178,8 @@ export default function AdminCollections() {
     },
     onError: (error: Error) => {
       toast({
-        title: "Greška",
-        description: `Došlo je do greške prilikom brisanja kolekcije: ${error.message}`,
+        title: t("admin.collections.errorDelete"),
+        description: t("admin.collections.errorDeleteDesc").replace("{error}", error.message),
         variant: "destructive",
       });
     },
