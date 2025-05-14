@@ -400,30 +400,25 @@ export class DatabaseStorage implements IStorage {
       if (existing.length > 0) {
         console.log('Ova veza već postoji, vraćamo postojeću');
         
-        // Vraćamo prvi pronađeni rezultat
+        // Vraćamo prvi pronađeni rezultat bez ID-ja
         return {
-          id: 0, // Stavljamo fiktivni ID
           productId: existing[0].productId,
           scentId: existing[0].scentId
-        };
+        } as ProductScent;
       }
       
-      // Ako veza ne postoji, dodajemo je - izbjegavamo .returning()
-      await db
-        .insert(productScents)
-        .values({ 
-          productId: productId, 
-          scentId: scentId 
-        });
+      // Ako veza ne postoji, dodajemo je direktno SQL upitom
+      await db.execute(
+        sql`INSERT INTO product_scents (product_id, scent_id) VALUES (${productId}, ${scentId})`
+      );
         
-      // Budući da ne možemo dobiti pravi ID, vraćamo fiktivni objekt s proslijeđenim vrijednostima
-      const productScent: ProductScent = {
-        id: 0, // Stavljamo fiktivni ID jer nam nije bitan za klijenta
+      // Vraćamo objekt koji odgovara strukturi u bazi
+      const productScent = {
         productId: productId,
         scentId: scentId
-      };
+      } as ProductScent;
         
-      console.log('Uspješno dodana veza s fiktivnim ID-jem:', productScent);
+      console.log('Uspješno dodana veza mirisa i proizvoda:', productScent);
       return productScent;
     } catch (error) {
       console.error('Greška u addScentToProduct:', error);
@@ -535,15 +530,14 @@ export class DatabaseStorage implements IStorage {
       if (existing.length > 0) {
         console.log('Ova veza boje već postoji, vraćamo postojeću');
         
-        // Vraćamo prvi pronađeni rezultat
+        // Vraćamo prvi pronađeni rezultat bez ID-ja
         return {
-          id: 0, // Stavljamo fiktivni ID
           productId: existing[0].productId,
           colorId: existing[0].colorId
-        };
+        } as ProductColor;
       }
       
-      // Ako veza ne postoji, dodajemo je - izbjegavamo .returning()
+      // Ako veza ne postoji, dodajemo je bez polja ID jer ga nema u bazi
       await db
         .insert(productColors)
         .values({ 
@@ -551,14 +545,13 @@ export class DatabaseStorage implements IStorage {
           colorId: colorId 
         });
         
-      // Budući da ne možemo dobiti pravi ID, vraćamo fiktivni objekt s proslijeđenim vrijednostima
-      const productColor: ProductColor = {
-        id: 0, // Stavljamo fiktivni ID jer nam nije bitan za klijenta
+      // Vraćamo objekt koji odgovara strukturi u bazi
+      const productColor = {
         productId: productId,
         colorId: colorId
-      };
+      } as ProductColor;
         
-      console.log('Uspješno dodana veza boje s fiktivnim ID-jem:', productColor);
+      console.log('Uspješno dodana veza boje i proizvoda:', productColor);
       return productColor;
     } catch (error) {
       console.error('Greška u addColorToProduct:', error);
