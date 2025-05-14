@@ -499,7 +499,7 @@ export default function AdminInvoices() {
         return;
       }
       
-      // Priprema podataka za API
+      // Prepare data for API
       const subtotal = selectedProducts
         .reduce((sum, p) => sum + (parseFloat(p.price) * p.quantity), 0)
         .toFixed(2);
@@ -510,11 +510,11 @@ export default function AdminInvoices() {
       // Create customer data
       const customerName = `${data.firstName} ${data.lastName}`;
       
-      // Priprema podataka za API
+      // Prepare data for API submission
       const invoiceData = {
         invoiceNumber: data.invoiceNumber,
         orderId: selectedOrder ? selectedOrder.id : null,
-        userId: selectedOrder ? selectedOrder.userId : 1, // Default admin korisnik ako nema narudžbe
+        userId: selectedOrder ? selectedOrder.userId : 1, // Default admin user if there is no order
         customerName,
         customerEmail: data.email || "",
         customerAddress: data.address || "",
@@ -542,7 +542,7 @@ export default function AdminInvoices() {
       
       console.log("Sending data to create invoice:", invoiceData);
       
-      // Pošalji zahtjev za kreiranje računa
+      // Send request to create invoice
       apiRequest('POST', '/api/invoices', invoiceData)
         .then(response => {
           if (!response.ok) {
@@ -558,7 +558,7 @@ export default function AdminInvoices() {
             description: t('admin.invoices.invoiceCreatedSuccess').replace('{invoiceNumber}', result.invoiceNumber)
           });
           
-          // Osvježi popis računa i resetiraj formu
+          // Refresh invoice list and reset form
           refetchInvoices();
           resetForm();
           
