@@ -343,21 +343,20 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log(`DB: Dohvaćanje mirisa za proizvod ID: ${productId}`);
       
-      // Direktni SQL upit za dohvaćanje povezanih mirisa
+      // Direktni SQL upit za dohvaćanje povezanih mirisa - uklanjamo reference na updated_at
       const result = await db.execute(
-        sql`SELECT s.id, s.name, s.description, s.active, s.created_at as "createdAt"
+        sql`SELECT s.id, s.name, s.description, s.active
             FROM scents s
             INNER JOIN product_scents ps ON s.id = ps.scent_id
             WHERE ps.product_id = ${productId}`
       );
       
-      // Pretvaramo rezultate u odgovarajući format s konverzijom tipova
+      // Pretvaramo rezultate u odgovarajući format s konverzijom tipova - uklanjamo reference na createdAt
       const mirisi = result.rows.map(row => ({
         id: Number(row.id),
         name: String(row.name || ''),
         description: row.description ? String(row.description) : null,
-        active: Boolean(row.active),
-        createdAt: row.createdAt
+        active: Boolean(row.active)
       }));
       
       console.log(`Dohvaćeno ${mirisi.length} mirisa za proizvod ID: ${productId}`);
@@ -458,21 +457,20 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log(`DB: Dohvaćanje boja za proizvod ID: ${productId}`);
       
-      // Direktni SQL upit za dohvaćanje povezanih boja
+      // Direktni SQL upit za dohvaćanje povezanih boja - uklanjamo reference na created_at
       const result = await db.execute(
-        sql`SELECT c.id, c.name, c.hex_value as "hexValue", c.active, c.created_at as "createdAt"
+        sql`SELECT c.id, c.name, c.hex_value as "hexValue", c.active
             FROM colors c
             INNER JOIN product_colors pc ON c.id = pc.color_id
             WHERE pc.product_id = ${productId}`
       );
       
-      // Pretvaramo rezultate u odgovarajući format s konverzijom tipova
+      // Pretvaramo rezultate u odgovarajući format s konverzijom tipova - uklanjamo reference na createdAt
       const bojeLista = result.rows.map(row => ({
         id: Number(row.id),
         name: String(row.name || ''),
         hexValue: String(row.hexValue || ''),
-        active: Boolean(row.active),
-        createdAt: row.createdAt
+        active: Boolean(row.active)
       }));
       
       console.log(`Dohvaćeno ${bojeLista.length} boja za proizvod ID: ${productId}`);
