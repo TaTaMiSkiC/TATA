@@ -33,6 +33,7 @@ import {
   insertCompanyDocumentSchema,
   cartItems,
   CartItem,
+  heroSettingsSchema,
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -1561,6 +1562,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Opće postavke - moraju biti prije generičke rute za :key
+  
+  // Hero section settings - must be before generic :key route
+  app.get("/api/settings/hero", async (req, res) => {
+    try {
+      const heroSetting = await storage.getSetting("heroSettings");
+      
+      if (!heroSetting) {
+        // Return default values if settings don't exist
+        return res.json({
+          titleText: {
+            de: "Handgefertigte Kerzen für besondere Momente",
+            hr: "Ručno izrađene svijeće za posebne trenutke",
+            en: "Handmade Candles for Special Moments",
+            it: "Candele artigianali per momenti speciali",
+            sl: "Ročno izdelane sveče za posebne trenutke"
+          },
+          subtitleText: {
+            de: "Entdecken Sie unsere einzigartige Sammlung handgefertigter Kerzen, perfekt für jede Gelegenheit.",
+            hr: "Otkrijte našu jedinstvenu kolekciju ručno izrađenih svijeća, savršenih za svaku prigodu.",
+            en: "Discover our unique collection of handcrafted candles, perfect for any occasion.",
+            it: "Scopri la nostra collezione unica di candele artigianali, perfette per ogni occasione.",
+            sl: "Odkrijte našo edinstveno zbirko ročno izdelanih sveč, popolnih za vsako priložnost."
+          },
+          titleFontSize: "4xl md:text-5xl lg:text-6xl",
+          titleFontWeight: "bold",
+          titleColor: "white",
+          subtitleFontSize: "lg md:text-xl",
+          subtitleFontWeight: "normal",
+          subtitleColor: "white opacity-90"
+        });
+      }
+      
+      // Return the stored settings
+      return res.json(JSON.parse(heroSetting.value));
+    } catch (error) {
+      console.error("Error fetching hero settings:", error);
+      res.status(500).json({ message: "Failed to fetch hero settings" });
+    }
+  });
+  
+  app.post("/api/settings/hero", async (req, res) => {
+    try {
+      // Validate the request body
+      const parseResult = heroSettingsSchema.safeParse(req.body);
+      
+      if (!parseResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid hero settings data", 
+          errors: parseResult.error.errors 
+        });
+      }
+      
+      const settingsValue = JSON.stringify(parseResult.data);
+      
+      // Check if the settings already exist
+      const existingSettings = await storage.getSetting("heroSettings");
+      
+      if (existingSettings) {
+        // Update existing settings
+        await storage.updateSetting("heroSettings", settingsValue);
+      } else {
+        // Create new settings
+        await storage.createSetting({
+          key: "heroSettings",
+          value: settingsValue
+        });
+      }
+      
+      res.status(200).json({ message: "Hero settings updated successfully" });
+    } catch (error) {
+      console.error("Error updating hero settings:", error);
+      res.status(500).json({ message: "Failed to update hero settings" });
+    }
+  });
+  
   // Kontakt postavke - moraju biti prije generičke rute za :key
   app.get("/api/settings/contact", async (req, res) => {
     try {

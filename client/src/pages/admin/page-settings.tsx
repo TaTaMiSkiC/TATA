@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import AboutPageForm from "@/components/admin/AboutPageForm";
 import ContactPageForm from "@/components/admin/ContactPageForm";
 import BlogPageForm from "@/components/admin/BlogPageForm";
+import HeroSettingsForm from "@/components/admin/HeroSettingsForm";
 
 export default function PageSettingsPage() {
   // Dohvati podatke za sve stranice
@@ -66,8 +67,25 @@ export default function PageSettingsPage() {
       }
     }
   });
+  
+  // Fetch hero settings
+  const { data: heroSettings, isLoading: heroLoading } = useQuery({
+    queryKey: ["/api/settings/hero"],
+    queryFn: async () => {
+      try {
+        const response = await fetch("/api/settings/hero");
+        if (!response.ok) {
+          throw new Error("Failed to fetch hero settings");
+        }
+        return await response.json();
+      } catch (error) {
+        console.error("Error fetching hero settings:", error);
+        return null;
+      }
+    }
+  });
 
-  const isLoading = aboutLoading || contactLoading || blogLoading;
+  const isLoading = aboutLoading || contactLoading || blogLoading || heroLoading;
 
   return (
     <>
@@ -87,6 +105,7 @@ export default function PageSettingsPage() {
               <TabsTrigger value="about">O nama</TabsTrigger>
               <TabsTrigger value="contact">Kontakt</TabsTrigger>
               <TabsTrigger value="blog">Blog</TabsTrigger>
+              <TabsTrigger value="hero">Heldenbereich</TabsTrigger>
             </TabsList>
             
             <TabsContent value="about">
@@ -122,6 +141,19 @@ export default function PageSettingsPage() {
                   {!isLoading && blogPage && (
                     <BlogPageForm 
                       initialData={blogPage}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="hero">
+              <Card>
+                <CardContent className="pt-6">
+                  <h2 className="text-xl font-semibold mb-4">Heldenbereich Einstellungen</h2>
+                  {!isLoading && (
+                    <HeroSettingsForm 
+                      initialData={heroSettings}
                     />
                   )}
                 </CardContent>
