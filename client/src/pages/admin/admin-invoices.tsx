@@ -371,7 +371,7 @@ export default function AdminInvoices() {
     enabled: !!productId,
   });
   
-  // Postavi cijenu kada se odabere proizvod
+  // Set price when product is selected
   const handleProductChange = async (productId: string) => {
     const id = parseInt(productId);
     setSelectedProductId(id);
@@ -387,7 +387,7 @@ export default function AdminInvoices() {
     
     console.log("Selected product ID:", id);
     
-    // Ručno dohvaćanje mirisa i boja
+    // Manual retrieval of scents and colors
     try {
       const scentsResponse = await fetch(`/api/products/${id}/scents`);
       const scentsData = await scentsResponse.json();
@@ -401,7 +401,7 @@ export default function AdminInvoices() {
     }
   };
   
-  // Dodaj proizvod u listu
+  // Add product to the list
   const handleAddProduct = () => {
     if (!productId) {
       return;
@@ -451,7 +451,7 @@ export default function AdminInvoices() {
     
     addProduct(newProduct);
     
-    // Resetiraj odabire
+    // Reset selections
     setSelectedProductId(null);
     setSelectedScent(null);
     setSelectedColor(null);
@@ -461,11 +461,11 @@ export default function AdminInvoices() {
     setColorSelectionMode('single');
   };
   
-  // Filtriraj narudžbe prema uvjetima pretraživanja
+  // Filter orders by search terms
   const filteredOrders = orders.filter(order => {
     if (!orderSearchTerm) return true;
     
-    // Pretraži po ID-u narudžbe
+    // Search by order ID
     if (order.id.toString().includes(orderSearchTerm)) return true;
     
     // Pretraži po imenu korisnika
