@@ -648,9 +648,9 @@ export default function AdminInvoices() {
           customerEmail: invoice.customerEmail || "",
           customerPhone: invoice.customerPhone || "",
           customerNote: invoice.customerNote || "",
-          items: data.items || [], // Koristimo stavke dohvaćene sa servera
-          language: language, // Koristimo odabrani jezik
-          paymentMethod: invoice.paymentMethod || "cash" // Koristimo način plaćanja iz postojećeg računa
+          items: data.items || [], // Using items fetched from the server
+          language: language, // Using the selected language
+          paymentMethod: invoice.paymentMethod || "cash" // Using payment method from the existing invoice
         };
         
         console.log("Preparing data for PDF:", invoiceData);
@@ -722,7 +722,7 @@ export default function AdminInvoices() {
                       </TableRow>
                     ) : (
                       [...invoices].sort((a, b) => {
-                        // Sortiraj po ID-u (najnoviji prvi)
+                        // Sort by ID (newest first)
                         return b.id - a.id;
                       }).map(invoice => (
                         <TableRow key={invoice.id}>
@@ -1070,14 +1070,14 @@ export default function AdminInvoices() {
                           <DialogTrigger asChild>
                             <Button size="sm">
                               <Plus className="h-4 w-4 mr-2" />
-                              Dodaj stavku
+                              {t('admin.invoices.addItem')}
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="sm:max-w-[550px]">
                             <DialogHeader>
-                              <DialogTitle>Dodaj stavku na račun</DialogTitle>
+                              <DialogTitle>{t('admin.invoices.addItemToInvoice')}</DialogTitle>
                               <DialogDescription>
-                                Odaberite proizvod i količinu
+                                {t('admin.invoices.selectProductAndQuantity')}
                               </DialogDescription>
                             </DialogHeader>
                             
