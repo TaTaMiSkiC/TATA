@@ -410,10 +410,10 @@ export default function AdminCollections() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Opis kolekcije</FormLabel>
+                    <FormLabel>{t("admin.collections.collectionDescription")}</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Unesite detaljan opis kolekcije..."
+                        placeholder={t("admin.collections.collectionDescriptionPlaceholder")}
                         className="resize-none min-h-32"
                         {...field}
                       />
@@ -428,12 +428,12 @@ export default function AdminCollections() {
                 name="imageUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>URL slike (neobavezno)</FormLabel>
+                    <FormLabel>{t("admin.collections.imageUrlOptional")}</FormLabel>
                     <FormControl>
                       <Input placeholder="https://..." {...field} />
                     </FormControl>
                     <FormDescription>
-                      Unesite URL slike koja predstavlja kolekciju
+                      {t("admin.collections.imageUrlHelp")}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
