@@ -24,8 +24,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Search, SlidersHorizontal, X } from "lucide-react";
+import { useLanguage } from "@/hooks/use-language";
 
 export default function ProductsPage() {
+  const { t } = useLanguage();
   const [, params] = useRoute("/products/:category");
   const [location] = useLocation();
   
@@ -113,9 +115,9 @@ export default function ProductsPage() {
   
   // Get category name for title
   const getCategoryName = () => {
-    if (filters.category === "all" || !categories) return "Svi proizvodi";
+    if (filters.category === "all" || !categories) return t("products.allProducts");
     const category = categories.find(cat => cat.id === parseInt(filters.category));
-    return category ? category.name : "Proizvodi";
+    return category ? category.name : t("products.products");
   };
 
   return (
@@ -168,10 +170,10 @@ export default function ProductsPage() {
             <div className="hidden md:block w-64 shrink-0">
               <div className="bg-card rounded-lg p-5">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="font-heading font-semibold text-lg text-foreground">Filteri</h2>
+                  <h2 className="font-heading font-semibold text-lg text-foreground">{t("products.filters")}</h2>
                   {(filters.category !== "all" || filters.search || filters.priceRange[0] > 0 || filters.priceRange[1] < maxPrice) && (
                     <Button variant="ghost" size="sm" onClick={clearFilters}>
-                      <X size={16} className="mr-1" /> Očisti
+                      <X size={16} className="mr-1" /> {t("products.clear")}
                     </Button>
                   )}
                 </div>
@@ -181,12 +183,12 @@ export default function ProductsPage() {
                 <div className="space-y-6">
                   {/* Search */}
                   <div>
-                    <h3 className="font-medium mb-2 text-foreground">Pretraga</h3>
+                    <h3 className="font-medium mb-2 text-foreground">{t("products.search")}</h3>
                     <div className="relative">
                       <Search size={18} className="absolute left-2.5 top-2.5 text-muted-foreground" />
                       <Input
                         type="text"
-                        placeholder="Traži proizvode..."
+                        placeholder={t("products.searchProducts")}
                         className="pl-9"
                         value={filters.search}
                         onChange={(e) => setFilters({ ...filters, search: e.target.value })}
