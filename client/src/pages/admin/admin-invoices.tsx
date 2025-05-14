@@ -1118,7 +1118,7 @@ export default function AdminInvoices() {
                                     
                                     <div className="space-y-2">
                                       <label htmlFor="quantity" className="text-sm font-medium">
-                                        Količina
+                                        {t('common.quantity')}
                                       </label>
                                       <Input
                                         id="quantity"
@@ -1133,13 +1133,13 @@ export default function AdminInvoices() {
                                   {productScents.length > 0 && (
                                     <div className="space-y-2">
                                       <label htmlFor="scent" className="text-sm font-medium">
-                                        Miris
+                                        {t('common.scent')}
                                       </label>
                                       <Select 
                                         onValueChange={(value) => setSelectedScent(parseInt(value))}
                                       >
                                         <SelectTrigger className="w-full">
-                                          <SelectValue placeholder="Odaberite miris" />
+                                          <SelectValue placeholder={t('common.selectScent')} />
                                         </SelectTrigger>
                                         <SelectContent>
                                           {productScents.map(scent => (
@@ -1156,7 +1156,7 @@ export default function AdminInvoices() {
                                     <>
                                       <div className="flex items-center space-x-4">
                                         <label className="text-sm font-medium">
-                                          Način odabira boja:
+                                          {t('admin.products.colorSelectionMode')}:
                                         </label>
                                         <div className="flex space-x-2">
                                           <Button 
@@ -1165,7 +1165,7 @@ export default function AdminInvoices() {
                                             onClick={() => setColorSelectionMode('single')}
                                             type="button"
                                           >
-                                            Jedna boja
+                                            {t('admin.products.singleColor')}
                                           </Button>
                                           <Button 
                                             variant={colorSelectionMode === 'multiple' ? "default" : "outline"}
@@ -1187,7 +1187,7 @@ export default function AdminInvoices() {
                                             onValueChange={(value) => setSelectedColor(parseInt(value))}
                                           >
                                             <SelectTrigger className="w-full">
-                                              <SelectValue placeholder="Odaberite boju" />
+                                              <SelectValue placeholder={t('common.selectColor')} />
                                             </SelectTrigger>
                                             <SelectContent>
                                               {productColors.map(color => (
@@ -1201,7 +1201,7 @@ export default function AdminInvoices() {
                                       ) : (
                                         <div className="space-y-2">
                                           <label className="text-sm font-medium">
-                                            Odaberite više boja
+                                            {t('common.selectMultipleColors')}
                                           </label>
                                           <div className="grid grid-cols-2 gap-2">
                                             {productColors.map(color => (
