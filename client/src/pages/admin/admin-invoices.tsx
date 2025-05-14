@@ -534,8 +534,8 @@ export default function AdminInvoices() {
         })
         .then(result => {
           toast({
-            title: "Račun kreiran",
-            description: `Račun ${result.invoiceNumber} je uspješno kreiran`
+            title: t('admin.invoices.invoiceCreated'),
+            description: t('admin.invoices.invoiceCreatedSuccess').replace('{invoiceNumber}', result.invoiceNumber)
           });
           
           // Osvježi popis računa i resetiraj formu
@@ -560,7 +560,7 @@ export default function AdminInvoices() {
           console.error("Greška pri kreiranju računa:", errorResponse);
           
           toast({
-            title: "Greška",
+            title: t('common.error'),
             description: errorMessage,
             variant: "destructive"
           });
@@ -568,8 +568,8 @@ export default function AdminInvoices() {
     } catch (error) {
       console.error("Neočekivana greška:", error);
       toast({
-        title: "Neočekivana greška",
-        description: (error as Error)?.toString() || "Došlo je do neočekivane greške",
+        title: t('common.unexpectedError'),
+        description: (error as Error)?.toString() || t('common.unexpectedErrorOccurred'),
         variant: "destructive"
       });
     }
@@ -584,15 +584,15 @@ export default function AdminInvoices() {
         }
         refetchInvoices(); // Osvježi popis računa nakon brisanja
         toast({
-          title: "Račun obrisan",
-          description: "Račun je uspješno obrisan iz sustava",
+          title: t('admin.invoices.invoiceDeleted'),
+          description: t('admin.invoices.invoiceDeletedSuccess'),
         });
       })
       .catch(error => {
         console.error("Greška pri brisanju računa:", error);
         toast({
-          title: "Greška",
-          description: "Došlo je do greške prilikom brisanja računa",
+          title: t('common.error'),
+          description: t('admin.invoices.errorDeletingInvoice'),
           variant: "destructive"
         });
       });
@@ -777,7 +777,7 @@ export default function AdminInvoices() {
                           name="firstName"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Ime</FormLabel>
+                              <FormLabel>{t('admin.invoices.firstName')}</FormLabel>
                               <FormControl>
                                 <Input {...field} />
                               </FormControl>
@@ -791,7 +791,7 @@ export default function AdminInvoices() {
                           name="lastName"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Prezime</FormLabel>
+                              <FormLabel>{t('admin.invoices.lastName')}</FormLabel>
                               <FormControl>
                                 <Input {...field} />
                               </FormControl>
@@ -805,7 +805,7 @@ export default function AdminInvoices() {
                           name="email"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Email</FormLabel>
+                              <FormLabel>{t('common.email')}</FormLabel>
                               <FormControl>
                                 <Input {...field} />
                               </FormControl>
@@ -819,7 +819,7 @@ export default function AdminInvoices() {
                           name="phone"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Telefon</FormLabel>
+                              <FormLabel>{t('common.phone')}</FormLabel>
                               <FormControl>
                                 <Input {...field} />
                               </FormControl>
