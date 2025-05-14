@@ -454,10 +454,10 @@ export default function AdminCollections() {
                       </FormControl>
                       <div className="space-y-1 leading-none">
                         <FormLabel>
-                          Prikaži na početnoj stranici
+                          {t("admin.collections.collectionFeatured")}
                         </FormLabel>
                         <FormDescription>
-                          Kolekcija će biti istaknuta na početnoj stranici
+                          {t("admin.collections.collectionFeaturedHelp")}
                         </FormDescription>
                       </div>
                     </FormItem>
@@ -477,10 +477,10 @@ export default function AdminCollections() {
                       </FormControl>
                       <div className="space-y-1 leading-none">
                         <FormLabel>
-                          Aktivna kolekcija
+                          {t("admin.collections.collectionActive")}
                         </FormLabel>
                         <FormDescription>
-                          Kolekcija će biti vidljiva kupcima
+                          {t("admin.collections.collectionActiveHelp")}
                         </FormDescription>
                       </div>
                     </FormItem>
@@ -498,7 +498,7 @@ export default function AdminCollections() {
                     form.reset();
                   }}
                 >
-                  Odustani
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   type="submit"
@@ -507,7 +507,7 @@ export default function AdminCollections() {
                   {(form.formState.isSubmitting || createCollectionMutation.isPending || updateCollectionMutation.isPending) && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  {currentCollection ? "Spremi promjene" : "Dodaj kolekciju"}
+                  {currentCollection ? t("common.saveChanges") : t("admin.collections.addCollection")}
                 </Button>
               </DialogFooter>
             </form>
@@ -519,10 +519,10 @@ export default function AdminCollections() {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Jeste li sigurni?</AlertDialogTitle>
+            <AlertDialogTitle>{t("admin.areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Ova će radnja trajno izbrisati kolekciju &quot;{currentCollection?.name}&quot; i sve veze s proizvodima.
-              Ova radnja se ne može poništiti.
+              {t("admin.collections.deleteCollectionWarning").replace("{name}", currentCollection?.name || "")}
+              {t("admin.confirmDeleteAction")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
