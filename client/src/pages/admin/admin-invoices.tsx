@@ -1173,7 +1173,7 @@ export default function AdminInvoices() {
                                             onClick={() => setColorSelectionMode('multiple')}
                                             type="button"
                                           >
-                                            Više boja
+                                            {t('admin.products.multipleColors')}
                                           </Button>
                                         </div>
                                       </div>
@@ -1249,10 +1249,10 @@ export default function AdminInvoices() {
                         <Table>
                           <TableHeader>
                             <TableRow>
-                              <TableHead>Proizvod</TableHead>
-                              <TableHead>Cijena/kom</TableHead>
-                              <TableHead>Količina</TableHead>
-                              <TableHead>Ukupno</TableHead>
+                              <TableHead>{t('admin.invoices.product')}</TableHead>
+                              <TableHead>{t('admin.invoices.pricePerUnit')}</TableHead>
+                              <TableHead>{t('common.quantity')}</TableHead>
+                              <TableHead>{t('admin.invoices.total')}</TableHead>
                               <TableHead className="w-12"></TableHead>
                             </TableRow>
                           </TableHeader>
@@ -1260,7 +1260,7 @@ export default function AdminInvoices() {
                             {selectedProducts.length === 0 ? (
                               <TableRow>
                                 <TableCell colSpan={5} className="text-center py-6">
-                                  Nema dodanih stavki
+                                  {t('admin.invoices.noItemsAdded')}
                                 </TableCell>
                               </TableRow>
                             ) : (
