@@ -1428,6 +1428,16 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.errorUpdate": "Greška",
     "admin.colors.errorUpdateDesc": "Došlo je do greške prilikom ažuriranja boje: {error}",
     "admin.colors.errorDelete": "Greška",
+    "admin.colors.createError": "Greška kod dodavanja boje",
+    "admin.colors.updateError": "Greška kod ažuriranja boje",
+    "admin.colors.deleteError": "Greška kod brisanja boje",
+    "admin.colors.pageTitle": "Boje",
+    "admin.colors.addNewColor": "Dodaj novu boju",
+    "admin.colors.nameLabel": "Naziv",
+    "admin.colors.namePlaceholder": "Unesite naziv boje",
+    "admin.colors.codeLabel": "Kod boje",
+    "admin.colors.codePlaceholder": "Unesite kod boje (npr. #FF5733)",
+    "admin.colors.colorPreview": "Pregled",
     "admin.colors.errorDeleteDesc": "Došlo je do greške prilikom brisanja boje: {error}",
     
     // Admin Dashboard
