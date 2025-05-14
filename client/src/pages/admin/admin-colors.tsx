@@ -324,7 +324,7 @@ export default function AdminColors() {
                               : "bg-red-100 text-red-800"
                           }`}
                         >
-                          {color.active ? "Aktivna" : "Neaktivna"}
+                          {color.active ? t("admin.colors.active") : t("admin.colors.inactive")}
                         </span>
                       </TableCell>
                       <TableCell>
@@ -345,21 +345,19 @@ export default function AdminColors() {
                             <AlertDialogContent>
                               <AlertDialogHeader>
                                 <AlertDialogTitle>
-                                  Jeste li sigurni?
+                                  {t("admin.colors.deleteColor")}
                                 </AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  Ova radnja će trajno obrisati boju "{color.name}" i
-                                  ukloniti je iz svih proizvoda koji je koriste. 
-                                  Ovu radnju nije moguće poništiti.
+                                  {t("admin.colors.deleteConfirmation").replace("{name}", color.name)}
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>Odustani</AlertDialogCancel>
+                                <AlertDialogCancel>{t("admin.colors.cancelDelete")}</AlertDialogCancel>
                                 <AlertDialogAction
                                   onClick={() => handleDelete(color.id)}
                                   className="bg-red-500 hover:bg-red-600"
                                 >
-                                  Obriši
+                                  {t("admin.colors.confirmDelete")}
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>

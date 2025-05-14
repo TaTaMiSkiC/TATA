@@ -216,7 +216,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.codeLabel": "Farbcode",
     "admin.colors.codePlaceholder": "Farbcode eingeben (z.B. #FF5733)",
     "admin.colors.colorPreview": "Vorschau",
-    "admin.colors.actions": "Aktionen",
     "admin.colors.descriptionLabel": "Beschreibung",
     "admin.colors.descriptionPlaceholder": "Farbbeschreibung eingeben",
     "admin.colors.cancel": "Abbrechen",
