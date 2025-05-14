@@ -833,7 +833,7 @@ export default function AdminInvoices() {
                           name="address"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Adresa</FormLabel>
+                              <FormLabel>{t('common.address')}</FormLabel>
                               <FormControl>
                                 <Input {...field} />
                               </FormControl>
@@ -848,7 +848,7 @@ export default function AdminInvoices() {
                             name="postalCode"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Poštanski broj</FormLabel>
+                                <FormLabel>{t('common.postalCode')}</FormLabel>
                                 <FormControl>
                                   <Input {...field} />
                                 </FormControl>
@@ -862,7 +862,7 @@ export default function AdminInvoices() {
                             name="city"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Grad</FormLabel>
+                                <FormLabel>{t('common.city')}</FormLabel>
                                 <FormControl>
                                   <Input {...field} />
                                 </FormControl>
@@ -877,7 +877,7 @@ export default function AdminInvoices() {
                           name="country"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Država</FormLabel>
+                              <FormLabel>{t('common.country')}</FormLabel>
                               <FormControl>
                                 <Input {...field} />
                               </FormControl>
@@ -895,7 +895,7 @@ export default function AdminInvoices() {
                           name="invoiceNumber"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Broj računa</FormLabel>
+                              <FormLabel>{t('admin.invoices.invoiceNumber')}</FormLabel>
                               <FormControl>
                                 <Input {...field} readOnly />
                               </FormControl>
@@ -909,7 +909,7 @@ export default function AdminInvoices() {
                           name="language"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Jezik računa</FormLabel>
+                              <FormLabel>{t('admin.invoices.invoiceLanguage')}</FormLabel>
                               <Select 
                                 onValueChange={field.onChange} 
                                 defaultValue={field.value}
@@ -935,7 +935,7 @@ export default function AdminInvoices() {
                           name="paymentMethod"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Način plaćanja</FormLabel>
+                              <FormLabel>{t('admin.invoices.paymentMethod')}</FormLabel>
                               <Select 
                                 onValueChange={field.onChange} 
                                 defaultValue={field.value}
@@ -962,7 +962,7 @@ export default function AdminInvoices() {
                           name="customerNote"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Napomena</FormLabel>
+                              <FormLabel>{t('common.note')}</FormLabel>
                               <FormControl>
                                 <Textarea 
                                   {...field} 
