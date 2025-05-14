@@ -96,7 +96,7 @@ const createInvoiceNumber = async (orderId?: number) => {
   }
 };
 
-// Komponenta za odabir jezika računa
+// Component for selecting invoice language
 function LanguageSelector({ invoice, onSelectLanguage }: { invoice: any, onSelectLanguage: (invoice: any, language: string) => void }) {
   const { t } = useLanguage();
   return (
@@ -163,7 +163,7 @@ function LanguageSelector({ invoice, onSelectLanguage }: { invoice: any, onSelec
   );
 }
 
-// Tipovi za fakture
+// Types for invoices
 interface Invoice {
   id: number;
   invoiceNumber: string;
@@ -185,7 +185,7 @@ interface Invoice {
   createdAt: string;
 }
 
-// Odabrani proizvod
+// Selected product
 interface SelectedProduct {
   id: number;
   name: string;
@@ -229,21 +229,21 @@ export default function AdminInvoices() {
   const queryClient = useQueryClient();
   const { t } = useLanguage();
   
-  // Dohvati račune
+  // Fetch invoices
   const { data: invoices = [], refetch: refetchInvoices } = useQuery<Invoice[]>({
     queryKey: ['/api/invoices']
   });
   
-  // Dohvati narudžbe
+  // Fetch orders
   const { data: orders = [] } = useQuery<Order[]>({
     queryKey: ['/api/orders']
   });
   
-  // Form za kreiranje računa
+  // Form for creating invoice
   const form = useForm<CreateInvoiceFormValues>({
     resolver: zodResolver(createInvoiceSchema),
     defaultValues: async () => {
-      // Dohvati inicijalni broj računa
+      // Get initial invoice number
       const invoiceNumber = await createInvoiceNumber();
       
       return {
@@ -262,9 +262,9 @@ export default function AdminInvoices() {
     }
   });
   
-  // Funkcija za generiranje PDF-a
+  // Function for generating PDF
   const generatePdf = (data: any) => {
-    // Koristimo novu metodu iz new-invoice-generator.ts koja daje identičan izgled kao u korisničkom dijelu
+    // Using the new method from new-invoice-generator.ts which gives identical appearance as in the user section
     generateInvoicePdf(data, toast);
   };
   
