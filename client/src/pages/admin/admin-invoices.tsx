@@ -323,23 +323,23 @@ export default function AdminInvoices() {
         setSelectedProducts(orderProducts);
       })
       .catch(error => {
-        console.error("Greška pri dohvaćanju stavki narudžbe:", error);
+        console.error("Error fetching order items:", error);
       });
   };
   
-  // Očisti formu i resetiraj podatke
+  // Clear form and reset data
   const resetForm = () => {
     form.reset();
     setSelectedProducts([]);
     setSelectedOrder(null);
     
-    // Dohvati novi broj računa
+    // Get new invoice number
     createInvoiceNumber().then(invoiceNumber => {
       form.setValue('invoiceNumber', invoiceNumber);
     });
   };
   
-  // Dohvaćanje podataka za izdelavo PDF-a
+  // Getting data for PDF creation
   const [productId, setSelectedProductId] = useState<number | null>(null);
   const [price, setPrice] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
