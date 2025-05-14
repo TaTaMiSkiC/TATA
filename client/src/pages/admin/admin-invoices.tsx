@@ -138,6 +138,26 @@ function LanguageSelector({ invoice, onSelectLanguage }: { invoice: any, onSelec
           />
           {t('languages.german')}
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onSelectLanguage(invoice, "it")}>
+          <img 
+            src="https://flagcdn.com/24x18/it.png" 
+            width="24" 
+            height="18" 
+            alt="Italian flag"
+            className="mr-2"
+          />
+          {t('languages.italian')}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onSelectLanguage(invoice, "sl")}>
+          <img 
+            src="https://flagcdn.com/24x18/si.png" 
+            width="24" 
+            height="18" 
+            alt="Slovenian flag"
+            className="mr-2"
+          />
+          {t('languages.slovenian')}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -711,12 +731,7 @@ export default function AdminInvoices() {
                           <TableCell>{invoice.customerName}</TableCell>
                           <TableCell>{invoice.total} €</TableCell>
                           <TableCell>
-                            {getPaymentMethodText(invoice.paymentMethod, "hr", {
-                              cash: "Gotovina",
-                              bank: "Bankovni prijenos",
-                              paypal: "PayPal",
-                              credit_card: "Kreditna kartica"
-                            })}
+                            {t(`paymentMethods.${invoice.paymentMethod}`)}
                           </TableCell>
                           <TableCell>
                             <div className="flex space-x-2">
