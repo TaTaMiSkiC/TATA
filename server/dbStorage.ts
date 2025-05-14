@@ -353,11 +353,39 @@ export class DatabaseStorage implements IStorage {
   }
   
   async addScentToProduct(productId: number, scentId: number): Promise<ProductScent> {
-    const [productScent] = await db
-      .insert(productScents)
-      .values({ productId, scentId })
-      .returning();
-    return productScent;
+    try {
+      console.log(`DB: Dodavanje mirisa - productId: ${productId}, scentId: ${scentId}`);
+      
+      // Prvo provjerimo postoji li već veza
+      const existing = await db
+        .select()
+        .from(productScents)
+        .where(and(
+          eq(productScents.productId, productId),
+          eq(productScents.scentId, scentId)
+        ));
+        
+      if (existing.length > 0) {
+        console.log('Ova veza već postoji, vraćamo postojeću');
+        return existing[0];
+      }
+      
+      // Ako veza ne postoji, dodajemo je
+      const [productScent] = await db
+        .insert(productScents)
+        .values({ productId, scentId })
+        .returning({ 
+          id: productScents.id,
+          productId: productScents.productId,
+          scentId: productScents.scentId
+        });
+        
+      console.log('Uspješno dodana veza:', productScent);
+      return productScent;
+    } catch (error) {
+      console.error('Greška u addScentToProduct:', error);
+      throw error;
+    }
   }
   
   async removeScentFromProduct(productId: number, scentId: number): Promise<void> {
@@ -417,11 +445,39 @@ export class DatabaseStorage implements IStorage {
   }
   
   async addColorToProduct(productId: number, colorId: number): Promise<ProductColor> {
-    const [productColor] = await db
-      .insert(productColors)
-      .values({ productId, colorId })
-      .returning();
-    return productColor;
+    try {
+      console.log(`DB: Dodavanje boje - productId: ${productId}, colorId: ${colorId}`);
+      
+      // Prvo provjerimo postoji li već veza
+      const existing = await db
+        .select()
+        .from(productColors)
+        .where(and(
+          eq(productColors.productId, productId),
+          eq(productColors.colorId, colorId)
+        ));
+        
+      if (existing.length > 0) {
+        console.log('Ova veza boje već postoji, vraćamo postojeću');
+        return existing[0];
+      }
+      
+      // Ako veza ne postoji, dodajemo je
+      const [productColor] = await db
+        .insert(productColors)
+        .values({ productId, colorId })
+        .returning({ 
+          id: productColors.id,
+          productId: productColors.productId,
+          colorId: productColors.colorId 
+        });
+        
+      console.log('Uspješno dodana veza boje:', productColor);
+      return productColor;
+    } catch (error) {
+      console.error('Greška u addColorToProduct:', error);
+      throw error;
+    }
   }
   
   async removeColorFromProduct(productId: number, colorId: number): Promise<void> {
