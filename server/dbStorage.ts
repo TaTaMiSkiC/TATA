@@ -1,4 +1,4 @@
-import { eq, and, desc, isNull, sql } from "drizzle-orm";
+import { eq, and, desc, isNull, sql, inArray } from "drizzle-orm";
 import { db } from "./db";
 import {
   users, 
@@ -362,12 +362,16 @@ export class DatabaseStorage implements IStorage {
       const scentIds = povezaniMirisi.map(ps => ps.scentId);
       console.log('ID-jevi mirisa za dohvaćanje:', scentIds);
       
+      // Koristimo samo one stupce koji sigurno postoje u bazi
       const mirisi = await db
-        .select()
+        .select({
+          id: scents.id,
+          name: scents.name,
+          description: scents.description,
+          active: scents.active
+        })
         .from(scents)
-        .where(
-          sql`${scents.id} IN (${scentIds.join(',')})`
-        );
+        .where(sql`${scents.id} IN (${scentIds.join(',')})`);
         
       console.log(`Dohvaćeno ${mirisi.length} mirisa iz baze`);
       return mirisi;
@@ -493,12 +497,16 @@ export class DatabaseStorage implements IStorage {
       const colorIds = povezaneBoje.map(pc => pc.colorId);
       console.log('ID-jevi boja za dohvaćanje:', colorIds);
       
+      // Koristimo samo one stupce koji sigurno postoje u bazi
       const bojeLista = await db
-        .select()
+        .select({
+          id: colors.id,
+          name: colors.name,
+          hexValue: colors.hexValue,
+          active: colors.active
+        })
         .from(colors)
-        .where(
-          sql`${colors.id} IN (${colorIds.join(',')})`
-        );
+        .where(sql`${colors.id} IN (${colorIds.join(',')})`);
         
       console.log(`Dohvaćeno ${bojeLista.length} boja iz baze`);
       return bojeLista;
