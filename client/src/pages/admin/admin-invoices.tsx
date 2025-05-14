@@ -478,10 +478,10 @@ export default function AdminInvoices() {
   // Format order status
   const formatOrderStatus = (status: string) => {
     switch (status) {
-      case 'pending': return 'Čeka se';
-      case 'processing': return 'U obradi';
-      case 'completed': return 'Završeno';
-      case 'cancelled': return 'Otkazano';
+      case 'pending': return t('orders.status.pending');
+      case 'processing': return t('orders.status.processing');
+      case 'completed': return t('orders.status.completed');
+      case 'cancelled': return t('orders.status.cancelled');
       default: return status;
     }
   };
@@ -903,7 +903,7 @@ export default function AdminInvoices() {
                       </div>
                       
                       <div className="space-y-4">
-                        <h3 className="text-lg font-medium">Podaci o računu</h3>
+                        <h3 className="text-lg font-medium">{t('admin.invoices.invoiceDetails')}</h3>
                         
                         <FormField
                           control={form.control}
