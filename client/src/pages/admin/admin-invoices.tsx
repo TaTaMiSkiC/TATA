@@ -660,15 +660,15 @@ export default function AdminInvoices() {
           <TabsList>
             <TabsTrigger value="existing">
               <FileText className="h-4 w-4 mr-2" />
-              Postojeći računi
+              {t('admin.invoices.existingInvoices')}
             </TabsTrigger>
             <TabsTrigger value="create">
               <Plus className="h-4 w-4 mr-2" />
-              Kreiraj novi račun
+              {t('admin.invoices.createNewInvoice')}
             </TabsTrigger>
             <TabsTrigger value="documents">
               <File className="h-4 w-4 mr-2" />
-              Dokumenti tvrtke
+              {t('admin.invoices.companyDocuments')}
             </TabsTrigger>
           </TabsList>
           
