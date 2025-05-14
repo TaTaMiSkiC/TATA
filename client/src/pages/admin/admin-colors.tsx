@@ -292,11 +292,11 @@ export default function AdminColors() {
               <TableHeader>
                 <TableRow>
                   <TableHead>ID</TableHead>
-                  <TableHead>Boja</TableHead>
-                  <TableHead>Naziv</TableHead>
-                  <TableHead>Hex vrijednost</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Akcije</TableHead>
+                  <TableHead>{t("admin.colors.colorPreview")}</TableHead>
+                  <TableHead>{t("admin.colors.nameLabel")}</TableHead>
+                  <TableHead>{t("admin.colors.codeLabel")}</TableHead>
+                  <TableHead>{t("admin.colors.active")}</TableHead>
+                  <TableHead>{t("admin.colors.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

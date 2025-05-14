@@ -215,6 +215,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.namePlaceholder": "Farbname eingeben",
     "admin.colors.codeLabel": "Farbcode",
     "admin.colors.codePlaceholder": "Farbcode eingeben (z.B. #FF5733)",
+    "admin.colors.colorPreview": "Vorschau",
+    "admin.colors.actions": "Aktionen",
     "admin.colors.descriptionLabel": "Beschreibung",
     "admin.colors.descriptionPlaceholder": "Farbbeschreibung eingeben",
     "admin.colors.cancel": "Abbrechen",
@@ -231,7 +233,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.colorDescriptionPlaceholder": "Farbbeschreibung eingeben",
     "admin.colors.colorStatus": "Farbstatus",
     "admin.colors.colorStatusHelp": "Inaktive Farben sind für die Auswahl bei Produkten nicht verfügbar",
-    "admin.colors.cancel": "Abbrechen",
     
     // Admin Collections Page
     "admin.collections.title": "Kollektionen",
@@ -919,8 +920,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.payments.confirmDelete": "Ja, löschen",
     "admin.payments.methodDeleted": "Zahlungsmethode wurde erfolgreich gelöscht",
     "admin.payments.deleteError": "Fehler beim Löschen der Zahlungsmethode",
-    "admin.colors.save": "Farbe speichern",
-    "admin.colors.saveChanges": "Änderungen speichern",
     "admin.colors.saving": "Speichern...",
     "admin.colors.updating": "Aktualisieren...",
     "admin.colors.deleteColor": "Farbe löschen",
