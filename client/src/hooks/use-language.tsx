@@ -3528,16 +3528,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.createNewInvoice": "Kreiraj novi račun",
     "admin.invoices.companyDocuments": "Dokumenti tvrtke",
     "admin.invoices.fillInformationForNewInvoice": "Ispuni podatke za novi račun",
-    "admin.invoices.customerDetails": "Podaci o kupcu",
-    "admin.invoices.firstName": "Ime",
-    "admin.invoices.lastName": "Prezime",
-    "admin.invoices.pricePerUnit": "Cijena po jedinici",
-    "admin.invoices.noItemsAdded": "Nema dodanih stavki",
-    "admin.invoices.createInvoice": "Kreiraj račun",
-    "admin.invoices.selectFromExistingOrders": "Odaberi iz postojećih narudžbi",
-    "admin.invoices.invoiceLanguage": "Jezik računa",
-    "admin.invoices.errorCreatingInvoice": "Greška pri kreiranju računa",
-    "admin.invoices.errorDeletingInvoice": "Greška pri brisanju računa"
+
   },
 
   it: {
