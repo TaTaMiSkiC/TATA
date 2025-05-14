@@ -359,13 +359,13 @@ export default function AdminInvoices() {
     queryKey: ['/api/users'],
   });
   
-  // Dohvati mirise za odabrani proizvod
+  // Get scents for selected product
   const { data: productScents = [] } = useQuery<Scent[]>({
     queryKey: [`/api/products/${productId}/scents`],
     enabled: !!productId,
   });
   
-  // Dohvati boje za odabrani proizvod
+  // Get colors for selected product
   const { data: productColors = [] } = useQuery<Color[]>({
     queryKey: [`/api/products/${productId}/colors`],
     enabled: !!productId,
