@@ -343,37 +343,25 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log(`DB: Dohvaćanje mirisa za proizvod ID: ${productId}`);
       
-      // Prvo provjeri postoje li povezani mirisi
-      const povezaniMirisi = await db
-        .select({
-          productId: productScents.productId,
-          scentId: productScents.scentId
-        })
-        .from(productScents)
-        .where(eq(productScents.productId, productId));
-        
-      console.log(`Pronađeno ${povezaniMirisi.length} povezanih mirisa u tablici productScents`);
+      // Direktni SQL upit za dohvaćanje povezanih mirisa
+      const result = await db.execute(
+        sql`SELECT s.id, s.name, s.description, s.active, s.created_at as "createdAt", s.updated_at as "updatedAt"
+            FROM scents s
+            INNER JOIN product_scents ps ON s.id = ps.scent_id
+            WHERE ps.product_id = ${productId}`
+      );
       
-      if (povezaniMirisi.length === 0) {
-        return [];
-      }
+      // Pretvaramo rezultate u odgovarajući format s konverzijom tipova
+      const mirisi = result.rows.map(row => ({
+        id: Number(row.id),
+        name: String(row.name || ''),
+        description: row.description ? String(row.description) : null,
+        active: Boolean(row.active),
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt
+      }));
       
-      // Dohvati sve mirisa koji su povezani
-      const scentIds = povezaniMirisi.map(ps => ps.scentId);
-      console.log('ID-jevi mirisa za dohvaćanje:', scentIds);
-      
-      // Koristimo samo one stupce koji sigurno postoje u bazi
-      const mirisi = await db
-        .select({
-          id: scents.id,
-          name: scents.name,
-          description: scents.description,
-          active: scents.active
-        })
-        .from(scents)
-        .where(sql`${scents.id} IN (${scentIds.join(',')})`);
-        
-      console.log(`Dohvaćeno ${mirisi.length} mirisa iz baze`);
+      console.log(`Dohvaćeno ${mirisi.length} mirisa za proizvod ID: ${productId}`);
       return mirisi;
     } catch (error) {
       console.error('Greška u getProductScents:', error);
@@ -381,42 +369,40 @@ export class DatabaseStorage implements IStorage {
     }
   }
   
-  async addScentToProduct(productId: number, scentId: number): Promise<ProductScent> {
+  async addScentToProduct(productId: number, scentId: number): Promise<any> {
     try {
       console.log(`DB: Dodavanje mirisa - productId: ${productId}, scentId: ${scentId}`);
       
-      // Prvo provjerimo postoji li već veza
-      const existing = await db
-        .select({
-          productId: productScents.productId,
-          scentId: productScents.scentId
-        })
-        .from(productScents)
-        .where(and(
-          eq(productScents.productId, productId),
-          eq(productScents.scentId, scentId)
-        ));
-        
-      if (existing.length > 0) {
+      // Prvo provjerimo postoji li već veza koristeći direktni SQL upit
+      const checkResult = await db.execute(
+        sql`SELECT product_id, scent_id FROM product_scents 
+            WHERE product_id = ${productId} AND scent_id = ${scentId}`
+      );
+      
+      // Dohvatimo rezultate kao array
+      const results = checkResult.rows;
+      
+      if (results && results.length > 0) {
         console.log('Ova veza već postoji, vraćamo postojeću');
         
-        // Vraćamo prvi pronađeni rezultat bez ID-ja
+        // Vraćamo postojeću vezu bez ID polja
         return {
-          productId: existing[0].productId,
-          scentId: existing[0].scentId
-        } as ProductScent;
+          productId: results[0].product_id,
+          scentId: results[0].scent_id
+        };
       }
       
       // Ako veza ne postoji, dodajemo je direktno SQL upitom
       await db.execute(
-        sql`INSERT INTO product_scents (product_id, scent_id) VALUES (${productId}, ${scentId})`
+        sql`INSERT INTO product_scents (product_id, scent_id) 
+            VALUES (${productId}, ${scentId})`
       );
         
       // Vraćamo objekt koji odgovara strukturi u bazi
       const productScent = {
         productId: productId,
         scentId: scentId
-      } as ProductScent;
+      };
         
       console.log('Uspješno dodana veza mirisa i proizvoda:', productScent);
       return productScent;
@@ -473,37 +459,25 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log(`DB: Dohvaćanje boja za proizvod ID: ${productId}`);
       
-      // Prvo provjeri postoje li povezane boje
-      const povezaneBoje = await db
-        .select({
-          productId: productColors.productId,
-          colorId: productColors.colorId
-        })
-        .from(productColors)
-        .where(eq(productColors.productId, productId));
-        
-      console.log(`Pronađeno ${povezaneBoje.length} povezanih boja u tablici productColors`);
+      // Direktni SQL upit za dohvaćanje povezanih boja
+      const result = await db.execute(
+        sql`SELECT c.id, c.name, c.hex_value as "hexValue", c.active, c.created_at as "createdAt", c.updated_at as "updatedAt"
+            FROM colors c
+            INNER JOIN product_colors pc ON c.id = pc.color_id
+            WHERE pc.product_id = ${productId}`
+      );
       
-      if (povezaneBoje.length === 0) {
-        return [];
-      }
+      // Pretvaramo rezultate u odgovarajući format
+      const bojeLista = result.rows.map(row => ({
+        id: row.id,
+        name: row.name,
+        hexValue: row.hexValue,
+        active: row.active === true,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt
+      }));
       
-      // Dohvati sve boje koje su povezane
-      const colorIds = povezaneBoje.map(pc => pc.colorId);
-      console.log('ID-jevi boja za dohvaćanje:', colorIds);
-      
-      // Koristimo samo one stupce koji sigurno postoje u bazi
-      const bojeLista = await db
-        .select({
-          id: colors.id,
-          name: colors.name,
-          hexValue: colors.hexValue,
-          active: colors.active
-        })
-        .from(colors)
-        .where(sql`${colors.id} IN (${colorIds.join(',')})`);
-        
-      console.log(`Dohvaćeno ${bojeLista.length} boja iz baze`);
+      console.log(`Dohvaćeno ${bojeLista.length} boja za proizvod ID: ${productId}`);
       return bojeLista;
     } catch (error) {
       console.error('Greška u getProductColors:', error);
@@ -511,45 +485,40 @@ export class DatabaseStorage implements IStorage {
     }
   }
   
-  async addColorToProduct(productId: number, colorId: number): Promise<ProductColor> {
+  async addColorToProduct(productId: number, colorId: number): Promise<any> {
     try {
       console.log(`DB: Dodavanje boje - productId: ${productId}, colorId: ${colorId}`);
       
-      // Prvo provjerimo postoji li već veza
-      const existing = await db
-        .select({
-          productId: productColors.productId,
-          colorId: productColors.colorId
-        })
-        .from(productColors)
-        .where(and(
-          eq(productColors.productId, productId),
-          eq(productColors.colorId, colorId)
-        ));
-        
-      if (existing.length > 0) {
+      // Prvo provjerimo postoji li već veza koristeći direktni SQL upit
+      const checkResult = await db.execute(
+        sql`SELECT product_id, color_id FROM product_colors 
+            WHERE product_id = ${productId} AND color_id = ${colorId}`
+      );
+      
+      // Dohvatimo rezultate kao array
+      const results = checkResult.rows;
+      
+      if (results && results.length > 0) {
         console.log('Ova veza boje već postoji, vraćamo postojeću');
         
-        // Vraćamo prvi pronađeni rezultat bez ID-ja
+        // Vraćamo postojeću vezu bez ID polja
         return {
-          productId: existing[0].productId,
-          colorId: existing[0].colorId
-        } as ProductColor;
+          productId: results[0].product_id,
+          colorId: results[0].color_id
+        };
       }
       
-      // Ako veza ne postoji, dodajemo je bez polja ID jer ga nema u bazi
-      await db
-        .insert(productColors)
-        .values({ 
-          productId: productId, 
-          colorId: colorId 
-        });
+      // Ako veza ne postoji, dodajemo je direktno SQL upitom
+      await db.execute(
+        sql`INSERT INTO product_colors (product_id, color_id) 
+            VALUES (${productId}, ${colorId})`
+      );
         
       // Vraćamo objekt koji odgovara strukturi u bazi
       const productColor = {
         productId: productId,
         colorId: colorId
-      } as ProductColor;
+      };
         
       console.log('Uspješno dodana veza boje i proizvoda:', productColor);
       return productColor;
