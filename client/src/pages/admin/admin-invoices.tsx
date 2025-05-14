@@ -79,7 +79,7 @@ const createInvoiceNumber = async (orderId?: number) => {
     const response = await fetch('/api/invoices/last');
     const lastInvoice = await response.json();
     
-    console.log("Dohvaćen posljednji račun:", lastInvoice);
+    console.log("Last invoice retrieved:", lastInvoice);
     
     if (lastInvoice && lastInvoice.invoiceNumber) {
       // Parsiranje postojećeg broja računa
@@ -304,7 +304,7 @@ export default function AdminInvoices() {
     apiRequest('GET', `/api/orders/${order.id}/items`)
       .then(response => response.json())
       .then(items => {
-        console.log("Dohvaćene stavke narudžbe:", items);
+        console.log("Order items retrieved:", items);
         
         // Pripremi odabrane proizvode za račun
         const orderProducts: SelectedProduct[] = items.map((item: any) => ({
@@ -385,19 +385,19 @@ export default function AdminInvoices() {
     setSelectedScent(null);
     setSelectedColor(null);
     
-    console.log("Odabrani proizvod ID:", id);
+    console.log("Selected product ID:", id);
     
     // Ručno dohvaćanje mirisa i boja
     try {
       const scentsResponse = await fetch(`/api/products/${id}/scents`);
       const scentsData = await scentsResponse.json();
-      console.log("Dohvaćeni mirisi:", scentsData);
+      console.log("Retrieved scents:", scentsData);
       
       const colorsResponse = await fetch(`/api/products/${id}/colors`);
       const colorsData = await colorsResponse.json();
-      console.log("Dohvaćene boje:", colorsData);
+      console.log("Retrieved colors:", colorsData);
     } catch (error) {
-      console.error("Greška pri dohvaćanju opcija:", error);
+      console.error("Error retrieving options:", error);
     }
   };
   
@@ -447,7 +447,7 @@ export default function AdminInvoices() {
       ...colorInfo
     };
     
-    console.log("Dodajem proizvod:", newProduct);
+    console.log("Adding product:", newProduct);
     
     addProduct(newProduct);
     
@@ -540,7 +540,7 @@ export default function AdminInvoices() {
         }))
       };
       
-      console.log("Šaljem podatke za kreiranje računa:", invoiceData);
+      console.log("Sending data to create invoice:", invoiceData);
       
       // Pošalji zahtjev za kreiranje računa
       apiRequest('POST', '/api/invoices', invoiceData)
@@ -634,7 +634,7 @@ export default function AdminInvoices() {
     apiRequest('GET', `/api/invoices/${invoice.id}`)
       .then(response => response.json())
       .then(data => {
-        console.log("Dohvaćeni podaci za PDF računa:", data);
+        console.log("Retrieved data for PDF invoice:", data);
         
         // Pripremi podatke za PDF s ispravnim nazivima polja koja očekuje funkcija za generiranje PDF-a
         const invoiceData = {
