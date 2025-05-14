@@ -566,7 +566,7 @@ export default function AdminInvoices() {
           setActiveTab("existing");
         })
         .catch(errorResponse => {
-          let errorMessage = "Greška prilikom kreiranja računa";
+          let errorMessage = t('admin.invoices.errorCreatingInvoice');
           
           try {
             // Pokušaj parsirati JSON odgovor
@@ -577,7 +577,7 @@ export default function AdminInvoices() {
             errorMessage = errorResponse.message || errorMessage;
           }
           
-          console.error("Greška pri kreiranju računa:", errorResponse);
+          console.error("Error creating invoice:", errorResponse);
           
           toast({
             title: t('common.error'),
@@ -586,7 +586,7 @@ export default function AdminInvoices() {
           });
         });
     } catch (error) {
-      console.error("Neočekivana greška:", error);
+      console.error("Unexpected error:", error);
       toast({
         title: t('common.unexpectedError'),
         description: (error as Error)?.toString() || t('common.unexpectedErrorOccurred'),
@@ -653,14 +653,14 @@ export default function AdminInvoices() {
           paymentMethod: invoice.paymentMethod || "cash" // Koristimo način plaćanja iz postojećeg računa
         };
         
-        console.log("Priprema podataka za PDF:", invoiceData);
+        console.log("Preparing data for PDF:", invoiceData);
         generatePdf(invoiceData);
       })
       .catch(error => {
-        console.error("Greška kod dohvaćanja stavki računa:", error);
+        console.error("Error retrieving invoice items:", error);
         toast({
-          title: "Greška",
-          description: "Nije moguće dohvatiti stavke računa",
+          title: t('common.error'),
+          description: t('admin.invoices.errorRetrievingInvoiceItems'),
           variant: "destructive"
         });
       });
