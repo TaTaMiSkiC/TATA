@@ -1262,9 +1262,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/products/:id/colors", async (req, res) => {
     try {
       const productId = parseInt(req.params.id);
+      
+      console.log(`API: Dohvaćanje boja za proizvod ID: ${productId}`);
+      
+      if (isNaN(productId)) {
+        console.error('Nevažeći ID proizvoda:', req.params.id);
+        return res.status(400).json({ message: "Invalid product ID" });
+      }
+      
       const colors = await storage.getProductColors(productId);
+      console.log(`API: Pronađeno ${colors.length} boja za proizvod ID: ${productId}`);
+      
       res.json(colors);
     } catch (error) {
+      console.error('Greška pri dohvaćanju boja proizvoda:', error);
       res.status(500).json({ message: "Failed to fetch product colors" });
     }
   });
@@ -2056,16 +2067,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Product Colors
-  app.get("/api/products/:id/colors", async (req, res) => {
-    try {
-      const productId = parseInt(req.params.id);
-      const colors = await storage.getProductColors(productId);
-      res.json(colors);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch product colors" });
-    }
-  });
+  // Product Colors - ova ruta je duplicirana na liniji ~1262, izbrisat ćemo ju
 
   app.post("/api/products/:id/colors/:colorId", async (req, res) => {
     try {

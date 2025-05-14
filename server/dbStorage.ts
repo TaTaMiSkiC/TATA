@@ -392,11 +392,13 @@ export class DatabaseStorage implements IStorage {
         return existing[0];
       }
       
-      // Ako veza ne postoji, dodajemo je - bez specificiranja stupaca
-      const [productScent] = await db
+      // Ako veza ne postoji, dodajemo je - specificiramo stupce koji sigurno postoje
+      await db
         .insert(productScents)
-        .values({ productId, scentId })
-        .returning();
+        .values({ productId, scentId });
+        
+      // Vraćamo ručno kreirani objekt umjesto .returning() jer možda nema id stupac
+      const productScent = { productId, scentId };
         
       console.log('Uspješno dodana veza:', productScent);
       return productScent;
