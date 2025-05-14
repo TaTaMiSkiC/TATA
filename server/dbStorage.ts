@@ -340,16 +340,38 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getProductScents(productId: number): Promise<Scent[]> {
-    // JOIN preko productScents tabele
-    const joinedScents = await db.query.productScents.findMany({
-      where: eq(productScents.productId, productId),
-      with: {
-        scent: true
+    try {
+      console.log(`DB: Dohvaćanje mirisa za proizvod ID: ${productId}`);
+      
+      // Prvo provjeri postoje li povezani mirisi
+      const povezaniMirisi = await db
+        .select()
+        .from(productScents)
+        .where(eq(productScents.productId, productId));
+        
+      console.log(`Pronađeno ${povezaniMirisi.length} povezanih mirisa u tablici productScents`);
+      
+      if (povezaniMirisi.length === 0) {
+        return [];
       }
-    });
-    
-    // Izvuci samo scent objekte iz rezultata
-    return joinedScents.map(item => item.scent);
+      
+      // Dohvati sve mirisa koji su povezani
+      const scentIds = povezaniMirisi.map(ps => ps.scentId);
+      console.log('ID-jevi mirisa za dohvaćanje:', scentIds);
+      
+      const mirisi = await db
+        .select()
+        .from(scents)
+        .where(
+          sql`${scents.id} IN (${scentIds.join(',')})`
+        );
+        
+      console.log(`Dohvaćeno ${mirisi.length} mirisa iz baze`);
+      return mirisi;
+    } catch (error) {
+      console.error('Greška u getProductScents:', error);
+      return [];
+    }
   }
   
   async addScentToProduct(productId: number, scentId: number): Promise<ProductScent> {
@@ -370,15 +392,11 @@ export class DatabaseStorage implements IStorage {
         return existing[0];
       }
       
-      // Ako veza ne postoji, dodajemo je
+      // Ako veza ne postoji, dodajemo je - bez specificiranja stupaca
       const [productScent] = await db
         .insert(productScents)
         .values({ productId, scentId })
-        .returning({ 
-          id: productScents.id,
-          productId: productScents.productId,
-          scentId: productScents.scentId
-        });
+        .returning();
         
       console.log('Uspješno dodana veza:', productScent);
       return productScent;
@@ -432,16 +450,38 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getProductColors(productId: number): Promise<Color[]> {
-    // JOIN preko productColors tabele
-    const joinedColors = await db.query.productColors.findMany({
-      where: eq(productColors.productId, productId),
-      with: {
-        color: true
+    try {
+      console.log(`DB: Dohvaćanje boja za proizvod ID: ${productId}`);
+      
+      // Prvo provjeri postoje li povezane boje
+      const povezaneBoje = await db
+        .select()
+        .from(productColors)
+        .where(eq(productColors.productId, productId));
+        
+      console.log(`Pronađeno ${povezaneBoje.length} povezanih boja u tablici productColors`);
+      
+      if (povezaneBoje.length === 0) {
+        return [];
       }
-    });
-    
-    // Izvuci samo color objekte iz rezultata
-    return joinedColors.map(item => item.color);
+      
+      // Dohvati sve boje koje su povezane
+      const colorIds = povezaneBoje.map(pc => pc.colorId);
+      console.log('ID-jevi boja za dohvaćanje:', colorIds);
+      
+      const bojeLista = await db
+        .select()
+        .from(colors)
+        .where(
+          sql`${colors.id} IN (${colorIds.join(',')})`
+        );
+        
+      console.log(`Dohvaćeno ${bojeLista.length} boja iz baze`);
+      return bojeLista;
+    } catch (error) {
+      console.error('Greška u getProductColors:', error);
+      return [];
+    }
   }
   
   async addColorToProduct(productId: number, colorId: number): Promise<ProductColor> {
@@ -462,15 +502,11 @@ export class DatabaseStorage implements IStorage {
         return existing[0];
       }
       
-      // Ako veza ne postoji, dodajemo je
+      // Ako veza ne postoji, dodajemo je - bez specificiranja stupaca
       const [productColor] = await db
         .insert(productColors)
         .values({ productId, colorId })
-        .returning({ 
-          id: productColors.id,
-          productId: productColors.productId,
-          colorId: productColors.colorId 
-        });
+        .returning();
         
       console.log('Uspješno dodana veza boje:', productColor);
       return productColor;

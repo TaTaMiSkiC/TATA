@@ -1145,9 +1145,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/products/:id/scents", async (req, res) => {
     try {
       const productId = parseInt(req.params.id);
+      
+      console.log(`API: Dohvaćanje mirisa za proizvod ID: ${productId}`);
+      
+      if (isNaN(productId)) {
+        console.error('Nevažeći ID proizvoda:', req.params.id);
+        return res.status(400).json({ message: "Invalid product ID" });
+      }
+      
       const scents = await storage.getProductScents(productId);
+      console.log(`API: Pronađeno ${scents.length} mirisa za proizvod ID: ${productId}`);
+      
       res.json(scents);
     } catch (error) {
+      console.error('Greška pri dohvaćanju mirisa proizvoda:', error);
       res.status(500).json({ message: "Failed to fetch product scents" });
     }
   });
