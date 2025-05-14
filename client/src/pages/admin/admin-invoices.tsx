@@ -72,9 +72,9 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import DocumentManager from "@/components/admin/DocumentManager";
 import { generateInvoicePdf, getPaymentMethodText } from "./new-invoice-generator";
 
-// Pomoćna funkcija za generiranje broja fakture
+// Helper function for generating invoice number
 const createInvoiceNumber = async (orderId?: number) => {
-  // Generiranje broja računa u formatu i450, i451, itd.
+  // Generating invoice number in format i450, i451, etc.
   try {
     const response = await fetch('/api/invoices/last');
     const lastInvoice = await response.json();
@@ -82,16 +82,16 @@ const createInvoiceNumber = async (orderId?: number) => {
     console.log("Last invoice retrieved:", lastInvoice);
     
     if (lastInvoice && lastInvoice.invoiceNumber) {
-      // Parsiranje postojećeg broja računa
-      const currentNumber = lastInvoice.invoiceNumber.substring(1); // Isključi 'i' prefix
+      // Parse the existing invoice number
+      const currentNumber = lastInvoice.invoiceNumber.substring(1); // Exclude 'i' prefix
       const nextNumber = parseInt(currentNumber) + 1;
       return `i${nextNumber}`;
     } else {
-      // Ako nema postojećih računa, počni od 450
+      // If there are no existing invoices, start from 450
       return "i450";
     }
   } catch (error) {
-    console.error("Greška pri dohvaćanju posljednjeg broja računa:", error);
+    console.error("Error retrieving last invoice number:", error);
     return orderId ? `i${orderId + 450}` : "i450";
   }
 };
@@ -199,7 +199,7 @@ interface SelectedProduct {
   hasMultipleColors?: boolean;
 }
 
-// Schema za kreiranje računa
+// Schema for creating invoices
 // Note: We can't use t() function here directly since it's outside component
 // Translation keys will be applied in validation error messages inside the form
 const createInvoiceSchema = z.object({
@@ -217,10 +217,10 @@ const createInvoiceSchema = z.object({
   customerNote: z.string().optional(),
 });
 
-// Tipovi za form
+// Types for the form
 type CreateInvoiceFormValues = z.infer<typeof createInvoiceSchema>;
 
-// Komponenta za cijeli admin modul računa
+// Component for the entire admin invoices module
 export default function AdminInvoices() {
   const [activeTab, setActiveTab] = useState<string>("existing");
   const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>([]);
