@@ -992,7 +992,7 @@ export default function AdminInvoices() {
                         />
                         
                         <div className="space-y-4 mt-8">
-                          <h3 className="text-lg font-medium">Odabir iz postojećih narudžbi</h3>
+                          <h3 className="text-lg font-medium">{t('admin.invoices.selectFromExistingOrders')}</h3>
                           
                           <div className="flex space-x-2 mb-4">
                             <Input
