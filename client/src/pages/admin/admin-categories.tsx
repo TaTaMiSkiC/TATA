@@ -5,6 +5,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { Category, InsertCategory } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/use-language";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -48,16 +49,17 @@ import { Loader2, Plus, Pencil, Trash2 } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 // Schema za validaciju forme
-const categorySchema = z.object({
-  name: z.string().min(2, "Naziv kategorije mora imati barem 2 znaka"),
-  description: z.string().min(10, "Opis mora imati barem 10 znakova"),
+const getCategorySchema = (t: any) => z.object({
+  name: z.string().min(2, t("admin.categories.nameValidation")),
+  description: z.string().min(10, t("admin.categories.descriptionValidation")),
   imageUrl: z.string().optional(),
 });
 
-type CategoryFormValues = z.infer<typeof categorySchema>;
+type CategoryFormValues = z.infer<ReturnType<typeof getCategorySchema>>;
 
 export default function AdminCategories() {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
@@ -68,6 +70,7 @@ export default function AdminCategories() {
   });
   
   // Forma za dodavanje/uređivanje kategorije
+  const categorySchema = getCategorySchema(t);
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
@@ -85,8 +88,8 @@ export default function AdminCategories() {
     },
     onSuccess: () => {
       toast({
-        title: "Uspjeh",
-        description: "Kategorija je uspješno dodana.",
+        title: t("admin.categories.success"),
+        description: t("admin.categories.categoryAdded"),
       });
       queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
       setIsFormOpen(false);
@@ -94,8 +97,8 @@ export default function AdminCategories() {
     },
     onError: (error: Error) => {
       toast({
-        title: "Greška",
-        description: `Došlo je do greške prilikom dodavanja kategorije: ${error.message}`,
+        title: t("admin.categories.error"),
+        description: t("admin.categories.errorAddDesc", { error: error.message }),
         variant: "destructive",
       });
     }
