@@ -314,9 +314,9 @@ export default function AdminCollections() {
         
         <Card>
           <CardHeader>
-            <CardTitle>Kolekcije</CardTitle>
+            <CardTitle>{t("admin.collections.collections")}</CardTitle>
             <CardDescription>
-              Pregled svih kolekcija proizvoda. Kolekcije omogućuju grupiranje proizvoda.
+              {t("admin.collections.collectionsDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -371,7 +371,7 @@ export default function AdminCollections() {
               </Table>
             ) : (
               <div className="text-center py-8">
-                <p className="text-muted-foreground">Nema dodanih kolekcija.</p>
+                <p className="text-muted-foreground">{t("admin.collections.noCollections")}</p>
               </div>
             )}
           </CardContent>
