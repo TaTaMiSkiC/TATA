@@ -12,6 +12,11 @@ export type Language = "de" | "hr" | "en" | "it" | "sl";
 // Prijevodi po jezicima
 export const translations: Record<Language, Record<string, string>> = {
   de: {
+    // Instagram
+    "instagram.followUs": "Folge uns auf Instagram",
+    "instagram.followUsText": "Folge uns auf Instagram für die neuesten Kreationen und Inspirationen",
+    "instagram.loadingPhotos": "Fotos werden geladen...",
+    "instagram.emptyFeed": "Instagram-Feed ist leer",
     // Allgemeine Admin-Elemente
     "admin.general.uploading": "Wird hochgeladen...",
     "admin.general.error": "Fehler",
@@ -1300,6 +1305,12 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   hr: {
+    // Instagram
+    "instagram.followUs": "Pratite nas na Instagramu",
+    "instagram.followUsText": "Pratite nas na Instagramu za najnovije kreacije i inspiracije",
+    "instagram.loadingPhotos": "Učitavanje fotografija...",
+    "instagram.emptyFeed": "Instagram Feed je prazan",
+    
     // Opći admin elementi
     "admin.general.uploading": "Učitavanje...",
     "admin.general.error": "Greška",
@@ -2546,6 +2557,12 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   en: {
+    // Instagram
+    "instagram.followUs": "Follow us on Instagram",
+    "instagram.followUsText": "Follow us on Instagram for the latest creations and inspirations",
+    "instagram.loadingPhotos": "Loading photos...",
+    "instagram.emptyFeed": "Instagram feed is empty",
+    
     // General admin elements
     "admin.general.uploading": "Uploading...",
     "admin.general.error": "Error",
@@ -3455,6 +3472,12 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   it: {
+    // Instagram
+    "instagram.followUs": "Seguici su Instagram",
+    "instagram.followUsText": "Seguici su Instagram per le ultime creazioni e ispirazioni",
+    "instagram.loadingPhotos": "Caricamento foto...",
+    "instagram.emptyFeed": "Il feed di Instagram è vuoto",
+    
     // Elementi amministrativi generali
     "admin.general.uploading": "Caricamento in corso...",
     "admin.general.error": "Errore",
@@ -4383,6 +4406,12 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   sl: {
+    // Instagram
+    "instagram.followUs": "Sledite nam na Instagramu",
+    "instagram.followUsText": "Sledite nam na Instagramu za najnovejše izdelke in inspiracije",
+    "instagram.loadingPhotos": "Nalaganje fotografij...",
+    "instagram.emptyFeed": "Instagram Feed je prazen",
+    
     // Splošni admin elementi
     "admin.general.uploading": "Nalaganje...",
     "admin.general.error": "Napaka",
