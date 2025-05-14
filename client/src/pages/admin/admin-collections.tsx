@@ -328,11 +328,11 @@ export default function AdminCollections() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Naziv</TableHead>
-                    <TableHead>Opis</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Prikazano na početnoj</TableHead>
-                    <TableHead className="text-right">Akcije</TableHead>
+                    <TableHead>{t("common.name")}</TableHead>
+                    <TableHead>{t("common.description")}</TableHead>
+                    <TableHead>{t("common.status")}</TableHead>
+                    <TableHead>{t("admin.collections.featuredOnHome")}</TableHead>
+                    <TableHead className="text-right">{t("common.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -342,16 +342,16 @@ export default function AdminCollections() {
                       <TableCell className="max-w-md truncate">{collection.description}</TableCell>
                       <TableCell>
                         {collection.active ? (
-                          <Badge variant="default" className="bg-green-500">Aktivno</Badge>
+                          <Badge variant="default" className="bg-green-500">{t("common.active")}</Badge>
                         ) : (
-                          <Badge variant="outline">Neaktivno</Badge>
+                          <Badge variant="outline">{t("common.inactive")}</Badge>
                         )}
                       </TableCell>
                       <TableCell>
                         {collection.featuredOnHome ? (
-                          <Badge variant="default" className="bg-blue-500">Da</Badge>
+                          <Badge variant="default" className="bg-blue-500">{t("common.yes")}</Badge>
                         ) : (
-                          <Badge variant="outline">Ne</Badge>
+                          <Badge variant="outline">{t("common.no")}</Badge>
                         )}
                       </TableCell>
                       <TableCell className="text-right space-x-2">
@@ -382,11 +382,11 @@ export default function AdminCollections() {
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>{currentCollection ? "Uredi kolekciju" : "Dodaj novu kolekciju"}</DialogTitle>
+            <DialogTitle>{currentCollection ? t("admin.collections.editCollection") : t("admin.collections.addNewCollection")}</DialogTitle>
             <DialogDescription>
               {currentCollection
-                ? "Uredite postojeću kolekciju proizvoda."
-                : "Dodajte novu kolekciju proizvoda u katalog."}
+                ? t("admin.collections.editCollectionDesc")
+                : t("admin.collections.addCollectionDesc")}
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
@@ -396,9 +396,9 @@ export default function AdminCollections() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Naziv kolekcije</FormLabel>
+                    <FormLabel>{t("admin.collections.collectionName")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Npr. Jesenska kolekcija" {...field} />
+                      <Input placeholder={t("admin.collections.collectionNamePlaceholder")} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
