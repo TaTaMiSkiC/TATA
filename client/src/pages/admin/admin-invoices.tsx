@@ -785,7 +785,7 @@ export default function AdminInvoices() {
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-4">
-                        <h3 className="text-lg font-medium">Podaci o kupcu</h3>
+                        <h3 className="text-lg font-medium">{t('admin.invoices.customerDetails')}</h3>
                         
                         <FormField
                           control={form.control}
@@ -1008,10 +1008,10 @@ export default function AdminInvoices() {
                               <TableHeader>
                                 <TableRow>
                                   <TableHead className="w-12">#</TableHead>
-                                  <TableHead>Kupac</TableHead>
-                                  <TableHead>Status</TableHead>
-                                  <TableHead>Iznos</TableHead>
-                                  <TableHead className="w-20">Akcija</TableHead>
+                                  <TableHead>{t('admin.orders.customer')}</TableHead>
+                                  <TableHead>{t('admin.orders.status')}</TableHead>
+                                  <TableHead>{t('admin.orders.amount')}</TableHead>
+                                  <TableHead className="w-20">{t('admin.orders.action')}</TableHead>
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
@@ -1046,7 +1046,7 @@ export default function AdminInvoices() {
                                             size="sm"
                                             onClick={() => setOrderData(order)}
                                           >
-                                            Odaberi
+                                            {t('common.select')}
                                           </Button>
                                         </TableCell>
                                       </TableRow>
@@ -1181,7 +1181,7 @@ export default function AdminInvoices() {
                                       {colorSelectionMode === 'single' ? (
                                         <div className="space-y-2">
                                           <label htmlFor="color" className="text-sm font-medium">
-                                            Boja
+                                            {t('common.color')}
                                           </label>
                                           <Select 
                                             onValueChange={(value) => setSelectedColor(parseInt(value))}
