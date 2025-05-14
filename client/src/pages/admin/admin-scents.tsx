@@ -173,21 +173,24 @@ export default function AdminScents() {
   };
 
   return (
-    <AdminLayout title="Upravljanje mirisima">
+    <AdminLayout title={t("admin.scents.title")}>
+      <Helmet>
+        <title>{t("admin.scents.pageTitle")} | {t("admin.panel")} | Kerzenwelt by Dani</title>
+      </Helmet>
       <div className="p-6 space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Upravljanje mirisima</h1>
+          <h1 className="text-2xl font-bold">{t("admin.scents.title")}</h1>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button className="flex items-center gap-2">
                 <PlusCircle size={16} />
-                <span>Dodaj miris</span>
+                <span>{t("admin.scents.addScent")}</span>
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>
-                  {editScent ? "Uredi miris" : "Dodaj novi miris"}
+                  {editScent ? t("admin.scents.editScent") : t("admin.scents.addNewScent")}
                 </DialogTitle>
               </DialogHeader>
               <Form {...form}>
@@ -200,10 +203,10 @@ export default function AdminScents() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Naziv</FormLabel>
+                        <FormLabel>{t("admin.scents.nameLabel")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Naziv mirisa"
+                            placeholder={t("admin.scents.namePlaceholder")}
                             autoComplete="off"
                             {...field}
                           />
@@ -218,10 +221,10 @@ export default function AdminScents() {
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Opis</FormLabel>
+                        <FormLabel>{t("admin.scents.descriptionLabel")}</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Opis mirisa"
+                            placeholder={t("admin.scents.descriptionPlaceholder")}
                             className="resize-none"
                             {...field}
                             value={field.value || ""}
