@@ -547,7 +547,7 @@ export default function AdminInvoices() {
         .then(response => {
           if (!response.ok) {
             return response.text().then(text => {
-              throw new Error(text || "Greška prilikom kreiranja računa");
+              throw new Error(text || "Error creating invoice");
             });
           }
           return response.json();
@@ -609,7 +609,7 @@ export default function AdminInvoices() {
         });
       })
       .catch(error => {
-        console.error("Greška pri brisanju računa:", error);
+        console.error("Error deleting invoice:", error);
         toast({
           title: t('common.error'),
           description: t('admin.invoices.errorDeletingInvoice'),
@@ -618,9 +618,9 @@ export default function AdminInvoices() {
       });
   };
   
-  // Funkcije za preuzimanje PDF-a za postojeće račune
+  // Functions for downloading PDFs for existing invoices
   const handleDownloadInvoice = (invoice: Invoice) => {
-    // Direktno preuzmi račun s originalnim jezikom
+    // Download invoice with original language
     downloadInvoice(invoice, invoice.language || "hr");
   };
 
@@ -641,10 +641,10 @@ export default function AdminInvoices() {
           invoiceNumber: invoice.invoiceNumber,
           createdAt: invoice.createdAt,
           customerName: invoice.customerName,
-          customerAddress: invoice.customerAddress || "Adresa kupca",
-          customerCity: invoice.customerCity || "Grad kupca",
-          customerPostalCode: invoice.customerPostalCode || "12345",
-          customerCountry: invoice.customerCountry || "Hrvatska",
+          customerAddress: invoice.customerAddress || "",
+          customerCity: invoice.customerCity || "",
+          customerPostalCode: invoice.customerPostalCode || "",
+          customerCountry: invoice.customerCountry || "",
           customerEmail: invoice.customerEmail || "",
           customerPhone: invoice.customerPhone || "",
           customerNote: invoice.customerNote || "",
@@ -1064,7 +1064,7 @@ export default function AdminInvoices() {
                     
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
-                        <h3 className="text-lg font-medium">Stavke računa</h3>
+                        <h3 className="text-lg font-medium">{t('admin.invoices.invoiceItems')}</h3>
                         
                         <Dialog>
                           <DialogTrigger asChild>
