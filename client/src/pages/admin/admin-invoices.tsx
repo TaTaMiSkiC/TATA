@@ -468,14 +468,14 @@ export default function AdminInvoices() {
     // Search by order ID
     if (order.id.toString().includes(orderSearchTerm)) return true;
     
-    // Pretraži po imenu korisnika
+    // Search by user name
     const user = users.find(u => u.id === order.userId);
     if (user && `${user.firstName} ${user.lastName}`.toLowerCase().includes(orderSearchTerm.toLowerCase())) return true;
     
     return false;
   });
   
-  // Formatiraj status narudžbe
+  // Format order status
   const formatOrderStatus = (status: string) => {
     switch (status) {
       case 'pending': return 'Čeka se';
@@ -486,10 +486,10 @@ export default function AdminInvoices() {
     }
   };
   
-  // Kreiraj novi račun
+  // Create new invoice
   const onSubmit = async (data: CreateInvoiceFormValues) => {
     try {
-      // Validacija proizvoda
+      // Product validation
       if (selectedProducts.length === 0) {
         toast({
           title: t('admin.invoices.emptyProductList'),
@@ -505,9 +505,9 @@ export default function AdminInvoices() {
         .toFixed(2);
         
       const tax = "0.00";
-      const total = (parseFloat(subtotal) + 5.00).toFixed(2); // Dodaj 5€ za dostavu
+      const total = (parseFloat(subtotal) + 5.00).toFixed(2); // Add 5€ for shipping
       
-      // Kreiraj podatke korisnika
+      // Create customer data
       const customerName = `${data.firstName} ${data.lastName}`;
       
       // Priprema podataka za API
