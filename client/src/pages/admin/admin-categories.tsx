@@ -98,7 +98,7 @@ export default function AdminCategories() {
     onError: (error: Error) => {
       toast({
         title: t("admin.categories.error"),
-        description: t("admin.categories.errorAddDesc", { error: error.message }),
+        description: `${t("admin.categories.errorAddDesc")}: ${error.message}`,
         variant: "destructive",
       });
     }
@@ -204,30 +204,30 @@ export default function AdminCategories() {
                       deleteCategoryMutation.isPending;
   
   return (
-    <AdminLayout title="Kategorije">
+    <AdminLayout title={t("admin.categories.title")}>
       <Helmet>
-        <title>Upravljanje kategorijama | Admin Panel | Kerzenwelt by Dani</title>
+        <title>{t("admin.categories.pageTitle")} | {t("admin.panel")} | Kerzenwelt by Dani</title>
       </Helmet>
       
       <div className="space-y-6">
         {/* Header s akcijama */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold">Kategorije</h1>
-            <p className="text-muted-foreground">Upravljajte kategorijama proizvoda</p>
+            <h1 className="text-2xl font-bold">{t("admin.categories.title")}</h1>
+            <p className="text-muted-foreground">{t("admin.categories.subtitle")}</p>
           </div>
           
           <Button onClick={handleAddCategory} disabled={isSubmitting}>
-            <Plus className="mr-2 h-4 w-4" /> Nova kategorija
+            <Plus className="mr-2 h-4 w-4" /> {t("admin.categories.addCategory")}
           </Button>
         </div>
         
         {/* Tablica kategorija */}
         <Card>
           <CardHeader>
-            <CardTitle>Sve kategorije</CardTitle>
+            <CardTitle>{t("admin.categories.allCategories")}</CardTitle>
             <CardDescription>
-              Popis svih kategorija proizvoda u trgovini
+              {t("admin.categories.allCategoriesDesc")}
             </CardDescription>
           </CardHeader>
           
@@ -238,18 +238,18 @@ export default function AdminCategories() {
               </div>
             ) : !categories || categories.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                Nema dostupnih kategorija. Dodajte svoju prvu kategoriju.
+                {t("admin.categories.noCategories")}
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[80px]">ID</TableHead>
-                      <TableHead className="w-[80px]">Slika</TableHead>
-                      <TableHead>Naziv</TableHead>
-                      <TableHead className="hidden md:table-cell">Opis</TableHead>
-                      <TableHead className="w-[150px] text-right">Akcije</TableHead>
+                      <TableHead className="w-[80px]">{t("admin.categories.id")}</TableHead>
+                      <TableHead className="w-[80px]">{t("admin.categories.image")}</TableHead>
+                      <TableHead>{t("admin.categories.name")}</TableHead>
+                      <TableHead className="hidden md:table-cell">{t("admin.categories.description")}</TableHead>
+                      <TableHead className="w-[150px] text-right">{t("admin.categories.actions")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -296,12 +296,12 @@ export default function AdminCategories() {
         <DialogContent className="sm:max-w-[550px]">
           <DialogHeader>
             <DialogTitle>
-              {currentCategory ? "Uredi kategoriju" : "Dodaj novu kategoriju"}
+              {currentCategory ? t("admin.categories.editCategory") : t("admin.categories.addNewCategory")}
             </DialogTitle>
             <DialogDescription>
               {currentCategory
-                ? "Uredite podatke kategorije i kliknite Spremi za pohranu promjena."
-                : "Popunite podatke o novoj kategoriji i kliknite Spremi za dodavanje."
+                ? t("admin.categories.editCategoryDesc")
+                : t("admin.categories.addCategoryDesc")
               }
             </DialogDescription>
           </DialogHeader>
@@ -313,9 +313,9 @@ export default function AdminCategories() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Naziv kategorije *</FormLabel>
+                    <FormLabel>{t("admin.categories.nameLabel")} *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Unesite naziv kategorije" {...field} />
+                      <Input placeholder={t("admin.categories.namePlaceholder")} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -327,16 +327,16 @@ export default function AdminCategories() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Opis kategorije *</FormLabel>
+                    <FormLabel>{t("admin.categories.descriptionLabel")} *</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Unesite opis kategorije"
+                        placeholder={t("admin.categories.descriptionPlaceholder")}
                         rows={4}
                         {...field}
                       />
                     </FormControl>
                     <FormDescription>
-                      Opišite kategoriju kako bi kupci imali više informacija.
+                      {t("admin.categories.descriptionHelp")}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -348,21 +348,21 @@ export default function AdminCategories() {
                 name="imageUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>URL slike kategorije</FormLabel>
+                    <FormLabel>{t("admin.categories.imageUrlLabel")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Unesite URL slike kategorije" {...field} />
+                      <Input placeholder={t("admin.categories.imageUrlPlaceholder")} {...field} />
                     </FormControl>
                     <FormDescription>
-                      Dodajte URL slike koja najbolje predstavlja ovu kategoriju.
+                      {t("admin.categories.imageUrlHelp")}
                     </FormDescription>
                     <FormMessage />
                     {field.value && (
                       <div className="mt-2">
-                        <p className="text-sm mb-2">Pregled slike:</p>
+                        <p className="text-sm mb-2">{t("admin.categories.imagePreview")}:</p>
                         <div className="rounded-md overflow-hidden w-full max-w-[200px] h-[120px] bg-secondary">
                           <img
                             src={field.value}
-                            alt="Pregled slike kategorije"
+                            alt={t("admin.categories.imageAlt")}
                             className="w-full h-full object-cover"
                             onError={(e) => {
                               e.currentTarget.src = "https://via.placeholder.com/200x120?text=Slika+nije+dostupna";
