@@ -45,11 +45,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/use-language";
+import { Helmet } from "react-helmet";
 
 export default function AdminColors() {
   const [open, setOpen] = useState(false);
   const [editColor, setEditColor] = useState<Color | null>(null);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const { data: colors, isLoading } = useQuery<Color[]>({
     queryKey: ["/api/colors"],
@@ -168,7 +171,10 @@ export default function AdminColors() {
   };
 
   return (
-    <AdminLayout title="Upravljanje bojama">
+    <AdminLayout title={t("admin.colors.title")}>
+      <Helmet>
+        <title>{t("admin.colors.pageTitle")} | {t("admin.panelTitle")} | Kerzenwelt by Dani</title>
+      </Helmet>
       <div className="p-6 space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Upravljanje bojama</h1>

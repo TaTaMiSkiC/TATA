@@ -194,6 +194,7 @@ export const translations: Record<Language, Record<string, string>> = {
     
     // Admin Colors Page
     "admin.colors.title": "Farben",
+    "admin.colors.pageTitle": "Farbverwaltung",
     "admin.colors.subtitle": "Verwalten Sie Produktfarben in Ihrem Shop",
     "admin.colors.allColors": "Alle Farben",
     "admin.colors.allColorsDesc": "Liste aller verfügbaren Farben für Ihre Produkte",
@@ -208,7 +209,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.active": "Aktiv",
     "admin.colors.inactive": "Inaktiv",
     "admin.colors.addColor": "Neue Farbe hinzufügen",
+    "admin.colors.addNewColor": "Neue Farbe hinzufügen",
     "admin.colors.editColor": "Farbe bearbeiten",
+    "admin.colors.nameLabel": "Name",
+    "admin.colors.namePlaceholder": "Farbname eingeben",
+    "admin.colors.codeLabel": "Farbcode",
+    "admin.colors.codePlaceholder": "Farbcode eingeben (z.B. #FF5733)",
+    "admin.colors.descriptionLabel": "Beschreibung",
+    "admin.colors.descriptionPlaceholder": "Farbbeschreibung eingeben",
     "admin.colors.addColorDesc": "Geben Sie die Details der neuen Farbe ein und klicken Sie auf Speichern, um sie hinzuzufügen.",
     "admin.colors.editColorDesc": "Bearbeiten Sie die Farbdetails und klicken Sie auf Speichern, um Änderungen zu speichern.",
     "admin.colors.colorName": "Farbname *",
