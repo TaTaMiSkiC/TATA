@@ -1,11 +1,13 @@
 import { Link } from "wouter";
 import { Category } from "@shared/schema";
+import { useLanguage } from "@/hooks/use-language";
 
 interface CategoryCardProps {
   category: Category;
 }
 
 export default function CategoryCard({ category }: CategoryCardProps) {
+  const { t } = useLanguage();
   const { id, name, description, imageUrl = '' } = category;
   
   return (
@@ -19,7 +21,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
         <div>
           <h3 className="heading text-white text-2xl font-semibold mb-2">{name}</h3>
           <Link href={`/products?category=${id}`} className="inline-block text-white font-accent text-sm border-b border-white pb-1 hover:border-primary hover:text-primary transition-colors cursor-pointer">
-            Istraži kolekciju →
+            {t('home.exploreCollection')}
           </Link>
         </div>
       </div>
