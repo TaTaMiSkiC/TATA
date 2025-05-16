@@ -31,7 +31,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.cancelled": "Storniert",
     "orders.date": "Datum",
     "orders.items": "Artikel",
+    "orders.totalItems": "Gesamtartikel",
     "orders.total": "Gesamt",
+    "orders.product": "Produkt",
     "orders.subtotal": "Zwischensumme",
     "orders.shipping": "Versand",
     "orders.discount": "Rabatt",
@@ -55,6 +57,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.quantity": "Menge",
     "orders.unitPrice": "Preis",
     "orders.itemTotal": "Gesamt",
+    "orders.pricesIncludeTax": "Alle Preise inkl. MwSt.",
+    "orders.orderItems": "Bestellpositionen",
+    "orders.orderDetails": "Bestelldetails",
     "orders.scent": "Duft",
     "orders.color": "Farbe",
     "orders.colors": "Farben",
@@ -2889,7 +2894,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.cancelled": "Cancelled",
     "orders.date": "Date",
     "orders.items": "Items",
+    "orders.totalItems": "Total items",
     "orders.total": "Total",
+    "orders.product": "Product",
     "orders.subtotal": "Subtotal",
     "orders.shipping": "Shipping",
     "orders.discount": "Discount",
@@ -4921,6 +4928,13 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   sl: {
+    // Languages
+    "languages.croatian": "Hrvaški",
+    "languages.english": "Angleški",
+    "languages.german": "Nemški", 
+    "languages.italian": "Italijanski",
+    "languages.slovenian": "Slovenski",
+    
     // Products page
     "products.allProducts": "Vsi Izdelki",
     "products.product": "Izdelek",

@@ -717,7 +717,7 @@ export default function OrderDetailsPage() {
           <div className="flex items-center gap-3">
             <Select 
               value={selectedLanguage} 
-              onValueChange={(value: 'hr' | 'en' | 'de') => setSelectedLanguage(value)}
+              onValueChange={(value: 'hr' | 'en' | 'de' | 'it' | 'sl') => setSelectedLanguage(value)}
             >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder={t('orders.invoiceLanguage')} />
@@ -726,6 +726,8 @@ export default function OrderDetailsPage() {
                 <SelectItem value="hr">{t('languages.croatian')}</SelectItem>
                 <SelectItem value="en">{t('languages.english')}</SelectItem>
                 <SelectItem value="de">{t('languages.german')}</SelectItem>
+                <SelectItem value="it">{t('languages.italian')}</SelectItem>
+                <SelectItem value="sl">{t('languages.slovenian')}</SelectItem>
               </SelectContent>
             </Select>
             
