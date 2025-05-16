@@ -2658,6 +2658,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "dialog.delete": "Izbriši",
     "dialog.cancel": "Odustani",
     "dialog.confirm": "Potvrdi",
+    
+    // Instagram
+    "instagram.followUs": "Pratite nas na Instagramu",
+    "instagram.followUsText": "Pratite nas na Instagramu za najnovije kreacije i inspiracije",
+    "instagram.loadingPhotos": "Učitavanje fotografija...",
+    "instagram.emptyFeed": "Instagram feed je prazan",
 
     // Newsletter
     "newsletter.title": "Pretplatite se na novosti",
@@ -4491,6 +4497,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "footer.about.text":
       "Candele artigianali con ingredienti naturali. Dalla nostra famiglia alla tua casa.",
     "footer.quickLinks": "Link rapidi",
+    
+    // Instagram
+    "instagram.followUs": "Seguici su Instagram",
+    "instagram.followUsText": "Seguici su Instagram per le ultime creazioni e ispirazioni",
+    "instagram.loadingPhotos": "Caricamento foto...",
+    "instagram.emptyFeed": "Feed Instagram vuoto",
     "footer.customerSupport": "Assistenza clienti",
     "footer.contact": "Contatti",
     "footer.followUs": "Seguici",
@@ -5453,6 +5465,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "dialog.delete": "Izbriši",
     "dialog.cancel": "Prekliči",
     "dialog.confirm": "Potrdi",
+    
+    // Instagram
+    "instagram.followUs": "Sledite nam na Instagramu",
+    "instagram.followUsText": "Sledite nam na Instagramu za najnovejše kreacije in navdihe",
+    "instagram.loadingPhotos": "Nalaganje fotografij...",
+    "instagram.emptyFeed": "Instagram vir je prazen",
 
     // Newsletter
     "newsletter.title": "Naročite se na naše novice",
