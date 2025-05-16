@@ -218,22 +218,27 @@ export default function OrderDetailsPage() {
     }
   }, [user, navigate]);
   
+  // Efekt koji sinkronizira globalni jezik s odabranim jezikom za PDF
+  useEffect(() => {
+    setSelectedLanguage(language as 'hr' | 'en' | 'de' | 'it' | 'sl');
+  }, [language]);
+  
   const isLoading = isLoadingOrder || isLoadingItems || isLoadingProducts || isLoadingInvoice;
   const error = orderError || itemsError || invoiceError;
   
-  // Funkcija za prevođenje načina plaćanja
-  const getPaymentMethodText = (method: string | undefined, lang: string) => {
-    if (!method) return lang === 'hr' ? 'Nije definirano' : lang === 'de' ? 'Nicht definiert' : 'Not defined';
+  // Funkcija za prevođenje načina plaćanja koristeći globalni sustav za prijevode
+  const getPaymentMethodText = (method: string | undefined) => {
+    if (!method) return t('orders.notDefined');
     
     switch(method) {
       case 'cash': 
-        return lang === 'hr' ? 'Gotovina' : lang === 'de' ? 'Barzahlung' : 'Cash';
+        return t('orders.cash');
       case 'bank_transfer': 
-        return lang === 'hr' ? 'Bankovni transfer' : lang === 'de' ? 'Banküberweisung' : 'Bank Transfer';
+        return t('orders.bankTransfer');
       case 'paypal': 
-        return 'PayPal';
+        return t('orders.paypal');
       case 'credit_card':
-        return lang === 'hr' ? 'Kreditna kartica' : lang === 'de' ? 'Kreditkarte' : 'Credit Card';
+        return t('orders.creditCard');
       default:
         // Za nepoznati tip, vrati formatiran tekst
         const formattedMethod = method
@@ -762,7 +767,7 @@ export default function OrderDetailsPage() {
                 <span className="text-muted-foreground">Status:</span>
                 <span className="flex items-center">
                   <OrderStatusIcon status={orderWithItems.status} />
-                  <span className="ml-2">{getStatusText(orderWithItems.status)}</span>
+                  <span className="ml-2">{getStatusText(orderWithItems.status, t)}</span>
                 </span>
               </div>
               <div className="flex justify-between">
@@ -772,7 +777,7 @@ export default function OrderDetailsPage() {
               
               {orderWithItems.invoice && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">{translate('invoiceNumber')}:</span>
+                  <span className="text-muted-foreground">{t('orders.invoiceNumber')}:</span>
                   <span className="font-medium text-primary">{orderWithItems.invoice.invoiceNumber}</span>
                 </div>
               )}
@@ -930,14 +935,14 @@ export default function OrderDetailsPage() {
                           {/* Prikaz mirisa */}
                           {scent && (
                             <div className="inline-flex items-center text-sm bg-amber-50 rounded-full px-2 py-0.5 border border-amber-100">
-                              <span className="font-medium text-amber-800 mr-1">{translate('scent')}:</span> {scent}
+                              <span className="font-medium text-amber-800 mr-1">{t('orders.scent')}:</span> {scent}
                             </div>
                           )}
                           
                           {/* Prikaz jedne boje */}
                           {color && !item.hasMultipleColors && (
                             <div className="inline-flex items-center text-sm bg-blue-50 rounded-full px-2 py-0.5 border border-blue-100">
-                              <span className="font-medium text-blue-800 mr-1">{translate('color')}:</span>
+                              <span className="font-medium text-blue-800 mr-1">{t('orders.color')}:</span>
                               {products?.flatMap(p => 
                                 p.id === item.productId ? (p as any).colors || [] : []
                               ).find(c => c?.name === color)?.hexValue ? (
@@ -956,7 +961,7 @@ export default function OrderDetailsPage() {
                           {item.hasMultipleColors && item.colorName && (
                             <div className="flex flex-col gap-1">
                               <div className="inline-flex items-center text-sm bg-purple-50 rounded-full px-2 py-0.5 border border-purple-100">
-                                <span className="font-medium text-purple-800 mr-1">{translate('colors')}:</span>
+                                <span className="font-medium text-purple-800 mr-1">{t('orders.colors')}:</span>
                                 {item.colorName}
                               </div>
                               
@@ -1002,7 +1007,7 @@ export default function OrderDetailsPage() {
                           {/* Falback za stare načine prikaza (ako postoji) */}
                           {item.hasMultipleColors && color && !item.colorIds && (
                             <div className="inline-flex items-center text-sm bg-blue-50 rounded-full px-2 py-0.5 border border-blue-100 flex-wrap">
-                              <span className="font-medium text-blue-800 mr-1">{translate('colors')}:</span>
+                              <span className="font-medium text-blue-800 mr-1">{t('orders.colors')}:</span>
                               {color.split(',').map((colorName, index) => {
                                 const trimmedColor = colorName.trim();
                                 const productColor = products?.flatMap(p => 
