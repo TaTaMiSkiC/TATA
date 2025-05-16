@@ -841,7 +841,7 @@ export default function OrderDetailsPage() {
           {orderWithItems.customerNote && (
             <Card>
               <CardHeader>
-                <CardTitle>Napomena kupca</CardTitle>
+                <CardTitle>{t('orders.customerNote')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="p-3 bg-neutral-50 rounded-md border border-neutral-100 text-neutral-800">
@@ -853,34 +853,34 @@ export default function OrderDetailsPage() {
           
           <Card>
             <CardHeader>
-              <CardTitle>Sažetak cijene</CardTitle>
+              <CardTitle>{t('orders.priceSummary')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Podzbir:</span>
+                <span className="text-muted-foreground">{t('orders.subtotal')}:</span>
                 <span>{orderWithItems.subtotal || '0.00'} €</span>
               </div>
               {orderWithItems.discountAmount && parseFloat(orderWithItems.discountAmount) > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Popust:</span>
+                  <span className="text-muted-foreground">{t('orders.discount')}:</span>
                   <span className="text-red-500">-{orderWithItems.discountAmount} €</span>
                 </div>
               )}
               {orderWithItems.shippingCost && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Dostava:</span>
+                  <span className="text-muted-foreground">{t('orders.shipping')}:</span>
                   <span>{orderWithItems.shippingCost} €</span>
                 </div>
               )}
               {orderWithItems.taxAmount && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">PDV (25%):</span>
+                  <span className="text-muted-foreground">{t('orders.tax')}:</span>
                   <span>{orderWithItems.taxAmount} €</span>
                 </div>
               )}
               <Separator />
               <div className="flex justify-between font-semibold">
-                <span>Ukupno:</span>
+                <span>{t('orders.total')}:</span>
                 <span>{orderWithItems.total} €</span>
               </div>
             </CardContent>
@@ -889,9 +889,9 @@ export default function OrderDetailsPage() {
         
         <Card className="mt-6">
           <CardHeader>
-            <CardTitle>Stavke narudžbe</CardTitle>
+            <CardTitle>{t('orders.orderItems')}</CardTitle>
             <CardDescription>
-              {orderWithItems.items.length} {orderWithItems.items.length === 1 ? 'proizvod' : 'proizvoda'}
+              {orderWithItems.items.length} {orderWithItems.items.length === 1 ? t('orders.product') : t('orders.products')}
             </CardDescription>
           </CardHeader>
           <CardContent>
