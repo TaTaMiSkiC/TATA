@@ -262,8 +262,8 @@ export default function OrderDetailsPage() {
     if (!orderWithItems.items || !Array.isArray(orderWithItems.items) || orderWithItems.items.length === 0) {
       console.error("Nema stavki narudžbe ili nije ispravan format:", orderWithItems.items);
       toast({
-        title: "Greška pri generiranju računa",
-        description: "Nije moguće generirati račun jer nema stavki narudžbe.",
+        title: t('orders.invoiceGenerationError'),
+        description: t('orders.noOrderItemsForInvoice'),
         variant: "destructive",
       });
       setGeneratingInvoice(false);
@@ -703,13 +703,13 @@ export default function OrderDetailsPage() {
       <div className="container mx-auto py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">
-            Narudžba #{orderWithItems.id}
+            {t('orders.order')} #{orderWithItems.id}
             <OrderStatusBadge status={orderWithItems.status} />
           </h1>
           
           <Button variant="outline" onClick={() => navigate('/orders')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Natrag na narudžbe
+            {t('orders.backToOrders')}
           </Button>
         </div>
         
@@ -720,7 +720,7 @@ export default function OrderDetailsPage() {
               onValueChange={(value: 'hr' | 'en' | 'de') => setSelectedLanguage(value)}
             >
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Jezik računa" />
+                <SelectValue placeholder={t('orders.invoiceLanguage')} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="hr">Hrvatski</SelectItem>
@@ -751,7 +751,7 @@ export default function OrderDetailsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Podaci o narudžbi</CardTitle>
+              <CardTitle>{t('orders.orderDetails')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex justify-between">
