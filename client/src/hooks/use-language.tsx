@@ -14,36 +14,39 @@ export const translations: Record<Language, Record<string, string>> = {
   de: {
     // Home Page
     "home.exploreCollection": "Kollektion erkunden →",
-    
+
     // Auth Success/Error Messages
     "auth.loginSuccessTitle": "Anmeldung erfolgreich",
     "auth.loginSuccessMessage": "Willkommen zurück, {username}!",
     "auth.loginErrorTitle": "Anmeldung fehlgeschlagen",
     "auth.loginErrorMessage": "Falscher Benutzername oder Passwort.",
-    
+
     "auth.registerSuccessTitle": "Registrierung erfolgreich",
     "auth.registerSuccessMessage": "Willkommen, {username}!",
     "auth.registerErrorTitle": "Registrierung fehlgeschlagen",
     "auth.registerErrorMessage": "Benutzername oder E-Mail existiert bereits.",
-    
+
     "auth.logoutSuccessTitle": "Abmeldung erfolgreich",
     "auth.logoutSuccessMessage": "Sie haben sich erfolgreich abgemeldet.",
     "auth.logoutErrorTitle": "Abmeldung fehlgeschlagen",
-    "auth.logoutErrorMessage": "Es gab ein Problem bei der Abmeldung. Bitte versuchen Sie es erneut.",
-    
+    "auth.logoutErrorMessage":
+      "Es gab ein Problem bei der Abmeldung. Bitte versuchen Sie es erneut.",
+
     "auth.verificationNeededTitle": "Verifizierung erforderlich",
-    
+
     // Languages
     "languages.croatian": "Kroatisch",
     "languages.english": "Englisch",
     "languages.german": "Deutsch",
     "languages.italian": "Italienisch",
     "languages.slovenian": "Slowenisch",
-    
+
     // Auth Page
     "auth.title": "Anmelden / Registrieren | Kerzenwelt by Dani",
-    "auth.description": "Melden Sie sich an oder registrieren Sie sich, um handgefertigte Kerzen zu kaufen, Ihre Bestellungen zu verfolgen und von Sonderangeboten zu profitieren.",
+    "auth.description":
+      "Melden Sie sich an oder registrieren Sie sich, um handgefertigte Kerzen zu kaufen, Ihre Bestellungen zu verfolgen und von Sonderangeboten zu profitieren.",
     "auth.login": "Anmelden",
+    "products.productCount": " Produkte",
     "auth.register": "Registrieren",
     "auth.loginTitle": "Anmelden",
     "auth.loginDescription": "Melden Sie sich bei Ihrem Kerzenwelt-Konto an",
@@ -67,27 +70,37 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.loginProcessing": "Anmeldung läuft...",
     "auth.registerProcessing": "Registrierung läuft...",
     "auth.welcome": "Willkommen in der Kerzenwelt",
-    "auth.welcomeDescription": "Handgefertigte Kerzen, mit Sorgfalt und Liebe für Sie hergestellt. Entdecken Sie den Unterschied, den natürliche Zutaten und handwerkliches Können in Ihr Zuhause bringen können.",
+    "auth.welcomeDescription":
+      "Handgefertigte Kerzen, mit Sorgfalt und Liebe für Sie hergestellt. Entdecken Sie den Unterschied, den natürliche Zutaten und handwerkliches Können in Ihr Zuhause bringen können.",
     "auth.usernameRequired": "Benutzername ist erforderlich",
-    "auth.emailVerificationSuccess": "Ihre E-Mail-Adresse wurde erfolgreich verifiziert. Sie können sich jetzt anmelden.",
-    "auth.emailVerificationFailed": "E-Mail-Verifizierung fehlgeschlagen. Der Link ist möglicherweise abgelaufen oder ungültig.",
-    "auth.emailVerificationError": "Bei der Überprüfung Ihrer E-Mail ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
-    "auth.emailNotVerified": "Ihre E-Mail-Adresse wurde noch nicht verifiziert. Bitte überprüfen Sie Ihren Posteingang und klicken Sie auf den Bestätigungslink.",
-    "auth.registrationSuccessVerifyEmail": "Registrierung erfolgreich! Bitte überprüfen Sie Ihren Posteingang, um Ihre E-Mail-Adresse zu bestätigen.",
+    "auth.emailVerificationSuccess":
+      "Ihre E-Mail-Adresse wurde erfolgreich verifiziert. Sie können sich jetzt anmelden.",
+    "auth.emailVerificationFailed":
+      "E-Mail-Verifizierung fehlgeschlagen. Der Link ist möglicherweise abgelaufen oder ungültig.",
+    "auth.emailVerificationError":
+      "Bei der Überprüfung Ihrer E-Mail ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+    "auth.emailNotVerified":
+      "Ihre E-Mail-Adresse wurde noch nicht verifiziert. Bitte überprüfen Sie Ihren Posteingang und klicken Sie auf den Bestätigungslink.",
+    "auth.registrationSuccessVerifyEmail":
+      "Registrierung erfolgreich! Bitte überprüfen Sie Ihren Posteingang, um Ihre E-Mail-Adresse zu bestätigen.",
     "auth.verificationSuccessTitle": "Verifizierung erfolgreich",
     "auth.verificationErrorTitle": "Verifizierung fehlgeschlagen",
-    "auth.usernameMinLength": "Benutzername muss mindestens 3 Zeichen lang sein",
+    "auth.usernameMinLength":
+      "Benutzername muss mindestens 3 Zeichen lang sein",
     "auth.emailRequired": "E-Mail-Adresse ist erforderlich",
     "auth.emailInvalid": "Ungültige E-Mail-Adresse",
     "auth.passwordRequired": "Passwort ist erforderlich",
     "auth.passwordMinLength": "Passwort muss mindestens 6 Zeichen lang sein",
     "auth.passwordsDoNotMatch": "Passwörter stimmen nicht überein",
     "auth.step1": "Erstellen Sie Ihr Konto und beginnen Sie mit dem Einkaufen",
-    "auth.step2": "Entdecken Sie ein breites Sortiment an handgefertigten Kerzen",
-    "auth.step3": "Verfolgen Sie Ihre Bestellungen und genießen Sie Sondervorteile",
-    "auth.quote": "Jede Kerze, die unsere Werkstatt verlässt, trägt ein Stück unserer Seele und Leidenschaft für dieses Handwerk.",
+    "auth.step2":
+      "Entdecken Sie ein breites Sortiment an handgefertigten Kerzen",
+    "auth.step3":
+      "Verfolgen Sie Ihre Bestellungen und genießen Sie Sondervorteile",
+    "auth.quote":
+      "Jede Kerze, die unsere Werkstatt verlässt, trägt ein Stück unserer Seele und Leidenschaft für dieses Handwerk.",
     "auth.founder": "- Dani, Gründerin",
-    
+
     // Orders Page
     "orders.myOrders": "Meine Bestellungen",
     "orders.orderHistory": "Bestellverlauf",
@@ -101,7 +114,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.paymentMethod": "Zahlungsmethode",
     "orders.actions": "Aktionen",
     "orders.details": "Details",
-    "orders.loadingError": "Beim Laden der Bestellungen ist ein Fehler aufgetreten.",
+    "orders.loadingError":
+      "Beim Laden der Bestellungen ist ein Fehler aufgetreten.",
     "orders.tryAgain": "Bitte versuchen Sie es später erneut.",
     "orders.bankTransfer": "Banküberweisung",
     "orders.pending": "Ausstehend",
@@ -176,6 +190,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "products.products": "Produkte",
     "products.filters": "Filter",
     "products.search": "Suche",
+    "products.searchProducts": "Produkt suchen...",
     "products.searchPlaceholder": "Produkte suchen...",
     "products.categories": "Kategorien",
     "products.allCategories": "Alle Kategorien",
@@ -1716,36 +1731,44 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.loginSuccessMessage": "Dobrodošli natrag, {username}!",
     "auth.loginErrorTitle": "Prijava nije uspjela",
     "auth.loginErrorMessage": "Pogrešno korisničko ime ili lozinka.",
-    
+
     "auth.registerSuccessTitle": "Registracija uspješna",
     "auth.registerSuccessMessage": "Dobrodošli, {username}!",
     "auth.registerErrorTitle": "Registracija nije uspjela",
     "auth.registerErrorMessage": "Korisničko ime ili email već postoji.",
-    
+
     "auth.logoutSuccessTitle": "Odjava uspješna",
     "auth.logoutSuccessMessage": "Uspješno ste se odjavili iz sustava.",
     "auth.logoutErrorTitle": "Odjava nije uspjela",
-    "auth.logoutErrorMessage": "Došlo je do problema prilikom odjave. Molimo pokušajte ponovno.",
-    
+    "auth.logoutErrorMessage":
+      "Došlo je do problema prilikom odjave. Molimo pokušajte ponovno.",
+
     "auth.verificationNeededTitle": "Potrebna verifikacija",
-    "auth.emailVerificationSuccess": "Vaša email adresa je uspješno potvrđena. Sada se možete prijaviti.",
-    "auth.emailVerificationFailed": "Potvrda email adrese nije uspjela. Poveznica je možda istekla ili nije važeća.",
-    "auth.emailVerificationError": "Došlo je do pogreške prilikom potvrde vaše email adrese. Molimo pokušajte ponovno kasnije.",
-    "auth.emailNotVerified": "Vaša email adresa još nije potvrđena. Provjerite svoj inbox i kliknite na poveznicu za potvrdu.",
-    "auth.registrationSuccessVerifyEmail": "Registracija uspješna! Provjerite svoj inbox za potvrdu email adrese.",
+    "auth.emailVerificationSuccess":
+      "Vaša email adresa je uspješno potvrđena. Sada se možete prijaviti.",
+    "auth.emailVerificationFailed":
+      "Potvrda email adrese nije uspjela. Poveznica je možda istekla ili nije važeća.",
+    "auth.emailVerificationError":
+      "Došlo je do pogreške prilikom potvrde vaše email adrese. Molimo pokušajte ponovno kasnije.",
+    "auth.emailNotVerified":
+      "Vaša email adresa još nije potvrđena. Provjerite svoj inbox i kliknite na poveznicu za potvrdu.",
+    "auth.registrationSuccessVerifyEmail":
+      "Registracija uspješna! Provjerite svoj inbox za potvrdu email adrese.",
     "auth.verificationSuccessTitle": "Potvrda uspješna",
     "auth.verificationErrorTitle": "Potvrda nije uspjela",
-    
+
     // Languages
     "languages.croatian": "Hrvatski",
     "languages.english": "Engleski",
     "languages.german": "Njemački",
     "languages.italian": "Talijanski",
     "languages.slovenian": "Slovenski",
-    
+
     // Auth Page
     "auth.title": "Prijava / Registracija | Kerzenwelt by Dani",
-    "auth.description": "Prijavite se ili registrirajte kako biste kupovali ručno izrađene svijeće, pratili svoje narudžbe i uživali u posebnim ponudama.",
+    "auth.description":
+      "Prijavite se ili registrirajte kako biste kupovali ručno izrađene svijeće, pratili svoje narudžbe i uživali u posebnim ponudama.",
+    "products.productCount": " Proizvoda",
     "auth.login": "Prijava",
     "auth.register": "Registracija",
     "auth.loginTitle": "Prijava",
@@ -1770,7 +1793,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.loginProcessing": "Prijava u tijeku...",
     "auth.registerProcessing": "Registracija u tijeku...",
     "auth.welcome": "Dobrodošli u Kerzenwelt svijet",
-    "auth.welcomeDescription": "Ručno izrađene svijeće, stvorene s pažnjom i ljubavlju, baš za vas. Otkrijte razliku koju prirodni sastojci i umijeće izrade mogu donijeti vašem domu.",
+    "auth.welcomeDescription":
+      "Ručno izrađene svijeće, stvorene s pažnjom i ljubavlju, baš za vas. Otkrijte razliku koju prirodni sastojci i umijeće izrade mogu donijeti vašem domu.",
     "auth.usernameRequired": "Korisničko ime je obavezno",
     "auth.usernameMinLength": "Korisničko ime mora imati barem 3 znaka",
     "auth.emailRequired": "Email adresa je obavezna",
@@ -1781,9 +1805,10 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.step1": "Stvorite svoj račun i započnite kupovinu",
     "auth.step2": "Otkrijte široki asortiman ručno izrađenih svijeća",
     "auth.step3": "Pratite svoje narudžbe i uživajte u posebnim pogodnostima",
-    "auth.quote": "Svaka svijeća koja napusti našu radionicu nosi djelić naše duše i strasti prema ovom zanatu.",
+    "auth.quote":
+      "Svaka svijeća koja napusti našu radionicu nosi djelić naše duše i strasti prema ovom zanatu.",
     "auth.founder": "- Dani, osnivačica",
-    
+
     // Orders Page
     "orders.myOrders": "Moje narudžbe",
     "orders.orderHistory": "Povijest narudžbi",
@@ -3118,7 +3143,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "product.materials": "Materijali",
     "product.instructions": "Upute za korištenje",
     "product.maintenance": "Održavanje",
-    
+
     // Stranica proizvoda
     "products.allProducts": "Svi proizvodi",
     "products.products": "Proizvodi",
@@ -3138,7 +3163,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "products.priceDesc": "Cijena (najviša prvo)",
     "products.nameAZ": "Ime (A-Z)",
     "products.noProducts": "Nema pronađenih proizvoda",
-    "products.tryDifferent": "Pokušajte s drugačijim filterima ili pogledajte našu cjelokupnu ponudu.",
+    "products.tryDifferent":
+      "Pokušajte s drugačijim filterima ili pogledajte našu cjelokupnu ponudu.",
     "products.showAll": "Prikaži sve proizvode",
     "products.productCount": "{count} proizvoda",
     "products.productCountSingular": "{count} proizvod",
@@ -3352,42 +3378,49 @@ export const translations: Record<Language, Record<string, string>> = {
   en: {
     // Home Page
     "home.exploreCollection": "Explore Collection →",
-    
+
     // Auth Success/Error Messages
     "auth.loginSuccessTitle": "Login successful",
     "auth.loginSuccessMessage": "Welcome back, {username}!",
     "auth.loginErrorTitle": "Login failed",
     "auth.loginErrorMessage": "Incorrect username or password.",
-    
+
     "auth.registerSuccessTitle": "Registration successful",
     "auth.registerSuccessMessage": "Welcome, {username}!",
     "auth.registerErrorTitle": "Registration failed",
     "auth.registerErrorMessage": "Username or email already exists.",
-    
+
     "auth.logoutSuccessTitle": "Logout successful",
     "auth.logoutSuccessMessage": "You have been successfully logged out.",
     "auth.logoutErrorTitle": "Logout failed",
-    "auth.logoutErrorMessage": "There was a problem logging you out. Please try again.",
-    
+    "auth.logoutErrorMessage":
+      "There was a problem logging you out. Please try again.",
+
     "auth.verificationNeededTitle": "Verification required",
-    "auth.emailVerificationSuccess": "Your email address has been successfully verified. You can now log in.",
-    "auth.emailVerificationFailed": "Email verification failed. The link may have expired or is invalid.",
-    "auth.emailVerificationError": "An error occurred while verifying your email. Please try again later.",
-    "auth.emailNotVerified": "Your email address has not been verified yet. Please check your inbox and click on the confirmation link.",
-    "auth.registrationSuccessVerifyEmail": "Registration successful! Please check your inbox to confirm your email address.",
+    "auth.emailVerificationSuccess":
+      "Your email address has been successfully verified. You can now log in.",
+    "auth.emailVerificationFailed":
+      "Email verification failed. The link may have expired or is invalid.",
+    "auth.emailVerificationError":
+      "An error occurred while verifying your email. Please try again later.",
+    "auth.emailNotVerified":
+      "Your email address has not been verified yet. Please check your inbox and click on the confirmation link.",
+    "auth.registrationSuccessVerifyEmail":
+      "Registration successful! Please check your inbox to confirm your email address.",
     "auth.verificationSuccessTitle": "Verification Successful",
     "auth.verificationErrorTitle": "Verification Failed",
-    
+
     // Languages
     "languages.croatian": "Croatian",
     "languages.english": "English",
     "languages.german": "German",
     "languages.italian": "Italian",
     "languages.slovenian": "Slovenian",
-    
+
     // Auth Page
     "auth.title": "Login / Register | Kerzenwelt by Dani",
-    "auth.description": "Log in or register to shop for handmade candles, track your orders, and enjoy special offers.",
+    "auth.description":
+      "Log in or register to shop for handmade candles, track your orders, and enjoy special offers.",
     "auth.login": "Login",
     "auth.register": "Register",
     "auth.loginTitle": "Login",
@@ -3412,7 +3445,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.loginProcessing": "Logging in...",
     "auth.registerProcessing": "Registering...",
     "auth.welcome": "Welcome to Kerzenwelt",
-    "auth.welcomeDescription": "Handmade candles, created with care and love, just for you. Discover the difference that natural ingredients and craftsmanship can bring to your home.",
+    "auth.welcomeDescription":
+      "Handmade candles, created with care and love, just for you. Discover the difference that natural ingredients and craftsmanship can bring to your home.",
     "auth.usernameRequired": "Username is required",
     "auth.usernameMinLength": "Username must be at least 3 characters",
     "auth.emailRequired": "Email address is required",
@@ -3423,11 +3457,13 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.step1": "Create your account and start shopping",
     "auth.step2": "Discover a wide range of handmade candles",
     "auth.step3": "Track your orders and enjoy special benefits",
-    "auth.quote": "Every candle that leaves our workshop carries a piece of our soul and passion for this craft.",
+    "auth.quote":
+      "Every candle that leaves our workshop carries a piece of our soul and passion for this craft.",
     "auth.founder": "- Dani, founder",
-    
+
     // Orders Page
     "orders.myOrders": "My Orders",
+    "products.productCount": " Products",
     "orders.orderHistory": "Order History",
     "orders.noOrders": "You don't have any orders",
     "orders.startShopping": "Time to start your first purchase!",
@@ -4470,42 +4506,49 @@ export const translations: Record<Language, Record<string, string>> = {
   it: {
     // Home Page
     "home.exploreCollection": "Esplora la collezione →",
-    
+
     // Auth Success/Error Messages
     "auth.loginSuccessTitle": "Accesso riuscito",
     "auth.loginSuccessMessage": "Bentornato, {username}!",
     "auth.loginErrorTitle": "Accesso fallito",
     "auth.loginErrorMessage": "Nome utente o password errati.",
-    
+
     "auth.registerSuccessTitle": "Registrazione riuscita",
     "auth.registerSuccessMessage": "Benvenuto, {username}!",
     "auth.registerErrorTitle": "Registrazione fallita",
     "auth.registerErrorMessage": "Nome utente o email già esistente.",
-    
+
     "auth.logoutSuccessTitle": "Disconnessione riuscita",
     "auth.logoutSuccessMessage": "Sei stato disconnesso con successo.",
     "auth.logoutErrorTitle": "Disconnessione fallita",
-    "auth.logoutErrorMessage": "Si è verificato un problema durante la disconnessione. Riprova.",
-    
+    "auth.logoutErrorMessage":
+      "Si è verificato un problema durante la disconnessione. Riprova.",
+
     "auth.verificationNeededTitle": "Verifica necessaria",
-    "auth.emailVerificationSuccess": "Il tuo indirizzo email è stato verificato con successo. Ora puoi accedere.",
-    "auth.emailVerificationFailed": "Verifica email fallita. Il link potrebbe essere scaduto o non valido.",
-    "auth.emailVerificationError": "Si è verificato un errore durante la verifica della tua email. Riprova più tardi.",
-    "auth.emailNotVerified": "Il tuo indirizzo email non è ancora stato verificato. Controlla la tua casella di posta e clicca sul link di conferma.",
-    "auth.registrationSuccessVerifyEmail": "Registrazione riuscita! Controlla la tua casella di posta per confermare il tuo indirizzo email.",
+    "auth.emailVerificationSuccess":
+      "Il tuo indirizzo email è stato verificato con successo. Ora puoi accedere.",
+    "auth.emailVerificationFailed":
+      "Verifica email fallita. Il link potrebbe essere scaduto o non valido.",
+    "auth.emailVerificationError":
+      "Si è verificato un errore durante la verifica della tua email. Riprova più tardi.",
+    "auth.emailNotVerified":
+      "Il tuo indirizzo email non è ancora stato verificato. Controlla la tua casella di posta e clicca sul link di conferma.",
+    "auth.registrationSuccessVerifyEmail":
+      "Registrazione riuscita! Controlla la tua casella di posta per confermare il tuo indirizzo email.",
     "auth.verificationSuccessTitle": "Verifica riuscita",
     "auth.verificationErrorTitle": "Verifica fallita",
-    
+
     // Languages
     "languages.croatian": "Croato",
     "languages.english": "Inglese",
     "languages.german": "Tedesco",
     "languages.italian": "Italiano",
     "languages.slovenian": "Sloveno",
-    
+
     // Auth Page
     "auth.title": "Accesso / Registrazione | Kerzenwelt by Dani",
-    "auth.description": "Accedi o registrati per acquistare candele artigianali, tracciare i tuoi ordini e godere di offerte speciali.",
+    "auth.description":
+      "Accedi o registrati per acquistare candele artigianali, tracciare i tuoi ordini e godere di offerte speciali.",
     "auth.login": "Accesso",
     "auth.register": "Registrazione",
     "auth.loginTitle": "Accesso",
@@ -4530,9 +4573,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.loginProcessing": "Accesso in corso...",
     "auth.registerProcessing": "Registrazione in corso...",
     "auth.welcome": "Benvenuto nel mondo Kerzenwelt",
-    "auth.welcomeDescription": "Candele artigianali, create con cura e amore, proprio per te. Scopri la differenza che ingredienti naturali e artigianalità possono portare nella tua casa.",
+    "auth.welcomeDescription":
+      "Candele artigianali, create con cura e amore, proprio per te. Scopri la differenza che ingredienti naturali e artigianalità possono portare nella tua casa.",
     "auth.usernameRequired": "Nome utente obbligatorio",
-    "auth.usernameMinLength": "Il nome utente deve contenere almeno 3 caratteri",
+    "auth.usernameMinLength":
+      "Il nome utente deve contenere almeno 3 caratteri",
     "auth.emailRequired": "Indirizzo email obbligatorio",
     "auth.emailInvalid": "Indirizzo email non valido",
     "auth.passwordRequired": "Password obbligatoria",
@@ -4541,9 +4586,10 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.step1": "Crea il tuo account e inizia a fare acquisti",
     "auth.step2": "Scopri un'ampia gamma di candele artigianali",
     "auth.step3": "Traccia i tuoi ordini e goditi vantaggi speciali",
-    "auth.quote": "Ogni candela che lascia il nostro laboratorio porta con sé un pezzo della nostra anima e passione per questo mestiere.",
+    "auth.quote":
+      "Ogni candela che lascia il nostro laboratorio porta con sé un pezzo della nostra anima e passione per questo mestiere.",
     "auth.founder": "- Dani, fondatrice",
-    
+
     // Orders Page
     "orders.myOrders": "I miei ordini",
     "orders.orderHistory": "Cronologia ordini",
@@ -4557,7 +4603,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.paymentMethod": "Metodo di pagamento",
     "orders.actions": "Azioni",
     "orders.details": "Dettagli",
-    "orders.loadingError": "Si è verificato un errore durante il caricamento degli ordini.",
+    "orders.loadingError":
+      "Si è verificato un errore durante il caricamento degli ordini.",
     "orders.tryAgain": "Si prega di riprovare più tardi.",
     "orders.bankTransfer": "Bonifico bancario",
     "orders.pending": "In attesa",
@@ -5632,6 +5679,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Order Details (sostituito)
     "orders.detailsTitle.it": "Dettagli dell'ordine",
     "orders.orderLabel.it": "Ordine",
+    "products.productCount": " Prodotti",
     "orders.back.it": "Torna agli ordini",
     "orders.statusLabel.it": "Stato",
     "orders.pendingStatus.it": "In attesa",
@@ -5772,42 +5820,49 @@ export const translations: Record<Language, Record<string, string>> = {
   sl: {
     // Home Page
     "home.exploreCollection": "Razišči kolekcijo →",
-    
+
     // Auth Success/Error Messages
     "auth.loginSuccessTitle": "Prijava uspešna",
     "auth.loginSuccessMessage": "Dobrodošli nazaj, {username}!",
     "auth.loginErrorTitle": "Prijava ni uspela",
     "auth.loginErrorMessage": "Napačno uporabniško ime ali geslo.",
-    
+
     "auth.registerSuccessTitle": "Registracija uspešna",
     "auth.registerSuccessMessage": "Dobrodošli, {username}!",
     "auth.registerErrorTitle": "Registracija ni uspela",
     "auth.registerErrorMessage": "Uporabniško ime ali e-pošta že obstaja.",
-    
+
     "auth.logoutSuccessTitle": "Odjava uspešna",
     "auth.logoutSuccessMessage": "Uspešno ste se odjavili.",
     "auth.logoutErrorTitle": "Odjava ni uspela",
-    "auth.logoutErrorMessage": "Pri odjavi je prišlo do težave. Poskusite znova.",
-    
+    "auth.logoutErrorMessage":
+      "Pri odjavi je prišlo do težave. Poskusite znova.",
+
     "auth.verificationNeededTitle": "Potrebna je verifikacija",
-    "auth.emailVerificationSuccess": "Vaš e-poštni naslov je bil uspešno potrjen. Zdaj se lahko prijavite.",
-    "auth.emailVerificationFailed": "Preverjanje e-pošte ni uspelo. Povezava je morda potekla ali ni veljavna.",
-    "auth.emailVerificationError": "Pri preverjanju vašega e-poštnega naslova je prišlo do napake. Poskusite znova kasneje.",
-    "auth.emailNotVerified": "Vaš e-poštni naslov še ni potrjen. Preverite svoj predal in kliknite na potrditveno povezavo.",
-    "auth.registrationSuccessVerifyEmail": "Registracija uspešna! Preverite svoj predal za potrditev e-poštnega naslova.",
+    "auth.emailVerificationSuccess":
+      "Vaš e-poštni naslov je bil uspešno potrjen. Zdaj se lahko prijavite.",
+    "auth.emailVerificationFailed":
+      "Preverjanje e-pošte ni uspelo. Povezava je morda potekla ali ni veljavna.",
+    "auth.emailVerificationError":
+      "Pri preverjanju vašega e-poštnega naslova je prišlo do napake. Poskusite znova kasneje.",
+    "auth.emailNotVerified":
+      "Vaš e-poštni naslov še ni potrjen. Preverite svoj predal in kliknite na potrditveno povezavo.",
+    "auth.registrationSuccessVerifyEmail":
+      "Registracija uspešna! Preverite svoj predal za potrditev e-poštnega naslova.",
     "auth.verificationSuccessTitle": "Verifikacija uspešna",
     "auth.verificationErrorTitle": "Verifikacija ni uspela",
-    
+
     // Languages
     "languages.croatian": "Hrvaški",
     "languages.english": "Angleški",
     "languages.german": "Nemški",
     "languages.italian": "Italijanski",
     "languages.slovenian": "Slovenski",
-    
+
     // Auth Page
     "auth.title": "Prijava / Registracija | Kerzenwelt by Dani",
-    "auth.description": "Prijavite se ali registrirajte za nakup ročno izdelanih sveč, sledenje vašim naročilom in uživanje v posebnih ponudbah.",
+    "auth.description":
+      "Prijavite se ali registrirajte za nakup ročno izdelanih sveč, sledenje vašim naročilom in uživanje v posebnih ponudbah.",
     "auth.login": "Prijava",
     "auth.register": "Registracija",
     "auth.loginTitle": "Prijava",
@@ -5832,7 +5887,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.loginProcessing": "Prijavljanje...",
     "auth.registerProcessing": "Registracija...",
     "auth.welcome": "Dobrodošli v svetu Kerzenwelt",
-    "auth.welcomeDescription": "Ročno izdelane sveče, ustvarjene s skrbnostjo in ljubeznijo, prav za vas. Odkrijte razliko, ki jo lahko naravne sestavine in obrtniška spretnost prinesejo v vaš dom.",
+    "auth.welcomeDescription":
+      "Ročno izdelane sveče, ustvarjene s skrbnostjo in ljubeznijo, prav za vas. Odkrijte razliko, ki jo lahko naravne sestavine in obrtniška spretnost prinesejo v vaš dom.",
     "auth.usernameRequired": "Uporabniško ime je obvezno",
     "auth.usernameMinLength": "Uporabniško ime mora imeti vsaj 3 znake",
     "auth.emailRequired": "E-poštni naslov je obvezen",
@@ -5843,9 +5899,10 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.step1": "Ustvarite svoj račun in začnite nakupovati",
     "auth.step2": "Odkrijte široko paleto ročno izdelanih sveč",
     "auth.step3": "Sledite svojim naročilom in uživajte v posebnih ugodnostih",
-    "auth.quote": "Vsaka sveča, ki zapusti našo delavnico, nosi delček naše duše in strasti do te obrti.",
+    "auth.quote":
+      "Vsaka sveča, ki zapusti našo delavnico, nosi delček naše duše in strasti do te obrti.",
     "auth.founder": "- Dani, ustanoviteljica",
-    
+
     // Orders Page
     "orders.myOrders": "Moja naročila",
     "orders.orderHistory": "Zgodovina naročil",
@@ -6271,6 +6328,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Admin Orders Page
     "admin.orders.title": "Naročila",
+    "products.productCount": " Izdelki",
     "admin.orders.subtitle": "Upravljajte naročila v vaši trgovini",
     "admin.orders.allOrders": "Vsa naročila",
     "admin.orders.allOrdersDesc": "Seznam vseh naročil v trgovini",
