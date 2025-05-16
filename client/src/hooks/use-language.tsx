@@ -15,12 +15,13 @@ export const translations: Record<Language, Record<string, string>> = {
     // Languages
     "languages.croatian": "Kroatisch",
     "languages.english": "Englisch",
-    "languages.german": "Deutsch", 
+    "languages.german": "Deutsch",
     "languages.italian": "Italienisch",
     "languages.slovenian": "Slowenisch",
-    
+
     // Order Details
     "orders.details": "Bestelldetails",
+    "orders.price": "Preis",
     "orders.order": "Bestellung",
     "orders.backToOrders": "Zurück zu Bestellungen",
     "orders.status": "Status",
@@ -77,7 +78,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.italian": "Italienisch",
     "orders.slovenian": "Slowenisch",
     "orders.backToList": "Zurück zur Bestellliste",
-    
+
     // Products page
     "products.allProducts": "Alle Produkte",
     "products.product": "Produkt",
@@ -98,15 +99,17 @@ export const translations: Record<Language, Record<string, string>> = {
     "products.clearFilters": "Filter löschen",
     "products.applyFilters": "Filter anwenden",
     "products.noProductsFound": "Keine Produkte gefunden",
-    "products.tryDifferentFilters": "Versuchen Sie andere Filter oder sehen Sie sich unser gesamtes Angebot an.",
+    "products.tryDifferentFilters":
+      "Versuchen Sie andere Filter oder sehen Sie sich unser gesamtes Angebot an.",
     "products.showAllProducts": "Alle Produkte anzeigen",
-    
+
     // Instagram
     "instagram.followUs": "Folge uns auf Instagram",
-    "instagram.followUsText": "Folge uns auf Instagram für die neuesten Kreationen und Inspirationen",
+    "instagram.followUsText":
+      "Folge uns auf Instagram für die neuesten Kreationen und Inspirationen",
     "instagram.loadingPhotos": "Fotos werden geladen...",
     "instagram.emptyFeed": "Instagram-Feed ist leer",
-    
+
     // Profile Page
     "profile.myProfile": "Mein Profil",
     "profile.profile": "Profil",
@@ -129,13 +132,15 @@ export const translations: Record<Language, Record<string, string>> = {
     "profile.countryPlaceholder": "Deutschland",
     "profile.password": "Passwort",
     "profile.passwordChange": "Passwort ändern",
-    "profile.passwordChangeDescription": "Aktualisieren Sie Ihr Passwort, um die Sicherheit Ihres Kontos zu gewährleisten.",
+    "profile.passwordChangeDescription":
+      "Aktualisieren Sie Ihr Passwort, um die Sicherheit Ihres Kontos zu gewährleisten.",
     "profile.currentPassword": "Aktuelles Passwort",
     "profile.newPassword": "Neues Passwort",
     "profile.confirmPassword": "Neues Passwort bestätigen",
     "profile.changePassword": "Passwort ändern",
     "profile.myOrders": "Meine Bestellungen",
-    "profile.ordersDescription": "Überblick Ihrer bisherigen Bestellungen und deren Status.",
+    "profile.ordersDescription":
+      "Überblick Ihrer bisherigen Bestellungen und deren Status.",
     "profile.order": "Bestellung",
     "profile.orderDetails": "Bestelldetails",
     "profile.orderStatus.pending": "Ausstehend",
@@ -143,13 +148,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "profile.orderStatus.completed": "Abgeschlossen",
     "profile.noOrders": "Sie haben keine Bestellungen.",
     "profile.browseProducts": "Produkte durchsuchen",
-    "profile.meta.description": "Verwalten Sie Ihr Konto, sehen Sie Ihre Bestellungen und aktualisieren Sie Ihre persönlichen Daten.",
+    "profile.meta.description":
+      "Verwalten Sie Ihr Konto, sehen Sie Ihre Bestellungen und aktualisieren Sie Ihre persönlichen Daten.",
     // Allgemeine Admin-Elemente
     "admin.general.uploading": "Wird hochgeladen...",
     "admin.general.error": "Fehler",
     "admin.product.items": "Produkte",
     "admin.products.searchPlaceholder": "Produkte suchen...",
-    
+
     // Admin Dashboard
     "admin.dashboard.title": "Dashboard",
     "admin.dashboard.totalRevenue": "Gesamteinkommen",
@@ -158,7 +164,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.dashboard.products": "Produkte",
     "admin.dashboard.comparedToLastMonth": "im Vergleich zum Vormonat",
     "admin.dashboard.salesOverTime": "Verkäufe im Zeitverlauf",
-    "admin.dashboard.productCategoryDistribution": "Verteilung der Produktkategorien",
+    "admin.dashboard.productCategoryDistribution":
+      "Verteilung der Produktkategorien",
     "admin.dashboard.recentOrders": "Neueste Bestellungen",
     "admin.dashboard.id": "ID",
     "admin.dashboard.user": "Benutzer",
@@ -184,13 +191,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "month.december": "Dezember",
     "admin.product.preview": "Vorschau",
     "admin.product.newProduct": "Neues Produkt",
-    "admin.product.newProductSubtitle": "Fügen Sie ein neues Produkt zum Katalog hinzu",
+    "admin.product.newProductSubtitle":
+      "Fügen Sie ein neues Produkt zum Katalog hinzu",
     "admin.product.categoryPlaceholder": "Wählen Sie eine Kategorie",
     "admin.product.burntimePlaceholder": "Brenndauer in Stunden",
-    
+
     // AdminPanel PageTitle
     "admin.panelTitle": "Admin Panel",
-    
+
     // Navigacija
     "nav.home": "Startseite",
     "nav.products": "Produkte",
@@ -214,11 +222,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.categories": "Kategorien",
     // Admin Categories Page
     "admin.categories.title": "Kategorien",
-    "admin.categories.subtitle": "Verwalten Sie Produktkategorien in Ihrem Shop",
+    "admin.categories.subtitle":
+      "Verwalten Sie Produktkategorien in Ihrem Shop",
     "admin.categories.pageTitle": "Kategorieverwaltung",
     "admin.categories.allCategories": "Alle Kategorien",
-    "admin.categories.allCategoriesDesc": "Liste aller Produktkategorien im Shop",
-    "admin.categories.noCategories": "Keine Kategorien verfügbar. Fügen Sie Ihre erste Kategorie hinzu.",
+    "admin.categories.allCategoriesDesc":
+      "Liste aller Produktkategorien im Shop",
+    "admin.categories.noCategories":
+      "Keine Kategorien verfügbar. Fügen Sie Ihre erste Kategorie hinzu.",
     "admin.categories.id": "ID",
     "admin.categories.image": "Bild",
     "admin.categories.name": "Name",
@@ -227,24 +238,32 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.categories.addCategory": "Neue Kategorie hinzufügen",
     "admin.categories.addNewCategory": "Neue Kategorie hinzufügen",
     "admin.categories.editCategory": "Kategorie bearbeiten",
-    "admin.categories.addCategoryDesc": "Geben Sie die Details der neuen Kategorie ein und klicken Sie auf Speichern, um sie hinzuzufügen.",
-    "admin.categories.editCategoryDesc": "Bearbeiten Sie die Kategoriedetails und klicken Sie auf Speichern, um Änderungen zu speichern.",
+    "admin.categories.addCategoryDesc":
+      "Geben Sie die Details der neuen Kategorie ein und klicken Sie auf Speichern, um sie hinzuzufügen.",
+    "admin.categories.editCategoryDesc":
+      "Bearbeiten Sie die Kategoriedetails und klicken Sie auf Speichern, um Änderungen zu speichern.",
     "admin.categories.nameLabel": "Kategoriename *",
     "admin.categories.namePlaceholder": "Kategorienamen eingeben",
     "admin.categories.categoryName": "Kategoriename *",
     "admin.categories.categoryNamePlaceholder": "Kategorienamen eingeben",
     "admin.categories.descriptionLabel": "Kategoriebeschreibung *",
     "admin.categories.descriptionPlaceholder": "Kategoriebeschreibung eingeben",
-    "admin.categories.descriptionHelp": "Beschreiben Sie die Kategorie, um Kunden mehr Informationen zu geben.",
+    "admin.categories.descriptionHelp":
+      "Beschreiben Sie die Kategorie, um Kunden mehr Informationen zu geben.",
     "admin.categories.categoryDescription": "Kategoriebeschreibung *",
-    "admin.categories.categoryDescriptionPlaceholder": "Kategoriebeschreibung eingeben",
-    "admin.categories.categoryDescriptionHelp": "Beschreiben Sie die Kategorie, um Kunden mehr Informationen zu geben.",
+    "admin.categories.categoryDescriptionPlaceholder":
+      "Kategoriebeschreibung eingeben",
+    "admin.categories.categoryDescriptionHelp":
+      "Beschreiben Sie die Kategorie, um Kunden mehr Informationen zu geben.",
     "admin.categories.imageUrlLabel": "Kategorie-Bild-URL",
     "admin.categories.imageUrlPlaceholder": "Kategorie-Bild-URL eingeben",
-    "admin.categories.imageUrlHelp": "Fügen Sie eine URL zu einem Bild hinzu, das diese Kategorie am besten repräsentiert.",
+    "admin.categories.imageUrlHelp":
+      "Fügen Sie eine URL zu einem Bild hinzu, das diese Kategorie am besten repräsentiert.",
     "admin.categories.categoryImageUrl": "Kategorie-Bild-URL",
-    "admin.categories.categoryImageUrlPlaceholder": "Kategorie-Bild-URL eingeben",
-    "admin.categories.categoryImageUrlHelp": "Fügen Sie eine URL zu einem Bild hinzu, das diese Kategorie am besten repräsentiert.",
+    "admin.categories.categoryImageUrlPlaceholder":
+      "Kategorie-Bild-URL eingeben",
+    "admin.categories.categoryImageUrlHelp":
+      "Fügen Sie eine URL zu einem Bild hinzu, das diese Kategorie am besten repräsentiert.",
     "admin.categories.imagePreview": "Bildvorschau:",
     "admin.categories.cancel": "Abbrechen",
     "admin.categories.save": "Kategorie speichern",
@@ -254,36 +273,47 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.categories.updating": "Aktualisieren...",
     "admin.categories.deleteTitle": "Kategorie löschen",
     "admin.categories.deleteCategory": "Kategorie löschen",
-    "admin.categories.deleteConfirmation": "Sind Sie sicher, dass Sie die Kategorie \"{name}\" löschen möchten?", 
-    "admin.categories.deleteWarning": "Diese Aktion ist unwiderruflich und kann Produkte betreffen, die mit dieser Kategorie verknüpft sind.",
+    "admin.categories.deleteConfirmation":
+      'Sind Sie sicher, dass Sie die Kategorie "{name}" löschen möchten?',
+    "admin.categories.deleteWarning":
+      "Diese Aktion ist unwiderruflich und kann Produkte betreffen, die mit dieser Kategorie verknüpft sind.",
     "admin.categories.cancelDelete": "Abbrechen",
     "admin.categories.confirmDelete": "Ja, löschen",
     "admin.categories.deleting": "Löschen...",
     "admin.categories.success": "Erfolg",
-    "admin.categories.categoryAdded": "Kategorie wurde erfolgreich hinzugefügt.",
-    "admin.categories.categoryUpdated": "Kategorie wurde erfolgreich aktualisiert.",
+    "admin.categories.categoryAdded":
+      "Kategorie wurde erfolgreich hinzugefügt.",
+    "admin.categories.categoryUpdated":
+      "Kategorie wurde erfolgreich aktualisiert.",
     "admin.categories.categoryDeleted": "Kategorie wurde erfolgreich gelöscht.",
 
     "admin.categories.error": "Fehler",
-    "admin.categories.errorAddDesc": "Beim Hinzufügen der Kategorie ist ein Fehler aufgetreten",
-    "admin.categories.errorUpdateDesc": "Beim Aktualisieren der Kategorie ist ein Fehler aufgetreten",
-    "admin.categories.errorDeleteDesc": "Beim Löschen der Kategorie ist ein Fehler aufgetreten",
-    "admin.categories.nameValidation": "Name muss mindestens 2 Zeichen lang sein",
-    "admin.categories.descriptionValidation": "Beschreibung muss mindestens 10 Zeichen lang sein",
+    "admin.categories.errorAddDesc":
+      "Beim Hinzufügen der Kategorie ist ein Fehler aufgetreten",
+    "admin.categories.errorUpdateDesc":
+      "Beim Aktualisieren der Kategorie ist ein Fehler aufgetreten",
+    "admin.categories.errorDeleteDesc":
+      "Beim Löschen der Kategorie ist ein Fehler aufgetreten",
+    "admin.categories.nameValidation":
+      "Name muss mindestens 2 Zeichen lang sein",
+    "admin.categories.descriptionValidation":
+      "Beschreibung muss mindestens 10 Zeichen lang sein",
     "admin.categories.imageAlt": "Vorschau des Kategoriebildes",
-    
+
     // Admin Scents Page
     "admin.scents.title": "Düfte",
     "admin.scents.pageTitle": "Duftverwaltung",
     "admin.scents.subtitle": "Verwalten Sie Produktdüfte in Ihrem Shop",
     "admin.scents.allScents": "Alle Düfte",
-    "admin.scents.allScentsDesc": "Liste aller verfügbaren Düfte für Ihre Produkte",
+    "admin.scents.allScentsDesc":
+      "Liste aller verfügbaren Düfte für Ihre Produkte",
     "admin.scents.addNewScent": "Neuen Duft hinzufügen",
     "admin.scents.nameLabel": "Name",
     "admin.scents.namePlaceholder": "Duftname eingeben",
     "admin.scents.descriptionLabel": "Beschreibung",
     "admin.scents.descriptionPlaceholder": "Duftbeschreibung eingeben",
-    "admin.scents.noScents": "Keine Düfte verfügbar. Fügen Sie Ihren ersten Duft hinzu.",
+    "admin.scents.noScents":
+      "Keine Düfte verfügbar. Fügen Sie Ihren ersten Duft hinzu.",
     "admin.scents.id": "ID",
     "admin.scents.name": "Name",
     "admin.scents.description": "Beschreibung",
@@ -293,21 +323,25 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.scents.inactive": "Inaktiv",
     "admin.scents.addScent": "Neuen Duft hinzufügen",
     "admin.scents.editScent": "Duft bearbeiten",
-    "admin.scents.addScentDesc": "Geben Sie die Details des neuen Dufts ein und klicken Sie auf Speichern, um ihn hinzuzufügen.",
-    "admin.scents.editScentDesc": "Bearbeiten Sie die Duftdetails und klicken Sie auf Speichern, um Änderungen zu speichern.",
+    "admin.scents.addScentDesc":
+      "Geben Sie die Details des neuen Dufts ein und klicken Sie auf Speichern, um ihn hinzuzufügen.",
+    "admin.scents.editScentDesc":
+      "Bearbeiten Sie die Duftdetails und klicken Sie auf Speichern, um Änderungen zu speichern.",
     "admin.scents.scentName": "Duftname *",
     "admin.scents.scentNamePlaceholder": "Duftnamen eingeben",
     "admin.scents.scentDescription": "Duftbeschreibung *",
     "admin.scents.scentDescriptionPlaceholder": "Duftbeschreibung eingeben",
     "admin.scents.scentStatus": "Duftstatus",
-    "admin.scents.scentStatusHelp": "Inaktive Düfte sind für die Auswahl bei Produkten nicht verfügbar",
+    "admin.scents.scentStatusHelp":
+      "Inaktive Düfte sind für die Auswahl bei Produkten nicht verfügbar",
     "admin.scents.cancel": "Abbrechen",
     "admin.scents.save": "Duft speichern",
     "admin.scents.saveChanges": "Änderungen speichern",
     "admin.scents.saving": "Speichern...",
     "admin.scents.updating": "Aktualisieren...",
     "admin.scents.deleteScent": "Duft löschen",
-    "admin.scents.deleteConfirmation": "Sind Sie sicher, dass Sie den Duft \"{name}\" löschen möchten? Diese Aktion ist unwiderruflich und kann Produkte betreffen, die diesen Duft verwenden.",
+    "admin.scents.deleteConfirmation":
+      'Sind Sie sicher, dass Sie den Duft "{name}" löschen möchten? Diese Aktion ist unwiderruflich und kann Produkte betreffen, die diesen Duft verwenden.',
     "admin.scents.cancelDelete": "Abbrechen",
     "admin.scents.confirmDelete": "Ja, löschen",
     "admin.scents.deleting": "Löschen...",
@@ -318,19 +352,24 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.scents.successDelete": "Erfolg",
     "admin.scents.successDeleteDesc": "Duft wurde erfolgreich gelöscht.",
     "admin.scents.errorCreate": "Fehler",
-    "admin.scents.errorCreateDesc": "Beim Hinzufügen des Dufts ist ein Fehler aufgetreten: {error}",
+    "admin.scents.errorCreateDesc":
+      "Beim Hinzufügen des Dufts ist ein Fehler aufgetreten: {error}",
     "admin.scents.errorUpdate": "Fehler",
-    "admin.scents.errorUpdateDesc": "Beim Aktualisieren des Dufts ist ein Fehler aufgetreten: {error}",
+    "admin.scents.errorUpdateDesc":
+      "Beim Aktualisieren des Dufts ist ein Fehler aufgetreten: {error}",
     "admin.scents.errorDelete": "Fehler",
-    "admin.scents.errorDeleteDesc": "Beim Löschen des Dufts ist ein Fehler aufgetreten: {error}",
-    
+    "admin.scents.errorDeleteDesc":
+      "Beim Löschen des Dufts ist ein Fehler aufgetreten: {error}",
+
     // Admin Colors Page
     "admin.colors.title": "Farben",
     "admin.colors.pageTitle": "Farbverwaltung",
     "admin.colors.subtitle": "Verwalten Sie Produktfarben in Ihrem Shop",
     "admin.colors.allColors": "Alle Farben",
-    "admin.colors.allColorsDesc": "Liste aller verfügbaren Farben für Ihre Produkte",
-    "admin.colors.noColors": "Keine Farben verfügbar. Fügen Sie Ihre erste Farbe hinzu.",
+    "admin.colors.allColorsDesc":
+      "Liste aller verfügbaren Farben für Ihre Produkte",
+    "admin.colors.noColors":
+      "Keine Farben verfügbar. Fügen Sie Ihre erste Farbe hinzu.",
     "admin.colors.id": "ID",
     "admin.colors.name": "Name",
     "admin.colors.code": "Farbcode",
@@ -353,24 +392,31 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.cancel": "Abbrechen",
     "admin.colors.save": "Farbe speichern",
     "admin.colors.saveChanges": "Änderungen speichern",
-    "admin.colors.addColorDesc": "Geben Sie die Details der neuen Farbe ein und klicken Sie auf Speichern, um sie hinzuzufügen.",
-    "admin.colors.editColorDesc": "Bearbeiten Sie die Farbdetails und klicken Sie auf Speichern, um Änderungen zu speichern.",
+    "admin.colors.addColorDesc":
+      "Geben Sie die Details der neuen Farbe ein und klicken Sie auf Speichern, um sie hinzuzufügen.",
+    "admin.colors.editColorDesc":
+      "Bearbeiten Sie die Farbdetails und klicken Sie auf Speichern, um Änderungen zu speichern.",
     "admin.colors.colorName": "Farbname *",
     "admin.colors.colorNamePlaceholder": "Farbnamen eingeben",
     "admin.colors.colorCode": "Farbcode (Hex) *",
     "admin.colors.colorCodePlaceholder": "HEX-Farbcode eingeben (z.B. #FF5733)",
-    "admin.colors.colorCodeHelp": "Verwenden Sie einen gültigen HEX-Farbcode (z.B. #FF5733)",
+    "admin.colors.colorCodeHelp":
+      "Verwenden Sie einen gültigen HEX-Farbcode (z.B. #FF5733)",
     "admin.colors.colorDescription": "Farbbeschreibung",
     "admin.colors.colorDescriptionPlaceholder": "Farbbeschreibung eingeben",
     "admin.colors.colorStatus": "Farbstatus",
-    "admin.colors.colorStatusHelp": "Inaktive Farben sind für die Auswahl bei Produkten nicht verfügbar",
-    
+    "admin.colors.colorStatusHelp":
+      "Inaktive Farben sind für die Auswahl bei Produkten nicht verfügbar",
+
     // Admin Collections Page
     "admin.collections.title": "Kollektionen",
-    "admin.collections.subtitle": "Verwalten Sie die Produktkollektionen in Ihrem Shop",
+    "admin.collections.subtitle":
+      "Verwalten Sie die Produktkollektionen in Ihrem Shop",
     "admin.collections.allCollections": "Alle Kollektionen",
-    "admin.collections.allCollectionsDesc": "Liste aller Produktkollektionen im Shop",
-    "admin.collections.noCollections": "Keine Kollektionen verfügbar. Fügen Sie Ihre erste Kollektion hinzu.",
+    "admin.collections.allCollectionsDesc":
+      "Liste aller Produktkollektionen im Shop",
+    "admin.collections.noCollections":
+      "Keine Kollektionen verfügbar. Fügen Sie Ihre erste Kollektion hinzu.",
     "admin.collections.id": "ID",
     "admin.collections.image": "Bild",
     "admin.collections.name": "Name",
@@ -384,20 +430,29 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.no": "Nein",
     "admin.collections.addCollection": "Neue Kollektion hinzufügen",
     "admin.collections.editCollection": "Kollektion bearbeiten",
-    "admin.collections.addCollectionDesc": "Füllen Sie die Details für die neue Kollektion aus und klicken Sie auf Speichern, um sie hinzuzufügen.",
-    "admin.collections.editCollectionDesc": "Bearbeiten Sie die Kollektionsdetails und klicken Sie auf Speichern, um die Änderungen zu übernehmen.",
+    "admin.collections.addCollectionDesc":
+      "Füllen Sie die Details für die neue Kollektion aus und klicken Sie auf Speichern, um sie hinzuzufügen.",
+    "admin.collections.editCollectionDesc":
+      "Bearbeiten Sie die Kollektionsdetails und klicken Sie auf Speichern, um die Änderungen zu übernehmen.",
     "admin.collections.collectionName": "Kollektionsname *",
-    "admin.collections.collectionNamePlaceholder": "Geben Sie den Kollektionsnamen ein",
+    "admin.collections.collectionNamePlaceholder":
+      "Geben Sie den Kollektionsnamen ein",
     "admin.collections.collectionDescription": "Kollektionsbeschreibung *",
-    "admin.collections.collectionDescriptionPlaceholder": "Geben Sie die Kollektionsbeschreibung ein",
-    "admin.collections.collectionDescriptionHelp": "Beschreiben Sie die Kollektion, um Kunden mehr Informationen zu geben.",
+    "admin.collections.collectionDescriptionPlaceholder":
+      "Geben Sie die Kollektionsbeschreibung ein",
+    "admin.collections.collectionDescriptionHelp":
+      "Beschreiben Sie die Kollektion, um Kunden mehr Informationen zu geben.",
     "admin.collections.collectionImageUrl": "Kollektion Bild-URL",
-    "admin.collections.collectionImageUrlPlaceholder": "Geben Sie die Bild-URL der Kollektion ein",
-    "admin.collections.collectionImageUrlHelp": "Fügen Sie eine Bild-URL hinzu, die diese Kollektion am besten repräsentiert.",
+    "admin.collections.collectionImageUrlPlaceholder":
+      "Geben Sie die Bild-URL der Kollektion ein",
+    "admin.collections.collectionImageUrlHelp":
+      "Fügen Sie eine Bild-URL hinzu, die diese Kollektion am besten repräsentiert.",
     "admin.collections.collectionStatus": "Kollektionsstatus",
-    "admin.collections.collectionStatusHelp": "Inaktive Kollektionen sind für Kunden nicht sichtbar",
+    "admin.collections.collectionStatusHelp":
+      "Inaktive Kollektionen sind für Kunden nicht sichtbar",
     "admin.collections.collectionFeatured": "Hervorgehobene Kollektion",
-    "admin.collections.collectionFeaturedHelp": "Hervorgehobene Kollektionen werden auf der Startseite angezeigt",
+    "admin.collections.collectionFeaturedHelp":
+      "Hervorgehobene Kollektionen werden auf der Startseite angezeigt",
     "admin.collections.imagePreview": "Bildvorschau:",
     "admin.collections.cancel": "Abbrechen",
     "admin.collections.save": "Kollektion speichern",
@@ -405,39 +460,52 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.saving": "Speichern...",
     "admin.collections.updating": "Aktualisieren...",
     "admin.collections.deleteCollection": "Kollektion löschen",
-    "admin.collections.deleteConfirmation": "Sind Sie sicher, dass Sie die Kollektion \"{name}\" löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "admin.collections.deleteConfirmation":
+      'Sind Sie sicher, dass Sie die Kollektion "{name}" löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
     "admin.collections.cancelDelete": "Abbrechen",
     "admin.collections.confirmDelete": "Ja, löschen",
     "admin.collections.deleting": "Löschen...",
     "admin.collections.successCreate": "Erfolg",
-    "admin.collections.successCreateDesc": "Die Kollektion wurde erfolgreich hinzugefügt.",
+    "admin.collections.successCreateDesc":
+      "Die Kollektion wurde erfolgreich hinzugefügt.",
     "admin.collections.successUpdate": "Erfolg",
-    "admin.collections.successUpdateDesc": "Die Kollektion wurde erfolgreich aktualisiert.",
+    "admin.collections.successUpdateDesc":
+      "Die Kollektion wurde erfolgreich aktualisiert.",
     "admin.collections.successDelete": "Erfolg",
-    "admin.collections.successDeleteDesc": "Die Kollektion wurde erfolgreich gelöscht.",
+    "admin.collections.successDeleteDesc":
+      "Die Kollektion wurde erfolgreich gelöscht.",
     "admin.collections.errorCreate": "Fehler",
-    "admin.collections.errorCreateDesc": "Beim Hinzufügen der Kollektion ist ein Fehler aufgetreten: {error}",
+    "admin.collections.errorCreateDesc":
+      "Beim Hinzufügen der Kollektion ist ein Fehler aufgetreten: {error}",
     "admin.collections.errorUpdate": "Fehler",
-    "admin.collections.errorUpdateDesc": "Beim Aktualisieren der Kollektion ist ein Fehler aufgetreten: {error}",
+    "admin.collections.errorUpdateDesc":
+      "Beim Aktualisieren der Kollektion ist ein Fehler aufgetreten: {error}",
     "admin.collections.errorDelete": "Fehler",
-    "admin.collections.errorDeleteDesc": "Beim Löschen der Kollektion ist ein Fehler aufgetreten: {error}",
+    "admin.collections.errorDeleteDesc":
+      "Beim Löschen der Kollektion ist ein Fehler aufgetreten: {error}",
     "admin.collections.manageProducts": "Produkte verwalten",
     "admin.collections.addProducts": "Produkte zur Kollektion hinzufügen",
     "admin.collections.removeProducts": "Produkte aus der Kollektion entfernen",
     "admin.collections.productsInCollection": "Produkte in der Kollektion",
-    "admin.collections.noProductsInCollection": "Keine Produkte in dieser Kollektion",
+    "admin.collections.noProductsInCollection":
+      "Keine Produkte in dieser Kollektion",
     "admin.collections.availableProducts": "Verfügbare Produkte",
     "admin.collections.searchProducts": "Produkte suchen...",
     "admin.collections.addSelectedProducts": "Ausgewählte Produkte hinzufügen",
-    "admin.collections.removeSelectedProducts": "Ausgewählte Produkte entfernen",
-    "admin.collections.successAddProducts": "Produkte erfolgreich zur Kollektion hinzugefügt",
-    "admin.collections.successRemoveProducts": "Produkte erfolgreich aus der Kollektion entfernt",
-    "admin.collections.errorAddProducts": "Fehler beim Hinzufügen von Produkten zur Kollektion",
-    "admin.collections.errorRemoveProducts": "Fehler beim Entfernen von Produkten aus der Kollektion",
+    "admin.collections.removeSelectedProducts":
+      "Ausgewählte Produkte entfernen",
+    "admin.collections.successAddProducts":
+      "Produkte erfolgreich zur Kollektion hinzugefügt",
+    "admin.collections.successRemoveProducts":
+      "Produkte erfolgreich aus der Kollektion entfernt",
+    "admin.collections.errorAddProducts":
+      "Fehler beim Hinzufügen von Produkten zur Kollektion",
+    "admin.collections.errorRemoveProducts":
+      "Fehler beim Entfernen von Produkten aus der Kollektion",
     "admin.collections.createError": "Fehler beim Hinzufügen der Kollektion",
     "admin.collections.updateError": "Fehler beim Aktualisieren der Kollektion",
     "admin.collections.deleteError": "Fehler beim Löschen der Kollektion",
-    
+
     // Admin Orders Page
     "admin.orders.title": "Bestellungen",
     "admin.orders.subtitle": "Verwalten und überwachen Sie Kundenbestellungen",
@@ -495,18 +563,22 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.changeStatus": "Status ändern",
     "admin.orders.currentStatus": "Aktueller Status",
     "admin.orders.newStatus": "Neuer Status",
-    "admin.orders.statusUpdateSuccess": "Bestellstatus erfolgreich aktualisiert",
-    "admin.orders.statusUpdateError": "Fehler beim Aktualisieren des Bestellstatus",
+    "admin.orders.statusUpdateSuccess":
+      "Bestellstatus erfolgreich aktualisiert",
+    "admin.orders.statusUpdateError":
+      "Fehler beim Aktualisieren des Bestellstatus",
     "admin.orders.cancel": "Abbrechen",
     "admin.orders.update": "Aktualisieren",
     "admin.orders.confirmCancellation": "Stornierungsbestätigung",
-    "admin.orders.cancelConfirmation": "Sind Sie sicher, dass Sie diese Bestellung stornieren möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "admin.orders.cancelConfirmation":
+      "Sind Sie sicher, dass Sie diese Bestellung stornieren möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
     "admin.orders.cancelOrder": "Bestellung stornieren",
     "admin.orders.orderCancelled": "Bestellung wurde storniert",
     "admin.orders.backToOrders": "Zurück zu Bestellungen",
     "admin.orders.noInvoice": "Keine Rechnung generiert",
     "admin.orders.invoiceGenerated": "Rechnung wurde erfolgreich generiert",
-    "admin.orders.invoiceGenerationError": "Fehler bei der Rechnungsgenerierung",
+    "admin.orders.invoiceGenerationError":
+      "Fehler bei der Rechnungsgenerierung",
     "admin.orders.selectLanguage": "Sprache auswählen",
     "admin.orders.language": "Rechnungssprache",
     "admin.orders.loading": "Laden...",
@@ -523,11 +595,15 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.trackingNumber": "Sendungsverfolgungsnummer",
     "admin.orders.trackingUrl": "Sendungsverfolgung URL",
     "admin.orders.addTracking": "Sendungsverfolgungsinformationen hinzufügen",
-    "admin.orders.updateTracking": "Sendungsverfolgungsinformationen aktualisieren",
-    "admin.orders.trackingAdded": "Sendungsverfolgungsinformationen erfolgreich hinzugefügt",
-    "admin.orders.trackingUpdated": "Sendungsverfolgungsinformationen erfolgreich aktualisiert",
-    "admin.orders.trackingError": "Fehler beim Aktualisieren der Sendungsverfolgungsinformationen",
-    
+    "admin.orders.updateTracking":
+      "Sendungsverfolgungsinformationen aktualisieren",
+    "admin.orders.trackingAdded":
+      "Sendungsverfolgungsinformationen erfolgreich hinzugefügt",
+    "admin.orders.trackingUpdated":
+      "Sendungsverfolgungsinformationen erfolgreich aktualisiert",
+    "admin.orders.trackingError":
+      "Fehler beim Aktualisieren der Sendungsverfolgungsinformationen",
+
     // Admin Invoices Page
     "admin.invoices.title": "Rechnungen",
     "admin.invoices.subtitle": "Verwalten und überwachen Sie Rechnungen",
@@ -576,18 +652,21 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.subtotal": "Zwischensumme",
     "admin.invoices.tax": "Steuer",
     "admin.invoices.amount": "Betrag",
-    "admin.invoices.viewAllInvoicesDescription": "Sehen Sie sich alle erstellten Rechnungen an",
+    "admin.invoices.viewAllInvoicesDescription":
+      "Sehen Sie sich alle erstellten Rechnungen an",
     "admin.invoices.existingInvoices": "Bestehende Rechnungen",
     "admin.invoices.createNewInvoice": "Neue Rechnung erstellen",
     "admin.invoices.companyDocuments": "Unternehmensdokumente",
-    "admin.invoices.fillInformationForNewInvoice": "Informationen für neue Rechnung ausfüllen",
+    "admin.invoices.fillInformationForNewInvoice":
+      "Informationen für neue Rechnung ausfüllen",
     "admin.invoices.customerDetails": "Kundendetails",
     "admin.invoices.firstName": "Vorname",
     "admin.invoices.lastName": "Nachname",
     "admin.invoices.pricePerUnit": "Preis pro Einheit",
     "admin.invoices.noItemsAdded": "Keine Artikel hinzugefügt",
     "admin.invoices.createInvoice": "Rechnung erstellen",
-    "admin.invoices.selectFromExistingOrders": "Auswahl aus bestehenden Bestellungen",
+    "admin.invoices.selectFromExistingOrders":
+      "Auswahl aus bestehenden Bestellungen",
     "admin.invoices.invoiceLanguage": "Rechnungssprache",
     "admin.invoices.errorCreatingInvoice": "Fehler beim Erstellen der Rechnung",
     "admin.invoices.errorDeletingInvoice": "Fehler beim Löschen der Rechnung",
@@ -602,7 +681,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.sendToCustomer": "An Kunden senden",
     "admin.invoices.emailSent": "E-Mail mit Rechnung erfolgreich gesendet",
     "admin.invoices.emailError": "Fehler beim Senden der E-Mail",
-    "admin.invoices.deleteConfirmation": "Sind Sie sicher, dass Sie diese Rechnung löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "admin.invoices.deleteConfirmation":
+      "Sind Sie sicher, dass Sie diese Rechnung löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
     "admin.invoices.cancelDelete": "Abbrechen",
     "admin.invoices.confirmDelete": "Ja, löschen",
     "admin.invoices.deleteSuccess": "Rechnung erfolgreich gelöscht",
@@ -639,8 +719,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.saving": "Speichern...",
     "admin.invoices.generating": "Generieren...",
     "admin.invoices.invoiceCreated": "Rechnung erfolgreich erstellt",
-    "admin.invoices.invoiceCreationError": "Fehler bei der Erstellung der Rechnung",
-    
+    "admin.invoices.invoiceCreationError":
+      "Fehler bei der Erstellung der Rechnung",
+
     // Admin Users Page
     "admin.users.title": "Benutzer",
     "admin.users.subtitle": "Verwalten Sie Benutzerkonten",
@@ -694,38 +775,49 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.registrationIp": "IP bei Registrierung",
     "admin.users.registrationDate": "Registrierungsdatum",
     "admin.users.loginCount": "Anzahl der Anmeldungen",
-    "admin.users.deleteConfirmation": "Sind Sie sicher, dass Sie den Benutzer \"{name}\" löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "admin.users.deleteConfirmation":
+      'Sind Sie sicher, dass Sie den Benutzer "{name}" löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
     "admin.users.cancelDelete": "Abbrechen",
     "admin.users.confirmDelete": "Ja, löschen",
     "admin.users.userDeleted": "Benutzer wurde erfolgreich gelöscht",
     "admin.users.deleteError": "Fehler beim Löschen des Benutzers",
-    "admin.users.passwordResetConfirmation": "Sind Sie sicher, dass Sie das Passwort für Benutzer \"{name}\" zurücksetzen möchten?",
+    "admin.users.passwordResetConfirmation":
+      'Sind Sie sicher, dass Sie das Passwort für Benutzer "{name}" zurücksetzen möchten?',
     "admin.users.cancelPasswordReset": "Abbrechen",
     "admin.users.confirmPasswordReset": "Ja, Passwort zurücksetzen",
-    "admin.users.passwordResetSuccess": "Passwort wurde erfolgreich zurückgesetzt",
+    "admin.users.passwordResetSuccess":
+      "Passwort wurde erfolgreich zurückgesetzt",
     "admin.users.passwordResetError": "Fehler beim Zurücksetzen des Passworts",
     "admin.users.newPassword": "Neues Passwort",
     "admin.users.confirmPassword": "Passwort bestätigen",
-    "admin.users.banConfirmation": "Sind Sie sicher, dass Sie den Benutzer \"{name}\" sperren möchten?",
+    "admin.users.banConfirmation":
+      'Sind Sie sicher, dass Sie den Benutzer "{name}" sperren möchten?',
     "admin.users.cancelBan": "Abbrechen",
     "admin.users.confirmBan": "Ja, Benutzer sperren",
     "admin.users.userBanned": "Benutzer wurde erfolgreich gesperrt",
     "admin.users.banError": "Fehler beim Sperren des Benutzers",
-    "admin.users.unbanConfirmation": "Sind Sie sicher, dass Sie die Sperre für Benutzer \"{name}\" aufheben möchten?",
+    "admin.users.unbanConfirmation":
+      'Sind Sie sicher, dass Sie die Sperre für Benutzer "{name}" aufheben möchten?',
     "admin.users.cancelUnban": "Abbrechen",
     "admin.users.confirmUnban": "Ja, Benutzersperre aufheben",
     "admin.users.userUnbanned": "Benutzersperre wurde erfolgreich aufgehoben",
     "admin.users.unbanError": "Fehler beim Aufheben der Benutzersperre",
-    "admin.users.makeAdminConfirmation": "Sind Sie sicher, dass Sie den Benutzer \"{name}\" zum Administrator machen möchten?",
+    "admin.users.makeAdminConfirmation":
+      'Sind Sie sicher, dass Sie den Benutzer "{name}" zum Administrator machen möchten?',
     "admin.users.cancelMakeAdmin": "Abbrechen",
     "admin.users.confirmMakeAdmin": "Ja, zum Administrator machen",
-    "admin.users.userMadeAdmin": "Benutzer wurde erfolgreich zum Administrator gemacht",
-    "admin.users.makeAdminError": "Fehler beim Ernennen des Benutzers zum Administrator",
-    "admin.users.removeAdminConfirmation": "Sind Sie sicher, dass Sie die Administratorrechte von Benutzer \"{name}\" entfernen möchten?",
+    "admin.users.userMadeAdmin":
+      "Benutzer wurde erfolgreich zum Administrator gemacht",
+    "admin.users.makeAdminError":
+      "Fehler beim Ernennen des Benutzers zum Administrator",
+    "admin.users.removeAdminConfirmation":
+      'Sind Sie sicher, dass Sie die Administratorrechte von Benutzer "{name}" entfernen möchten?',
     "admin.users.cancelRemoveAdmin": "Abbrechen",
     "admin.users.confirmRemoveAdmin": "Ja, Administratorrechte entfernen",
-    "admin.users.adminRightsRemoved": "Administratorrechte wurden erfolgreich entfernt",
-    "admin.users.removeAdminError": "Fehler beim Entfernen der Administratorrechte",
+    "admin.users.adminRightsRemoved":
+      "Administratorrechte wurden erfolgreich entfernt",
+    "admin.users.removeAdminError":
+      "Fehler beim Entfernen der Administratorrechte",
     "admin.users.addUser": "Benutzer hinzufügen",
     "admin.users.editUserInfo": "Benutzerinformationen bearbeiten",
     "admin.users.usernamePlaceholder": "Benutzernamen eingeben",
@@ -745,14 +837,16 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.saving": "Speichern...",
     "admin.users.userCreated": "Benutzer wurde erfolgreich hinzugefügt",
     "admin.users.userCreationError": "Fehler beim Hinzufügen des Benutzers",
-    "admin.users.userUpdated": "Benutzerinformationen wurden erfolgreich aktualisiert",
-    "admin.users.userUpdateError": "Fehler beim Aktualisieren der Benutzerinformationen",
+    "admin.users.userUpdated":
+      "Benutzerinformationen wurden erfolgreich aktualisiert",
+    "admin.users.userUpdateError":
+      "Fehler beim Aktualisieren der Benutzerinformationen",
     "admin.users.searchUsers": "Benutzer suchen...",
     "admin.users.filterByRole": "Nach Rolle filtern",
     "admin.users.filterByStatus": "Nach Status filtern",
     "admin.users.applyFilters": "Filter anwenden",
     "admin.users.resetFilters": "Filter zurücksetzen",
-    
+
     // Admin Page Settings
     "admin.pageSettings.title": "Seiteneinstellungen",
     "admin.pageSettings.subtitle": "Seiteninhalt bearbeiten",
@@ -783,26 +877,30 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.pageSettings.faqPage": "FAQ",
     "admin.pageSettings.addPage": "Seite hinzufügen",
     "admin.pageSettings.editPageTitle": "Seite bearbeiten",
-    "admin.pageSettings.editPageDesc": "Bearbeiten Sie den Seiteninhalt und die Einstellungen",
+    "admin.pageSettings.editPageDesc":
+      "Bearbeiten Sie den Seiteninhalt und die Einstellungen",
     "admin.pageSettings.pageContent": "Seiteninhalt",
     "admin.pageSettings.pageSettings": "Seiteneinstellungen",
     "admin.pageSettings.pageName": "Seitenname *",
     "admin.pageSettings.pageNamePlaceholder": "Seitennamen eingeben",
     "admin.pageSettings.pageSlug": "Seiten-Slug *",
     "admin.pageSettings.pageSlugPlaceholder": "seiten-slug-eingeben",
-    "admin.pageSettings.pageSlugHelp": "Der Slug wird in der URL der Seite verwendet und sollte nur Kleinbuchstaben, Zahlen und Bindestriche enthalten",
+    "admin.pageSettings.pageSlugHelp":
+      "Der Slug wird in der URL der Seite verwendet und sollte nur Kleinbuchstaben, Zahlen und Bindestriche enthalten",
     "admin.pageSettings.pageType": "Seitentyp",
     "admin.pageSettings.pageStatus": "Seitenstatus",
     "admin.pageSettings.metaTitle": "Meta-Titel",
     "admin.pageSettings.metaTitlePlaceholder": "Meta-Titel eingeben",
     "admin.pageSettings.metaDescription": "Meta-Beschreibung",
-    "admin.pageSettings.metaDescriptionPlaceholder": "Meta-Beschreibung eingeben",
+    "admin.pageSettings.metaDescriptionPlaceholder":
+      "Meta-Beschreibung eingeben",
     "admin.pageSettings.metaKeywords": "Meta-Keywords",
     "admin.pageSettings.metaKeywordsPlaceholder": "Meta-Keywords eingeben",
     "admin.pageSettings.cancel": "Abbrechen",
     "admin.pageSettings.save": "Speichern",
     "admin.pageSettings.saving": "Speichern...",
-    "admin.pageSettings.deleteConfirmation": "Sind Sie sicher, dass Sie die Seite \"{name}\" löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "admin.pageSettings.deleteConfirmation":
+      'Sind Sie sicher, dass Sie die Seite "{name}" löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
     "admin.pageSettings.cancelDelete": "Abbrechen",
     "admin.pageSettings.confirmDelete": "Ja, löschen",
     "admin.pageSettings.pageDeleted": "Seite wurde erfolgreich gelöscht",
@@ -820,7 +918,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.pageSettings.heroTitle": "Hero-Bereich Titel",
     "admin.pageSettings.heroTitlePlaceholder": "Hero-Bereich Titel eingeben",
     "admin.pageSettings.heroSubtitle": "Hero-Bereich Untertitel",
-    "admin.pageSettings.heroSubtitlePlaceholder": "Hero-Bereich Untertitel eingeben",
+    "admin.pageSettings.heroSubtitlePlaceholder":
+      "Hero-Bereich Untertitel eingeben",
     "admin.pageSettings.heroButtonText": "Hero-Bereich Button-Text",
     "admin.pageSettings.heroButtonTextPlaceholder": "Button-Text eingeben",
     "admin.pageSettings.heroButtonLink": "Hero-Bereich Button-Link",
@@ -828,18 +927,24 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.pageSettings.heroImageUrl": "Hero-Bereich Bild-URL",
     "admin.pageSettings.heroImageUrlPlaceholder": "Bild-URL eingeben",
     "admin.pageSettings.aboutTitle": "Über uns-Bereich Titel",
-    "admin.pageSettings.aboutTitlePlaceholder": "Über uns-Bereich Titel eingeben",
+    "admin.pageSettings.aboutTitlePlaceholder":
+      "Über uns-Bereich Titel eingeben",
     "admin.pageSettings.aboutContent": "Über uns-Bereich Inhalt",
-    "admin.pageSettings.aboutContentPlaceholder": "Über uns-Bereich Inhalt eingeben",
+    "admin.pageSettings.aboutContentPlaceholder":
+      "Über uns-Bereich Inhalt eingeben",
     "admin.pageSettings.aboutImageUrl": "Über uns-Bereich Bild-URL",
     "admin.pageSettings.aboutImageUrlPlaceholder": "Bild-URL eingeben",
     "admin.pageSettings.testimonialsTitle": "Testimonials-Bereich Titel",
-    "admin.pageSettings.testimonialsTitlePlaceholder": "Testimonials-Bereich Titel eingeben",
-    "admin.pageSettings.featuredCollectionsTitle": "Hervorgehobene Kollektionen Titel",
-    "admin.pageSettings.featuredCollectionsTitlePlaceholder": "Hervorgehobene Kollektionen Titel eingeben",
+    "admin.pageSettings.testimonialsTitlePlaceholder":
+      "Testimonials-Bereich Titel eingeben",
+    "admin.pageSettings.featuredCollectionsTitle":
+      "Hervorgehobene Kollektionen Titel",
+    "admin.pageSettings.featuredCollectionsTitlePlaceholder":
+      "Hervorgehobene Kollektionen Titel eingeben",
     "admin.pageSettings.featuredProductsTitle": "Hervorgehobene Produkte Titel",
-    "admin.pageSettings.featuredProductsTitlePlaceholder": "Hervorgehobene Produkte Titel eingeben",
-    
+    "admin.pageSettings.featuredProductsTitlePlaceholder":
+      "Hervorgehobene Produkte Titel eingeben",
+
     // Admin Contact Settings
     "admin.contactSettings.title": "Kontakteinstellungen",
     "admin.contactSettings.subtitle": "Verwalten Sie Kontaktinformationen",
@@ -867,7 +972,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.contactSettings.vatNumber": "USt-IdNr.",
     "admin.contactSettings.vatNumberPlaceholder": "USt-IdNr. eingeben",
     "admin.contactSettings.companyRegistrationNumber": "Handelsregisternummer",
-    "admin.contactSettings.companyRegistrationNumberPlaceholder": "Handelsregisternummer eingeben",
+    "admin.contactSettings.companyRegistrationNumberPlaceholder":
+      "Handelsregisternummer eingeben",
     "admin.contactSettings.iban": "IBAN",
     "admin.contactSettings.ibanPlaceholder": "IBAN eingeben",
     "admin.contactSettings.swift": "BIC/SWIFT",
@@ -891,9 +997,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.contactSettings.cancel": "Abbrechen",
     "admin.contactSettings.save": "Speichern",
     "admin.contactSettings.saving": "Speichern...",
-    "admin.contactSettings.settingsSaved": "Einstellungen wurden erfolgreich gespeichert",
-    "admin.contactSettings.saveError": "Fehler beim Speichern der Einstellungen",
-    
+    "admin.contactSettings.settingsSaved":
+      "Einstellungen wurden erfolgreich gespeichert",
+    "admin.contactSettings.saveError":
+      "Fehler beim Speichern der Einstellungen",
+
     // Admin Delivery Settings
     "admin.delivery.title": "Versandeinstellungen",
     "admin.delivery.subtitle": "Verwalten Sie Versandoptionen",
@@ -903,8 +1011,10 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.delivery.shippingRules": "Versandregeln",
     "admin.delivery.enableShipping": "Versand aktivieren",
     "admin.delivery.freeShippingThreshold": "Grenze für kostenlosen Versand",
-    "admin.delivery.freeShippingThresholdPlaceholder": "Betrag für kostenlosen Versand eingeben",
-    "admin.delivery.freeShippingThresholdHelp": "Bestellbetrag, ab dem der Versand kostenlos ist",
+    "admin.delivery.freeShippingThresholdPlaceholder":
+      "Betrag für kostenlosen Versand eingeben",
+    "admin.delivery.freeShippingThresholdHelp":
+      "Bestellbetrag, ab dem der Versand kostenlos ist",
     "admin.delivery.shippingCalculation": "Berechnung der Versandkosten",
     "admin.delivery.fixedRate": "Festpreis",
     "admin.delivery.weightBased": "Gewichtsbasiert",
@@ -916,14 +1026,16 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.delivery.methodName": "Name der Versandmethode",
     "admin.delivery.methodNamePlaceholder": "Namen der Versandmethode eingeben",
     "admin.delivery.methodDescription": "Beschreibung der Versandmethode",
-    "admin.delivery.methodDescriptionPlaceholder": "Beschreibung der Versandmethode eingeben",
+    "admin.delivery.methodDescriptionPlaceholder":
+      "Beschreibung der Versandmethode eingeben",
     "admin.delivery.methodPrice": "Versandkosten",
     "admin.delivery.methodPricePlaceholder": "Versandkosten eingeben",
     "admin.delivery.methodStatus": "Status",
     "admin.delivery.methodEnabled": "Aktiviert",
     "admin.delivery.methodDisabled": "Deaktiviert",
     "admin.delivery.estimatedDeliveryTime": "Geschätzte Lieferzeit",
-    "admin.delivery.estimatedDeliveryTimePlaceholder": "Geschätzte Lieferzeit eingeben",
+    "admin.delivery.estimatedDeliveryTimePlaceholder":
+      "Geschätzte Lieferzeit eingeben",
     "admin.delivery.addZone": "Versandzone hinzufügen",
     "admin.delivery.editZone": "Versandzone bearbeiten",
     "admin.delivery.deleteZone": "Versandzone löschen",
@@ -936,17 +1048,20 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.delivery.cancel": "Abbrechen",
     "admin.delivery.save": "Speichern",
     "admin.delivery.saving": "Speichern...",
-    "admin.delivery.settingsSaved": "Einstellungen wurden erfolgreich gespeichert",
+    "admin.delivery.settingsSaved":
+      "Einstellungen wurden erfolgreich gespeichert",
     "admin.delivery.saveError": "Fehler beim Speichern der Einstellungen",
-    "admin.delivery.deleteConfirmation": "Sind Sie sicher, dass Sie diese Versandmethode löschen möchten?",
-    "admin.delivery.deleteZoneConfirmation": "Sind Sie sicher, dass Sie diese Versandzone löschen möchten?",
+    "admin.delivery.deleteConfirmation":
+      "Sind Sie sicher, dass Sie diese Versandmethode löschen möchten?",
+    "admin.delivery.deleteZoneConfirmation":
+      "Sind Sie sicher, dass Sie diese Versandzone löschen möchten?",
     "admin.delivery.cancelDelete": "Abbrechen",
     "admin.delivery.confirmDelete": "Ja, löschen",
     "admin.delivery.methodDeleted": "Versandmethode wurde erfolgreich gelöscht",
     "admin.delivery.deleteError": "Fehler beim Löschen der Versandmethode",
     "admin.delivery.zoneDeleted": "Versandzone wurde erfolgreich gelöscht",
     "admin.delivery.zoneDeleteError": "Fehler beim Löschen der Versandzone",
-    
+
     // Admin Documents Page
     "admin.documents.title": "Dokumente",
     "admin.documents.subtitle": "Verwalten Sie Geschäftsdokumente",
@@ -968,24 +1083,30 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.documents.documentName": "Dokumentname",
     "admin.documents.documentNamePlaceholder": "Dokumentnamen eingeben",
     "admin.documents.documentDescription": "Dokumentbeschreibung",
-    "admin.documents.documentDescriptionPlaceholder": "Dokumentbeschreibung eingeben",
+    "admin.documents.documentDescriptionPlaceholder":
+      "Dokumentbeschreibung eingeben",
     "admin.documents.documentType": "Dokumenttyp",
     "admin.documents.selectFile": "Datei auswählen",
     "admin.documents.maxFileSize": "Maximale Dateigröße: 10MB",
-    "admin.documents.allowedFileTypes": "Erlaubte Dateitypen: PDF, DOC, DOCX, XLS, XLSX",
-    "admin.documents.dragAndDrop": "Ziehen Sie die Datei hierher oder klicken Sie zum Auswählen",
+    "admin.documents.allowedFileTypes":
+      "Erlaubte Dateitypen: PDF, DOC, DOCX, XLS, XLSX",
+    "admin.documents.dragAndDrop":
+      "Ziehen Sie die Datei hierher oder klicken Sie zum Auswählen",
     "admin.documents.uploading": "Hochladen...",
     "admin.documents.upload": "Hochladen",
     "admin.documents.cancel": "Abbrechen",
-    "admin.documents.deleteConfirmation": "Sind Sie sicher, dass Sie das Dokument \"{name}\" löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "admin.documents.deleteConfirmation":
+      'Sind Sie sicher, dass Sie das Dokument "{name}" löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
     "admin.documents.cancelDelete": "Abbrechen",
     "admin.documents.confirmDelete": "Ja, löschen",
     "admin.documents.documentDeleted": "Dokument wurde erfolgreich gelöscht",
     "admin.documents.deleteError": "Fehler beim Löschen des Dokuments",
     "admin.documents.uploadSuccess": "Dokument wurde erfolgreich hochgeladen",
     "admin.documents.uploadError": "Fehler beim Hochladen des Dokuments",
-    "admin.documents.fileTooBig": "Die Datei ist zu groß. Maximale Größe ist 10MB.",
-    "admin.documents.invalidFileType": "Ungültiger Dateityp. Erlaubte Typen sind PDF, DOC, DOCX, XLS, XLSX.",
+    "admin.documents.fileTooBig":
+      "Die Datei ist zu groß. Maximale Größe ist 10MB.",
+    "admin.documents.invalidFileType":
+      "Ungültiger Dateityp. Erlaubte Typen sind PDF, DOC, DOCX, XLS, XLSX.",
     "admin.documents.documentSize": "{size} KB",
     "admin.documents.documentSizeMB": "{size} MB",
     "admin.documents.invoice": "Rechnung",
@@ -1001,7 +1122,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.documents.dateTo": "Bis Datum",
     "admin.documents.applyFilters": "Filter anwenden",
     "admin.documents.resetFilters": "Filter zurücksetzen",
-    
+
     // Admin Payment Settings
     "admin.payments.title": "Zahlungseinstellungen",
     "admin.payments.subtitle": "Verwalten Sie Zahlungsmethoden",
@@ -1014,11 +1135,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.payments.currencyFormat": "Währungsformat",
     "admin.payments.currencyFormatPlaceholder": "Währungsformat auswählen",
     "admin.payments.decimalSeparator": "Dezimaltrennzeichen",
-    "admin.payments.decimalSeparatorPlaceholder": "Dezimaltrennzeichen auswählen",
+    "admin.payments.decimalSeparatorPlaceholder":
+      "Dezimaltrennzeichen auswählen",
     "admin.payments.thousandsSeparator": "Tausendertrennzeichen",
-    "admin.payments.thousandsSeparatorPlaceholder": "Tausendertrennzeichen auswählen",
+    "admin.payments.thousandsSeparatorPlaceholder":
+      "Tausendertrennzeichen auswählen",
     "admin.payments.numberOfDecimals": "Anzahl der Dezimalstellen",
-    "admin.payments.numberOfDecimalsPlaceholder": "Anzahl der Dezimalstellen eingeben",
+    "admin.payments.numberOfDecimalsPlaceholder":
+      "Anzahl der Dezimalstellen eingeben",
     "admin.payments.taxIncluded": "MwSt. im Preis enthalten",
     "admin.payments.taxRate": "MwSt.-Satz",
     "admin.payments.taxRatePlaceholder": "MwSt.-Satz eingeben",
@@ -1028,11 +1152,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.payments.editPaymentMethod": "Zahlungsmethode bearbeiten",
     "admin.payments.deletePaymentMethod": "Zahlungsmethode löschen",
     "admin.payments.methodName": "Name der Zahlungsmethode",
-    "admin.payments.methodNamePlaceholder": "Namen der Zahlungsmethode eingeben",
+    "admin.payments.methodNamePlaceholder":
+      "Namen der Zahlungsmethode eingeben",
     "admin.payments.methodDescription": "Beschreibung der Zahlungsmethode",
-    "admin.payments.methodDescriptionPlaceholder": "Beschreibung der Zahlungsmethode eingeben",
+    "admin.payments.methodDescriptionPlaceholder":
+      "Beschreibung der Zahlungsmethode eingeben",
     "admin.payments.methodInstructions": "Zahlungsanweisungen",
-    "admin.payments.methodInstructionsPlaceholder": "Zahlungsanweisungen eingeben",
+    "admin.payments.methodInstructionsPlaceholder":
+      "Zahlungsanweisungen eingeben",
     "admin.payments.methodStatus": "Status",
     "admin.payments.methodEnabled": "Aktiviert",
     "admin.payments.methodDisabled": "Deaktiviert",
@@ -1063,17 +1190,21 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.payments.cancel": "Abbrechen",
     "admin.payments.save": "Speichern",
     "admin.payments.saving": "Speichern...",
-    "admin.payments.settingsSaved": "Einstellungen wurden erfolgreich gespeichert",
+    "admin.payments.settingsSaved":
+      "Einstellungen wurden erfolgreich gespeichert",
     "admin.payments.saveError": "Fehler beim Speichern der Einstellungen",
-    "admin.payments.deleteConfirmation": "Sind Sie sicher, dass Sie diese Zahlungsmethode löschen möchten?",
+    "admin.payments.deleteConfirmation":
+      "Sind Sie sicher, dass Sie diese Zahlungsmethode löschen möchten?",
     "admin.payments.cancelDelete": "Abbrechen",
     "admin.payments.confirmDelete": "Ja, löschen",
-    "admin.payments.methodDeleted": "Zahlungsmethode wurde erfolgreich gelöscht",
+    "admin.payments.methodDeleted":
+      "Zahlungsmethode wurde erfolgreich gelöscht",
     "admin.payments.deleteError": "Fehler beim Löschen der Zahlungsmethode",
     "admin.colors.saving": "Speichern...",
     "admin.colors.updating": "Aktualisieren...",
     "admin.colors.deleteColor": "Farbe löschen",
-    "admin.colors.deleteConfirmation": "Sind Sie sicher, dass Sie die Farbe \"{name}\" löschen möchten? Diese Aktion ist unwiderruflich und kann Produkte betreffen, die diese Farbe verwenden.",
+    "admin.colors.deleteConfirmation":
+      'Sind Sie sicher, dass Sie die Farbe "{name}" löschen möchten? Diese Aktion ist unwiderruflich und kann Produkte betreffen, die diese Farbe verwenden.',
     "admin.colors.cancelDelete": "Abbrechen",
     "admin.colors.confirmDelete": "Ja, löschen",
     "admin.colors.deleting": "Löschen...",
@@ -1084,11 +1215,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.successDelete": "Erfolg",
     "admin.colors.successDeleteDesc": "Farbe wurde erfolgreich gelöscht.",
     "admin.colors.errorCreate": "Fehler",
-    "admin.colors.errorCreateDesc": "Beim Hinzufügen der Farbe ist ein Fehler aufgetreten: {error}",
+    "admin.colors.errorCreateDesc":
+      "Beim Hinzufügen der Farbe ist ein Fehler aufgetreten: {error}",
     "admin.colors.errorUpdate": "Fehler",
-    "admin.colors.errorUpdateDesc": "Beim Aktualisieren der Farbe ist ein Fehler aufgetreten: {error}",
+    "admin.colors.errorUpdateDesc":
+      "Beim Aktualisieren der Farbe ist ein Fehler aufgetreten: {error}",
     "admin.colors.errorDelete": "Fehler",
-    "admin.colors.errorDeleteDesc": "Beim Löschen der Farbe ist ein Fehler aufgetreten: {error}",
+    "admin.colors.errorDeleteDesc":
+      "Beim Löschen der Farbe ist ein Fehler aufgetreten: {error}",
     "admin.scents": "Düfte",
     "admin.colors": "Farben",
     "admin.collections": "Kollektionen",
@@ -1125,7 +1259,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.active": "Aktiv",
     "admin.inactive": "Inaktiv",
     "admin.selectLanguage": "Sprache auswählen",
-    
+
     // Admin Common Elements
     "admin.id": "ID",
     "admin.name": "Name",
@@ -1146,8 +1280,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.quantity": "Menge",
     "admin.payment": "Zahlung",
     "admin.confirmDelete": "Löschen bestätigen",
-    "admin.deleteWarning": "Möchten Sie dieses Element wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
-    
+    "admin.deleteWarning":
+      "Möchten Sie dieses Element wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+
     // Admin Product Page
     "admin.productDetails": "Produktdetails",
     "admin.productName": "Produktname",
@@ -1159,13 +1294,15 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.status": "Status",
     "admin.product.actions": "Aktionen",
     "admin.product.editProduct": "Produkt bearbeiten",
-    "admin.product.editProductDescription": "Aktualisieren Sie die Produktdetails",
+    "admin.product.editProductDescription":
+      "Aktualisieren Sie die Produktdetails",
     "admin.product.deactivate": "Deaktivieren",
     "admin.product.activate": "Aktivieren",
     "admin.product.edit": "Bearbeiten",
     "admin.product.delete": "Löschen",
     "admin.product.deleteSuccess": "Produkt gelöscht",
-    "admin.product.deleteSuccessDescription": "{name} wurde erfolgreich gelöscht",
+    "admin.product.deleteSuccessDescription":
+      "{name} wurde erfolgreich gelöscht",
     "admin.product.deleteError": "Fehler beim Löschen des Produkts: {error}",
     "admin.product.lowStock": "Geringer Bestand",
     "admin.product.outOfStock": "Nicht auf Lager",
@@ -1189,7 +1326,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.productDeleted": "Produkt erfolgreich gelöscht",
     "admin.product.featuredProduct": "Produkt auf Startseite hervorheben",
     "admin.product.productActive": "Produkt aktiv",
-    "admin.product.productActiveHint": "(Wenn deaktiviert, ist das Produkt für Kunden nicht sichtbar)",
+    "admin.product.productActiveHint":
+      "(Wenn deaktiviert, ist das Produkt für Kunden nicht sichtbar)",
     "admin.product.saveChanges": "Änderungen speichern",
     "admin.product.createProduct": "Produkt erstellen",
     "admin.product.cancel": "Abbrechen",
@@ -1200,7 +1338,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.imageUrlDescription": "Geben Sie eine URL zu einem Bild ein",
     "admin.product.clickToUpload": "Klicken zum Hochladen",
     "admin.product.imageFormats": "JPG, PNG, GIF bis zu 5MB",
-    "admin.product.imageResizeInfo": "Bilder werden automatisch auf 800x800px verkleinert",
+    "admin.product.imageResizeInfo":
+      "Bilder werden automatisch auf 800x800px verkleinert",
     "admin.product.imageLoadingError": "Fehler beim Laden des Bildes",
     "admin.product.price": "Preis",
     "admin.product.pricePlaceholder": "Preis eingeben",
@@ -1221,13 +1360,16 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.maintenance": "Pflege",
     "admin.product.maintenancePlaceholder": "Pflegehinweise",
     "admin.product.availableScents": "Verfügbare Düfte",
-    "admin.product.selectScents": "Wählen Sie die Düfte aus, die für dieses Produkt verfügbar sein sollen",
+    "admin.product.selectScents":
+      "Wählen Sie die Düfte aus, die für dieses Produkt verfügbar sein sollen",
     "admin.product.loadingScents": "Düfte werden geladen...",
     "admin.product.availableColors": "Verfügbare Farben",
-    "admin.product.selectColors": "Wählen Sie die Farben aus, die für dieses Produkt verfügbar sein sollen",
+    "admin.product.selectColors":
+      "Wählen Sie die Farben aus, die für dieses Produkt verfügbar sein sollen",
     "admin.product.loadingColors": "Farben werden geladen...",
     "admin.product.enableColorSelection": "Farbauswahl aktivieren",
-    "admin.product.enableMultipleColors": "Mehrfachauswahl von Farben ermöglichen",
+    "admin.product.enableMultipleColors":
+      "Mehrfachauswahl von Farben ermöglichen",
     "admin.product.imagePreview": "Bildvorschau",
     "admin.product.category": "Kategorie",
     "admin.product.burnTime": "Brenndauer",
@@ -1245,7 +1387,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.actionsColumn": "Aktionen",
     "admin.product.inStock": "Auf Lager",
     "admin.product.active": "Aktiv",
-    
+
     // Admin Orders Page
     "admin.orderDetails": "Bestelldetails",
     "admin.orderNumber": "Bestellnummer",
@@ -1266,7 +1408,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.delivered": "Geliefert",
     "admin.cancelled": "Storniert",
     "admin.statusUpdated": "Status erfolgreich aktualisiert",
-    
+
     // Admin Invoice Page
     "admin.invoiceDetails": "Rechnungsdetails",
     "admin.invoiceNumber": "Rechnungsnummer",
@@ -1279,7 +1421,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.printInvoice": "Rechnung drucken",
     "admin.invoiceGenerated": "Rechnung erfolgreich erstellt",
     "admin.downloadFormat": "Download-Format",
-    
+
     // Admin Users Page
     "admin.userDetails": "Benutzerdetails",
     "admin.username": "Benutzername",
@@ -1297,7 +1439,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.resetPassword": "Passwort zurücksetzen",
     "admin.userSaved": "Benutzer erfolgreich gespeichert",
     "admin.userDeleted": "Benutzer erfolgreich gelöscht",
-    
+
     // Admin Settings Page
     "admin.generalSettings": "Allgemeine Einstellungen",
     "admin.shopName": "Shop-Name",
@@ -1313,7 +1455,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.metaDescription": "Meta-Beschreibung",
     "admin.favicon": "Favicon",
     "admin.settingsSaved": "Einstellungen erfolgreich gespeichert",
-    
+
     // Document Management
     "admin.uploadDocument": "Dokument hochladen",
     "admin.documentName": "Dokumentname",
@@ -1384,7 +1526,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.total": "Gesamtsumme",
     "cart.remove": "Entfernen",
     "cart.loading": "Warenkorb wird geladen...",
-    "cart.emptyMessage": "Ihr Warenkorb ist leer. Fügen Sie einige Artikel hinzu, um mit dem Einkaufen zu beginnen.",
+    "cart.emptyMessage":
+      "Ihr Warenkorb ist leer. Fügen Sie einige Artikel hinzu, um mit dem Einkaufen zu beginnen.",
     "cart.browseProducts": "Produkte durchsuchen",
     "cart.itemsInCart": "Artikel im Warenkorb",
     "cart.productsCount": "Produkte",
@@ -1399,23 +1542,31 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.shippingCost": "Versandkosten",
     "cart.couponCode": "Gutscheincode",
     "cart.applyCoupon": "Anwenden",
-    "cart.couponApplied": "Gutscheincode \"DOBRODOSLI\" erfolgreich angewendet! Sie haben 10% Rabatt erhalten.",
+    "cart.couponApplied":
+      'Gutscheincode "DOBRODOSLI" erfolgreich angewendet! Sie haben 10% Rabatt erhalten.',
     "cart.proceedToCheckout": "Zur Kasse",
-    "cart.metaDescription": "Überprüfen Sie die Artikel in Ihrem Warenkorb und fahren Sie mit der Zahlung fort.",
-    "cart.freeShippingMessage": "Für Bestellungen über {amount}€ ist der Versand kostenlos.",
+    "cart.metaDescription":
+      "Überprüfen Sie die Artikel in Ihrem Warenkorb und fahren Sie mit der Zahlung fort.",
+    "cart.freeShippingMessage":
+      "Für Bestellungen über {amount}€ ist der Versand kostenlos.",
     "cart.freeShippingForAll": "Kostenloser Versand für alle Bestellungen",
     "cart.shippingInfo": "Versandinformationen",
-    "cart.shippingInfoText1": "Die Lieferung erfolgt per GLS, DPD, UPS oder Post.",
-    "cart.shippingInfoText2": "Die Lieferzeit beträgt 2-5 Werktage nach Bestelleingang.",
-    "cart.shippingInfoText3": "Für Bestellungen über {amount}€ ist der Versand kostenlos. Für andere Bestellungen betragen die Versandkosten {shipping}€.",
-    "cart.shippingInfoText4": "Die Versandkosten betragen {shipping}€ für alle Bestellungen.",
+    "cart.shippingInfoText1":
+      "Die Lieferung erfolgt per GLS, DPD, UPS oder Post.",
+    "cart.shippingInfoText2":
+      "Die Lieferzeit beträgt 2-5 Werktage nach Bestelleingang.",
+    "cart.shippingInfoText3":
+      "Für Bestellungen über {amount}€ ist der Versand kostenlos. Für andere Bestellungen betragen die Versandkosten {shipping}€.",
+    "cart.shippingInfoText4":
+      "Die Versandkosten betragen {shipping}€ für alle Bestellungen.",
     "cart.paymentMethods": "Zahlungsmethoden",
     "cart.paymentMethodsText": "Wir akzeptieren folgende Zahlungsmethoden:",
     "cart.paymentMethod1": "PayPal",
     "cart.paymentMethod2": "Kreditkarten (Visa, Mastercard)",
     "cart.paymentMethod3": "Banküberweisung (per Vorkasse)",
     "cart.paymentMethod4": "Nachnahme (Zahlung bei Lieferung)",
-    "cart.addMoreForFreeShipping": "Fügen Sie noch {amount}€ in Ihren Warenkorb für kostenlosen Versand hinzu!",
+    "cart.addMoreForFreeShipping":
+      "Fügen Sie noch {amount}€ in Ihren Warenkorb für kostenlosen Versand hinzu!",
     "cart.inStock": "Auf Lager",
     "cart.scent": "Duft:",
     "cart.colors": "Farben",
@@ -1463,7 +1614,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "newsletter.success":
       "Vielen Dank für Ihr Abonnement! Sie erhalten in Kürze unseren Newsletter.",
     "newsletter.error": "Bitte geben Sie Ihre E-Mail-Adresse ein.",
-    
+
     // Admin panel
     "admin.backToStore": "Zurück zum Shop",
   },
@@ -1472,11 +1623,12 @@ export const translations: Record<Language, Record<string, string>> = {
     // Languages
     "languages.croatian": "Hrvatski",
     "languages.english": "Engleski",
-    "languages.german": "Njemački", 
+    "languages.german": "Njemački",
     "languages.italian": "Talijanski",
     "languages.slovenian": "Slovenski",
     // Products page
     "products.allProducts": "Svi proizvodi",
+    "orders.price": "Cjena",
     "products.product": "Proizvod",
     "products.products": "Proizvodi",
     "products.filters": "Filteri",
@@ -1495,43 +1647,54 @@ export const translations: Record<Language, Record<string, string>> = {
     "products.clearFilters": "Očisti filtere",
     "products.applyFilters": "Primijeni filtere",
     "products.noProductsFound": "Nema pronađenih proizvoda",
-    "products.tryDifferentFilters": "Pokušajte s drugačijim filterima ili pogledajte našu cjelokupnu ponudu.",
+    "products.tryDifferentFilters":
+      "Pokušajte s drugačijim filterima ili pogledajte našu cjelokupnu ponudu.",
     "products.showAllProducts": "Prikaži sve proizvode",
-    
+
     // Instagram
     "instagram.followUs": "Pratite nas na Instagramu",
-    "instagram.followUsText": "Pratite nas na Instagramu za najnovije kreacije i inspiracije",
+    "instagram.followUsText":
+      "Pratite nas na Instagramu za najnovije kreacije i inspiracije",
     "instagram.loadingPhotos": "Učitavanje fotografija...",
     "instagram.emptyFeed": "Instagram Feed je prazan",
-    
+
     // Opći admin elementi
     "admin.general.uploading": "Učitavanje...",
     "admin.general.error": "Greška",
     "admin.product.items": "Proizvodi",
     "admin.products.searchPlaceholder": "Pretražite proizvode...",
-    
+
     // Admin Categories Page
     "admin.categories.title": "Kategorije",
-    "admin.categories.subtitle": "Upravljajte kategorijama proizvoda u trgovini",
+    "admin.categories.subtitle":
+      "Upravljajte kategorijama proizvoda u trgovini",
     "admin.categories.allCategories": "Sve kategorije",
-    "admin.categories.allCategoriesDesc": "Popis svih kategorija proizvoda u trgovini",
-    "admin.categories.noCategories": "Nema dostupnih kategorija. Dodajte svoju prvu kategoriju.",
+    "admin.categories.allCategoriesDesc":
+      "Popis svih kategorija proizvoda u trgovini",
+    "admin.categories.noCategories":
+      "Nema dostupnih kategorija. Dodajte svoju prvu kategoriju.",
     "admin.categories.image": "Slika",
     "admin.categories.name": "Naziv",
     "admin.categories.description": "Opis",
     "admin.categories.actions": "Akcije",
     "admin.categories.addCategory": "Dodaj novu kategoriju",
     "admin.categories.editCategory": "Uredi kategoriju",
-    "admin.categories.addCategoryDesc": "Popunite podatke o novoj kategoriji i kliknite Spremi za dodavanje.",
-    "admin.categories.editCategoryDesc": "Uredite podatke kategorije i kliknite Spremi za pohranu promjena.",
+    "admin.categories.addCategoryDesc":
+      "Popunite podatke o novoj kategoriji i kliknite Spremi za dodavanje.",
+    "admin.categories.editCategoryDesc":
+      "Uredite podatke kategorije i kliknite Spremi za pohranu promjena.",
     "admin.categories.categoryName": "Naziv kategorije *",
     "admin.categories.categoryNamePlaceholder": "Unesite naziv kategorije",
     "admin.categories.categoryDescription": "Opis kategorije *",
-    "admin.categories.categoryDescriptionPlaceholder": "Unesite opis kategorije",
-    "admin.categories.categoryDescriptionHelp": "Opišite kategoriju kako bi kupci imali više informacija.",
+    "admin.categories.categoryDescriptionPlaceholder":
+      "Unesite opis kategorije",
+    "admin.categories.categoryDescriptionHelp":
+      "Opišite kategoriju kako bi kupci imali više informacija.",
     "admin.categories.categoryImageUrl": "URL slike kategorije",
-    "admin.categories.categoryImageUrlPlaceholder": "Unesite URL slike kategorije",
-    "admin.categories.categoryImageUrlHelp": "Dodajte URL slike koja najbolje predstavlja ovu kategoriju.",
+    "admin.categories.categoryImageUrlPlaceholder":
+      "Unesite URL slike kategorije",
+    "admin.categories.categoryImageUrlHelp":
+      "Dodajte URL slike koja najbolje predstavlja ovu kategoriju.",
     "admin.categories.imagePreview": "Pregled slike:",
     "admin.categories.cancel": "Odustani",
     "admin.categories.save": "Spremi kategoriju",
@@ -1539,7 +1702,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.categories.saving": "Spremanje...",
     "admin.categories.updating": "Ažuriranje...",
     "admin.categories.deleteCategory": "Obriši kategoriju",
-    "admin.categories.deleteConfirmation": "Jeste li sigurni da želite obrisati kategoriju \"{name}\"? Ova radnja je nepovratna i može utjecati na proizvode koji su povezani s ovom kategorijom.",
+    "admin.categories.deleteConfirmation":
+      'Jeste li sigurni da želite obrisati kategoriju "{name}"? Ova radnja je nepovratna i može utjecati na proizvode koji su povezani s ovom kategorijom.',
     "admin.categories.cancelDelete": "Odustani",
     "admin.categories.confirmDelete": "Da, obriši",
     "admin.categories.deleting": "Brisanje...",
@@ -1550,12 +1714,15 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.categories.successDelete": "Uspjeh",
     "admin.categories.successDeleteDesc": "Kategorija je uspješno obrisana.",
     "admin.categories.errorCreate": "Greška",
-    "admin.categories.errorCreateDesc": "Došlo je do greške prilikom dodavanja kategorije: {error}",
+    "admin.categories.errorCreateDesc":
+      "Došlo je do greške prilikom dodavanja kategorije: {error}",
     "admin.categories.errorUpdate": "Greška",
-    "admin.categories.errorUpdateDesc": "Došlo je do greške prilikom ažuriranja kategorije: {error}",
+    "admin.categories.errorUpdateDesc":
+      "Došlo je do greške prilikom ažuriranja kategorije: {error}",
     "admin.categories.errorDelete": "Greška",
-    "admin.categories.errorDeleteDesc": "Došlo je do greške prilikom brisanja kategorije: {error}",
-    
+    "admin.categories.errorDeleteDesc":
+      "Došlo je do greške prilikom brisanja kategorije: {error}",
+
     // Admin Scents Page
     "admin.scents.title": "Mirisi",
     "admin.scents.subtitle": "Upravljajte mirisima proizvoda u trgovini",
@@ -1571,21 +1738,25 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.scents.inactive": "Neaktivan",
     "admin.scents.addScent": "Dodaj novi miris",
     "admin.scents.editScent": "Uredi miris",
-    "admin.scents.addScentDesc": "Popunite podatke o novom mirisu i kliknite Spremi za dodavanje.",
-    "admin.scents.editScentDesc": "Uredite podatke mirisa i kliknite Spremi za pohranu promjena.",
+    "admin.scents.addScentDesc":
+      "Popunite podatke o novom mirisu i kliknite Spremi za dodavanje.",
+    "admin.scents.editScentDesc":
+      "Uredite podatke mirisa i kliknite Spremi za pohranu promjena.",
     "admin.scents.scentName": "Naziv mirisa *",
     "admin.scents.scentNamePlaceholder": "Unesite naziv mirisa",
     "admin.scents.scentDescription": "Opis mirisa *",
     "admin.scents.scentDescriptionPlaceholder": "Unesite opis mirisa",
     "admin.scents.scentStatus": "Status mirisa",
-    "admin.scents.scentStatusHelp": "Neaktivni mirisi neće biti dostupni za odabir na proizvodima",
+    "admin.scents.scentStatusHelp":
+      "Neaktivni mirisi neće biti dostupni za odabir na proizvodima",
     "admin.scents.cancel": "Odustani",
     "admin.scents.save": "Spremi miris",
     "admin.scents.saveChanges": "Spremi promjene",
     "admin.scents.saving": "Spremanje...",
     "admin.scents.updating": "Ažuriranje...",
     "admin.scents.deleteScent": "Obriši miris",
-    "admin.scents.deleteConfirmation": "Jeste li sigurni da želite obrisati miris \"{name}\"? Ova radnja je nepovratna i može utjecati na proizvode koji koriste ovaj miris.",
+    "admin.scents.deleteConfirmation":
+      'Jeste li sigurni da želite obrisati miris "{name}"? Ova radnja je nepovratna i može utjecati na proizvode koji koriste ovaj miris.',
     "admin.scents.cancelDelete": "Odustani",
     "admin.scents.confirmDelete": "Da, obriši",
     "admin.scents.deleting": "Brisanje...",
@@ -1596,12 +1767,15 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.scents.successDelete": "Uspjeh",
     "admin.scents.successDeleteDesc": "Miris je uspješno obrisan.",
     "admin.scents.errorCreate": "Greška",
-    "admin.scents.errorCreateDesc": "Došlo je do greške prilikom dodavanja mirisa: {error}",
+    "admin.scents.errorCreateDesc":
+      "Došlo je do greške prilikom dodavanja mirisa: {error}",
     "admin.scents.errorUpdate": "Greška",
-    "admin.scents.errorUpdateDesc": "Došlo je do greške prilikom ažuriranja mirisa: {error}",
+    "admin.scents.errorUpdateDesc":
+      "Došlo je do greške prilikom ažuriranja mirisa: {error}",
     "admin.scents.errorDelete": "Greška",
-    "admin.scents.errorDeleteDesc": "Došlo je do greške prilikom brisanja mirisa: {error}",
-    
+    "admin.scents.errorDeleteDesc":
+      "Došlo je do greške prilikom brisanja mirisa: {error}",
+
     // Admin Colors Page
     "admin.colors.pageTitle": "Boje",
     "admin.colors.title": "Boje",
@@ -1634,7 +1808,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.saving": "Spremanje...",
     "admin.colors.updating": "Ažuriranje...",
     "admin.colors.deleteColor": "Obriši boju",
-    "admin.colors.deleteConfirmation": "Jeste li sigurni da želite obrisati boju \"{name}\"? Ova radnja se ne može poništiti i može utjecati na proizvode koji koriste ovu boju.",
+    "admin.colors.deleteConfirmation":
+      'Jeste li sigurni da želite obrisati boju "{name}"? Ova radnja se ne može poništiti i može utjecati na proizvode koji koriste ovu boju.',
     "admin.colors.cancelDelete": "Odustani",
     "admin.colors.confirmDelete": "Da, obriši",
     "admin.colors.deleting": "Brisanje...",
@@ -1644,7 +1819,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.successCreate": "Boja uspješno dodana",
     "admin.colors.successUpdate": "Boja uspješno ažurirana",
     "admin.colors.successDelete": "Boja uspješno obrisana",
-    
+
     // Admin Dashboard
     "admin.dashboard.title": "Nadzorna ploča",
     "admin.dashboard.totalRevenue": "Ukupna zarada",
@@ -1653,7 +1828,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.dashboard.products": "Proizvodi",
     "admin.dashboard.comparedToLastMonth": "u odnosu na prošli mjesec",
     "admin.dashboard.salesOverTime": "Prodaja kroz vrijeme",
-    "admin.dashboard.productCategoryDistribution": "Distribucija kategorija proizvoda",
+    "admin.dashboard.productCategoryDistribution":
+      "Distribucija kategorija proizvoda",
     "admin.dashboard.recentOrders": "Nedavne narudžbe",
     "admin.dashboard.id": "ID",
     "admin.dashboard.user": "Korisnik",
@@ -1664,13 +1840,16 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.dashboard.scentedCandles": "Mirisne svijeće",
     "admin.dashboard.decorativeCandles": "Dekorativne svijeće",
     "admin.dashboard.personalizedCandles": "Personalizirane svijeće",
-    
+
     // Admin Collections Page
     "admin.collections.title": "Kolekcije",
-    "admin.collections.subtitle": "Upravljajte kolekcijama proizvoda u vašoj trgovini",
+    "admin.collections.subtitle":
+      "Upravljajte kolekcijama proizvoda u vašoj trgovini",
     "admin.collections.allCollections": "Sve kolekcije",
-    "admin.collections.allCollectionsDesc": "Popis svih kolekcija proizvoda u trgovini",
-    "admin.collections.noCollections": "Nema dostupnih kolekcija. Dodajte svoju prvu kolekciju.",
+    "admin.collections.allCollectionsDesc":
+      "Popis svih kolekcija proizvoda u trgovini",
+    "admin.collections.noCollections":
+      "Nema dostupnih kolekcija. Dodajte svoju prvu kolekciju.",
     "admin.collections.id": "ID",
     "admin.collections.image": "Slika",
     "admin.collections.name": "Naziv",
@@ -1684,20 +1863,28 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.no": "Ne",
     "admin.collections.addCollection": "Dodaj novu kolekciju",
     "admin.collections.editCollection": "Uredi kolekciju",
-    "admin.collections.addCollectionDesc": "Popunite podatke o novoj kolekciji i kliknite Spremi za dodavanje.",
-    "admin.collections.editCollectionDesc": "Uredite podatke kolekcije i kliknite Spremi za pohranu promjena.",
+    "admin.collections.addCollectionDesc":
+      "Popunite podatke o novoj kolekciji i kliknite Spremi za dodavanje.",
+    "admin.collections.editCollectionDesc":
+      "Uredite podatke kolekcije i kliknite Spremi za pohranu promjena.",
     "admin.collections.collectionName": "Naziv kolekcije *",
     "admin.collections.collectionNamePlaceholder": "Unesite naziv kolekcije",
     "admin.collections.collectionDescription": "Opis kolekcije *",
-    "admin.collections.collectionDescriptionPlaceholder": "Unesite opis kolekcije",
-    "admin.collections.collectionDescriptionHelp": "Opišite kolekciju kako bi kupci imali više informacija.",
+    "admin.collections.collectionDescriptionPlaceholder":
+      "Unesite opis kolekcije",
+    "admin.collections.collectionDescriptionHelp":
+      "Opišite kolekciju kako bi kupci imali više informacija.",
     "admin.collections.collectionImageUrl": "URL slike kolekcije",
-    "admin.collections.collectionImageUrlPlaceholder": "Unesite URL slike kolekcije",
-    "admin.collections.collectionImageUrlHelp": "Dodajte URL slike koja najbolje predstavlja ovu kolekciju.",
+    "admin.collections.collectionImageUrlPlaceholder":
+      "Unesite URL slike kolekcije",
+    "admin.collections.collectionImageUrlHelp":
+      "Dodajte URL slike koja najbolje predstavlja ovu kolekciju.",
     "admin.collections.collectionStatus": "Status kolekcije",
-    "admin.collections.collectionStatusHelp": "Neaktivne kolekcije neće biti vidljive kupcima",
+    "admin.collections.collectionStatusHelp":
+      "Neaktivne kolekcije neće biti vidljive kupcima",
     "admin.collections.collectionFeatured": "Istaknuta kolekcija",
-    "admin.collections.collectionFeaturedHelp": "Istaknute kolekcije bit će prikazane na početnoj stranici",
+    "admin.collections.collectionFeaturedHelp":
+      "Istaknute kolekcije bit će prikazane na početnoj stranici",
     "admin.collections.imagePreview": "Pregled slike:",
     "admin.collections.cancel": "Odustani",
     "admin.collections.save": "Spremi kolekciju",
@@ -1705,7 +1892,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.saving": "Spremanje...",
     "admin.collections.updating": "Ažuriranje...",
     "admin.collections.deleteCollection": "Obriši kolekciju",
-    "admin.collections.deleteConfirmation": "Jeste li sigurni da želite obrisati kolekciju \"{name}\"? Ova radnja je nepovratna.",
+    "admin.collections.deleteConfirmation":
+      'Jeste li sigurni da želite obrisati kolekciju "{name}"? Ova radnja je nepovratna.',
     "admin.collections.cancelDelete": "Odustani",
     "admin.collections.confirmDelete": "Da, obriši",
     "admin.collections.deleting": "Brisanje...",
@@ -1716,28 +1904,36 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.successDelete": "Uspjeh",
     "admin.collections.successDeleteDesc": "Kolekcija je uspješno obrisana.",
     "admin.collections.errorCreate": "Greška",
-    "admin.collections.errorCreateDesc": "Došlo je do greške prilikom dodavanja kolekcije: {error}",
+    "admin.collections.errorCreateDesc":
+      "Došlo je do greške prilikom dodavanja kolekcije: {error}",
     "admin.collections.errorUpdate": "Greška",
-    "admin.collections.errorUpdateDesc": "Došlo je do greške prilikom ažuriranja kolekcije: {error}",
+    "admin.collections.errorUpdateDesc":
+      "Došlo je do greške prilikom ažuriranja kolekcije: {error}",
     "admin.collections.errorDelete": "Greška",
-    "admin.collections.errorDeleteDesc": "Došlo je do greške prilikom brisanja kolekcije: {error}",
+    "admin.collections.errorDeleteDesc":
+      "Došlo je do greške prilikom brisanja kolekcije: {error}",
     "admin.collections.manageProducts": "Upravljanje proizvodima",
     "admin.collections.addProducts": "Dodaj proizvode u kolekciju",
     "admin.collections.removeProducts": "Ukloni proizvode iz kolekcije",
     "admin.collections.productsInCollection": "Proizvodi u kolekciji",
-    "admin.collections.noProductsInCollection": "Nema proizvoda u ovoj kolekciji",
+    "admin.collections.noProductsInCollection":
+      "Nema proizvoda u ovoj kolekciji",
     "admin.collections.availableProducts": "Dostupni proizvodi",
     "admin.collections.searchProducts": "Pretraži proizvode...",
     "admin.collections.addSelectedProducts": "Dodaj odabrane proizvode",
     "admin.collections.removeSelectedProducts": "Ukloni odabrane proizvode",
-    "admin.collections.successAddProducts": "Proizvodi uspješno dodani u kolekciju",
-    "admin.collections.successRemoveProducts": "Proizvodi uspješno uklonjeni iz kolekcije",
-    "admin.collections.errorAddProducts": "Greška prilikom dodavanja proizvoda u kolekciju",
-    "admin.collections.errorRemoveProducts": "Greška prilikom uklanjanja proizvoda iz kolekcije",
+    "admin.collections.successAddProducts":
+      "Proizvodi uspješno dodani u kolekciju",
+    "admin.collections.successRemoveProducts":
+      "Proizvodi uspješno uklonjeni iz kolekcije",
+    "admin.collections.errorAddProducts":
+      "Greška prilikom dodavanja proizvoda u kolekciju",
+    "admin.collections.errorRemoveProducts":
+      "Greška prilikom uklanjanja proizvoda iz kolekcije",
     "admin.collections.createError": "Greška pri dodavanju kolekcije",
     "admin.collections.updateError": "Greška pri ažuriranju kolekcije",
     "admin.collections.deleteError": "Greška pri brisanju kolekcije",
-    
+
     // Admin Orders Page
     "admin.orders.title": "Narudžbe",
     "admin.orders.subtitle": "Pregled i upravljanje narudžbama kupaca",
@@ -1796,11 +1992,13 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.currentStatus": "Trenutni status",
     "admin.orders.newStatus": "Novi status",
     "admin.orders.statusUpdateSuccess": "Status narudžbe uspješno ažuriran",
-    "admin.orders.statusUpdateError": "Greška prilikom ažuriranja statusa narudžbe",
+    "admin.orders.statusUpdateError":
+      "Greška prilikom ažuriranja statusa narudžbe",
     "admin.orders.cancel": "Odustani",
     "admin.orders.update": "Ažuriraj",
     "admin.orders.confirmCancellation": "Potvrda otkazivanja",
-    "admin.orders.cancelConfirmation": "Jeste li sigurni da želite otkazati ovu narudžbu? Ova radnja je nepovratna.",
+    "admin.orders.cancelConfirmation":
+      "Jeste li sigurni da želite otkazati ovu narudžbu? Ova radnja je nepovratna.",
     "admin.orders.cancelOrder": "Otkaži narudžbu",
     "admin.orders.orderCancelled": "Narudžba je otkazana",
     "admin.orders.backToOrders": "Povratak na narudžbe",
@@ -1825,9 +2023,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.addTracking": "Dodaj informacije za praćenje",
     "admin.orders.updateTracking": "Ažuriraj informacije za praćenje",
     "admin.orders.trackingAdded": "Informacije za praćenje uspješno dodane",
-    "admin.orders.trackingUpdated": "Informacije za praćenje uspješno ažurirane",
-    "admin.orders.trackingError": "Greška prilikom ažuriranja informacija za praćenje",
-    
+    "admin.orders.trackingUpdated":
+      "Informacije za praćenje uspješno ažurirane",
+    "admin.orders.trackingError":
+      "Greška prilikom ažuriranja informacija za praćenje",
+
     // Admin Invoices Page
     "admin.invoices.title": "Računi",
     "admin.invoices.subtitle": "Pregled i upravljanje računima",
@@ -1886,7 +2086,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.sendToCustomer": "Pošalji kupcu",
     "admin.invoices.emailSent": "E-mail s računom uspješno poslan",
     "admin.invoices.emailError": "Greška prilikom slanja e-maila",
-    "admin.invoices.deleteConfirmation": "Jeste li sigurni da želite obrisati ovaj račun? Ova radnja je nepovratna.",
+    "admin.invoices.deleteConfirmation":
+      "Jeste li sigurni da želite obrisati ovaj račun? Ova radnja je nepovratna.",
     "admin.invoices.cancelDelete": "Odustani",
     "admin.invoices.confirmDelete": "Da, obriši",
     "admin.invoices.deleteSuccess": "Račun je uspješno obrisan",
@@ -1925,11 +2126,13 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.invoiceCreated": "Račun je uspješno izrađen",
     "admin.invoices.invoiceCreationError": "Greška prilikom izrade računa",
     "admin.invoices.amount": "Iznos",
-    "admin.invoices.viewAllInvoicesDescription": "Pregledajte sve kreirane račune",
+    "admin.invoices.viewAllInvoicesDescription":
+      "Pregledajte sve kreirane račune",
     "admin.invoices.existingInvoices": "Postojeći računi",
     "admin.invoices.createNewInvoice": "Kreiraj novi račun",
     "admin.invoices.companyDocuments": "Dokumenti tvrtke",
-    "admin.invoices.fillInformationForNewInvoice": "Ispunite informacije za novi račun",
+    "admin.invoices.fillInformationForNewInvoice":
+      "Ispunite informacije za novi račun",
     "admin.invoices.customerDetails": "Detalji kupca",
     "admin.invoices.firstName": "Ime",
     "admin.invoices.lastName": "Prezime",
@@ -1940,7 +2143,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.invoiceLanguage": "Jezik računa",
     "admin.invoices.errorCreatingInvoice": "Greška prilikom kreiranja računa",
     "admin.invoices.errorDeletingInvoice": "Greška prilikom brisanja računa",
-    
+
     // Admin Users Page
     "admin.users.title": "Korisnici",
     "admin.users.subtitle": "Upravljanje korisničkim računima",
@@ -1994,38 +2197,48 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.registrationIp": "IP registracije",
     "admin.users.registrationDate": "Datum registracije",
     "admin.users.loginCount": "Broj prijava",
-    "admin.users.deleteConfirmation": "Jeste li sigurni da želite obrisati korisnika \"{name}\"? Ova radnja je nepovratna.",
+    "admin.users.deleteConfirmation":
+      'Jeste li sigurni da želite obrisati korisnika "{name}"? Ova radnja je nepovratna.',
     "admin.users.cancelDelete": "Odustani",
     "admin.users.confirmDelete": "Da, obriši",
     "admin.users.userDeleted": "Korisnik je uspješno obrisan",
     "admin.users.deleteError": "Greška prilikom brisanja korisnika",
-    "admin.users.passwordResetConfirmation": "Jeste li sigurni da želite resetirati lozinku korisnika \"{name}\"?",
+    "admin.users.passwordResetConfirmation":
+      'Jeste li sigurni da želite resetirati lozinku korisnika "{name}"?',
     "admin.users.cancelPasswordReset": "Odustani",
     "admin.users.confirmPasswordReset": "Da, resetiraj lozinku",
     "admin.users.passwordResetSuccess": "Lozinka je uspješno resetirana",
     "admin.users.passwordResetError": "Greška prilikom resetiranja lozinke",
     "admin.users.newPassword": "Nova lozinka",
     "admin.users.confirmPassword": "Potvrdi lozinku",
-    "admin.users.banConfirmation": "Jeste li sigurni da želite zabraniti korisnika \"{name}\"?",
+    "admin.users.banConfirmation":
+      'Jeste li sigurni da želite zabraniti korisnika "{name}"?',
     "admin.users.cancelBan": "Odustani",
     "admin.users.confirmBan": "Da, zabrani korisnika",
     "admin.users.userBanned": "Korisnik je uspješno zabranjen",
     "admin.users.banError": "Greška prilikom zabranjivanja korisnika",
-    "admin.users.unbanConfirmation": "Jeste li sigurni da želite odblokirati korisnika \"{name}\"?",
+    "admin.users.unbanConfirmation":
+      'Jeste li sigurni da želite odblokirati korisnika "{name}"?',
     "admin.users.cancelUnban": "Odustani",
     "admin.users.confirmUnban": "Da, odblokiraj korisnika",
     "admin.users.userUnbanned": "Korisnik je uspješno odblokiran",
     "admin.users.unbanError": "Greška prilikom odblokiranja korisnika",
-    "admin.users.makeAdminConfirmation": "Jeste li sigurni da želite postaviti korisnika \"{name}\" kao administratora?",
+    "admin.users.makeAdminConfirmation":
+      'Jeste li sigurni da želite postaviti korisnika "{name}" kao administratora?',
     "admin.users.cancelMakeAdmin": "Odustani",
     "admin.users.confirmMakeAdmin": "Da, postavi kao administratora",
-    "admin.users.userMadeAdmin": "Korisnik je uspješno postavljen kao administrator",
-    "admin.users.makeAdminError": "Greška prilikom postavljanja korisnika kao administratora",
-    "admin.users.removeAdminConfirmation": "Jeste li sigurni da želite ukloniti administratorske ovlasti korisniku \"{name}\"?",
+    "admin.users.userMadeAdmin":
+      "Korisnik je uspješno postavljen kao administrator",
+    "admin.users.makeAdminError":
+      "Greška prilikom postavljanja korisnika kao administratora",
+    "admin.users.removeAdminConfirmation":
+      'Jeste li sigurni da želite ukloniti administratorske ovlasti korisniku "{name}"?',
     "admin.users.cancelRemoveAdmin": "Odustani",
     "admin.users.confirmRemoveAdmin": "Da, ukloni administratorske ovlasti",
-    "admin.users.adminRightsRemoved": "Administratorske ovlasti su uspješno uklonjene",
-    "admin.users.removeAdminError": "Greška prilikom uklanjanja administratorskih ovlasti",
+    "admin.users.adminRightsRemoved":
+      "Administratorske ovlasti su uspješno uklonjene",
+    "admin.users.removeAdminError":
+      "Greška prilikom uklanjanja administratorskih ovlasti",
     "admin.users.addUser": "Dodaj korisnika",
     "admin.users.editUserInfo": "Uredi podatke korisnika",
     "admin.users.usernamePlaceholder": "Unesite korisničko ime",
@@ -2046,13 +2259,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.userCreated": "Korisnik je uspješno dodan",
     "admin.users.userCreationError": "Greška prilikom dodavanja korisnika",
     "admin.users.userUpdated": "Podaci korisnika su uspješno ažurirani",
-    "admin.users.userUpdateError": "Greška prilikom ažuriranja podataka korisnika",
+    "admin.users.userUpdateError":
+      "Greška prilikom ažuriranja podataka korisnika",
     "admin.users.searchUsers": "Pretraži korisnike...",
     "admin.users.filterByRole": "Filtriraj po ulozi",
     "admin.users.filterByStatus": "Filtriraj po statusu",
     "admin.users.applyFilters": "Primijeni filtre",
     "admin.users.resetFilters": "Poništi filtre",
-    
+
     // Admin Page Settings
     "admin.pageSettings.title": "Postavke stranice",
     "admin.pageSettings.subtitle": "Uređivanje sadržaja stranice",
@@ -2090,7 +2304,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.pageSettings.pageNamePlaceholder": "Unesite naziv stranice",
     "admin.pageSettings.pageSlug": "Slug stranice *",
     "admin.pageSettings.pageSlugPlaceholder": "unesite-slug-stranice",
-    "admin.pageSettings.pageSlugHelp": "Slug se koristi u URL-u stranice i trebao bi sadržavati samo mala slova, brojeve i crtice",
+    "admin.pageSettings.pageSlugHelp":
+      "Slug se koristi u URL-u stranice i trebao bi sadržavati samo mala slova, brojeve i crtice",
     "admin.pageSettings.pageType": "Tip stranice",
     "admin.pageSettings.pageStatus": "Status stranice",
     "admin.pageSettings.metaTitle": "Meta naslov",
@@ -2102,13 +2317,15 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.pageSettings.cancel": "Odustani",
     "admin.pageSettings.save": "Spremi",
     "admin.pageSettings.saving": "Spremanje...",
-    "admin.pageSettings.deleteConfirmation": "Jeste li sigurni da želite obrisati stranicu \"{name}\"? Ova radnja je nepovratna.",
+    "admin.pageSettings.deleteConfirmation":
+      'Jeste li sigurni da želite obrisati stranicu "{name}"? Ova radnja je nepovratna.',
     "admin.pageSettings.cancelDelete": "Odustani",
     "admin.pageSettings.confirmDelete": "Da, obriši",
     "admin.pageSettings.pageDeleted": "Stranica je uspješno obrisana",
     "admin.pageSettings.deleteError": "Greška prilikom brisanja stranice",
     "admin.pageSettings.pageCreated": "Stranica je uspješno dodana",
-    "admin.pageSettings.pageCreationError": "Greška prilikom dodavanja stranice",
+    "admin.pageSettings.pageCreationError":
+      "Greška prilikom dodavanja stranice",
     "admin.pageSettings.pageUpdated": "Stranica je uspješno ažurirana",
     "admin.pageSettings.pageUpdateError": "Greška prilikom ažuriranja stranice",
     "admin.pageSettings.homePageSettings": "Postavke početne stranice",
@@ -2120,7 +2337,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.pageSettings.heroTitle": "Naslov hero sekcije",
     "admin.pageSettings.heroTitlePlaceholder": "Unesite naslov hero sekcije",
     "admin.pageSettings.heroSubtitle": "Podnaslov hero sekcije",
-    "admin.pageSettings.heroSubtitlePlaceholder": "Unesite podnaslov hero sekcije",
+    "admin.pageSettings.heroSubtitlePlaceholder":
+      "Unesite podnaslov hero sekcije",
     "admin.pageSettings.heroButtonText": "Tekst gumba hero sekcije",
     "admin.pageSettings.heroButtonTextPlaceholder": "Unesite tekst gumba",
     "admin.pageSettings.heroButtonLink": "Link gumba hero sekcije",
@@ -2130,16 +2348,22 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.pageSettings.aboutTitle": "Naslov O nama sekcije",
     "admin.pageSettings.aboutTitlePlaceholder": "Unesite naslov O nama sekcije",
     "admin.pageSettings.aboutContent": "Sadržaj O nama sekcije",
-    "admin.pageSettings.aboutContentPlaceholder": "Unesite sadržaj O nama sekcije",
+    "admin.pageSettings.aboutContentPlaceholder":
+      "Unesite sadržaj O nama sekcije",
     "admin.pageSettings.aboutImageUrl": "URL slike O nama sekcije",
     "admin.pageSettings.aboutImageUrlPlaceholder": "Unesite URL slike",
     "admin.pageSettings.testimonialsTitle": "Naslov sekcije s recenzijama",
-    "admin.pageSettings.testimonialsTitlePlaceholder": "Unesite naslov sekcije s recenzijama",
-    "admin.pageSettings.featuredCollectionsTitle": "Naslov sekcije istaknutih kolekcija",
-    "admin.pageSettings.featuredCollectionsTitlePlaceholder": "Unesite naslov sekcije istaknutih kolekcija",
-    "admin.pageSettings.featuredProductsTitle": "Naslov sekcije istaknutih proizvoda",
-    "admin.pageSettings.featuredProductsTitlePlaceholder": "Unesite naslov sekcije istaknutih proizvoda",
-    
+    "admin.pageSettings.testimonialsTitlePlaceholder":
+      "Unesite naslov sekcije s recenzijama",
+    "admin.pageSettings.featuredCollectionsTitle":
+      "Naslov sekcije istaknutih kolekcija",
+    "admin.pageSettings.featuredCollectionsTitlePlaceholder":
+      "Unesite naslov sekcije istaknutih kolekcija",
+    "admin.pageSettings.featuredProductsTitle":
+      "Naslov sekcije istaknutih proizvoda",
+    "admin.pageSettings.featuredProductsTitlePlaceholder":
+      "Unesite naslov sekcije istaknutih proizvoda",
+
     // Admin Contact Settings
     "admin.contactSettings.title": "Postavke kontakta",
     "admin.contactSettings.subtitle": "Upravljanje kontaktnim podacima",
@@ -2167,7 +2391,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.contactSettings.vatNumber": "PDV broj",
     "admin.contactSettings.vatNumberPlaceholder": "Unesite PDV broj",
     "admin.contactSettings.companyRegistrationNumber": "Matični broj tvrtke",
-    "admin.contactSettings.companyRegistrationNumberPlaceholder": "Unesite matični broj tvrtke",
+    "admin.contactSettings.companyRegistrationNumberPlaceholder":
+      "Unesite matični broj tvrtke",
     "admin.contactSettings.iban": "IBAN",
     "admin.contactSettings.ibanPlaceholder": "Unesite IBAN",
     "admin.contactSettings.swift": "SWIFT",
@@ -2193,7 +2418,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.contactSettings.saving": "Spremanje...",
     "admin.contactSettings.settingsSaved": "Postavke su uspješno spremljene",
     "admin.contactSettings.saveError": "Greška prilikom spremanja postavki",
-    
+
     // Admin Delivery Settings
     "admin.delivery.title": "Postavke dostave",
     "admin.delivery.subtitle": "Upravljanje opcijama dostave",
@@ -2203,8 +2428,10 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.delivery.shippingRules": "Pravila dostave",
     "admin.delivery.enableShipping": "Omogući dostavu",
     "admin.delivery.freeShippingThreshold": "Prag za besplatnu dostavu",
-    "admin.delivery.freeShippingThresholdPlaceholder": "Unesite iznos za besplatnu dostavu",
-    "admin.delivery.freeShippingThresholdHelp": "Iznos narudžbe iznad kojeg je dostava besplatna",
+    "admin.delivery.freeShippingThresholdPlaceholder":
+      "Unesite iznos za besplatnu dostavu",
+    "admin.delivery.freeShippingThresholdHelp":
+      "Iznos narudžbe iznad kojeg je dostava besplatna",
     "admin.delivery.shippingCalculation": "Izračun troškova dostave",
     "admin.delivery.fixedRate": "Fiksna stopa",
     "admin.delivery.weightBased": "Prema težini",
@@ -2216,14 +2443,16 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.delivery.methodName": "Naziv načina dostave",
     "admin.delivery.methodNamePlaceholder": "Unesite naziv načina dostave",
     "admin.delivery.methodDescription": "Opis načina dostave",
-    "admin.delivery.methodDescriptionPlaceholder": "Unesite opis načina dostave",
+    "admin.delivery.methodDescriptionPlaceholder":
+      "Unesite opis načina dostave",
     "admin.delivery.methodPrice": "Cijena dostave",
     "admin.delivery.methodPricePlaceholder": "Unesite cijenu dostave",
     "admin.delivery.methodStatus": "Status",
     "admin.delivery.methodEnabled": "Omogućen",
     "admin.delivery.methodDisabled": "Onemogućen",
     "admin.delivery.estimatedDeliveryTime": "Procijenjeno vrijeme dostave",
-    "admin.delivery.estimatedDeliveryTimePlaceholder": "Unesite procijenjeno vrijeme dostave",
+    "admin.delivery.estimatedDeliveryTimePlaceholder":
+      "Unesite procijenjeno vrijeme dostave",
     "admin.delivery.addZone": "Dodaj zonu dostave",
     "admin.delivery.editZone": "Uredi zonu dostave",
     "admin.delivery.deleteZone": "Obriši zonu dostave",
@@ -2238,15 +2467,17 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.delivery.saving": "Spremanje...",
     "admin.delivery.settingsSaved": "Postavke su uspješno spremljene",
     "admin.delivery.saveError": "Greška prilikom spremanja postavki",
-    "admin.delivery.deleteConfirmation": "Jeste li sigurni da želite obrisati ovaj način dostave?",
-    "admin.delivery.deleteZoneConfirmation": "Jeste li sigurni da želite obrisati ovu zonu dostave?",
+    "admin.delivery.deleteConfirmation":
+      "Jeste li sigurni da želite obrisati ovaj način dostave?",
+    "admin.delivery.deleteZoneConfirmation":
+      "Jeste li sigurni da želite obrisati ovu zonu dostave?",
     "admin.delivery.cancelDelete": "Odustani",
     "admin.delivery.confirmDelete": "Da, obriši",
     "admin.delivery.methodDeleted": "Način dostave je uspješno obrisan",
     "admin.delivery.deleteError": "Greška prilikom brisanja načina dostave",
     "admin.delivery.zoneDeleted": "Zona dostave je uspješno obrisana",
     "admin.delivery.zoneDeleteError": "Greška prilikom brisanja zone dostave",
-    
+
     // Admin Documents Page
     "admin.documents.title": "Dokumenti",
     "admin.documents.subtitle": "Upravljanje poslovnim dokumentima",
@@ -2272,20 +2503,25 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.documents.documentType": "Tip dokumenta",
     "admin.documents.selectFile": "Odaberi datoteku",
     "admin.documents.maxFileSize": "Maksimalna veličina datoteke: 10MB",
-    "admin.documents.allowedFileTypes": "Dozvoljeni tipovi datoteka: PDF, DOC, DOCX, XLS, XLSX",
-    "admin.documents.dragAndDrop": "Povucite i ispustite datoteku ovdje ili kliknite za odabir",
+    "admin.documents.allowedFileTypes":
+      "Dozvoljeni tipovi datoteka: PDF, DOC, DOCX, XLS, XLSX",
+    "admin.documents.dragAndDrop":
+      "Povucite i ispustite datoteku ovdje ili kliknite za odabir",
     "admin.documents.uploading": "Učitavanje...",
     "admin.documents.upload": "Učitaj",
     "admin.documents.cancel": "Odustani",
-    "admin.documents.deleteConfirmation": "Jeste li sigurni da želite obrisati dokument \"{name}\"? Ova radnja je nepovratna.",
+    "admin.documents.deleteConfirmation":
+      'Jeste li sigurni da želite obrisati dokument "{name}"? Ova radnja je nepovratna.',
     "admin.documents.cancelDelete": "Odustani",
     "admin.documents.confirmDelete": "Da, obriši",
     "admin.documents.documentDeleted": "Dokument je uspješno obrisan",
     "admin.documents.deleteError": "Greška prilikom brisanja dokumenta",
     "admin.documents.uploadSuccess": "Dokument je uspješno učitan",
     "admin.documents.uploadError": "Greška prilikom učitavanja dokumenta",
-    "admin.documents.fileTooBig": "Datoteka je prevelika. Maksimalna veličina je 10MB.",
-    "admin.documents.invalidFileType": "Nevažeći tip datoteke. Dozvoljeni tipovi su PDF, DOC, DOCX, XLS, XLSX.",
+    "admin.documents.fileTooBig":
+      "Datoteka je prevelika. Maksimalna veličina je 10MB.",
+    "admin.documents.invalidFileType":
+      "Nevažeći tip datoteke. Dozvoljeni tipovi su PDF, DOC, DOCX, XLS, XLSX.",
     "admin.documents.documentSize": "{size} KB",
     "admin.documents.documentSizeMB": "{size} MB",
     "admin.documents.invoice": "Račun",
@@ -2301,7 +2537,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.documents.dateTo": "Do datuma",
     "admin.documents.applyFilters": "Primijeni filtre",
     "admin.documents.resetFilters": "Poništi filtre",
-    
+
     // Admin Payment Settings
     "admin.payments.title": "Postavke plaćanja",
     "admin.payments.subtitle": "Upravljanje načinima plaćanja",
@@ -2314,9 +2550,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.payments.currencyFormat": "Format valute",
     "admin.payments.currencyFormatPlaceholder": "Odaberite format valute",
     "admin.payments.decimalSeparator": "Decimalni separator",
-    "admin.payments.decimalSeparatorPlaceholder": "Odaberite decimalni separator",
+    "admin.payments.decimalSeparatorPlaceholder":
+      "Odaberite decimalni separator",
     "admin.payments.thousandsSeparator": "Separator tisućica",
-    "admin.payments.thousandsSeparatorPlaceholder": "Odaberite separator tisućica",
+    "admin.payments.thousandsSeparatorPlaceholder":
+      "Odaberite separator tisućica",
     "admin.payments.numberOfDecimals": "Broj decimala",
     "admin.payments.numberOfDecimalsPlaceholder": "Unesite broj decimala",
     "admin.payments.taxIncluded": "PDV uključen u cijenu",
@@ -2330,7 +2568,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.payments.methodName": "Naziv načina plaćanja",
     "admin.payments.methodNamePlaceholder": "Unesite naziv načina plaćanja",
     "admin.payments.methodDescription": "Opis načina plaćanja",
-    "admin.payments.methodDescriptionPlaceholder": "Unesite opis načina plaćanja",
+    "admin.payments.methodDescriptionPlaceholder":
+      "Unesite opis načina plaćanja",
     "admin.payments.methodInstructions": "Upute za plaćanje",
     "admin.payments.methodInstructionsPlaceholder": "Unesite upute za plaćanje",
     "admin.payments.methodStatus": "Status",
@@ -2365,7 +2604,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.payments.saving": "Spremanje...",
     "admin.payments.settingsSaved": "Postavke su uspješno spremljene",
     "admin.payments.saveError": "Greška prilikom spremanja postavki",
-    "admin.payments.deleteConfirmation": "Jeste li sigurni da želite obrisati ovaj način plaćanja?",
+    "admin.payments.deleteConfirmation":
+      "Jeste li sigurni da želite obrisati ovaj način plaćanja?",
     "admin.payments.cancelDelete": "Odustani",
     "admin.payments.confirmDelete": "Da, obriši",
     "admin.payments.methodDeleted": "Način plaćanja je uspješno obrisan",
@@ -2388,7 +2628,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.newProductSubtitle": "Dodajte novi proizvod u katalog",
     "admin.product.categoryPlaceholder": "Odaberite kategoriju",
     "admin.product.burntimePlaceholder": "Vrijeme gorenja u satima",
-    
+
     // Navigacija
     "nav.home": "Početna",
     "nav.products": "Proizvodi",
@@ -2446,7 +2686,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.active": "Aktivno",
     "admin.inactive": "Neaktivno",
     "admin.selectLanguage": "Odaberi jezik",
-    
+
     // Admin Common Elements
     "admin.id": "ID",
     "admin.name": "Naziv",
@@ -2467,8 +2707,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.quantity": "Količina",
     "admin.payment": "Plaćanje",
     "admin.confirmDelete": "Potvrdi brisanje",
-    "admin.deleteWarning": "Jeste li sigurni da želite izbrisati ovu stavku? Ova radnja ne može se poništiti.",
-    
+    "admin.deleteWarning":
+      "Jeste li sigurni da želite izbrisati ovu stavku? Ova radnja ne može se poništiti.",
+
     // Admin Product Page
     "admin.productDetails": "Detalji proizvoda",
     "admin.productName": "Naziv proizvoda",
@@ -2495,7 +2736,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.productDeleted": "Proizvod uspješno obrisan",
     "admin.product.featuredProduct": "Istaknuti proizvod",
     "admin.product.productActive": "Proizvod aktivan",
-    "admin.product.productActiveHint": "(Ako je isključeno, proizvod neće biti vidljiv kupcima)",
+    "admin.product.productActiveHint":
+      "(Ako je isključeno, proizvod neće biti vidljiv kupcima)",
     "admin.product.saveChanges": "Spremi promjene",
     "admin.product.createProduct": "Kreiraj proizvod",
     "admin.product.cancel": "Poništi",
@@ -2506,7 +2748,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.imageUrlDescription": "Unesite URL do slike",
     "admin.product.clickToUpload": "Kliknite za učitavanje",
     "admin.product.imageFormats": "JPG, PNG, GIF do 5MB",
-    "admin.product.imageResizeInfo": "Slike će automatski biti smanjene na 800x800px",
+    "admin.product.imageResizeInfo":
+      "Slike će automatski biti smanjene na 800x800px",
     "admin.product.imageLoadingError": "Greška pri učitavanju slike",
     "admin.product.price": "Cijena",
     "admin.product.pricePlaceholder": "Unesite cijenu",
@@ -2527,10 +2770,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.maintenance": "Održavanje",
     "admin.product.maintenancePlaceholder": "Upute za održavanje",
     "admin.product.availableScents": "Dostupni mirisi",
-    "admin.product.selectScents": "Odaberite mirise koji će biti dostupni za ovaj proizvod",
+    "admin.product.selectScents":
+      "Odaberite mirise koji će biti dostupni za ovaj proizvod",
     "admin.product.loadingScents": "Učitavanje mirisa...",
     "admin.product.availableColors": "Dostupne boje",
-    "admin.product.selectColors": "Odaberite boje koje će biti dostupne za ovaj proizvod",
+    "admin.product.selectColors":
+      "Odaberite boje koje će biti dostupne za ovaj proizvod",
     "admin.product.loadingColors": "Učitavanje boja...",
     "admin.product.enableColorSelection": "Omogući odabir boja",
     "admin.product.enableMultipleColors": "Omogući odabir više boja",
@@ -2566,7 +2811,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.actionsColumn": "Akcije",
     "admin.product.inStock": "Na zalihi",
     "admin.product.active": "Aktivan",
-    
+
     // Admin Orders Page
     "admin.orderDetails": "Detalji narudžbe",
     "admin.orderNumber": "Broj narudžbe",
@@ -2587,7 +2832,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.delivered": "Dostavljeno",
     "admin.cancelled": "Otkazano",
     "admin.statusUpdated": "Status uspješno ažuriran",
-    
+
     // Admin Invoice Page
     "admin.invoiceDetails": "Detalji računa",
     "admin.invoiceNumber": "Broj računa",
@@ -2600,7 +2845,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.printInvoice": "Ispiši račun",
     "admin.invoiceGenerated": "Račun uspješno generiran",
     "admin.downloadFormat": "Format preuzimanja",
-    
+
     // Admin Users Page
     "admin.userDetails": "Detalji korisnika",
     "admin.username": "Korisničko ime",
@@ -2618,7 +2863,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.resetPassword": "Resetiraj lozinku",
     "admin.userSaved": "Korisnik uspješno spremljen",
     "admin.userDeleted": "Korisnik uspješno obrisan",
-    
+
     // Admin Settings Page
     "admin.generalSettings": "Opće postavke",
     "admin.shopName": "Naziv trgovine",
@@ -2634,7 +2879,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.metaDescription": "Meta opis",
     "admin.favicon": "Favicon",
     "admin.settingsSaved": "Postavke uspješno spremljene",
-    
+
     // Document Management
     "admin.uploadDocument": "Učitaj dokument",
     "admin.documentName": "Naziv dokumenta",
@@ -2703,7 +2948,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.total": "Ukupno",
     "cart.remove": "Ukloni",
     "cart.loading": "Učitavanje košarice...",
-    "cart.emptyMessage": "Vaša košarica je prazna. Dodajte neke proizvode za početak kupovine.",
+    "cart.emptyMessage":
+      "Vaša košarica je prazna. Dodajte neke proizvode za početak kupovine.",
     "cart.browseProducts": "Pregledaj proizvode",
     "cart.itemsInCart": "Artikli u košarici",
     "cart.productsCount": "proizvoda",
@@ -2718,23 +2964,31 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.shippingCost": "Trošak dostave",
     "cart.couponCode": "Kupon kod",
     "cart.applyCoupon": "Primijeni",
-    "cart.couponApplied": "Kod \"DOBRODOSLI\" uspješno primijenjen! Dobili ste 10% popusta.",
+    "cart.couponApplied":
+      'Kod "DOBRODOSLI" uspješno primijenjen! Dobili ste 10% popusta.',
     "cart.proceedToCheckout": "Nastavi na plaćanje",
-    "cart.metaDescription": "Pregledajte artikle u vašoj košarici i nastavite na plaćanje.",
-    "cart.freeShippingMessage": "Besplatna dostava za narudžbe iznad {amount}€.",
+    "cart.metaDescription":
+      "Pregledajte artikle u vašoj košarici i nastavite na plaćanje.",
+    "cart.freeShippingMessage":
+      "Besplatna dostava za narudžbe iznad {amount}€.",
     "cart.freeShippingForAll": "Besplatna dostava za sve narudžbe",
     "cart.shippingInfo": "Informacije o dostavi",
-    "cart.shippingInfoText1": "Dostava se vrši putem GLS, DPD, UPS ili poštanske službe.",
-    "cart.shippingInfoText2": "Vrijeme dostave je 2-5 radnih dana od trenutka narudžbe.",
-    "cart.shippingInfoText3": "Za narudžbe iznad {amount}€ dostava je besplatna. Za ostale narudžbe, trošak dostave iznosi {shipping}€.",
-    "cart.shippingInfoText4": "Trošak dostave iznosi {shipping}€ za sve narudžbe.",
+    "cart.shippingInfoText1":
+      "Dostava se vrši putem GLS, DPD, UPS ili poštanske službe.",
+    "cart.shippingInfoText2":
+      "Vrijeme dostave je 2-5 radnih dana od trenutka narudžbe.",
+    "cart.shippingInfoText3":
+      "Za narudžbe iznad {amount}€ dostava je besplatna. Za ostale narudžbe, trošak dostave iznosi {shipping}€.",
+    "cart.shippingInfoText4":
+      "Trošak dostave iznosi {shipping}€ za sve narudžbe.",
     "cart.paymentMethods": "Načini plaćanja",
     "cart.paymentMethodsText": "Prihvaćamo sljedeće načine plaćanja:",
     "cart.paymentMethod1": "PayPal",
     "cart.paymentMethod2": "Kreditne kartice (Visa, Mastercard)",
     "cart.paymentMethod3": "Bankovni prijenos (prema računu)",
     "cart.paymentMethod4": "Plaćanje pouzećem (plaćanje prilikom preuzimanja)",
-    "cart.addMoreForFreeShipping": "Dodajte još {amount}€ u košaricu za besplatnu dostavu!",
+    "cart.addMoreForFreeShipping":
+      "Dodajte još {amount}€ u košaricu za besplatnu dostavu!",
     "cart.inStock": "Na zalihi",
     "cart.scent": "Miris:",
     "cart.colors": "Boje",
@@ -2768,18 +3022,19 @@ export const translations: Record<Language, Record<string, string>> = {
     "dialog.delete": "Izbriši",
     "dialog.cancel": "Odustani",
     "dialog.confirm": "Potvrdi",
-    
+
     // Instagram
     "instagram.followUs": "Pratite nas na Instagramu",
-    "instagram.followUsText": "Pratite nas na Instagramu za najnovije kreacije i inspiracije",
+    "instagram.followUsText":
+      "Pratite nas na Instagramu za najnovije kreacije i inspiracije",
     "instagram.loadingPhotos": "Učitavanje fotografija...",
     "instagram.emptyFeed": "Instagram feed je prazan",
-    
+
     // Profile Page
     "profile.myProfile": "Moj profil",
     "profile.profile": "Profil",
     "profile.orders": "Narudžbe",
-    
+
     // Order Details
     "orders.details": "Detalji narudžbe",
     "orders.order": "Narudžba",
@@ -2855,13 +3110,15 @@ export const translations: Record<Language, Record<string, string>> = {
     "profile.countryPlaceholder": "Hrvatska",
     "profile.password": "Lozinka",
     "profile.passwordChange": "Promjena lozinke",
-    "profile.passwordChangeDescription": "Ažurirajte svoju lozinku kako biste osigurali sigurnost računa.",
+    "profile.passwordChangeDescription":
+      "Ažurirajte svoju lozinku kako biste osigurali sigurnost računa.",
     "profile.currentPassword": "Trenutna lozinka",
     "profile.newPassword": "Nova lozinka",
     "profile.confirmPassword": "Potvrdite novu lozinku",
     "profile.changePassword": "Promijeni lozinku",
     "profile.myOrders": "Moje narudžbe",
-    "profile.ordersDescription": "Pregled vaših prethodnih narudžbi i njihov status.",
+    "profile.ordersDescription":
+      "Pregled vaših prethodnih narudžbi i njihov status.",
     "profile.order": "Narudžba",
     "profile.orderDetails": "Detalji narudžbe",
     "profile.orderStatus.pending": "Na čekanju",
@@ -2869,7 +3126,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "profile.orderStatus.completed": "Završeno",
     "profile.noOrders": "Nemate narudžbi.",
     "profile.browseProducts": "Pregledaj proizvode",
-    "profile.meta.description": "Upravljajte svojim računom, pregledajte narudžbe i ažurirajte osobne podatke.",
+    "profile.meta.description":
+      "Upravljajte svojim računom, pregledajte narudžbe i ažurirajte osobne podatke.",
 
     // Newsletter
     "newsletter.title": "Pretplatite se na novosti",
@@ -2883,7 +3141,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "newsletter.success":
       "Hvala na prijavi! Uskoro ćete primiti naš newsletter.",
     "newsletter.error": "Molimo unesite vašu email adresu.",
-    
+
     // Admin panel
     "admin.backToStore": "Natrag na trgovinu",
   },
@@ -2892,15 +3150,16 @@ export const translations: Record<Language, Record<string, string>> = {
     // Languages
     "languages.croatian": "Croatian",
     "languages.english": "English",
-    "languages.german": "German", 
+    "languages.german": "German",
     "languages.italian": "Italian",
     "languages.slovenian": "Slovenian",
-    
+
     // Order Details
     "orders.details": "Order Details",
     "orders.order": "Order",
     "orders.backToOrders": "Back to Orders",
     "orders.status": "Status",
+    "orders.price": "Price",
     "orders.pending": "Pending",
     "orders.processing": "Processing",
     "orders.shipped": "Shipped",
@@ -2955,7 +3214,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.italian": "Italian",
     "orders.slovenian": "Slovenian",
     "orders.backToList": "Back to Orders List",
-    
+
     // Products page
     "products.allProducts": "All Products",
     "products.product": "Product",
@@ -2966,13 +3225,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "products.categories": "Categories",
     "products.allCategories": "All Categories",
     "products.selectCategory": "Select Category",
-    
+
     // Instagram
     "instagram.followUs": "Follow us on Instagram",
-    "instagram.followUsText": "Follow us on Instagram for the latest creations and inspirations",
+    "instagram.followUsText":
+      "Follow us on Instagram for the latest creations and inspirations",
     "instagram.loadingPhotos": "Loading photos...",
     "instagram.emptyFeed": "Instagram feed is empty",
-    
+
     // Profile Page
     "profile.myProfile": "My Profile",
     "profile.profile": "Profile",
@@ -2995,7 +3255,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "profile.countryPlaceholder": "Country",
     "profile.password": "Password",
     "profile.passwordChange": "Change Password",
-    "profile.passwordChangeDescription": "Update your password to keep your account secure.",
+    "profile.passwordChangeDescription":
+      "Update your password to keep your account secure.",
     "profile.currentPassword": "Current Password",
     "profile.newPassword": "New Password",
     "profile.confirmPassword": "Confirm New Password",
@@ -3009,7 +3270,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "profile.orderStatus.completed": "Completed",
     "profile.noOrders": "You have no orders.",
     "profile.browseProducts": "Browse Products",
-    "profile.meta.description": "Manage your account, view your orders, and update your personal information.",
+    "profile.meta.description":
+      "Manage your account, view your orders, and update your personal information.",
     "products.price": "Price",
     "products.sortBy": "Sort By",
     "products.newest": "Newest",
@@ -3020,54 +3282,65 @@ export const translations: Record<Language, Record<string, string>> = {
     "products.clearFilters": "Clear Filters",
     "products.applyFilters": "Apply Filters",
     "products.noProductsFound": "No Products Found",
-    "products.tryDifferentFilters": "Try different filters or browse our entire collection.",
+    "products.tryDifferentFilters":
+      "Try different filters or browse our entire collection.",
     "products.showAllProducts": "Show All Products",
-    
+
     // General admin elements
     "admin.general.uploading": "Uploading...",
     "admin.general.error": "Error",
     "admin.product.items": "Products",
     "admin.products.searchPlaceholder": "Search products...",
-    
+
     // Admin Categories Page (English translations in main English section)
     "admin.categories.deleteCategory": "Delete category",
-    "admin.categories.deleteConfirmation": "Are you sure you want to delete the category \"{name}\"? This action is irreversible and may affect products associated with this category.",
+    "admin.categories.deleteConfirmation":
+      'Are you sure you want to delete the category "{name}"? This action is irreversible and may affect products associated with this category.',
     "admin.categories.cancelDelete": "Cancel",
     "admin.categories.confirmDelete": "Yes, delete",
     "admin.categories.deleting": "Deleting...",
     "admin.categories.successCreate": "Success",
-    "admin.categories.successCreateDesc": "Category has been successfully added.",
+    "admin.categories.successCreateDesc":
+      "Category has been successfully added.",
     "admin.categories.successUpdate": "Success",
-    "admin.categories.successUpdateDesc": "Category has been successfully updated.",
+    "admin.categories.successUpdateDesc":
+      "Category has been successfully updated.",
     "admin.categories.successDelete": "Success",
-    "admin.categories.successDeleteDesc": "Category has been successfully deleted.",
+    "admin.categories.successDeleteDesc":
+      "Category has been successfully deleted.",
     "admin.categories.errorCreate": "Error",
-    "admin.categories.errorCreateDesc": "An error occurred while adding the category: {error}",
+    "admin.categories.errorCreateDesc":
+      "An error occurred while adding the category: {error}",
     "admin.categories.errorUpdate": "Error",
-    "admin.categories.errorUpdateDesc": "An error occurred while updating the category: {error}",
+    "admin.categories.errorUpdateDesc":
+      "An error occurred while updating the category: {error}",
     "admin.categories.errorDelete": "Error",
-    "admin.categories.errorDeleteDesc": "An error occurred while deleting the category: {error}",
-    
+    "admin.categories.errorDeleteDesc":
+      "An error occurred while deleting the category: {error}",
+
     // Admin Scents Page (English translations in main English section)
     "admin.scents.scentStatus": "Scent status",
-    "admin.scents.scentStatusHelp": "Inactive scents won't be available for selection by customers",
+    "admin.scents.scentStatusHelp":
+      "Inactive scents won't be available for selection by customers",
     "admin.scents.cancel": "Cancel",
     "admin.scents.save": "Save scent",
     "admin.scents.saveChanges": "Save changes",
     "admin.scents.saving": "Saving...",
     "admin.scents.updating": "Updating...",
     "admin.scents.deleteScent": "Delete scent",
-    "admin.scents.deleteConfirmation": "Are you sure you want to delete the scent \"{name}\"? This action cannot be undone.",
+    "admin.scents.deleteConfirmation":
+      'Are you sure you want to delete the scent "{name}"? This action cannot be undone.',
     "admin.scents.cancelDelete": "Cancel",
     "admin.scents.confirmDelete": "Yes, delete",
     "admin.scents.deleting": "Deleting...",
-    
+
     // Admin Colors Page (English translations in main English section)
     "admin.colors.pageTitle": "Colors",
     "admin.colors.title": "Colors",
     "admin.colors.subtitle": "Manage product colors in your store",
     "admin.colors.allColors": "All Colors",
-    "admin.colors.allColorsDesc": "List of all available colors for your products",
+    "admin.colors.allColorsDesc":
+      "List of all available colors for your products",
     "admin.colors.noColors": "No colors available. Add your first color.",
     "admin.colors.id": "ID",
     "admin.colors.name": "Name",
@@ -3094,7 +3367,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.saving": "Saving...",
     "admin.colors.updating": "Updating...",
     "admin.colors.deleteColor": "Delete color",
-    "admin.colors.deleteConfirmation": "Are you sure you want to delete the color \"{name}\"? This action cannot be undone and may affect products using this color.",
+    "admin.colors.deleteConfirmation":
+      'Are you sure you want to delete the color "{name}"? This action cannot be undone and may affect products using this color.',
     "admin.colors.cancelDelete": "Cancel",
     "admin.colors.confirmDelete": "Yes, delete",
     "admin.colors.deleting": "Deleting...",
@@ -3103,14 +3377,16 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.deleteError": "Error deleting color",
     "admin.colors.successCreate": "Color added successfully",
     "admin.colors.successDelete": "Color deleted successfully",
-    
+
     // Admin Collections Page
     "admin.collections.title": "Collections",
     "admin.collections.pageTitle": "Collection Management",
     "admin.collections.subtitle": "Manage product collections in your store",
     "admin.collections.allCollections": "All Collections",
-    "admin.collections.allCollectionsDesc": "List of all product collections in the store",
-    "admin.collections.noCollections": "No collections available. Add your first collection.",
+    "admin.collections.allCollectionsDesc":
+      "List of all product collections in the store",
+    "admin.collections.noCollections":
+      "No collections available. Add your first collection.",
     "admin.collections.id": "ID",
     "admin.collections.image": "Image",
     "admin.collections.name": "Name",
@@ -3124,20 +3400,28 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.no": "No",
     "admin.collections.addCollection": "Add new collection",
     "admin.collections.editCollection": "Edit collection",
-    "admin.collections.addCollectionDesc": "Fill in the details for the new collection and click Save to add it.",
-    "admin.collections.editCollectionDesc": "Edit the collection details and click Save to apply changes.",
+    "admin.collections.addCollectionDesc":
+      "Fill in the details for the new collection and click Save to add it.",
+    "admin.collections.editCollectionDesc":
+      "Edit the collection details and click Save to apply changes.",
     "admin.collections.collectionName": "Collection name *",
     "admin.collections.collectionNamePlaceholder": "Enter collection name",
     "admin.collections.collectionDescription": "Collection description *",
-    "admin.collections.collectionDescriptionPlaceholder": "Enter collection description",
-    "admin.collections.collectionDescriptionHelp": "Describe the collection to provide customers with more information.",
+    "admin.collections.collectionDescriptionPlaceholder":
+      "Enter collection description",
+    "admin.collections.collectionDescriptionHelp":
+      "Describe the collection to provide customers with more information.",
     "admin.collections.collectionImageUrl": "Collection image URL",
-    "admin.collections.collectionImageUrlPlaceholder": "Enter collection image URL",
-    "admin.collections.collectionImageUrlHelp": "Add a URL to an image that best represents this collection.",
+    "admin.collections.collectionImageUrlPlaceholder":
+      "Enter collection image URL",
+    "admin.collections.collectionImageUrlHelp":
+      "Add a URL to an image that best represents this collection.",
     "admin.collections.collectionStatus": "Collection status",
-    "admin.collections.collectionStatusHelp": "Inactive collections won't be visible to customers",
+    "admin.collections.collectionStatusHelp":
+      "Inactive collections won't be visible to customers",
     "admin.collections.collectionFeatured": "Featured collection",
-    "admin.collections.collectionFeaturedHelp": "Featured collections will be displayed on the homepage",
+    "admin.collections.collectionFeaturedHelp":
+      "Featured collections will be displayed on the homepage",
     "admin.collections.imagePreview": "Image preview:",
     "admin.collections.cancel": "Cancel",
     "admin.collections.save": "Save collection",
@@ -3145,22 +3429,29 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.saving": "Saving...",
     "admin.collections.updating": "Updating...",
     "admin.collections.deleteCollection": "Delete collection",
-    "admin.collections.deleteConfirmation": "Are you sure you want to delete the collection \"{name}\"? This action cannot be undone.",
+    "admin.collections.deleteConfirmation":
+      'Are you sure you want to delete the collection "{name}"? This action cannot be undone.',
     "admin.collections.cancelDelete": "Cancel",
     "admin.collections.confirmDelete": "Yes, delete",
     "admin.collections.deleting": "Deleting...",
     "admin.collections.successCreate": "Success",
-    "admin.collections.successCreateDesc": "Collection has been successfully added.",
+    "admin.collections.successCreateDesc":
+      "Collection has been successfully added.",
     "admin.collections.successUpdate": "Success",
-    "admin.collections.successUpdateDesc": "Collection has been successfully updated.",
+    "admin.collections.successUpdateDesc":
+      "Collection has been successfully updated.",
     "admin.collections.successDelete": "Success",
-    "admin.collections.successDeleteDesc": "Collection has been successfully deleted.",
+    "admin.collections.successDeleteDesc":
+      "Collection has been successfully deleted.",
     "admin.collections.errorCreate": "Error",
-    "admin.collections.errorCreateDesc": "An error occurred while adding the collection: {error}",
+    "admin.collections.errorCreateDesc":
+      "An error occurred while adding the collection: {error}",
     "admin.collections.errorUpdate": "Error",
-    "admin.collections.errorUpdateDesc": "An error occurred while updating the collection: {error}",
+    "admin.collections.errorUpdateDesc":
+      "An error occurred while updating the collection: {error}",
     "admin.collections.errorDelete": "Error",
-    "admin.collections.errorDeleteDesc": "An error occurred while deleting the collection: {error}",
+    "admin.collections.errorDeleteDesc":
+      "An error occurred while deleting the collection: {error}",
     "admin.collections.createError": "Error adding collection",
     "admin.collections.updateError": "Error updating collection",
     "admin.collections.deleteError": "Error deleting collection",
@@ -3168,16 +3459,20 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.addProducts": "Add products to collection",
     "admin.collections.removeProducts": "Remove products from collection",
     "admin.collections.productsInCollection": "Products in collection",
-    "admin.collections.noProductsInCollection": "No products in this collection",
+    "admin.collections.noProductsInCollection":
+      "No products in this collection",
     "admin.collections.availableProducts": "Available products",
     "admin.collections.searchProducts": "Search products...",
     "admin.collections.addSelectedProducts": "Add selected products",
     "admin.collections.removeSelectedProducts": "Remove selected products",
-    "admin.collections.successAddProducts": "Products successfully added to collection",
-    "admin.collections.successRemoveProducts": "Products successfully removed from collection",
+    "admin.collections.successAddProducts":
+      "Products successfully added to collection",
+    "admin.collections.successRemoveProducts":
+      "Products successfully removed from collection",
     "admin.collections.errorAddProducts": "Error adding products to collection",
-    "admin.collections.errorRemoveProducts": "Error removing products from collection",
-    
+    "admin.collections.errorRemoveProducts":
+      "Error removing products from collection",
+
     // Admin Orders Page (English translations in main English section)
     "admin.orders.paymentInformation": "Payment information",
     "admin.orders.paymentMethod": "Payment method",
@@ -3213,7 +3508,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.cancel": "Cancel",
     "admin.orders.update": "Update",
     "admin.orders.confirmCancellation": "Confirm cancellation",
-    "admin.orders.cancelConfirmation": "Are you sure you want to cancel this order? This action cannot be undone.",
+    "admin.orders.cancelConfirmation":
+      "Are you sure you want to cancel this order? This action cannot be undone.",
     "admin.orders.cancelOrder": "Cancel order",
     "admin.orders.orderCancelled": "Order cancelled",
     "admin.orders.backToOrders": "Back to orders",
@@ -3240,7 +3536,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.trackingAdded": "Tracking information added successfully",
     "admin.orders.trackingUpdated": "Tracking information updated successfully",
     "admin.orders.trackingError": "Error updating tracking information",
-    
+
     // Admin Invoices Page (English translations in main English section)
     "admin.invoices.companyCity": "Company city",
     "admin.invoices.companyPostalCode": "Company postal code",
@@ -3275,7 +3571,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.sendToCustomer": "Send to customer",
     "admin.invoices.emailSent": "Invoice email sent successfully",
     "admin.invoices.emailError": "Error sending email",
-    "admin.invoices.deleteConfirmation": "Are you sure you want to delete this invoice? This action cannot be undone.",
+    "admin.invoices.deleteConfirmation":
+      "Are you sure you want to delete this invoice? This action cannot be undone.",
     "admin.invoices.cancelDelete": "Cancel",
     "admin.invoices.confirmDelete": "Yes, delete",
     "admin.invoices.deleteSuccess": "Invoice deleted successfully",
@@ -3318,7 +3615,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.existingInvoices": "Existing invoices",
     "admin.invoices.createNewInvoice": "Create new invoice",
     "admin.invoices.companyDocuments": "Company documents",
-    "admin.invoices.fillInformationForNewInvoice": "Fill information for new invoice",
+    "admin.invoices.fillInformationForNewInvoice":
+      "Fill information for new invoice",
     "admin.invoices.customerDetails": "Customer details",
     "admin.invoices.firstName": "First name",
     "admin.invoices.lastName": "Last name",
@@ -3329,7 +3627,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.invoiceLanguage": "Invoice language",
     "admin.invoices.errorCreatingInvoice": "Error creating invoice",
     "admin.invoices.errorDeletingInvoice": "Error deleting invoice",
-    
+
     // Admin Users Page (English translations in main English section)
     "admin.users.unbanUser": "Unban user",
     "admin.users.makeAdmin": "Make administrator",
@@ -3357,37 +3655,44 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.registrationIp": "Registration IP",
     "admin.users.registrationDate": "Registration date",
     "admin.users.loginCount": "Login count",
-    "admin.users.deleteConfirmation": "Are you sure you want to delete the user \"{name}\"? This action cannot be undone.",
+    "admin.users.deleteConfirmation":
+      'Are you sure you want to delete the user "{name}"? This action cannot be undone.',
     "admin.users.cancelDelete": "Cancel",
     "admin.users.confirmDelete": "Yes, delete",
     "admin.users.userDeleted": "User deleted successfully",
     "admin.users.deleteError": "Error deleting user",
-    "admin.users.passwordResetConfirmation": "Are you sure you want to reset the password for user \"{name}\"?",
+    "admin.users.passwordResetConfirmation":
+      'Are you sure you want to reset the password for user "{name}"?',
     "admin.users.cancelPasswordReset": "Cancel",
     "admin.users.confirmPasswordReset": "Yes, reset password",
     "admin.users.passwordResetSuccess": "Password reset successfully",
     "admin.users.passwordResetError": "Error resetting password",
     "admin.users.newPassword": "New password",
     "admin.users.confirmPassword": "Confirm password",
-    "admin.users.banConfirmation": "Are you sure you want to ban user \"{name}\"?",
+    "admin.users.banConfirmation":
+      'Are you sure you want to ban user "{name}"?',
     "admin.users.cancelBan": "Cancel",
     "admin.users.confirmBan": "Yes, ban user",
     "admin.users.userBanned": "User banned successfully",
     "admin.users.banError": "Error banning user",
-    "admin.users.unbanConfirmation": "Are you sure you want to unban user \"{name}\"?",
+    "admin.users.unbanConfirmation":
+      'Are you sure you want to unban user "{name}"?',
     "admin.users.cancelUnban": "Cancel",
     "admin.users.confirmUnban": "Yes, unban user",
     "admin.users.userUnbanned": "User unbanned successfully",
     "admin.users.unbanError": "Error unbanning user",
-    "admin.users.makeAdminConfirmation": "Are you sure you want to make user \"{name}\" an administrator?",
+    "admin.users.makeAdminConfirmation":
+      'Are you sure you want to make user "{name}" an administrator?',
     "admin.users.cancelMakeAdmin": "Cancel",
     "admin.users.confirmMakeAdmin": "Yes, make administrator",
     "admin.users.userMadeAdmin": "User made administrator successfully",
     "admin.users.makeAdminError": "Error assigning administrator rights",
-    "admin.users.removeAdminConfirmation": "Are you sure you want to remove administrator rights from user \"{name}\"?",
+    "admin.users.removeAdminConfirmation":
+      'Are you sure you want to remove administrator rights from user "{name}"?',
     "admin.users.cancelRemoveAdmin": "Cancel",
     "admin.users.confirmRemoveAdmin": "Yes, remove administrator rights",
-    "admin.users.adminRightsRemoved": "Administrator rights removed successfully",
+    "admin.users.adminRightsRemoved":
+      "Administrator rights removed successfully",
     "admin.users.removeAdminError": "Error removing administrator rights",
     "admin.users.addUser": "Add user",
     "admin.users.editUserInfo": "Edit user information",
@@ -3415,11 +3720,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.filterByStatus": "Filter by status",
     "admin.users.applyFilters": "Apply filters",
     "admin.users.resetFilters": "Reset filters",
-    
+
     // Admin Scents Page (English translations moved to an earlier section)
-    
+
     // Placeholder for Admin Colors Page (English translations moved to earlier section),
-    
+
     // Admin Dashboard
     "admin.dashboard.title": "Dashboard",
     "admin.dashboard.totalRevenue": "Total Revenue",
@@ -3428,7 +3733,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.dashboard.products": "Products",
     "admin.dashboard.comparedToLastMonth": "compared to last month",
     "admin.dashboard.salesOverTime": "Sales Over Time",
-    "admin.dashboard.productCategoryDistribution": "Product Category Distribution",
+    "admin.dashboard.productCategoryDistribution":
+      "Product Category Distribution",
     "admin.dashboard.recentOrders": "Recent Orders",
     "admin.dashboard.id": "ID",
     "admin.dashboard.user": "User",
@@ -3457,7 +3763,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.newProductSubtitle": "Add a new product to the catalog",
     "admin.product.categoryPlaceholder": "Select a category",
     "admin.product.burntimePlaceholder": "Burn time in hours",
-    
+
     // Navigation
     "nav.home": "Home",
     "nav.products": "Products",
@@ -3515,7 +3821,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.active": "Active",
     "admin.inactive": "Inactive",
     "admin.selectLanguage": "Select Language",
-    
+
     // Admin Common Elements
     "admin.id": "ID",
     "admin.name": "Name",
@@ -3536,8 +3842,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.quantity": "Quantity",
     "admin.payment": "Payment",
     "admin.confirmDelete": "Confirm Delete",
-    "admin.deleteWarning": "Are you sure you want to delete this item? This action cannot be undone.",
-    
+    "admin.deleteWarning":
+      "Are you sure you want to delete this item? This action cannot be undone.",
+
     // Admin Product Page
     "admin.productDetails": "Product Details",
     "admin.productName": "Product Name",
@@ -3555,7 +3862,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.edit": "Edit",
     "admin.product.delete": "Delete",
     "admin.product.deleteSuccess": "Product Deleted",
-    "admin.product.deleteSuccessDescription": "{name} has been successfully deleted",
+    "admin.product.deleteSuccessDescription":
+      "{name} has been successfully deleted",
     "admin.product.deleteError": "Error deleting product: {error}",
     "admin.product.lowStock": "Low Stock",
     "admin.product.outOfStock": "Out of Stock",
@@ -3579,7 +3887,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.productDeleted": "Product Successfully Deleted",
     "admin.product.featuredProduct": "Featured on Homepage",
     "admin.product.productActive": "Product Active",
-    "admin.product.productActiveHint": "(If disabled, the product will not be visible to customers)",
+    "admin.product.productActiveHint":
+      "(If disabled, the product will not be visible to customers)",
     "admin.product.saveChanges": "Save Changes",
     "admin.product.createProduct": "Create Product",
     "admin.product.cancel": "Cancel",
@@ -3590,7 +3899,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.imageUrlDescription": "Enter a URL to an image",
     "admin.product.clickToUpload": "Click to upload",
     "admin.product.imageFormats": "JPG, PNG, GIF up to 5MB",
-    "admin.product.imageResizeInfo": "Images will be automatically resized to 800x800px",
+    "admin.product.imageResizeInfo":
+      "Images will be automatically resized to 800x800px",
     "admin.product.imageLoadingError": "Error loading image",
     "admin.product.price": "Price",
     "admin.product.pricePlaceholder": "Enter price",
@@ -3611,10 +3921,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.maintenance": "Maintenance",
     "admin.product.maintenancePlaceholder": "Maintenance instructions",
     "admin.product.availableScents": "Available Scents",
-    "admin.product.selectScents": "Select the scents that will be available for this product",
+    "admin.product.selectScents":
+      "Select the scents that will be available for this product",
     "admin.product.loadingScents": "Loading scents...",
     "admin.product.availableColors": "Available Colors",
-    "admin.product.selectColors": "Select the colors that will be available for this product",
+    "admin.product.selectColors":
+      "Select the colors that will be available for this product",
     "admin.product.loadingColors": "Loading colors...",
     "admin.product.enableColorSelection": "Enable color selection",
     "admin.product.enableMultipleColors": "Enable multiple color selection",
@@ -3634,7 +3946,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.actionsColumn": "Actions",
     "admin.product.inStock": "In Stock",
     "admin.product.active": "Active",
-    
+
     // Admin Orders Page
     "admin.orderDetails": "Order Details",
     "admin.orderNumber": "Order Number",
@@ -3655,7 +3967,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.delivered": "Delivered",
     "admin.cancelled": "Cancelled",
     "admin.statusUpdated": "Status Successfully Updated",
-    
+
     // Admin Invoice Page
     "admin.invoiceDetails": "Invoice Details",
     "admin.invoiceNumber": "Invoice Number",
@@ -3668,7 +3980,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.printInvoice": "Print Invoice",
     "admin.invoiceGenerated": "Invoice Successfully Generated",
     "admin.downloadFormat": "Download Format",
-    
+
     // Admin Users Page
     "admin.userDetails": "User Details",
     "admin.username": "Username",
@@ -3686,7 +3998,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.resetPassword": "Reset Password",
     "admin.userSaved": "User Successfully Saved",
     "admin.userDeleted": "User Successfully Deleted",
-    
+
     // Admin Settings Page
     "admin.generalSettings": "General Settings",
     "admin.shopName": "Shop Name",
@@ -3702,7 +4014,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.metaDescription": "Meta Description",
     "admin.favicon": "Favicon",
     "admin.settingsSaved": "Settings Successfully Saved",
-    
+
     // Document Management
     "admin.uploadDocument": "Upload Document",
     "admin.documentName": "Document Name",
@@ -3779,7 +4091,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.total": "Total",
     "cart.remove": "Remove",
     "cart.loading": "Loading cart...",
-    "cart.emptyMessage": "Your cart is empty. Add some products to start shopping.",
+    "cart.emptyMessage":
+      "Your cart is empty. Add some products to start shopping.",
     "cart.browseProducts": "Browse products",
     "cart.itemsInCart": "Items in cart",
     "cart.productsCount": "products",
@@ -3794,15 +4107,20 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.shippingCost": "Shipping cost",
     "cart.couponCode": "Coupon code",
     "cart.applyCoupon": "Apply",
-    "cart.couponApplied": "Code \"DOBRODOSLI\" successfully applied! You've received a 10% discount.",
+    "cart.couponApplied":
+      'Code "DOBRODOSLI" successfully applied! You\'ve received a 10% discount.',
     "cart.proceedToCheckout": "Proceed to checkout",
-    "cart.metaDescription": "Review the items in your cart and proceed to checkout.",
+    "cart.metaDescription":
+      "Review the items in your cart and proceed to checkout.",
     "cart.freeShippingMessage": "Free shipping for orders over {amount}€.",
     "cart.freeShippingForAll": "Free shipping for all orders",
     "cart.shippingInfo": "Shipping Information",
-    "cart.shippingInfoText1": "Delivery is made via GLS, DPD, UPS or Postal service.",
-    "cart.shippingInfoText2": "Delivery time is 2-5 business days from the time of order.",
-    "cart.shippingInfoText3": "For orders over {amount}€ shipping is free. For other orders, shipping cost is {shipping}€.",
+    "cart.shippingInfoText1":
+      "Delivery is made via GLS, DPD, UPS or Postal service.",
+    "cart.shippingInfoText2":
+      "Delivery time is 2-5 business days from the time of order.",
+    "cart.shippingInfoText3":
+      "For orders over {amount}€ shipping is free. For other orders, shipping cost is {shipping}€.",
     "cart.shippingInfoText4": "Shipping cost is {shipping}€ for all orders.",
     "cart.paymentMethods": "Payment Methods",
     "cart.paymentMethodsText": "We accept the following payment methods:",
@@ -3810,7 +4128,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.paymentMethod2": "Credit cards (Visa, Mastercard)",
     "cart.paymentMethod3": "Bank transfer (by invoice)",
     "cart.paymentMethod4": "Cash on delivery (payment upon receipt)",
-    "cart.addMoreForFreeShipping": "Add {amount}€ more to your cart for free shipping!",
+    "cart.addMoreForFreeShipping":
+      "Add {amount}€ more to your cart for free shipping!",
     "cart.inStock": "In Stock",
     "cart.scent": "Scent:",
     "cart.colors": "Colors",
@@ -3850,20 +4169,19 @@ export const translations: Record<Language, Record<string, string>> = {
     "newsletter.success":
       "Thank you for subscribing! You'll receive our newsletter soon.",
     "newsletter.error": "Please enter your email address.",
-    
+
     // Admin panel
     "admin.backToStore": "Back to store",
-
   },
 
   it: {
     // Languages
     "languages.croatian": "Croato",
     "languages.english": "Inglese",
-    "languages.german": "Tedesco", 
+    "languages.german": "Tedesco",
     "languages.italian": "Italiano",
     "languages.slovenian": "Sloveno",
-    
+
     // Products page
     "products.allProducts": "Tutti i Prodotti",
     "products.product": "Prodotto",
@@ -3884,43 +4202,55 @@ export const translations: Record<Language, Record<string, string>> = {
     "products.clearFilters": "Cancella Filtri",
     "products.applyFilters": "Applica Filtri",
     "products.noProductsFound": "Nessun Prodotto Trovato",
-    "products.tryDifferentFilters": "Prova filtri diversi o sfoglia l'intera collezione.",
+    "products.tryDifferentFilters":
+      "Prova filtri diversi o sfoglia l'intera collezione.",
     "products.showAllProducts": "Mostra Tutti i Prodotti",
-    
+
     // Instagram
     "instagram.followUs": "Seguici su Instagram",
-    "instagram.followUsText": "Seguici su Instagram per le ultime creazioni e ispirazioni",
+    "instagram.followUsText":
+      "Seguici su Instagram per le ultime creazioni e ispirazioni",
     "instagram.loadingPhotos": "Caricamento foto...",
     "instagram.emptyFeed": "Il feed di Instagram è vuoto",
-    
+
     // Elementi amministrativi generali
     "admin.general.uploading": "Caricamento in corso...",
     "admin.general.error": "Errore",
-    "admin.product.items": "Prodotti", 
+    "admin.product.items": "Prodotti",
     "admin.products.searchPlaceholder": "Cerca prodotti...",
-    
+
     // Admin Categories Page
     "admin.categories.title": "Categorie",
-    "admin.categories.subtitle": "Gestisci le categorie di prodotti nel tuo negozio",
+    "admin.categories.subtitle":
+      "Gestisci le categorie di prodotti nel tuo negozio",
     "admin.categories.allCategories": "Tutte le Categorie",
-    "admin.categories.allCategoriesDesc": "Elenco di tutte le categorie di prodotti nel negozio",
-    "admin.categories.noCategories": "Nessuna categoria disponibile. Aggiungi la tua prima categoria.",
+    "admin.categories.allCategoriesDesc":
+      "Elenco di tutte le categorie di prodotti nel negozio",
+    "admin.categories.noCategories":
+      "Nessuna categoria disponibile. Aggiungi la tua prima categoria.",
     "admin.categories.image": "Immagine",
     "admin.categories.name": "Nome",
     "admin.categories.description": "Descrizione",
     "admin.categories.actions": "Azioni",
     "admin.categories.addCategory": "Aggiungi nuova categoria",
     "admin.categories.editCategory": "Modifica categoria",
-    "admin.categories.addCategoryDesc": "Compila i dettagli della nuova categoria e clicca su Salva per aggiungerla.",
-    "admin.categories.editCategoryDesc": "Modifica i dettagli della categoria e clicca su Salva per memorizzare le modifiche.",
+    "admin.categories.addCategoryDesc":
+      "Compila i dettagli della nuova categoria e clicca su Salva per aggiungerla.",
+    "admin.categories.editCategoryDesc":
+      "Modifica i dettagli della categoria e clicca su Salva per memorizzare le modifiche.",
     "admin.categories.categoryName": "Nome categoria *",
-    "admin.categories.categoryNamePlaceholder": "Inserisci il nome della categoria",
+    "admin.categories.categoryNamePlaceholder":
+      "Inserisci il nome della categoria",
     "admin.categories.categoryDescription": "Descrizione categoria *",
-    "admin.categories.categoryDescriptionPlaceholder": "Inserisci la descrizione della categoria",
-    "admin.categories.categoryDescriptionHelp": "Descrivi la categoria per fornire più informazioni ai clienti.",
+    "admin.categories.categoryDescriptionPlaceholder":
+      "Inserisci la descrizione della categoria",
+    "admin.categories.categoryDescriptionHelp":
+      "Descrivi la categoria per fornire più informazioni ai clienti.",
     "admin.categories.categoryImageUrl": "URL immagine categoria",
-    "admin.categories.categoryImageUrlPlaceholder": "Inserisci l'URL dell'immagine della categoria",
-    "admin.categories.categoryImageUrlHelp": "Aggiungi un URL a un'immagine che rappresenti al meglio questa categoria.",
+    "admin.categories.categoryImageUrlPlaceholder":
+      "Inserisci l'URL dell'immagine della categoria",
+    "admin.categories.categoryImageUrlHelp":
+      "Aggiungi un URL a un'immagine che rappresenti al meglio questa categoria.",
     "admin.categories.imagePreview": "Anteprima immagine:",
     "admin.categories.cancel": "Annulla",
     "admin.categories.save": "Salva categoria",
@@ -3928,29 +4258,38 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.categories.saving": "Salvataggio...",
     "admin.categories.updating": "Aggiornamento...",
     "admin.categories.deleteCategory": "Elimina categoria",
-    "admin.categories.deleteConfirmation": "Sei sicuro di voler eliminare la categoria \"{name}\"? Questa azione è irreversibile e potrebbe influire sui prodotti associati a questa categoria.",
+    "admin.categories.deleteConfirmation":
+      'Sei sicuro di voler eliminare la categoria "{name}"? Questa azione è irreversibile e potrebbe influire sui prodotti associati a questa categoria.',
     "admin.categories.cancelDelete": "Annulla",
     "admin.categories.confirmDelete": "Sì, elimina",
     "admin.categories.deleting": "Eliminazione...",
     "admin.categories.successCreate": "Successo",
-    "admin.categories.successCreateDesc": "La categoria è stata aggiunta con successo.",
+    "admin.categories.successCreateDesc":
+      "La categoria è stata aggiunta con successo.",
     "admin.categories.successUpdate": "Successo",
-    "admin.categories.successUpdateDesc": "La categoria è stata aggiornata con successo.",
+    "admin.categories.successUpdateDesc":
+      "La categoria è stata aggiornata con successo.",
     "admin.categories.successDelete": "Successo",
-    "admin.categories.successDeleteDesc": "La categoria è stata eliminata con successo.",
+    "admin.categories.successDeleteDesc":
+      "La categoria è stata eliminata con successo.",
     "admin.categories.errorCreate": "Errore",
-    "admin.categories.errorCreateDesc": "Si è verificato un errore durante l'aggiunta della categoria: {error}",
+    "admin.categories.errorCreateDesc":
+      "Si è verificato un errore durante l'aggiunta della categoria: {error}",
     "admin.categories.errorUpdate": "Errore",
-    "admin.categories.errorUpdateDesc": "Si è verificato un errore durante l'aggiornamento della categoria: {error}",
+    "admin.categories.errorUpdateDesc":
+      "Si è verificato un errore durante l'aggiornamento della categoria: {error}",
     "admin.categories.errorDelete": "Errore",
-    "admin.categories.errorDeleteDesc": "Si è verificato un errore durante l'eliminazione della categoria: {error}",
-    
+    "admin.categories.errorDeleteDesc":
+      "Si è verificato un errore durante l'eliminazione della categoria: {error}",
+
     // Admin Scents Page
     "admin.scents.title": "Profumi",
     "admin.scents.subtitle": "Gestisci i profumi dei prodotti nel tuo negozio",
     "admin.scents.allScents": "Tutti i Profumi",
-    "admin.scents.allScentsDesc": "Elenco di tutti i profumi disponibili per i tuoi prodotti",
-    "admin.scents.noScents": "Nessun profumo disponibile. Aggiungi il tuo primo profumo.",
+    "admin.scents.allScentsDesc":
+      "Elenco di tutti i profumi disponibili per i tuoi prodotti",
+    "admin.scents.noScents":
+      "Nessun profumo disponibile. Aggiungi il tuo primo profumo.",
     "admin.scents.id": "ID",
     "admin.scents.name": "Nome",
     "admin.scents.description": "Descrizione",
@@ -3960,44 +4299,57 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.scents.inactive": "Inattivo",
     "admin.scents.addScent": "Aggiungi nuovo profumo",
     "admin.scents.editScent": "Modifica profumo",
-    "admin.scents.addScentDesc": "Compila i dettagli del nuovo profumo e clicca su Salva per aggiungerlo.",
-    "admin.scents.editScentDesc": "Modifica i dettagli del profumo e clicca su Salva per memorizzare le modifiche.",
+    "admin.scents.addScentDesc":
+      "Compila i dettagli del nuovo profumo e clicca su Salva per aggiungerlo.",
+    "admin.scents.editScentDesc":
+      "Modifica i dettagli del profumo e clicca su Salva per memorizzare le modifiche.",
     "admin.scents.scentName": "Nome profumo *",
     "admin.scents.scentNamePlaceholder": "Inserisci il nome del profumo",
     "admin.scents.scentDescription": "Descrizione profumo *",
-    "admin.scents.scentDescriptionPlaceholder": "Inserisci la descrizione del profumo",
+    "admin.scents.scentDescriptionPlaceholder":
+      "Inserisci la descrizione del profumo",
     "admin.scents.scentStatus": "Stato profumo",
-    "admin.scents.scentStatusHelp": "I profumi inattivi non saranno disponibili per la selezione sui prodotti",
+    "admin.scents.scentStatusHelp":
+      "I profumi inattivi non saranno disponibili per la selezione sui prodotti",
     "admin.scents.cancel": "Annulla",
     "admin.scents.save": "Salva profumo",
     "admin.scents.saveChanges": "Salva modifiche",
     "admin.scents.saving": "Salvataggio...",
     "admin.scents.updating": "Aggiornamento...",
     "admin.scents.deleteScent": "Elimina profumo",
-    "admin.scents.deleteConfirmation": "Sei sicuro di voler eliminare il profumo \"{name}\"? Questa azione è irreversibile e potrebbe influire sui prodotti che utilizzano questo profumo.",
+    "admin.scents.deleteConfirmation":
+      'Sei sicuro di voler eliminare il profumo "{name}"? Questa azione è irreversibile e potrebbe influire sui prodotti che utilizzano questo profumo.',
     "admin.scents.cancelDelete": "Annulla",
     "admin.scents.confirmDelete": "Sì, elimina",
     "admin.scents.deleting": "Eliminazione...",
     "admin.scents.successCreate": "Successo",
-    "admin.scents.successCreateDesc": "Il profumo è stato aggiunto con successo.",
+    "admin.scents.successCreateDesc":
+      "Il profumo è stato aggiunto con successo.",
     "admin.scents.successUpdate": "Successo",
-    "admin.scents.successUpdateDesc": "Il profumo è stato aggiornato con successo.",
+    "admin.scents.successUpdateDesc":
+      "Il profumo è stato aggiornato con successo.",
     "admin.scents.successDelete": "Successo",
-    "admin.scents.successDeleteDesc": "Il profumo è stato eliminato con successo.",
+    "admin.scents.successDeleteDesc":
+      "Il profumo è stato eliminato con successo.",
     "admin.scents.errorCreate": "Errore",
-    "admin.scents.errorCreateDesc": "Si è verificato un errore durante l'aggiunta del profumo: {error}",
+    "admin.scents.errorCreateDesc":
+      "Si è verificato un errore durante l'aggiunta del profumo: {error}",
     "admin.scents.errorUpdate": "Errore",
-    "admin.scents.errorUpdateDesc": "Si è verificato un errore durante l'aggiornamento del profumo: {error}",
+    "admin.scents.errorUpdateDesc":
+      "Si è verificato un errore durante l'aggiornamento del profumo: {error}",
     "admin.scents.errorDelete": "Errore",
-    "admin.scents.errorDeleteDesc": "Si è verificato un errore durante l'eliminazione del profumo: {error}",
-    
+    "admin.scents.errorDeleteDesc":
+      "Si è verificato un errore durante l'eliminazione del profumo: {error}",
+
     // Admin Colors Page
     "admin.colors.pageTitle": "Colori",
     "admin.colors.title": "Colori",
     "admin.colors.subtitle": "Gestisci i colori dei prodotti nel tuo negozio",
     "admin.colors.allColors": "Tutti i Colori",
-    "admin.colors.allColorsDesc": "Elenco di tutti i colori disponibili per i tuoi prodotti",
-    "admin.colors.noColors": "Nessun colore disponibile. Aggiungi il tuo primo colore.",
+    "admin.colors.allColorsDesc":
+      "Elenco di tutti i colori disponibili per i tuoi prodotti",
+    "admin.colors.noColors":
+      "Nessun colore disponibile. Aggiungi il tuo primo colore.",
     "admin.colors.id": "ID",
     "admin.colors.name": "Nome",
     "admin.colors.code": "Codice Colore",
@@ -4016,14 +4368,16 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.codePlaceholder": "Inserisci il codice colore (es. #FF5733)",
     "admin.colors.colorPreview": "Anteprima",
     "admin.colors.descriptionLabel": "Descrizione",
-    "admin.colors.descriptionPlaceholder": "Inserisci la descrizione del colore",
+    "admin.colors.descriptionPlaceholder":
+      "Inserisci la descrizione del colore",
     "admin.colors.cancel": "Annulla",
     "admin.colors.save": "Salva colore",
     "admin.colors.saveChanges": "Salva modifiche",
     "admin.colors.saving": "Salvataggio...",
     "admin.colors.updating": "Aggiornamento...",
     "admin.colors.deleteColor": "Elimina colore",
-    "admin.colors.deleteConfirmation": "Sei sicuro di voler eliminare il colore \"{name}\"? Questa azione è irreversibile e potrebbe influire sui prodotti che utilizzano questo colore.",
+    "admin.colors.deleteConfirmation":
+      'Sei sicuro di voler eliminare il colore "{name}"? Questa azione è irreversibile e potrebbe influire sui prodotti che utilizzano questo colore.',
     "admin.colors.cancelDelete": "Annulla",
     "admin.colors.confirmDelete": "Sì, elimina",
     "admin.colors.deleting": "Eliminazione...",
@@ -4033,7 +4387,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.successCreate": "Colore aggiunto con successo",
     "admin.colors.successUpdate": "Colore aggiornato con successo",
     "admin.colors.successDelete": "Colore eliminato con successo",
-    
+
     // Admin Dashboard
     "admin.dashboard.title": "Dashboard",
     "admin.dashboard.totalRevenue": "Entrate Totali",
@@ -4042,7 +4396,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.dashboard.products": "Prodotti",
     "admin.dashboard.comparedToLastMonth": "rispetto al mese precedente",
     "admin.dashboard.salesOverTime": "Vendite nel Tempo",
-    "admin.dashboard.productCategoryDistribution": "Distribuzione Categorie Prodotti",
+    "admin.dashboard.productCategoryDistribution":
+      "Distribuzione Categorie Prodotti",
     "admin.dashboard.recentOrders": "Ordini Recenti",
     "admin.dashboard.id": "ID",
     "admin.dashboard.user": "Utente",
@@ -4068,10 +4423,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "month.december": "Dicembre",
     "admin.product.preview": "Anteprima",
     "admin.product.newProduct": "Nuovo Prodotto",
-    "admin.product.newProductSubtitle": "Aggiungi un nuovo prodotto al catalogo",
+    "admin.product.newProductSubtitle":
+      "Aggiungi un nuovo prodotto al catalogo",
     "admin.product.categoryPlaceholder": "Seleziona una categoria",
     "admin.product.burntimePlaceholder": "Tempo di combustione in ore",
-    
+
     // Navigazione
     "nav.home": "Home",
     "nav.products": "Prodotti",
@@ -4126,7 +4482,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.active": "Attivo",
     "admin.inactive": "Inattivo",
     "admin.selectLanguage": "Seleziona lingua",
-    
+
     // Admin Common Elements
     "admin.id": "ID",
     "admin.name": "Nome",
@@ -4147,8 +4503,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.quantity": "Quantità",
     "admin.payment": "Pagamento",
     "admin.confirmDelete": "Conferma eliminazione",
-    "admin.deleteWarning": "Sei sicuro di voler eliminare questo elemento? Questa azione non può essere annullata.",
-    
+    "admin.deleteWarning":
+      "Sei sicuro di voler eliminare questo elemento? Questa azione non può essere annullata.",
+
     // Admin Product Page
     "admin.productDetails": "Dettagli prodotto",
     "admin.productName": "Nome prodotto",
@@ -4175,7 +4532,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.productDeleted": "Prodotto eliminato con successo",
     "admin.product.featuredProduct": "In evidenza sulla homepage",
     "admin.product.productActive": "Prodotto attivo",
-    "admin.product.productActiveHint": "(Se disabilitato, il prodotto non sarà visibile ai clienti)",
+    "admin.product.productActiveHint":
+      "(Se disabilitato, il prodotto non sarà visibile ai clienti)",
     "admin.product.saveChanges": "Salva modifiche",
     "admin.product.createProduct": "Crea prodotto",
     "admin.product.cancel": "Annulla",
@@ -4186,14 +4544,17 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.imageUrlDescription": "Inserisci l'URL di un'immagine",
     "admin.product.clickToUpload": "Clicca per caricare",
     "admin.product.imageFormats": "JPG, PNG, GIF fino a 5MB",
-    "admin.product.imageResizeInfo": "Le immagini saranno automaticamente ridimensionate a 800x800px",
-    "admin.product.imageLoadingError": "Errore durante il caricamento dell'immagine",
+    "admin.product.imageResizeInfo":
+      "Le immagini saranno automaticamente ridimensionate a 800x800px",
+    "admin.product.imageLoadingError":
+      "Errore durante il caricamento dell'immagine",
     "admin.product.price": "Prezzo",
     "admin.product.pricePlaceholder": "Inserisci prezzo",
     "admin.product.stock": "Scorta",
     "admin.product.stockPlaceholder": "Inserisci quantità disponibile",
     "admin.product.description": "Descrizione",
-    "admin.product.descriptionPlaceholder": "Inserisci descrizione del prodotto",
+    "admin.product.descriptionPlaceholder":
+      "Inserisci descrizione del prodotto",
     "admin.product.name": "Nome",
     "admin.product.namePlaceholder": "Inserisci nome del prodotto",
     "admin.product.dimensions": "Dimensioni",
@@ -4201,16 +4562,19 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.weight": "Peso",
     "admin.product.weightPlaceholder": "es. 250 g",
     "admin.product.materials": "Materiali",
-    "admin.product.materialsPlaceholder": "es. Cera di soia, stoppino di cotone",
+    "admin.product.materialsPlaceholder":
+      "es. Cera di soia, stoppino di cotone",
     "admin.product.usage": "Utilizzo",
     "admin.product.usagePlaceholder": "Istruzioni per l'uso",
     "admin.product.maintenance": "Manutenzione",
     "admin.product.maintenancePlaceholder": "Istruzioni per la manutenzione",
     "admin.product.availableScents": "Profumi disponibili",
-    "admin.product.selectScents": "Seleziona i profumi che saranno disponibili per questo prodotto",
+    "admin.product.selectScents":
+      "Seleziona i profumi che saranno disponibili per questo prodotto",
     "admin.product.loadingScents": "Caricamento profumi...",
     "admin.product.availableColors": "Colori disponibili",
-    "admin.product.selectColors": "Seleziona i colori che saranno disponibili per questo prodotto",
+    "admin.product.selectColors":
+      "Seleziona i colori che saranno disponibili per questo prodotto",
     "admin.product.loadingColors": "Caricamento colori...",
     "admin.product.enableColorSelection": "Abilita selezione colori",
     "admin.product.enableMultipleColors": "Abilita selezione di più colori",
@@ -4232,8 +4596,10 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.edit": "Modifica",
     "admin.product.delete": "Elimina",
     "admin.product.deleteSuccess": "Prodotto eliminato",
-    "admin.product.deleteSuccessDescription": "{name} è stato eliminato con successo",
-    "admin.product.deleteError": "Errore durante l'eliminazione del prodotto: {error}",
+    "admin.product.deleteSuccessDescription":
+      "{name} è stato eliminato con successo",
+    "admin.product.deleteError":
+      "Errore durante l'eliminazione del prodotto: {error}",
     "admin.product.lowStock": "Scorta bassa",
     "admin.product.outOfStock": "Esaurito",
     "admin.product.inactive": "Inattivo",
@@ -4246,7 +4612,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.actionsColumn": "Azioni",
     "admin.product.inStock": "Disponibile",
     "admin.product.active": "Attivo",
-    
+
     // Admin Orders Page
     "admin.orderDetails": "Dettagli ordine",
     "admin.orderNumber": "Numero ordine",
@@ -4267,7 +4633,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.delivered": "Consegnato",
     "admin.cancelled": "Annullato",
     "admin.statusUpdated": "Stato aggiornato con successo",
-    
+
     // Admin Invoice Page
     "admin.invoiceDetails": "Dettagli fattura",
     "admin.invoiceNumber": "Numero fattura",
@@ -4280,7 +4646,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.printInvoice": "Stampa fattura",
     "admin.invoiceGenerated": "Fattura generata con successo",
     "admin.downloadFormat": "Formato download",
-    
+
     // Admin Users Page
     "admin.userDetails": "Dettagli utente",
     "admin.username": "Nome utente",
@@ -4298,13 +4664,16 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.resetPassword": "Reimposta password",
     "admin.userSaved": "Utente salvato con successo",
     "admin.userDeleted": "Utente eliminato con successo",
-    
+
     // Admin Collections Page
     "admin.collections.title": "Collezioni",
-    "admin.collections.subtitle": "Gestisci le collezioni di prodotti nel tuo negozio",
+    "admin.collections.subtitle":
+      "Gestisci le collezioni di prodotti nel tuo negozio",
     "admin.collections.allCollections": "Tutte le collezioni",
-    "admin.collections.allCollectionsDesc": "Elenco di tutte le collezioni di prodotti nel negozio",
-    "admin.collections.noCollections": "Nessuna collezione disponibile. Aggiungi la tua prima collezione.",
+    "admin.collections.allCollectionsDesc":
+      "Elenco di tutte le collezioni di prodotti nel negozio",
+    "admin.collections.noCollections":
+      "Nessuna collezione disponibile. Aggiungi la tua prima collezione.",
     "admin.collections.id": "ID",
     "admin.collections.image": "Immagine",
     "admin.collections.name": "Nome",
@@ -4318,24 +4687,33 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.no": "No",
     "admin.collections.addCollection": "Aggiungi nuova collezione",
     "admin.collections.editCollection": "Modifica collezione",
-    "admin.collections.addCollectionDesc": "Compila i dettagli per la nuova collezione e clicca su Salva per aggiungerla.",
-    "admin.collections.editCollectionDesc": "Modifica i dettagli della collezione e clicca su Salva per applicare le modifiche.",
+    "admin.collections.addCollectionDesc":
+      "Compila i dettagli per la nuova collezione e clicca su Salva per aggiungerla.",
+    "admin.collections.editCollectionDesc":
+      "Modifica i dettagli della collezione e clicca su Salva per applicare le modifiche.",
     "admin.collections.collectionName": "Nome collezione *",
-    "admin.collections.collectionNamePlaceholder": "Inserisci il nome della collezione",
+    "admin.collections.collectionNamePlaceholder":
+      "Inserisci il nome della collezione",
     "admin.collections.collectionDescription": "Descrizione collezione *",
-    "admin.collections.collectionDescriptionPlaceholder": "Inserisci la descrizione della collezione",
-    "admin.collections.collectionDescriptionHelp": "Descrivi la collezione per fornire più informazioni ai clienti.",
+    "admin.collections.collectionDescriptionPlaceholder":
+      "Inserisci la descrizione della collezione",
+    "admin.collections.collectionDescriptionHelp":
+      "Descrivi la collezione per fornire più informazioni ai clienti.",
     "admin.collections.collectionImageUrl": "URL immagine collezione",
-    "admin.collections.collectionImageUrlPlaceholder": "Inserisci l'URL dell'immagine della collezione",
-    "admin.collections.collectionImageUrlHelp": "Aggiungi un URL dell'immagine che rappresenti al meglio questa collezione.",
+    "admin.collections.collectionImageUrlPlaceholder":
+      "Inserisci l'URL dell'immagine della collezione",
+    "admin.collections.collectionImageUrlHelp":
+      "Aggiungi un URL dell'immagine che rappresenti al meglio questa collezione.",
     "admin.collections.collectionStatus": "Stato collezione",
-    "admin.collections.collectionStatusHelp": "Le collezioni inattive non saranno visibili ai clienti",
+    "admin.collections.collectionStatusHelp":
+      "Le collezioni inattive non saranno visibili ai clienti",
     "admin.collections.manageProducts": "Gestisci prodotti",
     "admin.collections.addProducts": "Aggiungi prodotti alla collezione",
     "admin.collections.removeProducts": "Rimuovi prodotti dalla collezione",
     "admin.collections.productsInCollection": "Prodotti nella collezione",
     "admin.collections.collectionFeatured": "Collezione in evidenza",
-    "admin.collections.collectionFeaturedHelp": "Le collezioni in evidenza verranno mostrate nella pagina iniziale",
+    "admin.collections.collectionFeaturedHelp":
+      "Le collezioni in evidenza verranno mostrate nella pagina iniziale",
     "admin.collections.imagePreview": "Anteprima immagine:",
     "admin.collections.cancel": "Annulla",
     "admin.collections.save": "Salva collezione",
@@ -4343,35 +4721,47 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.saving": "Salvataggio...",
     "admin.collections.updating": "Aggiornamento...",
     "admin.collections.deleteCollection": "Elimina collezione",
-    "admin.collections.deleteConfirmation": "Sei sicuro di voler eliminare la collezione \"{name}\"? Questa azione non può essere annullata.",
+    "admin.collections.deleteConfirmation":
+      'Sei sicuro di voler eliminare la collezione "{name}"? Questa azione non può essere annullata.',
     "admin.collections.cancelDelete": "Annulla",
     "admin.collections.confirmDelete": "Sì, elimina",
     "admin.collections.deleting": "Eliminazione...",
     "admin.collections.successCreate": "Successo",
-    "admin.collections.successCreateDesc": "La collezione è stata aggiunta con successo.",
+    "admin.collections.successCreateDesc":
+      "La collezione è stata aggiunta con successo.",
     "admin.collections.successUpdate": "Successo",
-    "admin.collections.successUpdateDesc": "La collezione è stata aggiornata con successo.",
+    "admin.collections.successUpdateDesc":
+      "La collezione è stata aggiornata con successo.",
     "admin.collections.successDelete": "Successo",
-    "admin.collections.successDeleteDesc": "La collezione è stata eliminata con successo.",
+    "admin.collections.successDeleteDesc":
+      "La collezione è stata eliminata con successo.",
     "admin.collections.errorCreate": "Errore",
-    "admin.collections.errorCreateDesc": "Si è verificato un errore durante l'aggiunta della collezione: {error}",
+    "admin.collections.errorCreateDesc":
+      "Si è verificato un errore durante l'aggiunta della collezione: {error}",
     "admin.collections.errorUpdate": "Errore",
-    "admin.collections.errorUpdateDesc": "Si è verificato un errore durante l'aggiornamento della collezione: {error}",
+    "admin.collections.errorUpdateDesc":
+      "Si è verificato un errore durante l'aggiornamento della collezione: {error}",
     "admin.collections.errorDelete": "Errore",
-    "admin.collections.errorDeleteDesc": "Si è verificato un errore durante l'eliminazione della collezione: {error}",
-    "admin.collections.noProductsInCollection": "Nessun prodotto in questa collezione",
+    "admin.collections.errorDeleteDesc":
+      "Si è verificato un errore durante l'eliminazione della collezione: {error}",
+    "admin.collections.noProductsInCollection":
+      "Nessun prodotto in questa collezione",
     "admin.collections.availableProducts": "Prodotti disponibili",
     "admin.collections.searchProducts": "Cerca prodotti...",
     "admin.collections.addSelectedProducts": "Aggiungi prodotti selezionati",
     "admin.collections.removeSelectedProducts": "Rimuovi prodotti selezionati",
-    "admin.collections.successAddProducts": "Prodotti aggiunti alla collezione con successo",
-    "admin.collections.successRemoveProducts": "Prodotti rimossi dalla collezione con successo",
-    "admin.collections.errorAddProducts": "Errore durante l'aggiunta di prodotti alla collezione",
-    "admin.collections.errorRemoveProducts": "Errore durante la rimozione di prodotti dalla collezione",
+    "admin.collections.successAddProducts":
+      "Prodotti aggiunti alla collezione con successo",
+    "admin.collections.successRemoveProducts":
+      "Prodotti rimossi dalla collezione con successo",
+    "admin.collections.errorAddProducts":
+      "Errore durante l'aggiunta di prodotti alla collezione",
+    "admin.collections.errorRemoveProducts":
+      "Errore durante la rimozione di prodotti dalla collezione",
     "admin.collections.createError": "Errore aggiunta collezione",
     "admin.collections.updateError": "Errore aggiornamento collezione",
     "admin.collections.deleteError": "Errore eliminazione collezione",
-    
+
     // Admin Orders Page
     "admin.orders.title": "Ordini",
     "admin.orders.subtitle": "Gestisci e monitora gli ordini dei clienti",
@@ -4430,17 +4820,20 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.currentStatus": "Stato attuale",
     "admin.orders.newStatus": "Nuovo stato",
     "admin.orders.statusUpdateSuccess": "Stato ordine aggiornato con successo",
-    "admin.orders.statusUpdateError": "Errore durante l'aggiornamento dello stato dell'ordine",
+    "admin.orders.statusUpdateError":
+      "Errore durante l'aggiornamento dello stato dell'ordine",
     "admin.orders.cancel": "Annulla",
     "admin.orders.update": "Aggiorna",
     "admin.orders.confirmCancellation": "Conferma annullamento",
-    "admin.orders.cancelConfirmation": "Sei sicuro di voler annullare questo ordine? Questa azione non può essere annullata.",
+    "admin.orders.cancelConfirmation":
+      "Sei sicuro di voler annullare questo ordine? Questa azione non può essere annullata.",
     "admin.orders.cancelOrder": "Annulla ordine",
     "admin.orders.orderCancelled": "Ordine annullato",
     "admin.orders.backToOrders": "Torna agli ordini",
     "admin.orders.noInvoice": "Nessuna fattura generata",
     "admin.orders.invoiceGenerated": "Fattura generata con successo",
-    "admin.orders.invoiceGenerationError": "Errore durante la generazione della fattura",
+    "admin.orders.invoiceGenerationError":
+      "Errore durante la generazione della fattura",
     "admin.orders.selectLanguage": "Seleziona lingua",
     "admin.orders.language": "Lingua fattura",
     "admin.orders.loading": "Caricamento...",
@@ -4458,10 +4851,13 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.trackingUrl": "URL di tracciamento",
     "admin.orders.addTracking": "Aggiungi informazioni di tracciamento",
     "admin.orders.updateTracking": "Aggiorna informazioni di tracciamento",
-    "admin.orders.trackingAdded": "Informazioni di tracciamento aggiunte con successo",
-    "admin.orders.trackingUpdated": "Informazioni di tracciamento aggiornate con successo",
-    "admin.orders.trackingError": "Errore durante l'aggiornamento delle informazioni di tracciamento",
-    
+    "admin.orders.trackingAdded":
+      "Informazioni di tracciamento aggiunte con successo",
+    "admin.orders.trackingUpdated":
+      "Informazioni di tracciamento aggiornate con successo",
+    "admin.orders.trackingError":
+      "Errore durante l'aggiornamento delle informazioni di tracciamento",
+
     // Admin Invoices Page
     "admin.invoices.title": "Fatture",
     "admin.invoices.subtitle": "Gestisci e monitora le fatture",
@@ -4520,7 +4916,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.sendToCustomer": "Invia al cliente",
     "admin.invoices.emailSent": "Email con fattura inviata con successo",
     "admin.invoices.emailError": "Errore durante l'invio dell'email",
-    "admin.invoices.deleteConfirmation": "Sei sicuro di voler eliminare questa fattura? Questa azione non può essere annullata.",
+    "admin.invoices.deleteConfirmation":
+      "Sei sicuro di voler eliminare questa fattura? Questa azione non può essere annullata.",
     "admin.invoices.cancelDelete": "Annulla",
     "admin.invoices.confirmDelete": "Sì, elimina",
     "admin.invoices.deleteSuccess": "Fattura eliminata con successo",
@@ -4557,13 +4954,16 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.saving": "Salvataggio...",
     "admin.invoices.generating": "Generazione...",
     "admin.invoices.invoiceCreated": "Fattura creata con successo",
-    "admin.invoices.invoiceCreationError": "Errore durante la creazione della fattura",
+    "admin.invoices.invoiceCreationError":
+      "Errore durante la creazione della fattura",
     "admin.invoices.amount": "Importo",
-    "admin.invoices.viewAllInvoicesDescription": "Visualizza tutte le fatture create",
+    "admin.invoices.viewAllInvoicesDescription":
+      "Visualizza tutte le fatture create",
     "admin.invoices.existingInvoices": "Fatture esistenti",
     "admin.invoices.createNewInvoice": "Crea nuova fattura",
     "admin.invoices.companyDocuments": "Documenti aziendali",
-    "admin.invoices.fillInformationForNewInvoice": "Inserisci informazioni per la nuova fattura",
+    "admin.invoices.fillInformationForNewInvoice":
+      "Inserisci informazioni per la nuova fattura",
     "admin.invoices.customerDetails": "Dettagli cliente",
     "admin.invoices.firstName": "Nome",
     "admin.invoices.lastName": "Cognome",
@@ -4572,14 +4972,17 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.createInvoice": "Crea fattura",
     "admin.invoices.selectFromExistingOrders": "Seleziona da ordini esistenti",
     "admin.invoices.invoiceLanguage": "Lingua fattura",
-    "admin.invoices.errorCreatingInvoice": "Errore nella creazione della fattura",
-    "admin.invoices.errorDeletingInvoice": "Errore nell'eliminazione della fattura",
-    
+    "admin.invoices.errorCreatingInvoice":
+      "Errore nella creazione della fattura",
+    "admin.invoices.errorDeletingInvoice":
+      "Errore nell'eliminazione della fattura",
+
     // Admin Users Page
     "admin.users.title": "Utenti",
     "admin.users.subtitle": "Gestisci gli account utente",
     "admin.users.allUsers": "Tutti gli utenti",
-    "admin.users.allUsersDesc": "Elenco di tutti gli account utente nel sistema",
+    "admin.users.allUsersDesc":
+      "Elenco di tutti gli account utente nel sistema",
     "admin.users.noUsers": "Nessun utente da visualizzare",
     "admin.users.id": "ID",
     "admin.users.username": "Nome utente",
@@ -4628,38 +5031,48 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.registrationIp": "IP registrazione",
     "admin.users.registrationDate": "Data registrazione",
     "admin.users.loginCount": "Numero accessi",
-    "admin.users.deleteConfirmation": "Sei sicuro di voler eliminare l'utente \"{name}\"? Questa azione non può essere annullata.",
+    "admin.users.deleteConfirmation":
+      'Sei sicuro di voler eliminare l\'utente "{name}"? Questa azione non può essere annullata.',
     "admin.users.cancelDelete": "Annulla",
     "admin.users.confirmDelete": "Sì, elimina",
     "admin.users.userDeleted": "Utente eliminato con successo",
     "admin.users.deleteError": "Errore durante l'eliminazione dell'utente",
-    "admin.users.passwordResetConfirmation": "Sei sicuro di voler reimpostare la password per l'utente \"{name}\"?",
+    "admin.users.passwordResetConfirmation":
+      'Sei sicuro di voler reimpostare la password per l\'utente "{name}"?',
     "admin.users.cancelPasswordReset": "Annulla",
     "admin.users.confirmPasswordReset": "Sì, reimposta password",
     "admin.users.passwordResetSuccess": "Password reimpostata con successo",
-    "admin.users.passwordResetError": "Errore durante la reimpostazione della password",
+    "admin.users.passwordResetError":
+      "Errore durante la reimpostazione della password",
     "admin.users.newPassword": "Nuova password",
     "admin.users.confirmPassword": "Conferma password",
-    "admin.users.banConfirmation": "Sei sicuro di voler bannare l'utente \"{name}\"?",
+    "admin.users.banConfirmation":
+      'Sei sicuro di voler bannare l\'utente "{name}"?',
     "admin.users.cancelBan": "Annulla",
     "admin.users.confirmBan": "Sì, banna utente",
     "admin.users.userBanned": "Utente bannato con successo",
     "admin.users.banError": "Errore durante il ban dell'utente",
-    "admin.users.unbanConfirmation": "Sei sicuro di voler rimuovere il ban per l'utente \"{name}\"?",
+    "admin.users.unbanConfirmation":
+      'Sei sicuro di voler rimuovere il ban per l\'utente "{name}"?',
     "admin.users.cancelUnban": "Annulla",
     "admin.users.confirmUnban": "Sì, rimuovi ban",
     "admin.users.userUnbanned": "Ban utente rimosso con successo",
     "admin.users.unbanError": "Errore durante la rimozione del ban utente",
-    "admin.users.makeAdminConfirmation": "Sei sicuro di voler rendere l'utente \"{name}\" amministratore?",
+    "admin.users.makeAdminConfirmation":
+      'Sei sicuro di voler rendere l\'utente "{name}" amministratore?',
     "admin.users.cancelMakeAdmin": "Annulla",
     "admin.users.confirmMakeAdmin": "Sì, rendi amministratore",
     "admin.users.userMadeAdmin": "Utente reso amministratore con successo",
-    "admin.users.makeAdminError": "Errore durante l'assegnazione dei diritti di amministratore",
-    "admin.users.removeAdminConfirmation": "Sei sicuro di voler rimuovere i diritti di amministratore per l'utente \"{name}\"?",
+    "admin.users.makeAdminError":
+      "Errore durante l'assegnazione dei diritti di amministratore",
+    "admin.users.removeAdminConfirmation":
+      'Sei sicuro di voler rimuovere i diritti di amministratore per l\'utente "{name}"?',
     "admin.users.cancelRemoveAdmin": "Annulla",
     "admin.users.confirmRemoveAdmin": "Sì, rimuovi diritti amministratore",
-    "admin.users.adminRightsRemoved": "Diritti amministratore rimossi con successo",
-    "admin.users.removeAdminError": "Errore durante la rimozione dei diritti di amministratore",
+    "admin.users.adminRightsRemoved":
+      "Diritti amministratore rimossi con successo",
+    "admin.users.removeAdminError":
+      "Errore durante la rimozione dei diritti di amministratore",
     "admin.users.addUser": "Aggiungi utente",
     "admin.users.editUserInfo": "Modifica informazioni utente",
     "admin.users.usernamePlaceholder": "Inserisci nome utente",
@@ -4680,13 +5093,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.userCreated": "Utente creato con successo",
     "admin.users.userCreationError": "Errore durante la creazione dell'utente",
     "admin.users.userUpdated": "Informazioni utente aggiornate con successo",
-    "admin.users.userUpdateError": "Errore durante l'aggiornamento delle informazioni utente",
+    "admin.users.userUpdateError":
+      "Errore durante l'aggiornamento delle informazioni utente",
     "admin.users.searchUsers": "Cerca utenti...",
     "admin.users.filterByRole": "Filtra per ruolo",
     "admin.users.filterByStatus": "Filtra per stato",
     "admin.users.applyFilters": "Applica filtri",
     "admin.users.resetFilters": "Reimposta filtri",
-    
+
     // Admin Settings Page
     "admin.generalSettings": "Impostazioni generali",
     "admin.shopName": "Nome negozio",
@@ -4702,7 +5116,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.metaDescription": "Meta descrizione",
     "admin.favicon": "Favicon",
     "admin.settingsSaved": "Impostazioni salvate con successo",
-    
+
     // Document Management
     "admin.uploadDocument": "Carica documento",
     "admin.documentName": "Nome documento",
@@ -4773,7 +5187,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.total": "Totale",
     "cart.remove": "Rimuovi",
     "cart.loading": "Caricamento carrello...",
-    "cart.emptyMessage": "Il tuo carrello è vuoto. Aggiungi alcuni prodotti per iniziare lo shopping.",
+    "cart.emptyMessage":
+      "Il tuo carrello è vuoto. Aggiungi alcuni prodotti per iniziare lo shopping.",
     "cart.browseProducts": "Sfoglia prodotti",
     "cart.itemsInCart": "Articoli nel carrello",
     "cart.productsCount": "prodotti",
@@ -4788,23 +5203,31 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.shippingCost": "Costo di spedizione",
     "cart.couponCode": "Codice coupon",
     "cart.applyCoupon": "Applica",
-    "cart.couponApplied": "Codice \"DOBRODOSLI\" applicato con successo! Hai ricevuto uno sconto del 10%.",
+    "cart.couponApplied":
+      'Codice "DOBRODOSLI" applicato con successo! Hai ricevuto uno sconto del 10%.',
     "cart.proceedToCheckout": "Procedi al checkout",
-    "cart.metaDescription": "Rivedi gli articoli nel tuo carrello e procedi al checkout.",
-    "cart.freeShippingMessage": "Spedizione gratuita per ordini superiori a {amount}€.",
+    "cart.metaDescription":
+      "Rivedi gli articoli nel tuo carrello e procedi al checkout.",
+    "cart.freeShippingMessage":
+      "Spedizione gratuita per ordini superiori a {amount}€.",
     "cart.freeShippingForAll": "Spedizione gratuita per tutti gli ordini",
     "cart.shippingInfo": "Informazioni di spedizione",
-    "cart.shippingInfoText1": "La consegna viene effettuata tramite GLS, DPD, UPS o servizio postale.",
-    "cart.shippingInfoText2": "Il tempo di consegna è di 2-5 giorni lavorativi dal momento dell'ordine.",
-    "cart.shippingInfoText3": "Per ordini superiori a {amount}€ la spedizione è gratuita. Per altri ordini, il costo di spedizione è di {shipping}€.",
-    "cart.shippingInfoText4": "Il costo di spedizione è di {shipping}€ per tutti gli ordini.",
+    "cart.shippingInfoText1":
+      "La consegna viene effettuata tramite GLS, DPD, UPS o servizio postale.",
+    "cart.shippingInfoText2":
+      "Il tempo di consegna è di 2-5 giorni lavorativi dal momento dell'ordine.",
+    "cart.shippingInfoText3":
+      "Per ordini superiori a {amount}€ la spedizione è gratuita. Per altri ordini, il costo di spedizione è di {shipping}€.",
+    "cart.shippingInfoText4":
+      "Il costo di spedizione è di {shipping}€ per tutti gli ordini.",
     "cart.paymentMethods": "Metodi di pagamento",
     "cart.paymentMethodsText": "Accettiamo i seguenti metodi di pagamento:",
     "cart.paymentMethod1": "PayPal",
     "cart.paymentMethod2": "Carte di credito (Visa, Mastercard)",
     "cart.paymentMethod3": "Bonifico bancario (con fattura)",
     "cart.paymentMethod4": "Pagamento alla consegna (contrassegno)",
-    "cart.addMoreForFreeShipping": "Aggiungi altri {amount}€ al carrello per la spedizione gratuita!",
+    "cart.addMoreForFreeShipping":
+      "Aggiungi altri {amount}€ al carrello per la spedizione gratuita!",
     "cart.inStock": "Disponibile",
     "cart.scent": "Profumo:",
     "cart.colors": "Colori",
@@ -4815,13 +5238,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "footer.about.text":
       "Candele artigianali con ingredienti naturali. Dalla nostra famiglia alla tua casa.",
     "footer.quickLinks": "Link rapidi",
-    
+
     // Instagram
     "instagram.followUs": "Seguici su Instagram",
-    "instagram.followUsText": "Seguici su Instagram per le ultime creazioni e ispirazioni",
+    "instagram.followUsText":
+      "Seguici su Instagram per le ultime creazioni e ispirazioni",
     "instagram.loadingPhotos": "Caricamento foto...",
     "instagram.emptyFeed": "Feed Instagram vuoto",
-    
+
     // Order Details
     "orders.details": "Dettagli dell'ordine",
     "orders.order": "Ordine",
@@ -4879,7 +5303,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.italian": "Italiano",
     "orders.slovenian": "Sloveno",
     "orders.backToList": "Torna alla lista ordini",
-    
+
     // Profile Page
     "profile.myProfile": "Il mio profilo",
     "profile.profile": "Profilo",
@@ -4902,13 +5326,15 @@ export const translations: Record<Language, Record<string, string>> = {
     "profile.countryPlaceholder": "Italia",
     "profile.password": "Password",
     "profile.passwordChange": "Cambia password",
-    "profile.passwordChangeDescription": "Aggiorna la tua password per mantenere sicuro il tuo account.",
+    "profile.passwordChangeDescription":
+      "Aggiorna la tua password per mantenere sicuro il tuo account.",
     "profile.currentPassword": "Password attuale",
     "profile.newPassword": "Nuova password",
     "profile.confirmPassword": "Conferma nuova password",
     "profile.changePassword": "Cambia password",
     "profile.myOrders": "I miei ordini",
-    "profile.ordersDescription": "Visualizza i tuoi ordini precedenti e il loro stato.",
+    "profile.ordersDescription":
+      "Visualizza i tuoi ordini precedenti e il loro stato.",
     "profile.order": "Ordine",
     "profile.orderDetails": "Dettagli ordine",
     "profile.orderStatus.pending": "In attesa",
@@ -4916,7 +5342,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "profile.orderStatus.completed": "Completato",
     "profile.noOrders": "Non hai ordini.",
     "profile.browseProducts": "Sfoglia prodotti",
-    "profile.meta.description": "Gestisci il tuo account, visualizza i tuoi ordini e aggiorna le tue informazioni personali.",
+    "profile.meta.description":
+      "Gestisci il tuo account, visualizza i tuoi ordini e aggiorna le tue informazioni personali.",
     "footer.customerSupport": "Assistenza clienti",
     "footer.contact": "Contatti",
     "footer.followUs": "Seguici",
@@ -4954,7 +5381,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "newsletter.success":
       "Grazie per l'iscrizione! Riceverai presto la nostra newsletter.",
     "newsletter.error": "Per favore inserisci il tuo indirizzo email.",
-    
+
     // Admin panel
     "admin.backToStore": "Torna al negozio",
   },
@@ -4963,10 +5390,10 @@ export const translations: Record<Language, Record<string, string>> = {
     // Languages
     "languages.croatian": "Hrvaški",
     "languages.english": "Angleški",
-    "languages.german": "Nemški", 
+    "languages.german": "Nemški",
     "languages.italian": "Italijanski",
     "languages.slovenian": "Slovenski",
-    
+
     // Products page
     "products.allProducts": "Vsi Izdelki",
     "products.product": "Izdelek",
@@ -4987,43 +5414,54 @@ export const translations: Record<Language, Record<string, string>> = {
     "products.clearFilters": "Počisti Filtre",
     "products.applyFilters": "Uporabi Filtre",
     "products.noProductsFound": "Ni Najdenih Izdelkov",
-    "products.tryDifferentFilters": "Poskusite z drugačnimi filtri ali si oglejte našo celotno kolekcijo.",
+    "products.tryDifferentFilters":
+      "Poskusite z drugačnimi filtri ali si oglejte našo celotno kolekcijo.",
     "products.showAllProducts": "Prikaži Vse Izdelke",
-    
+
     // Instagram
     "instagram.followUs": "Sledite nam na Instagramu",
-    "instagram.followUsText": "Sledite nam na Instagramu za najnovejše izdelke in inspiracije",
+    "instagram.followUsText":
+      "Sledite nam na Instagramu za najnovejše izdelke in inspiracije",
     "instagram.loadingPhotos": "Nalaganje fotografij...",
     "instagram.emptyFeed": "Instagram Feed je prazen",
-    
+
     // Splošni admin elementi
     "admin.general.uploading": "Nalaganje...",
     "admin.general.error": "Napaka",
     "admin.product.items": "Izdelki",
     "admin.products.searchPlaceholder": "Išči izdelke...",
-    
+
     // Admin Categories Page
     "admin.categories.title": "Kategorije",
-    "admin.categories.subtitle": "Upravljajte kategorije izdelkov v vaši trgovini",
+    "admin.categories.subtitle":
+      "Upravljajte kategorije izdelkov v vaši trgovini",
     "admin.categories.allCategories": "Vse kategorije",
-    "admin.categories.allCategoriesDesc": "Seznam vseh kategorij izdelkov v trgovini",
-    "admin.categories.noCategories": "Ni razpoložljivih kategorij. Dodajte svojo prvo kategorijo.",
+    "admin.categories.allCategoriesDesc":
+      "Seznam vseh kategorij izdelkov v trgovini",
+    "admin.categories.noCategories":
+      "Ni razpoložljivih kategorij. Dodajte svojo prvo kategorijo.",
     "admin.categories.image": "Slika",
     "admin.categories.name": "Ime",
     "admin.categories.description": "Opis",
     "admin.categories.actions": "Dejanja",
     "admin.categories.addCategory": "Dodaj novo kategorijo",
     "admin.categories.editCategory": "Uredi kategorijo",
-    "admin.categories.addCategoryDesc": "Izpolnite podrobnosti o novi kategoriji in kliknite Shrani za dodajanje.",
-    "admin.categories.editCategoryDesc": "Uredite podrobnosti kategorije in kliknite Shrani za shranjevanje sprememb.",
+    "admin.categories.addCategoryDesc":
+      "Izpolnite podrobnosti o novi kategoriji in kliknite Shrani za dodajanje.",
+    "admin.categories.editCategoryDesc":
+      "Uredite podrobnosti kategorije in kliknite Shrani za shranjevanje sprememb.",
     "admin.categories.categoryName": "Ime kategorije *",
     "admin.categories.categoryNamePlaceholder": "Vnesite ime kategorije",
     "admin.categories.categoryDescription": "Opis kategorije *",
-    "admin.categories.categoryDescriptionPlaceholder": "Vnesite opis kategorije",
-    "admin.categories.categoryDescriptionHelp": "Opišite kategorijo, da kupcem zagotovite več informacij.",
+    "admin.categories.categoryDescriptionPlaceholder":
+      "Vnesite opis kategorije",
+    "admin.categories.categoryDescriptionHelp":
+      "Opišite kategorijo, da kupcem zagotovite več informacij.",
     "admin.categories.categoryImageUrl": "URL slike kategorije",
-    "admin.categories.categoryImageUrlPlaceholder": "Vnesite URL slike kategorije",
-    "admin.categories.categoryImageUrlHelp": "Dodajte URL do slike, ki najbolje predstavlja to kategorijo.",
+    "admin.categories.categoryImageUrlPlaceholder":
+      "Vnesite URL slike kategorije",
+    "admin.categories.categoryImageUrlHelp":
+      "Dodajte URL do slike, ki najbolje predstavlja to kategorijo.",
     "admin.categories.imagePreview": "Predogled slike:",
     "admin.categories.cancel": "Prekliči",
     "admin.categories.save": "Shrani kategorijo",
@@ -5031,29 +5469,37 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.categories.saving": "Shranjevanje...",
     "admin.categories.updating": "Posodabljanje...",
     "admin.categories.deleteCategory": "Izbriši kategorijo",
-    "admin.categories.deleteConfirmation": "Ali ste prepričani, da želite izbrisati kategorijo \"{name}\"? To dejanje je nepovratno in lahko vpliva na izdelke, povezane s to kategorijo.",
+    "admin.categories.deleteConfirmation":
+      'Ali ste prepričani, da želite izbrisati kategorijo "{name}"? To dejanje je nepovratno in lahko vpliva na izdelke, povezane s to kategorijo.',
     "admin.categories.cancelDelete": "Prekliči",
     "admin.categories.confirmDelete": "Da, izbriši",
     "admin.categories.deleting": "Brisanje...",
     "admin.categories.successCreate": "Uspeh",
     "admin.categories.successCreateDesc": "Kategorija je bila uspešno dodana.",
     "admin.categories.successUpdate": "Uspeh",
-    "admin.categories.successUpdateDesc": "Kategorija je bila uspešno posodobljena.",
+    "admin.categories.successUpdateDesc":
+      "Kategorija je bila uspešno posodobljena.",
     "admin.categories.successDelete": "Uspeh",
-    "admin.categories.successDeleteDesc": "Kategorija je bila uspešno izbrisana.",
+    "admin.categories.successDeleteDesc":
+      "Kategorija je bila uspešno izbrisana.",
     "admin.categories.errorCreate": "Napaka",
-    "admin.categories.errorCreateDesc": "Pri dodajanju kategorije je prišlo do napake: {error}",
+    "admin.categories.errorCreateDesc":
+      "Pri dodajanju kategorije je prišlo do napake: {error}",
     "admin.categories.errorUpdate": "Napaka",
-    "admin.categories.errorUpdateDesc": "Pri posodabljanju kategorije je prišlo do napake: {error}",
+    "admin.categories.errorUpdateDesc":
+      "Pri posodabljanju kategorije je prišlo do napake: {error}",
     "admin.categories.errorDelete": "Napaka",
-    "admin.categories.errorDeleteDesc": "Pri brisanju kategorije je prišlo do napake: {error}",
-    
+    "admin.categories.errorDeleteDesc":
+      "Pri brisanju kategorije je prišlo do napake: {error}",
+
     // Admin Scents Page
     "admin.scents.title": "Dišave",
     "admin.scents.subtitle": "Upravljajte dišave izdelkov v vaši trgovini",
     "admin.scents.allScents": "Vse dišave",
-    "admin.scents.allScentsDesc": "Seznam vseh razpoložljivih dišav za vaše izdelke",
-    "admin.scents.noScents": "Ni razpoložljivih dišav. Dodajte svojo prvo dišavo.",
+    "admin.scents.allScentsDesc":
+      "Seznam vseh razpoložljivih dišav za vaše izdelke",
+    "admin.scents.noScents":
+      "Ni razpoložljivih dišav. Dodajte svojo prvo dišavo.",
     "admin.scents.id": "ID",
     "admin.scents.name": "Ime",
     "admin.scents.description": "Opis",
@@ -5063,21 +5509,25 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.scents.inactive": "Neaktivna",
     "admin.scents.addScent": "Dodaj novo dišavo",
     "admin.scents.editScent": "Uredi dišavo",
-    "admin.scents.addScentDesc": "Izpolnite podrobnosti o novi dišavi in kliknite Shrani za dodajanje.",
-    "admin.scents.editScentDesc": "Uredite podrobnosti dišave in kliknite Shrani za shranjevanje sprememb.",
+    "admin.scents.addScentDesc":
+      "Izpolnite podrobnosti o novi dišavi in kliknite Shrani za dodajanje.",
+    "admin.scents.editScentDesc":
+      "Uredite podrobnosti dišave in kliknite Shrani za shranjevanje sprememb.",
     "admin.scents.scentName": "Ime dišave *",
     "admin.scents.scentNamePlaceholder": "Vnesite ime dišave",
     "admin.scents.scentDescription": "Opis dišave *",
     "admin.scents.scentDescriptionPlaceholder": "Vnesite opis dišave",
     "admin.scents.scentStatus": "Status dišave",
-    "admin.scents.scentStatusHelp": "Neaktivne dišave ne bodo na voljo za izbiro pri izdelkih",
+    "admin.scents.scentStatusHelp":
+      "Neaktivne dišave ne bodo na voljo za izbiro pri izdelkih",
     "admin.scents.cancel": "Prekliči",
     "admin.scents.save": "Shrani dišavo",
     "admin.scents.saveChanges": "Shrani spremembe",
     "admin.scents.saving": "Shranjevanje...",
     "admin.scents.updating": "Posodabljanje...",
     "admin.scents.deleteScent": "Izbriši dišavo",
-    "admin.scents.deleteConfirmation": "Ali ste prepričani, da želite izbrisati dišavo \"{name}\"? To dejanje je nepovratno in lahko vpliva na izdelke, ki uporabljajo to dišavo.",
+    "admin.scents.deleteConfirmation":
+      'Ali ste prepričani, da želite izbrisati dišavo "{name}"? To dejanje je nepovratno in lahko vpliva na izdelke, ki uporabljajo to dišavo.',
     "admin.scents.cancelDelete": "Prekliči",
     "admin.scents.confirmDelete": "Da, izbriši",
     "admin.scents.deleting": "Brisanje...",
@@ -5088,19 +5538,24 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.scents.successDelete": "Uspeh",
     "admin.scents.successDeleteDesc": "Dišava je bila uspešno izbrisana.",
     "admin.scents.errorCreate": "Napaka",
-    "admin.scents.errorCreateDesc": "Pri dodajanju dišave je prišlo do napake: {error}",
+    "admin.scents.errorCreateDesc":
+      "Pri dodajanju dišave je prišlo do napake: {error}",
     "admin.scents.errorUpdate": "Napaka",
-    "admin.scents.errorUpdateDesc": "Pri posodabljanju dišave je prišlo do napake: {error}",
+    "admin.scents.errorUpdateDesc":
+      "Pri posodabljanju dišave je prišlo do napake: {error}",
     "admin.scents.errorDelete": "Napaka",
-    "admin.scents.errorDeleteDesc": "Pri brisanju dišave je prišlo do napake: {error}",
-    
+    "admin.scents.errorDeleteDesc":
+      "Pri brisanju dišave je prišlo do napake: {error}",
+
     // Admin Colors Page
     "admin.colors.pageTitle": "Barve",
     "admin.colors.title": "Barve",
     "admin.colors.subtitle": "Upravljajte barve izdelkov v vaši trgovini",
     "admin.colors.allColors": "Vse barve",
-    "admin.colors.allColorsDesc": "Seznam vseh razpoložljivih barv za vaše izdelke",
-    "admin.colors.noColors": "Ni razpoložljivih barv. Dodajte svojo prvo barvo.",
+    "admin.colors.allColorsDesc":
+      "Seznam vseh razpoložljivih barv za vaše izdelke",
+    "admin.colors.noColors":
+      "Ni razpoložljivih barv. Dodajte svojo prvo barvo.",
     "admin.colors.id": "ID",
     "admin.colors.name": "Ime",
     "admin.colors.code": "Koda barve",
@@ -5120,15 +5575,18 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.colorPreview": "Predogled",
     "admin.colors.descriptionLabel": "Opis",
     "admin.colors.descriptionPlaceholder": "Vnesite opis barve",
-    "admin.colors.addColorDesc": "Izpolnite podrobnosti o novi barvi in kliknite Shrani za dodajanje.",
-    "admin.colors.editColorDesc": "Uredite podrobnosti barve in kliknite Shrani za shranjevanje sprememb.",
+    "admin.colors.addColorDesc":
+      "Izpolnite podrobnosti o novi barvi in kliknite Shrani za dodajanje.",
+    "admin.colors.editColorDesc":
+      "Uredite podrobnosti barve in kliknite Shrani za shranjevanje sprememb.",
     "admin.colors.cancel": "Prekliči",
     "admin.colors.save": "Shrani barvo",
     "admin.colors.saveChanges": "Shrani spremembe",
     "admin.colors.saving": "Shranjevanje...",
     "admin.colors.updating": "Posodabljanje...",
     "admin.colors.deleteColor": "Izbriši barvo",
-    "admin.colors.deleteConfirmation": "Ali ste prepričani, da želite izbrisati barvo \"{name}\"? Tega dejanja ni mogoče razveljaviti in lahko vpliva na izdelke, ki uporabljajo to barvo.",
+    "admin.colors.deleteConfirmation":
+      'Ali ste prepričani, da želite izbrisati barvo "{name}"? Tega dejanja ni mogoče razveljaviti in lahko vpliva na izdelke, ki uporabljajo to barvo.',
     "admin.colors.cancelDelete": "Prekliči",
     "admin.colors.confirmDelete": "Da, izbriši",
     "admin.colors.deleting": "Brisanje...",
@@ -5146,7 +5604,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.dashboard.products": "Izdelki",
     "admin.dashboard.comparedToLastMonth": "v primerjavi s prejšnjim mesecem",
     "admin.dashboard.salesOverTime": "Prodaja skozi čas",
-    "admin.dashboard.productCategoryDistribution": "Porazdelitev kategorij izdelkov",
+    "admin.dashboard.productCategoryDistribution":
+      "Porazdelitev kategorij izdelkov",
     "admin.dashboard.recentOrders": "Nedavna naročila",
     "admin.dashboard.id": "ID",
     "admin.dashboard.user": "Uporabnik",
@@ -5175,7 +5634,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.newProductSubtitle": "Dodajte nov izdelek v katalog",
     "admin.product.categoryPlaceholder": "Izberite kategorijo",
     "admin.product.burntimePlaceholder": "Čas gorenja v urah",
-    
+
     // Navigacija
     "nav.home": "Domov",
     "nav.products": "Izdelki",
@@ -5230,13 +5689,16 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.active": "Aktivno",
     "admin.inactive": "Neaktivno",
     "admin.selectLanguage": "Izberi jezik",
-    
+
     // Admin Collections Page
     "admin.collections.title": "Kolekcije",
-    "admin.collections.subtitle": "Upravljajte kolekcije izdelkov v vaši trgovini",
+    "admin.collections.subtitle":
+      "Upravljajte kolekcije izdelkov v vaši trgovini",
     "admin.collections.allCollections": "Vse kolekcije",
-    "admin.collections.allCollectionsDesc": "Seznam vseh kolekcij izdelkov v trgovini",
-    "admin.collections.noCollections": "Ni razpoložljivih kolekcij. Dodajte svojo prvo kolekcijo.",
+    "admin.collections.allCollectionsDesc":
+      "Seznam vseh kolekcij izdelkov v trgovini",
+    "admin.collections.noCollections":
+      "Ni razpoložljivih kolekcij. Dodajte svojo prvo kolekcijo.",
     "admin.collections.id": "ID",
     "admin.collections.name": "Ime",
     "admin.collections.description": "Opis",
@@ -5248,20 +5710,28 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.inactive": "Neaktivna",
     "admin.collections.addCollection": "Dodaj novo kolekcijo",
     "admin.collections.editCollection": "Uredi kolekcijo",
-    "admin.collections.addCollectionDesc": "Izpolnite podrobnosti o novi kolekciji in kliknite Shrani za dodajanje.",
-    "admin.collections.editCollectionDesc": "Uredite podrobnosti kolekcije in kliknite Shrani za shranjevanje sprememb.",
+    "admin.collections.addCollectionDesc":
+      "Izpolnite podrobnosti o novi kolekciji in kliknite Shrani za dodajanje.",
+    "admin.collections.editCollectionDesc":
+      "Uredite podrobnosti kolekcije in kliknite Shrani za shranjevanje sprememb.",
     "admin.collections.collectionName": "Ime kolekcije *",
     "admin.collections.collectionNamePlaceholder": "Vnesite ime kolekcije",
     "admin.collections.collectionDescription": "Opis kolekcije *",
-    "admin.collections.collectionDescriptionPlaceholder": "Vnesite opis kolekcije",
-    "admin.collections.collectionDescriptionHelp": "Opišite kolekcijo za boljšo predstavitev strankam",
+    "admin.collections.collectionDescriptionPlaceholder":
+      "Vnesite opis kolekcije",
+    "admin.collections.collectionDescriptionHelp":
+      "Opišite kolekcijo za boljšo predstavitev strankam",
     "admin.collections.collectionImage": "Slika kolekcije",
-    "admin.collections.collectionImagePlaceholder": "Vnesite URL slike ali naložite sliko",
-    "admin.collections.collectionImageHelp": "Dodajte reprezentativno sliko za kolekcijo",
+    "admin.collections.collectionImagePlaceholder":
+      "Vnesite URL slike ali naložite sliko",
+    "admin.collections.collectionImageHelp":
+      "Dodajte reprezentativno sliko za kolekcijo",
     "admin.collections.collectionStatus": "Status kolekcije",
-    "admin.collections.collectionStatusHelp": "Neaktivne kolekcije ne bodo vidne strankam",
+    "admin.collections.collectionStatusHelp":
+      "Neaktivne kolekcije ne bodo vidne strankam",
     "admin.collections.collectionFeatured": "Izpostavljeno na domači strani",
-    "admin.collections.collectionFeaturedHelp": "Izpostavljene kolekcije bodo prikazane na domači strani",
+    "admin.collections.collectionFeaturedHelp":
+      "Izpostavljene kolekcije bodo prikazane na domači strani",
     "admin.collections.manageProducts": "Upravljanje izdelkov",
     "admin.collections.addProducts": "Dodaj izdelke v kolekcijo",
     "admin.collections.removeProducts": "Odstrani izdelke iz kolekcije",
@@ -5272,31 +5742,42 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.saving": "Shranjevanje...",
     "admin.collections.updating": "Posodabljanje...",
     "admin.collections.deleteCollection": "Izbriši kolekcijo",
-    "admin.collections.deleteConfirmation": "Ali ste prepričani, da želite izbrisati kolekcijo \"{name}\"? To dejanje je nepovratno in lahko vpliva na izdelke v tej kolekciji.",
+    "admin.collections.deleteConfirmation":
+      'Ali ste prepričani, da želite izbrisati kolekcijo "{name}"? To dejanje je nepovratno in lahko vpliva na izdelke v tej kolekciji.',
     "admin.collections.cancelDelete": "Prekliči",
     "admin.collections.confirmDelete": "Da, izbriši",
     "admin.collections.deleting": "Brisanje...",
     "admin.collections.successCreate": "Uspeh",
     "admin.collections.successCreateDesc": "Kolekcija je bila uspešno dodana.",
     "admin.collections.successUpdate": "Uspeh",
-    "admin.collections.successUpdateDesc": "Kolekcija je bila uspešno posodobljena.",
+    "admin.collections.successUpdateDesc":
+      "Kolekcija je bila uspešno posodobljena.",
     "admin.collections.successDelete": "Uspeh",
-    "admin.collections.successDeleteDesc": "Kolekcija je bila uspešno izbrisana.",
+    "admin.collections.successDeleteDesc":
+      "Kolekcija je bila uspešno izbrisana.",
     "admin.collections.errorCreate": "Napaka",
-    "admin.collections.errorCreateDesc": "Pri dodajanju kolekcije je prišlo do napake: {error}",
+    "admin.collections.errorCreateDesc":
+      "Pri dodajanju kolekcije je prišlo do napake: {error}",
     "admin.collections.errorUpdate": "Napaka",
-    "admin.collections.errorUpdateDesc": "Pri posodabljanju kolekcije je prišlo do napake: {error}",
+    "admin.collections.errorUpdateDesc":
+      "Pri posodabljanju kolekcije je prišlo do napake: {error}",
     "admin.collections.errorDelete": "Napaka",
-    "admin.collections.errorDeleteDesc": "Pri brisanju kolekcije je prišlo do napake: {error}",
+    "admin.collections.errorDeleteDesc":
+      "Pri brisanju kolekcije je prišlo do napake: {error}",
     "admin.collections.addProductToCollection": "Dodaj izdelek v kolekcijo",
     "admin.collections.selectProduct": "Izberite izdelek",
-    "admin.collections.selectProductPlaceholder": "Izberite izdelek za dodajanje",
+    "admin.collections.selectProductPlaceholder":
+      "Izberite izdelek za dodajanje",
     "admin.collections.addToCollection": "Dodaj v kolekcijo",
     "admin.collections.removeFromCollection": "Odstrani iz kolekcije",
-    "admin.collections.productAddedToCollection": "Izdelek je bil uspešno dodan v kolekcijo.",
-    "admin.collections.productRemovedFromCollection": "Izdelek je bil uspešno odstranjen iz kolekcije.",
-    "admin.collections.errorAddingProduct": "Napaka pri dodajanju izdelka v kolekcijo: {error}",
-    "admin.collections.errorRemovingProduct": "Napaka pri odstranjevanju izdelka iz kolekcije: {error}",
+    "admin.collections.productAddedToCollection":
+      "Izdelek je bil uspešno dodan v kolekcijo.",
+    "admin.collections.productRemovedFromCollection":
+      "Izdelek je bil uspešno odstranjen iz kolekcije.",
+    "admin.collections.errorAddingProduct":
+      "Napaka pri dodajanju izdelka v kolekcijo: {error}",
+    "admin.collections.errorRemovingProduct":
+      "Napaka pri odstranjevanju izdelka iz kolekcije: {error}",
     "admin.collections.createError": "Napaka pri dodajanju kolekcije",
     "admin.collections.updateError": "Napaka pri posodabljanju kolekcije",
     "admin.collections.deleteError": "Napaka pri brisanju kolekcije",
@@ -5305,11 +5786,15 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.collections.searchProducts": "Išči izdelke...",
     "admin.collections.addSelectedProducts": "Dodaj izbrane izdelke",
     "admin.collections.removeSelectedProducts": "Odstrani izbrane izdelke",
-    "admin.collections.successAddProducts": "Izdelki so bili uspešno dodani v kolekcijo",
-    "admin.collections.successRemoveProducts": "Izdelki so bili uspešno odstranjeni iz kolekcije",
-    "admin.collections.errorAddProducts": "Napaka pri dodajanju izdelkov v kolekcijo",
-    "admin.collections.errorRemoveProducts": "Napaka pri odstranjevanju izdelkov iz kolekcije",
-    
+    "admin.collections.successAddProducts":
+      "Izdelki so bili uspešno dodani v kolekcijo",
+    "admin.collections.successRemoveProducts":
+      "Izdelki so bili uspešno odstranjeni iz kolekcije",
+    "admin.collections.errorAddProducts":
+      "Napaka pri dodajanju izdelkov v kolekcijo",
+    "admin.collections.errorRemoveProducts":
+      "Napaka pri odstranjevanju izdelkov iz kolekcije",
+
     // Admin Orders Page
     "admin.orders.title": "Naročila",
     "admin.orders.subtitle": "Upravljajte naročila v vaši trgovini",
@@ -5353,7 +5838,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.saveStatus": "Shrani status",
     "admin.orders.statusUpdating": "Posodabljanje statusa...",
     "admin.orders.statusUpdated": "Status uspešno posodobljen",
-    "admin.orders.statusUpdateError": "Napaka pri posodabljanju statusa: {error}",
+    "admin.orders.statusUpdateError":
+      "Napaka pri posodabljanju statusa: {error}",
     "admin.orders.createInvoice": "Ustvari račun",
     "admin.orders.invoiceCreating": "Ustvarjanje računa...",
     "admin.orders.invoiceCreated": "Račun uspešno ustvarjen",
@@ -5384,7 +5870,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.noScent": "Brez dišave",
     "admin.orders.noColor": "Brez barve",
     "admin.orders.multipleColors": "Več barv",
-    
+
     // Admin Invoices Page
     "admin.invoices.title": "Računi",
     "admin.invoices.subtitle": "Upravljajte račune v vaši trgovini",
@@ -5441,7 +5927,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.generationSuccess": "PDF uspešno ustvarjen",
     "admin.invoices.generationError": "Napaka pri ustvarjanju PDF: {error}",
     "admin.invoices.deleteInvoice": "Izbriši račun",
-    "admin.invoices.deleteConfirmation": "Ali ste prepričani, da želite izbrisati račun št. \"{invoiceNumber}\"? To dejanje je nepovratno.",
+    "admin.invoices.deleteConfirmation":
+      'Ali ste prepričani, da želite izbrisati račun št. "{invoiceNumber}"? To dejanje je nepovratno.',
     "admin.invoices.cancelDelete": "Prekliči",
     "admin.invoices.confirmDelete": "Da, izbriši",
     "admin.invoices.deleting": "Brisanje...",
@@ -5458,7 +5945,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.existingInvoices": "Obstoječi računi",
     "admin.invoices.createNewInvoice": "Ustvari nov račun",
     "admin.invoices.companyDocuments": "Dokumenti podjetja",
-    "admin.invoices.fillInformationForNewInvoice": "Izpolnite podatke za nov račun",
+    "admin.invoices.fillInformationForNewInvoice":
+      "Izpolnite podatke za nov račun",
     "admin.invoices.firstName": "Ime",
     "admin.invoices.lastName": "Priimek",
     "admin.invoices.pricePerUnit": "Cena na enoto",
@@ -5492,7 +5980,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.dateTo": "Do datuma",
     "admin.invoices.applyFilters": "Uporabi filtre",
     "admin.invoices.resetFilters": "Ponastavi filtre",
-    
+
     // Admin Common Elements
     "admin.id": "ID",
     "admin.name": "Ime",
@@ -5513,8 +6001,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.quantity": "Količina",
     "admin.payment": "Plačilo",
     "admin.confirmDelete": "Potrdi brisanje",
-    "admin.deleteWarning": "Ali ste prepričani, da želite izbrisati ta element? Tega dejanja ni mogoče razveljaviti.",
-    
+    "admin.deleteWarning":
+      "Ali ste prepričani, da želite izbrisati ta element? Tega dejanja ni mogoče razveljaviti.",
+
     // Admin Product Page
     "admin.productDetails": "Podrobnosti izdelka",
     "admin.productName": "Ime izdelka",
@@ -5541,7 +6030,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.productDeleted": "Izdelek uspešno izbrisan",
     "admin.product.featuredProduct": "Izpostavljeno na domači strani",
     "admin.product.productActive": "Izdelek aktiven",
-    "admin.product.productActiveHint": "(Če je onemogočeno, izdelek ne bo viden strankam)",
+    "admin.product.productActiveHint":
+      "(Če je onemogočeno, izdelek ne bo viden strankam)",
     "admin.product.saveChanges": "Shrani spremembe",
     "admin.product.createProduct": "Ustvari izdelek",
     "admin.product.cancel": "Prekliči",
@@ -5552,7 +6042,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.imageUrlDescription": "Vnesite URL do slike",
     "admin.product.clickToUpload": "Kliknite za nalaganje",
     "admin.product.imageFormats": "JPG, PNG, GIF do 5MB",
-    "admin.product.imageResizeInfo": "Slike bodo samodejno pomanjšane na 800x800px",
+    "admin.product.imageResizeInfo":
+      "Slike bodo samodejno pomanjšane na 800x800px",
     "admin.product.imageLoadingError": "Napaka pri nalaganju slike",
     "admin.product.price": "Cena",
     "admin.product.pricePlaceholder": "Vnesite ceno",
@@ -5573,10 +6064,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.maintenance": "Vzdrževanje",
     "admin.product.maintenancePlaceholder": "Navodila za vzdrževanje",
     "admin.product.availableScents": "Razpoložljive dišave",
-    "admin.product.selectScents": "Izberite dišave, ki bodo na voljo za ta izdelek",
+    "admin.product.selectScents":
+      "Izberite dišave, ki bodo na voljo za ta izdelek",
     "admin.product.loadingScents": "Nalaganje dišav...",
     "admin.product.availableColors": "Razpoložljive barve",
-    "admin.product.selectColors": "Izberite barve, ki bodo na voljo za ta izdelek",
+    "admin.product.selectColors":
+      "Izberite barve, ki bodo na voljo za ta izdelek",
     "admin.product.loadingColors": "Nalaganje barv...",
     "admin.product.enableColorSelection": "Omogoči izbiro barv",
     "admin.product.enableMultipleColors": "Omogoči izbiro več barv",
@@ -5612,7 +6105,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.actionsColumn": "Dejanja",
     "admin.product.inStock": "Na zalogi",
     "admin.product.active": "Aktiven",
-    
+
     // Admin Orders Page
     "admin.orderDetails": "Podrobnosti naročila",
     "admin.orderNumber": "Številka naročila",
@@ -5633,7 +6126,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.delivered": "Dostavljeno",
     "admin.cancelled": "Preklicano",
     "admin.statusUpdated": "Status uspešno posodobljen",
-    
+
     // Admin Invoice Page
     "admin.invoiceDetails": "Podrobnosti računa",
     "admin.invoiceNumber": "Številka računa",
@@ -5646,7 +6139,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.printInvoice": "Natisni račun",
     "admin.invoiceGenerated": "Račun uspešno ustvarjen",
     "admin.downloadFormat": "Format za prenos",
-    
+
     // Admin Users Page
     "admin.users.title": "Uporabniki",
     "admin.users.subtitle": "Upravljajte uporabnike v vaši trgovini",
@@ -5683,7 +6176,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.noInvoices": "Uporabnik nima računov.",
     "admin.users.viewInvoices": "Ogled računov",
     "admin.users.editUser": "Uredi uporabnika",
-    "admin.users.editUserDesc": "Uredite podrobnosti uporabnika in kliknite Shrani za shranjevanje sprememb.",
+    "admin.users.editUserDesc":
+      "Uredite podrobnosti uporabnika in kliknite Shrani za shranjevanje sprememb.",
     "admin.users.basicInfo": "Osnovni podatki",
     "admin.users.addressInfo": "Podatki o naslovu",
     "admin.users.usernamePlaceholder": "Vnesite uporabniško ime",
@@ -5710,16 +6204,19 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.successUpdate": "Uspeh",
     "admin.users.successUpdateDesc": "Uporabnik je bil uspešno posodobljen.",
     "admin.users.errorUpdate": "Napaka",
-    "admin.users.errorUpdateDesc": "Pri posodabljanju uporabnika je prišlo do napake: {error}",
+    "admin.users.errorUpdateDesc":
+      "Pri posodabljanju uporabnika je prišlo do napake: {error}",
     "admin.users.deleteUser": "Izbriši uporabnika",
-    "admin.users.deleteConfirmation": "Ali ste prepričani, da želite izbrisati uporabnika \"{name}\"? To dejanje je nepovratno in bo izbrisalo vse podatke povezane s tem uporabnikom.",
+    "admin.users.deleteConfirmation":
+      'Ali ste prepričani, da želite izbrisati uporabnika "{name}"? To dejanje je nepovratno in bo izbrisalo vse podatke povezane s tem uporabnikom.',
     "admin.users.cancelDelete": "Prekliči",
     "admin.users.confirmDelete": "Da, izbriši",
     "admin.users.deleting": "Brisanje...",
     "admin.users.successDelete": "Uspeh",
     "admin.users.successDeleteDesc": "Uporabnik je bil uspešno izbrisan.",
     "admin.users.errorDelete": "Napaka",
-    "admin.users.errorDeleteDesc": "Pri brisanju uporabnika je prišlo do napake: {error}",
+    "admin.users.errorDeleteDesc":
+      "Pri brisanju uporabnika je prišlo do napake: {error}",
     "admin.userDetails": "Podrobnosti uporabnika",
     "admin.username": "Uporabniško ime",
     "admin.email": "E-pošta",
@@ -5736,7 +6233,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.resetPassword": "Ponastavi geslo",
     "admin.userSaved": "Uporabnik uspešno shranjen",
     "admin.userDeleted": "Uporabnik uspešno izbrisan",
-    
+
     // Admin Settings Page
     "admin.generalSettings": "Splošne nastavitve",
     "admin.shopName": "Ime trgovine",
@@ -5752,7 +6249,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.metaDescription": "Meta opis",
     "admin.favicon": "Favicon",
     "admin.settingsSaved": "Nastavitve uspešno shranjene",
-    
+
     // Document Management
     "admin.uploadDocument": "Naloži dokument",
     "admin.documentName": "Ime dokumenta",
@@ -5821,7 +6318,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.total": "Skupaj",
     "cart.remove": "Odstrani",
     "cart.loading": "Nalaganje košarice...",
-    "cart.emptyMessage": "Vaša košarica je prazna. Dodajte izdelke za začetek nakupovanja.",
+    "cart.emptyMessage":
+      "Vaša košarica je prazna. Dodajte izdelke za začetek nakupovanja.",
     "cart.browseProducts": "Prebrskajte izdelke",
     "cart.itemsInCart": "Izdelki v košarici",
     "cart.productsCount": "izdelkov",
@@ -5836,23 +6334,29 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.shippingCost": "Strošek poštnine",
     "cart.couponCode": "Kuponska koda",
     "cart.applyCoupon": "Uporabi",
-    "cart.couponApplied": "Koda \"DOBRODOSLI\" uspešno uporabljena! Prejeli ste 10% popust.",
+    "cart.couponApplied":
+      'Koda "DOBRODOSLI" uspešno uporabljena! Prejeli ste 10% popust.',
     "cart.proceedToCheckout": "Nadaljuj na blagajno",
-    "cart.metaDescription": "Preglejte izdelke v vaši košarici in zaključite nakup.",
+    "cart.metaDescription":
+      "Preglejte izdelke v vaši košarici in zaključite nakup.",
     "cart.freeShippingMessage": "Brezplačna dostava za naročila nad {amount}€.",
     "cart.freeShippingForAll": "Brezplačna dostava za vsa naročila",
     "cart.shippingInfo": "Informacije o dostavi",
-    "cart.shippingInfoText1": "Dostava poteka preko GLS, DPD, UPS ali poštne službe.",
+    "cart.shippingInfoText1":
+      "Dostava poteka preko GLS, DPD, UPS ali poštne službe.",
     "cart.shippingInfoText2": "Čas dostave je 2-5 delovnih dni od naročila.",
-    "cart.shippingInfoText3": "Za naročila nad {amount}€ je dostava brezplačna. Za ostala naročila znaša strošek dostave {shipping}€.",
-    "cart.shippingInfoText4": "Strošek dostave znaša {shipping}€ za vsa naročila.",
+    "cart.shippingInfoText3":
+      "Za naročila nad {amount}€ je dostava brezplačna. Za ostala naročila znaša strošek dostave {shipping}€.",
+    "cart.shippingInfoText4":
+      "Strošek dostave znaša {shipping}€ za vsa naročila.",
     "cart.paymentMethods": "Načini plačila",
     "cart.paymentMethodsText": "Sprejemamo naslednje načine plačila:",
     "cart.paymentMethod1": "PayPal",
     "cart.paymentMethod2": "Kreditne kartice (Visa, Mastercard)",
     "cart.paymentMethod3": "Bančno nakazilo (po računu)",
     "cart.paymentMethod4": "Plačilo po povzetju (ob dostavi)",
-    "cart.addMoreForFreeShipping": "Dodajte še {amount}€ v košarico za brezplačno dostavo!",
+    "cart.addMoreForFreeShipping":
+      "Dodajte še {amount}€ v košarico za brezplačno dostavo!",
     "cart.inStock": "Na zalogi",
     "cart.scent": "Vonj:",
     "cart.colors": "Barve",
@@ -5886,13 +6390,14 @@ export const translations: Record<Language, Record<string, string>> = {
     "dialog.delete": "Izbriši",
     "dialog.cancel": "Prekliči",
     "dialog.confirm": "Potrdi",
-    
+
     // Instagram
     "instagram.followUs": "Sledite nam na Instagramu",
-    "instagram.followUsText": "Sledite nam na Instagramu za najnovejše kreacije in navdihe",
+    "instagram.followUsText":
+      "Sledite nam na Instagramu za najnovejše kreacije in navdihe",
     "instagram.loadingPhotos": "Nalaganje fotografij...",
     "instagram.emptyFeed": "Instagram vir je prazen",
-    
+
     // Order Details
     "orders.details": "Podrobnosti naročila",
     "orders.order": "Naročilo",
@@ -5950,7 +6455,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.italian": "Italijanski",
     "orders.slovenian": "Slovenski",
     "orders.backToList": "Nazaj na seznam naročil",
-    
+
     // Profile Page
     "profile.myProfile": "Moj profil",
     "profile.profile": "Profil",
@@ -5973,13 +6478,15 @@ export const translations: Record<Language, Record<string, string>> = {
     "profile.countryPlaceholder": "Slovenija",
     "profile.password": "Geslo",
     "profile.passwordChange": "Spremeni geslo",
-    "profile.passwordChangeDescription": "Posodobite svoje geslo za zagotovitev varnosti vašega računa.",
+    "profile.passwordChangeDescription":
+      "Posodobite svoje geslo za zagotovitev varnosti vašega računa.",
     "profile.currentPassword": "Trenutno geslo",
     "profile.newPassword": "Novo geslo",
     "profile.confirmPassword": "Potrdite novo geslo",
     "profile.changePassword": "Spremeni geslo",
     "profile.myOrders": "Moja naročila",
-    "profile.ordersDescription": "Pregled vaših prejšnjih naročil in njihov status.",
+    "profile.ordersDescription":
+      "Pregled vaših prejšnjih naročil in njihov status.",
     "profile.order": "Naročilo",
     "profile.orderDetails": "Podrobnosti naročila",
     "profile.orderStatus.pending": "V čakanju",
@@ -5987,7 +6494,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "profile.orderStatus.completed": "Zaključeno",
     "profile.noOrders": "Nimate naročil.",
     "profile.browseProducts": "Prebrskaj izdelke",
-    "profile.meta.description": "Upravljajte svoj račun, preglejte naročila in posodobite svoje osebne podatke.",
+    "profile.meta.description":
+      "Upravljajte svoj račun, preglejte naročila in posodobite svoje osebne podatke.",
 
     // Newsletter
     "newsletter.title": "Naročite se na naše novice",
@@ -6000,7 +6508,7 @@ export const translations: Record<Language, Record<string, string>> = {
       "Vaših podatkov nikoli ne bomo delili s tretjimi osebami. Odjava je mogoča kadarkoli.",
     "newsletter.success": "Hvala za prijavo! Kmalu boste prejeli naše novice.",
     "newsletter.error": "Prosimo, vnesite vaš e-poštni naslov.",
-    
+
     // Admin panel
     "admin.backToStore": "Nazaj v trgovino",
   },
