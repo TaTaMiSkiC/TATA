@@ -899,16 +899,16 @@ export default function OrderDetailsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[80px]"></TableHead>
-                  <TableHead className="w-[200px]">Proizvod</TableHead>
-                  <TableHead className="w-[250px]">Detalji</TableHead>
-                  <TableHead className="text-center">Količina</TableHead>
-                  <TableHead className="text-right">Cijena</TableHead>
-                  <TableHead className="text-right">Ukupno</TableHead>
+                  <TableHead className="w-[200px]">{t('orders.product')}</TableHead>
+                  <TableHead className="w-[250px]">{t('orders.details')}</TableHead>
+                  <TableHead className="text-center">{t('orders.quantity')}</TableHead>
+                  <TableHead className="text-right">{t('orders.price')}</TableHead>
+                  <TableHead className="text-right">{t('orders.total')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {orderWithItems.items.map((item) => {
-                  const productName = item.product?.name || 'Proizvod';
+                  const productName = item.product?.name || t('orders.product');
                   const scent = item.scentName || '';
                   const color = item.colorName || '';
                   const itemTotal = parseFloat(item.price) * item.quantity;
