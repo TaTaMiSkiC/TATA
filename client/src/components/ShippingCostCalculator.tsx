@@ -70,7 +70,7 @@ export function ShippingCostCalculator({ subtotal }: ShippingCostCalculatorProps
     return (
       <div className="flex items-center text-sm text-muted-foreground">
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        Izračunavanje troškova dostave...
+        {t('cart.loading')}
       </div>
     );
   }
@@ -87,8 +87,8 @@ export function ShippingCostCalculator({ subtotal }: ShippingCostCalculatorProps
   if (standardShippingRate === 0) {
     return (
       <div className="flex justify-between py-2">
-        <span className="text-muted-foreground">Dostava:</span>
-        <span className="font-medium text-green-600 dark:text-green-500">Besplatno</span>
+        <span className="text-muted-foreground">{t('cart.shipping')}:</span>
+        <span className="font-medium text-green-600 dark:text-green-500">{t('cart.shippingFree')}</span>
       </div>
     );
   }
@@ -98,10 +98,10 @@ export function ShippingCostCalculator({ subtotal }: ShippingCostCalculatorProps
   
   return (
     <div className="flex justify-between py-2">
-      <span className="text-muted-foreground">Dostava:</span>
+      <span className="text-muted-foreground">{t('cart.shipping')}:</span>
       <span>
         {isFreeShipping ? (
-          <span className="font-medium text-green-600 dark:text-green-500">Besplatno</span>
+          <span className="font-medium text-green-600 dark:text-green-500">{t('cart.shippingFree')}</span>
         ) : (
           <span>{shippingCost.toFixed(2)} €</span>
         )}
@@ -113,6 +113,7 @@ export function ShippingCostCalculator({ subtotal }: ShippingCostCalculatorProps
 // Komponenta za prikaz informacije o potrebnom iznosu za besplatnu dostavu
 export function FreeShippingProgress({ subtotal }: ShippingCostCalculatorProps) {
   const { getSetting } = useSettings();
+  const { t, translateText } = useLanguage();
   const [directValues, setDirectValues] = useState<{
     freeShippingThreshold: string;
     standardShippingRate: string;
@@ -184,7 +185,7 @@ export function FreeShippingProgress({ subtotal }: ShippingCostCalculatorProps) 
   return (
     <div className="mt-2 p-3 bg-muted/40 rounded-md">
       <p className="text-sm mb-2">
-        Dodajte još <span className="font-medium">{remaining.toFixed(2)} €</span> u košaricu za besplatnu dostavu!
+        {translateText(`Dodajte još ${remaining.toFixed(2)} € u košaricu za besplatnu dostavu!`)}
       </p>
       <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
         <div 
