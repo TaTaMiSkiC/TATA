@@ -2687,6 +2687,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "products.categories": "Categories",
     "products.allCategories": "All Categories",
     "products.selectCategory": "Select Category",
+    
+    // Instagram
+    "instagram.followUs": "Follow us on Instagram",
+    "instagram.followUsText": "Follow us on Instagram for the latest creations and inspirations",
+    "instagram.loadingPhotos": "Loading photos...",
+    "instagram.emptyFeed": "Instagram feed is empty",
     "products.price": "Price",
     "products.sortBy": "Sort By",
     "products.newest": "Newest",
@@ -2699,12 +2705,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "products.noProductsFound": "No Products Found",
     "products.tryDifferentFilters": "Try different filters or browse our entire collection.",
     "products.showAllProducts": "Show All Products",
-    
-    // Instagram
-    "instagram.followUs": "Follow us on Instagram",
-    "instagram.followUsText": "Follow us on Instagram for the latest creations and inspirations",
-    "instagram.loadingPhotos": "Loading photos...",
-    "instagram.emptyFeed": "Instagram feed is empty",
     
     // General admin elements
     "admin.general.uploading": "Uploading...",
