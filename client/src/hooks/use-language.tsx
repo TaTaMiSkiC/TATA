@@ -17,12 +17,12 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Auth Success/Error Messages
     "auth.loginSuccessTitle": "Anmeldung erfolgreich",
-    "auth.loginSuccessMessage": "Willkommen zurück, {username}!",
+    "auth.loginSuccessMessage": "Willkommen!",
     "auth.loginErrorTitle": "Anmeldung fehlgeschlagen",
     "auth.loginErrorMessage": "Falscher Benutzername oder Passwort.",
 
     "auth.registerSuccessTitle": "Registrierung erfolgreich",
-    "auth.registerSuccessMessage": "Willkommen, {username}!",
+    "auth.registerSuccessMessage": "Willkommen!",
     "auth.registerErrorTitle": "Registrierung fehlgeschlagen",
     "auth.registerErrorMessage": "Benutzername oder E-Mail existiert bereits.",
 
@@ -48,6 +48,25 @@ export const translations: Record<Language, Record<string, string>> = {
     "search.placeholder": "Produkte durchsuchen...",
     "search.enterTerm": "Suchbegriff eingeben...",
     "search.noResults": "Keine Ergebnisse gefunden",
+
+    //PRODUKT DETALJI
+    "product.scent": "Duft",
+    "product.selectOptions": "Optionen auswählen",
+    "cart.addToCart": "In den Warenkorb",
+    "product.color": "Farbe",
+    "product.multipleColorsHint": "Mehrere Farben auswählen",
+    "product.quantity": "Menge",
+    "product.errorTitle": "Fehler",
+    "product.errorMessage":
+      "Bitte wählen Sie alle erforderlichen Optionen aus.",
+    "product.errorAddingToCart":
+      "Fehler beim Hinzufügen des Produkts zum Warenkorb. Bitte melden Sie sich an, um fortzufahren.",
+    "product.successTitle": "Erfolg",
+    "product.successMessage": "Produkt erfolgreich zum Warenkorb hinzugefügt.",
+    "product.addToCartSuccess":
+      "Produkt erfolgreich zum Warenkorb hinzugefügt.",
+    "product.addToCartError":
+      "Fehler beim Hinzufügen des Produkts zum Warenkorb.",
 
     // Auth Page
     "auth.title": "Anmelden / Registrieren | Kerzenwelt by Dani",
@@ -77,7 +96,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.registerButton": "Registrieren",
     "auth.loginProcessing": "Anmeldung läuft...",
     "auth.registerProcessing": "Registrierung läuft...",
-    "auth.welcome": "Willkommen in der Kerzenwelt",
+    "auth.welcome": "Willkommen in der Kerzenwelt by Dani",
     "auth.welcomeDescription":
       "Handgefertigte Kerzen, mit Sorgfalt und Liebe für Sie hergestellt. Entdecken Sie den Unterschied, den natürliche Zutaten und handwerkliches Können in Ihr Zuhause bringen können.",
     "auth.usernameRequired": "Benutzername ist erforderlich",
@@ -286,6 +305,7 @@ export const translations: Record<Language, Record<string, string>> = {
       "Fügen Sie ein neues Produkt zum Katalog hinzu",
     "admin.product.categoryPlaceholder": "Wählen Sie eine Kategorie",
     "admin.product.burntimePlaceholder": "Brenndauer in Stunden",
+    "orders.cancelledStatus": "Storniert",
 
     // AdminPanel PageTitle
     "admin.panelTitle": "Admin Panel",
@@ -500,6 +520,17 @@ export const translations: Record<Language, Record<string, string>> = {
       "Inaktive Farben sind für die Auswahl bei Produkten nicht verfügbar",
 
     // Admin Collections Page
+    "admin.collections.pageTitle": "Kollektionen",
+    "admin.collections.collections": "Kollektionen",
+    "admin.collections.collectionsDescription":
+      "Verwalten Sie Produktkollektionen in Ihrem Shop",
+    "admin.collections.addNewCollection": "Neue Kollektion hinzufügen",
+    "admin.collections.imageUrlOptional": "Bild-URL (optional)",
+    "admin.collections.imageUrlHelp":
+      "Fügen Sie eine Bild-URL hinzu, die diese Kollektion am besten repräsentiert.",
+    "admin.collections.collectionActive": "Kollektion aktiv",
+    "admin.collections.collectionActiveHelp":
+      "Wenn deaktiviert, ist die Kollektion für Kunden nicht sichtbar",
     "admin.collections.title": "Kollektionen",
     "admin.collections.subtitle":
       "Verwalten Sie die Produktkollektionen in Ihrem Shop",
@@ -696,6 +727,22 @@ export const translations: Record<Language, Record<string, string>> = {
       "Fehler beim Aktualisieren der Sendungsverfolgungsinformationen",
 
     // Admin Invoices Page
+    "admin.invoices.noInvoicesCreated": "Keine Rechnungen erstellt",
+    "common.email": "E-Mail",
+    "common.note": "Hinweis",
+    "common.phone": "Telefon",
+    "common.address": "Adresse",
+    "common.postalCode": "Postleitzahl",
+    "orders.status.pending": "Ausstehend",
+    "admin.invoices.noteForInvoice": "Hinweis zur Rechnung",
+    "common.city": "Stadt",
+    "common.country": "Land",
+    "common.quantity": "Menge",
+    "common.select": "Auswählen",
+    "common.reset": "Zurücksetzen",
+    "admin.invoices.firstNameRequired": "Vorname ist erforderlich",
+    "admin.invoices.lastNameRequired": "Nachname ist erforderlich",
+    "admin.invoices.invalidEmail": "Ungültige E-Mail-Adresse",
     "admin.invoices.title": "Rechnungen",
     "admin.invoices.subtitle": "Verwalten und überwachen Sie Rechnungen",
     "admin.invoices.allInvoices": "Alle Rechnungen",
@@ -1569,7 +1616,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "home.heroTitle": "Handgefertigte Kerzen für besondere Momente",
     "home.heroSubtitle":
       "Entdecken Sie unsere Kollektion von Premium-Duftkerzen, die mit Liebe hergestellt werden",
-    "home.exploreCollection": "Kollektion erkunden",
     "home.aboutUs": "Über uns",
     "home.featuredSubtitle":
       "Unsere beliebtesten Produkte, die unsere Kunden lieben",
@@ -1759,7 +1805,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.title": "Prijava / Registracija | Kerzenwelt by Dani",
     "auth.description":
       "Prijavite se ili registrirajte kako biste kupovali ručno izrađene svijeće, pratili svoje narudžbe i uživali u posebnim ponudama.",
-    "products.productCount": " Proizvoda",
     "auth.login": "Prijava",
     "auth.register": "Registracija",
     "auth.loginTitle": "Prijava",
@@ -1810,7 +1855,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.date": "Datum",
     "orders.total": "Ukupno",
     "orders.status": "Status",
-    "orders.paymentMethod": "Način plaćanja",
     "orders.actions": "Akcije",
     "orders.details": "Detalji",
     "orders.loadingError": "Došlo je do greške prilikom učitavanja narudžbi.",
@@ -1820,27 +1864,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.processing": "U obradi",
     "orders.shipped": "Poslano",
     "orders.completed": "Završeno",
-    "orders.cancelled": "Otkazano",
     // Products page
-    "products.allProducts": "Svi proizvodi",
     "orders.price": "Cjena",
     "products.product": "Proizvod",
-    "products.products": "Proizvodi",
-    "products.filters": "Filteri",
-    "products.search": "Pretraga",
     "products.searchPlaceholder": "Traži proizvode...",
-    "products.categories": "Kategorije",
-    "products.allCategories": "Sve kategorije",
-    "products.selectCategory": "Odaberi kategoriju",
-    "products.price": "Cijena",
     "products.sortBy": "Sortiraj po",
-    "products.newest": "Najnovije",
-    "products.priceAsc": "Cijena (najniža prvo)",
-    "products.priceDesc": "Cijena (najviša prvo)",
     "products.nameAZ": "Ime (A-Z)",
-    "products.clear": "Očisti",
-    "products.clearFilters": "Očisti filtere",
-    "products.applyFilters": "Primijeni filtere",
     "products.noProductsFound": "Nema pronađenih proizvoda",
     "products.tryDifferentFilters":
       "Pokušajte s drugačijim filterima ili pogledajte našu cjelokupnu ponudu.",
@@ -2037,6 +2066,17 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.dashboard.personalizedCandles": "Personalizirane svijeće",
 
     // Admin Collections Page
+    "admin.collections.pageTitle": "Kolekcije",
+    "admin.collections.collections": "Kolekcije",
+    "admin.collections.collectionsDescription":
+      "Upravljajte kolekcijama proizvoda u trgovini",
+    "admin.collections.addNewCollection": "Dodaj novu kolekciju",
+    "admin.collections.imageUrlOptional": "URL slike (opcionalno)",
+    "admin.collections.imageUrlHelp":
+      "Dodajte URL slike koja najbolje predstavlja ovu kolekciju.",
+    "admin.collections.collectionActive": "Kolekcija aktivna",
+    "admin.collections.collectionActiveHelp":
+      "Ako je deaktivirano, kolekcija neće biti vidljiva kupcima",
     "admin.collections.title": "Kolekcije",
     "admin.collections.subtitle":
       "Upravljajte kolekcijama proizvoda u vašoj trgovini",
@@ -2224,6 +2264,22 @@ export const translations: Record<Language, Record<string, string>> = {
       "Greška prilikom ažuriranja informacija za praćenje",
 
     // Admin Invoices Page
+    "admin.invoices.noInvoicesCreated": "Nema kreiranih računa",
+    "common.email": "E-mail",
+    "common.note": "Napomena",
+    "common.phone": "Telefon",
+    "common.address": "Adresa",
+    "common.postalCode": "Poštanski broj",
+    "orders.status.pending": "Na čekanju",
+    "admin.invoices.noteForInvoice": "Napomena za račun",
+    "common.city": "Grad",
+    "common.country": "Država",
+    "common.quantity": "Količina",
+    "common.select": "Odaberi",
+    "common.reset": "Poništi",
+    "admin.invoices.firstNameRequired": "Ime je obavezno",
+    "admin.invoices.lastNameRequired": "Prezime je obavezno",
+    "admin.invoices.invalidEmail": "Neispravan e-mail",
     "admin.invoices.title": "Računi",
     "admin.invoices.subtitle": "Pregled i upravljanje računima",
     "admin.invoices.allInvoices": "Svi računi",
@@ -3153,13 +3209,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "products.newest": "Najnovije",
     "products.priceAsc": "Cijena (najniža prvo)",
     "products.priceDesc": "Cijena (najviša prvo)",
-    "products.nameAZ": "Ime (A-Z)",
     "products.noProducts": "Nema pronađenih proizvoda",
     "products.tryDifferent":
       "Pokušajte s drugačijim filterima ili pogledajte našu cjelokupnu ponudu.",
     "products.showAll": "Prikaži sve proizvode",
-    "products.productCount": "{count} proizvoda",
-    "products.productCountSingular": "{count} proizvod",
+    "products.productCount": " proizvoda",
+    "products.productCountSingular": " proizvod",
 
     // Košarica
     "cart.title": "Vaša košarica",
@@ -3244,13 +3299,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "dialog.cancel": "Odustani",
     "dialog.confirm": "Potvrdi",
 
-    // Instagram
-    "instagram.followUs": "Pratite nas na Instagramu",
-    "instagram.followUsText":
-      "Pratite nas na Instagramu za najnovije kreacije i inspiracije",
-    "instagram.loadingPhotos": "Učitavanje fotografija...",
-    "instagram.emptyFeed": "Instagram feed je prazan",
-
     // Profile Page
     "profile.myProfile": "Moj profil",
     "profile.profile": "Profil",
@@ -3259,21 +3307,14 @@ export const translations: Record<Language, Record<string, string>> = {
     // Order Details
     "orders.order": "Narudžba",
     "orders.backToOrders": "Natrag na narudžbe",
-    "orders.status": "Status",
-    "orders.pending": "Na čekanju",
-    "orders.processing": "U obradi",
-    "orders.shipped": "Poslano",
     "orders.delivered": "Dostavljeno",
     "orders.cancelled": "Otkazano",
-    "orders.date": "Datum",
     "orders.items": "Stavke",
-    "orders.total": "Ukupno",
     "orders.subtotal": "Međuzbroj",
     "orders.shipping": "Dostava",
     "orders.discount": "Popust",
     "orders.paymentMethod": "Način plaćanja",
     "orders.cash": "Gotovina",
-    "orders.bankTransfer": "Bankovni transfer",
     "orders.paypal": "PayPal",
     "orders.creditCard": "Kreditna kartica",
     "orders.notDefined": "Nije definirano",
@@ -3361,6 +3402,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "newsletter.success":
       "Hvala na prijavi! Uskoro ćete primiti naš newsletter.",
     "newsletter.error": "Molimo unesite vašu email adresu.",
+    "orders.cancelledStatus": "Otkazano",
 
     // Admin panel
     "admin.backToStore": "Natrag na trgovinu",
@@ -3462,7 +3504,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.orderNumber": "Order Number",
     "orders.date": "Date",
     "orders.total": "Total",
-    "orders.status": "Status",
     "orders.paymentMethod": "Payment Method",
     "orders.actions": "Actions",
     "orders.details": "Details",
@@ -3472,31 +3513,28 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.processing": "Processing",
     "orders.shipped": "Shipped",
     "orders.completed": "Completed",
-    "orders.cancelled": "Cancelled",
+    "orders.cancelledStatus": "Cancelled",
 
     // Order Details
     "orders.order": "Order",
     "orders.backToOrders": "Back to Orders",
     "orders.status": "Status",
     "orders.priceLabel": "Price",
-    "orders.pending": "Pending",
-    "orders.processing": "Processing",
-    "orders.shipped": "Shipped",
-    "orders.delivered": "Delivered",
-    "orders.cancelled": "Cancelled",
-    "orders.date": "Date",
-    "orders.items": "Items",
-    "orders.totalItems": "Total items",
-    "orders.total": "Total",
-    "orders.product": "Product",
-    "orders.subtotal": "Subtotal",
-    "orders.shipping": "Shipping",
-    "orders.discount": "Discount",
-    "orders.paymentMethod": "Payment Method",
-    "orders.cash": "Cash",
-    "orders.bankTransfer": "Bank Transfer",
-    "orders.paypal": "PayPal",
-    "orders.creditCard": "Credit Card",
+    "orders.pendingStatus": "Pending",
+    "orders.processingStatus": "Processing",
+    "orders.shippedStatus": "Shipped",
+    "orders.deliveredStatus": "Delivered",
+    "orders.orderDate": "Date",
+    "orders.totalOrderItems": "Total items",
+    "orders.orderTotal": "Total",
+    "orders.orderSubtotal": "Subtotal",
+    "orders.shippingCost": "Shipping",
+    "orders.discountAmount": "Discount",
+    "orders.paymentMethodTitle": "Payment Method",
+    "orders.cashPayment": "Cash",
+    "orders.bankTransferPayment": "Bank Transfer",
+    "orders.paypalPayment": "PayPal",
+    "orders.creditCardPayment": "Credit Card",
     "orders.notDefined": "Not defined",
     "orders.paymentStatus": "Payment Status",
     "orders.paid": "Paid",
@@ -3697,8 +3735,19 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.colors.successDelete": "Color deleted successfully",
 
     // Admin Collections Page
+    "common.cancel": "Cancel",
+    "admin.collections.addNewCollection": "Add new collection",
+    "admin.collections.imageUrlOptional": "Image URL (optional)",
+    "admin.collections.imageUrlHelp":
+      "Add a URL to an image that best represents this collection.",
+    "admin.collections.collectionActive": "Collection active",
+    "admin.collections.collectionActiveHelp":
+      "Inactive collections won't be visible to customers",
     "admin.collections.title": "Collections",
     "admin.collections.pageTitle": "Collection Management",
+    "admin.collections.collections": "Collections",
+    "admin.collections.collectionsDescription":
+      "Manage product collections in your store",
     "admin.collections.subtitle": "Manage product collections in your store",
     "admin.collections.allCollections": "All Collections",
     "admin.collections.allCollectionsDesc":
@@ -3856,6 +3905,22 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.trackingError": "Error updating tracking information",
 
     // Admin Invoices Page (English translations in main English section)
+    "admin.invoices.noInvoicesCreated": "No invoices created",
+    "common.email": "Email",
+    "common.note": "Note",
+    "common.phone": "Phone",
+    "common.address": "Address",
+    "common.postalCode": "Postal code",
+    "orders.status.pending": "Pending",
+    "admin.invoices.noteForInvoice": "Note for invoice",
+    "common.city": "City",
+    "common.country": "Country",
+    "common.quantity": "Quantity",
+    "common.select": "Select",
+    "common.reset": "Reset",
+    "admin.invoices.firstNameRequired": "First name is required",
+    "admin.invoices.lastNameRequired": "Last name is required",
+    "admin.invoices.invalidEmail": "Invalid email address",
     "admin.invoices.companyCity": "Company city",
     "admin.invoices.companyPostalCode": "Company postal code",
     "admin.invoices.companyCountry": "Company country",
@@ -5218,7 +5283,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.customerEmail": "Email",
     "admin.orders.customerPhone": "Telefono",
     "admin.orders.customerAddress": "Indirizzo",
-    "admin.orders.customerCity": "Città",
+    "admin.orders.customerCity": "Cittd�",
     "admin.orders.customerPostalCode": "Codice postale",
     "admin.orders.customerCountry": "Paese",
     "admin.orders.customerNote": "Nota cliente",
@@ -5291,6 +5356,22 @@ export const translations: Record<Language, Record<string, string>> = {
       "Errore durante l'aggiornamento delle informazioni di tracciamento",
 
     // Admin Invoices Page
+    "admin.invoices.noInvoicesCreated": "Nessuna fattura creata",
+    "common.email": "Email",
+    "common.note": "Nota",
+    "common.phone": "Telefono",
+    "common.address": "Indirizzo",
+    "common.postalCode": "Codice postale",
+    "orders.status.pending": "In attesa",
+    "admin.invoices.noteForInvoice": "Nota per la fattura",
+    "common.city": "Città",
+    "common.country": "Paese",
+    "common.quantity": "Quantità",
+    "common.select": "Seleziona",
+    "common.reset": "Reimposta",
+    "admin.invoices.firstNameRequired": "Nome obbligatorio",
+    "admin.invoices.lastNameRequired": "Cognome obbligatorio",
+    "admin.invoices.invalidEmail": "Indirizzo email non valido",
     "admin.invoices.title": "Fatture",
     "admin.invoices.subtitle": "Gestisci e monitora le fatture",
     "admin.invoices.allInvoices": "Tutte le fatture",
@@ -5844,7 +5925,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.logoutSuccessMessage": "Uspešno ste se odjavili.",
     "auth.logoutErrorTitle": "Odjava ni uspela",
     "auth.logoutErrorMessage":
-      "Pri odjavi je prišlo do težave. Poskusite znova.",
+      "Pri odjavi je prišlo do te.�ave. Poskusite znova.",
 
     "auth.verificationNeededTitle": "Potrebna je verifikacija",
     "auth.emailVerificationSuccess":
@@ -6412,6 +6493,22 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.multipleColors": "Več barv",
 
     // Admin Invoices Page
+    "admin.invoices.noInvoicesCreated": "Ni ustvarjenih računov",
+    "common.email": "E-pošta",
+    "common.note": "Opomba",
+    "common.phone": "Telefon",
+    "common.address": "Naslov",
+    "common.postalCode": "Poštna številka",
+    "orders.status.pending": "V obdelavi",
+    "admin.invoices.noteForInvoice": "Opomba za račun",
+    "common.city": "Mesto",
+    "common.country": "Država",
+    "common.quantity": "Količina",
+    "common.select": "Izberi",
+    "common.reset": "Ponastavi",
+    "admin.invoices.firstNameRequired": "Obvezno ime",
+    "admin.invoices.lastNameRequired": "Obvezno priimek",
+    "admin.invoices.invalidEmail": "Neveljaven e-poštni naslov",
     "admin.invoices.title": "Računi",
     "admin.invoices.subtitle": "Upravljajte račune v vaši trgovini",
     "admin.invoices.allInvoices": "Vsi računi",
