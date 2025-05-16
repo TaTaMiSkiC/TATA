@@ -186,7 +186,7 @@ export async function sendVerificationEmail(
 ): Promise<boolean> {
   try {
     // Build the verification link with the token
-    const verificationLink = `${process.env.SITE_URL || 'https://kerzenweltbydani.com'}/verify-email?token=${token}`;
+    const verificationLink = `https://kerzenweltbydani.com/verify-email?token=${token}`;
     
     // Generate the email HTML using our template
     const html = generateVerificationEmailTemplate(username, verificationLink, language);
