@@ -185,7 +185,7 @@ export function FreeShippingProgress({ subtotal }: ShippingCostCalculatorProps) 
   return (
     <div className="mt-2 p-3 bg-muted/40 rounded-md">
       <p className="text-sm mb-2">
-        {translateText(`Dodajte još ${remaining.toFixed(2)} € u košaricu za besplatnu dostavu!`)}
+        {translateText(t('cart.addMoreForFreeShipping').replace('{amount}', remaining.toFixed(2)))}
       </p>
       <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
         <div 
