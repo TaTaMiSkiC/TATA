@@ -2642,7 +2642,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Subscription failed. Please try again later." });
     }
   });
-
+  
   // Function to generate a unique discount code
   function generateDiscountCode() {
     const prefix = "WELCOME";
@@ -2656,7 +2656,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       throw new Error("SENDGRID_API_KEY not configured");
     }
     
-    // Import the sendEmail function from your sendgrid helper
+    // Import the sendEmail function from sendgrid helper
     const { sendEmail } = await import("./sendgrid");
     
     // Determine email content based on user's language
@@ -2666,53 +2666,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
       case "hr":
         subject = "Dobrodošli na Kerzenwelt by Dani newsletter!";
         text = `Hvala vam na pretplati na naš newsletter! Koristite kod ${discountCode} za 10% popusta na vašu prvu narudžbu.`;
+        html = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h1 style="color: #D4AF37;">Kerzenwelt by Dani</h1>
+            <h2>Hvala vam na pretplati!</h2>
+            <p>Poštovani,</p>
+            <p>Hvala vam što ste se pretplatili na naš newsletter. Kao znak zahvalnosti, pripremili smo vam poseban popust.</p>
+            <p>Vaš kod za 10% popusta pri prvoj kupnji je:</p>
+            <div style="background-color: #f0f0f0; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; letter-spacing: 2px; margin: 20px 0;">
+              ${discountCode}
+            </div>
+            <p>Hvala što ste dio Kerzenwelt zajednice!</p>
+            <p>Srdačan pozdrav,<br>Daniela</p>
+          </div>
+        `;
         break;
+        
       case "en":
         subject = "Welcome to Kerzenwelt by Dani newsletter!";
         text = `Thank you for subscribing to our newsletter! Use code ${discountCode} for 10% off your first order.`;
+        html = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h1 style="color: #D4AF37;">Kerzenwelt by Dani</h1>
+            <h2>Thank you for subscribing!</h2>
+            <p>Dear Customer,</p>
+            <p>Thank you for subscribing to our newsletter. As a token of our appreciation, we've prepared a special discount for you.</p>
+            <p>Your 10% discount code for your first purchase is:</p>
+            <div style="background-color: #f0f0f0; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; letter-spacing: 2px; margin: 20px 0;">
+              ${discountCode}
+            </div>
+            <p>Thank you for being part of the Kerzenwelt community!</p>
+            <p>Best regards,<br>Daniela</p>
+          </div>
+        `;
         break;
       case "it":
         subject = "Benvenuto alla newsletter di Kerzenwelt by Dani!";
-        text = `Grazie per esserti iscritto alla nostra newsletter! Usa il codice ${discountCode} per ottenere il 10% di sconto sul tuo primo ordine.`;
+        text = `Grazie per esserti iscritto alla nostra newsletter! Utilizza il codice ${discountCode} per ottenere il 10% di sconto sul tuo primo ordine.`;
+        html = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h1 style="color: #D4AF37;">Kerzenwelt by Dani</h1>
+            <h2>Grazie per l'iscrizione!</h2>
+            <p>Gentile Cliente,</p>
+            <p>Grazie per esserti iscritto alla nostra newsletter. Come segno del nostro apprezzamento, abbiamo preparato uno sconto speciale per te.</p>
+            <p>Il tuo codice sconto del 10% per il tuo primo acquisto è:</p>
+            <div style="background-color: #f0f0f0; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; letter-spacing: 2px; margin: 20px 0;">
+              ${discountCode}
+            </div>
+            <p>Grazie per far parte della comunità Kerzenwelt!</p>
+            <p>Cordiali saluti,<br>Daniela</p>
+          </div>
+        `;
         break;
       case "sl":
         subject = "Dobrodošli v Kerzenwelt by Dani newsletter!";
         text = `Hvala, ker ste se naročili na naš newsletter! Uporabite kodo ${discountCode} za 10% popusta pri prvem naročilu.`;
-        break;
-      default: // German
-        subject = "Willkommen beim Kerzenwelt by Dani Newsletter!";
-        text = `Vielen Dank für Ihre Anmeldung zu unserem Newsletter! Verwenden Sie den Code ${discountCode} für 10% Rabatt auf Ihre erste Bestellung.`;
-    }
-    
-    // Create HTML version of the email
-    html = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <div style="text-align: center; padding: 20px 0;">
-          <img src="https://kerzenwelt-by-dani.replit.app/uploads/logo-small.png" alt="Kerzenwelt by Dani" style="max-width: 200px;">
-        </div>
-        <div style="padding: 20px; background-color: #f9f9f9; border-radius: 5px;">
-          <h2 style="color: #D4AF37; margin-bottom: 20px;">${subject}</h2>
-          <p style="margin-bottom: 15px; line-height: 1.5;">${text}</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <div style="display: inline-block; background-color: #f5f5f5; border: 1px dashed #D4AF37; padding: 10px 20px; font-size: 18px; font-weight: bold; color: #333; border-radius: 3px;">
+        html = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h1 style="color: #D4AF37;">Kerzenwelt by Dani</h1>
+            <h2>Hvala za vašo prijavo!</h2>
+            <p>Spoštovani,</p>
+            <p>Hvala, ker ste se naročili na naš newsletter. Kot znak zahvale smo vam pripravili poseben popust.</p>
+            <p>Vaša koda za 10% popust pri prvem nakupu je:</p>
+            <div style="background-color: #f0f0f0; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; letter-spacing: 2px; margin: 20px 0;">
               ${discountCode}
             </div>
+            <p>Hvala, ker ste del skupnosti Kerzenwelt!</p>
+            <p>Lep pozdrav,<br>Daniela</p>
           </div>
-          <p style="font-size: 12px; color: #777; margin-top: 30px;">
-            © ${new Date().getFullYear()} Kerzenwelt by Dani. Alle Rechte vorbehalten.
-          </p>
-        </div>
-      </div>
-    `;
+        `;
+        break;
+      default: // German
+        subject = "Willkommen zum Kerzenwelt by Dani Newsletter!";
+        text = `Vielen Dank für Ihre Anmeldung zu unserem Newsletter! Verwenden Sie den Code ${discountCode} für 10% Rabatt auf Ihre erste Bestellung.`;
+        html = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h1 style="color: #D4AF37;">Kerzenwelt by Dani</h1>
+            <h2>Vielen Dank für Ihre Anmeldung!</h2>
+            <p>Sehr geehrter Kunde,</p>
+            <p>Vielen Dank für Ihre Anmeldung zu unserem Newsletter. Als Zeichen unserer Wertschätzung haben wir einen speziellen Rabatt für Sie vorbereitet.</p>
+            <p>Ihr 10% Rabattcode für Ihren ersten Einkauf ist:</p>
+            <div style="background-color: #f0f0f0; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; letter-spacing: 2px; margin: 20px 0;">
+              ${discountCode}
+            </div>
+            <p>Vielen Dank, dass Sie Teil der Kerzenwelt-Gemeinschaft sind!</p>
+            <p>Mit freundlichen Grüßen,<br>Daniela</p>
+          </div>
+        `;
+    }
     
     // Send the email
-    return await sendEmail(process.env.SENDGRID_API_KEY, {
-      to: email,
-      from: "daniela.svoboda2@gmail.com", // Make sure this is verified in SendGrid
-      subject,
-      text,
-      html
-    });
+    try {
+      await sendEmail(process.env.SENDGRID_API_KEY!, {
+        to: email,
+        from: "noreply@kerzenwelt.com",
+        subject,
+        text,
+        html
+      });
+      
+      console.log(`Newsletter subscription email sent to ${email}`);
+      return true;
+    } catch (error) {
+      console.error("Error sending subscription email:", error);
+      throw error;
+    }
   }
 
   // Create HTTP server
