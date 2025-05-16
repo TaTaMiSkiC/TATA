@@ -1747,6 +1747,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "languages.german": "Njemački",
     "languages.italian": "Talijanski",
     "languages.slovenian": "Slovenski",
+    
+    // Search
+    "search.title": "Pretraži proizvode",
+    "search.placeholder": "Pretraži proizvode...",
+    "search.enterTerm": "Unesi pojam za pretraživanje...",
+    "search.noResults": "Nema rezultata",
 
     // Auth Page
     "auth.title": "Prijava / Registracija | Kerzenwelt by Dani",
@@ -4496,6 +4502,12 @@ export const translations: Record<Language, Record<string, string>> = {
   it: {
     // Home Page
     "home.exploreCollection": "Esplora la collezione →",
+    
+    // Search
+    "search.title": "Cerca prodotti",
+    "search.placeholder": "Cerca prodotti...",
+    "search.enterTerm": "Inserisci un termine di ricerca...",
+    "search.noResults": "Nessun risultato trovato",
 
     // Auth Success/Error Messages
     "auth.loginSuccessTitle": "Accesso riuscito",
@@ -5810,6 +5822,12 @@ export const translations: Record<Language, Record<string, string>> = {
   sl: {
     // Home Page
     "home.exploreCollection": "Razišči kolekcijo →",
+    
+    // Search
+    "search.title": "Išči izdelke",
+    "search.placeholder": "Išči izdelke...",
+    "search.enterTerm": "Vnesite iskalni izraz...",
+    "search.noResults": "Ni najdenih rezultatov",
 
     // Auth Success/Error Messages
     "auth.loginSuccessTitle": "Prijava uspešna",
