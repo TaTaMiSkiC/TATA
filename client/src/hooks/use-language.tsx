@@ -5499,7 +5499,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "home.heroTitle": "Candele artigianali per momenti speciali",
     "home.heroSubtitle":
       "Scopri la nostra collezione di candele profumate premium realizzate con amore",
-    "home.exploreCollection": "Esplora la collezione",
     "home.aboutUs": "Chi siamo",
     "home.featuredSubtitle":
       "I nostri prodotti più popolari che i nostri clienti amano",
@@ -6723,7 +6722,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "home.heroTitle": "Ročno izdelane sveče za posebne trenutke",
     "home.heroSubtitle":
       "Odkrijte našo kolekcijo vrhunskih dišečih sveč, narejenih z ljubeznijo",
-    "home.exploreCollection": "Raziščite kolekcijo",
     "home.aboutUs": "O nas",
     "home.featuredSubtitle":
       "Naši najbolj priljubljeni izdelki, ki jih naše stranke obožujejo",
