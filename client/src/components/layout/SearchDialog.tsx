@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/hooks/use-language";
 
 // Custom debounce hook
 function useDebounce<T>(value: T, delay: number): T {
@@ -37,6 +38,7 @@ export function SearchDialog({ trigger }: SearchDialogProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const { t } = useLanguage();
   
   // Dohvati sve proizvode za pretraživanje
   const { data: allProducts, isLoading } = useQuery<Product[]>({
@@ -95,13 +97,13 @@ export function SearchDialog({ trigger }: SearchDialogProps) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Pretraži proizvode</DialogTitle>
+          <DialogTitle>{t('product.searchProducts') || "Pretraži proizvode"}</DialogTitle>
         </DialogHeader>
         <div className="relative">
           <Search className="absolute left-2 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="search-input"
-            placeholder="Pretražite proizvode..."
+            placeholder={t('product.searchPlaceholder') || "Pretražite proizvode..."}
             className="pl-8 pr-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -121,7 +123,7 @@ export function SearchDialog({ trigger }: SearchDialogProps) {
             </div>
           ) : !debouncedSearchQuery ? (
             <p className="text-center text-sm text-muted-foreground py-4">
-              Unesite pojam za pretraživanje...
+              {t('product.enterSearchTerm') || "Unesite pojam za pretraživanje..."}
             </p>
           ) : filteredProducts && filteredProducts.length > 0 ? (
             <div className="space-y-2">
@@ -159,7 +161,7 @@ export function SearchDialog({ trigger }: SearchDialogProps) {
             </div>
           ) : (
             <p className="text-center text-sm text-muted-foreground py-4">
-              Nema rezultata za "{debouncedSearchQuery}"
+              {t('product.noSearchResults', {query: debouncedSearchQuery}) || `Nema rezultata za "${debouncedSearchQuery}"`}
             </p>
           )}
         </div>
