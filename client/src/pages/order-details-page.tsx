@@ -760,18 +760,18 @@ export default function OrderDetailsPage() {
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Datum:</span>
+                <span className="text-muted-foreground">{t('orders.date')}:</span>
                 <span>{format(new Date(orderWithItems.createdAt), 'dd.MM.yyyy. HH:mm')}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Status:</span>
+                <span className="text-muted-foreground">{t('orders.status')}:</span>
                 <span className="flex items-center">
                   <OrderStatusIcon status={orderWithItems.status} />
                   <span className="ml-2">{getStatusText(orderWithItems.status, t)}</span>
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Ukupno stavki:</span>
+                <span className="text-muted-foreground">{t('orders.totalItems')}:</span>
                 <span>{totalItems}</span>
               </div>
               
@@ -782,20 +782,20 @@ export default function OrderDetailsPage() {
                 </div>
               )}
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Način plaćanja:</span>
+                <span className="text-muted-foreground">{t('orders.paymentMethod')}:</span>
                 <span>
-                  {orderWithItems.paymentMethod ? getPaymentMethodText(orderWithItems.paymentMethod, 'hr') : 'Nije specificirano'}
+                  {orderWithItems.paymentMethod ? getPaymentMethodText(orderWithItems.paymentMethod, language as 'hr' | 'en' | 'de' | 'it' | 'sl') : t('orders.notSpecified')}
                 </span>
               </div>
               {orderWithItems.paymentStatus && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Status plaćanja:</span>
-                  <span>{orderWithItems.paymentStatus === 'completed' ? 'Plaćeno' : 'Na čekanju'}</span>
+                  <span className="text-muted-foreground">{t('orders.paymentStatus')}:</span>
+                  <span>{orderWithItems.paymentStatus === 'completed' ? t('orders.paid') : t('orders.pending')}</span>
                 </div>
               )}
               {orderWithItems.transactionId && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">ID transakcije:</span>
+                  <span className="text-muted-foreground">{t('orders.transactionId')}:</span>
                   <span className="font-mono text-xs">{orderWithItems.transactionId}</span>
                 </div>
               )}
