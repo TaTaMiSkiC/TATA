@@ -161,7 +161,7 @@ export function SearchDialog({ trigger }: SearchDialogProps) {
             </div>
           ) : (
             <p className="text-center text-sm text-muted-foreground py-4">
-              {t('product.noSearchResults', {query: debouncedSearchQuery}) || `Nema rezultata za "${debouncedSearchQuery}"`}
+              {t('product.noSearchResults') || `Nema rezultata za "${debouncedSearchQuery}"`}
             </p>
           )}
         </div>
