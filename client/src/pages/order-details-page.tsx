@@ -518,25 +518,20 @@ export default function OrderDetailsPage() {
           } else if (item.productName) {
             productName = item.productName;
           } else {
-            productName = `Proizvod #${item.productId}`;
+            productName = `${t.product} #${item.productId}`;
           }
           
           let details = [];
           
           // Dodaj miris ako postoji
           if (item.scentName) {
-            // Koristi prijevod za riječ "Miris"
-            const scentLabel = lang === 'hr' ? 'Miris' : lang === 'de' ? 'Duft' : 'Scent';
-            details.push(`${scentLabel}: ${item.scentName}`);
+            details.push(`${t.scent}: ${item.scentName}`);
           }
           
           // Dodaj boju/boje
           if (item.colorName) {
-            // Koristi prijevod za riječ "Boja" ili "Boje"
-            const colorSingular = lang === 'hr' ? 'Boja' : lang === 'de' ? 'Farbe' : 'Color';
-            const colorPlural = lang === 'hr' ? 'Boje' : lang === 'de' ? 'Farben' : 'Colors';
-            const colorPrefix = item.hasMultipleColors ? colorPlural : colorSingular;
-            details.push(`${colorPrefix}: ${item.colorName}`);
+            const colorLabel = item.hasMultipleColors ? t.colors : t.color;
+            details.push(`${colorLabel}: ${item.colorName}`);
           }
           
           // Spoji naziv proizvoda s detaljima
@@ -1041,7 +1036,7 @@ export default function OrderDetailsPage() {
           </CardContent>
           <CardFooter className="border-t p-4 flex justify-end">
             <div className="text-sm text-muted-foreground">
-              Prikazane cijene uključuju PDV.
+              {t('orders.pricesIncludeTax')}
             </div>
           </CardFooter>
         </Card>
