@@ -29,26 +29,17 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useLanguage } from "@/hooks/use-language";
 
-// Create dynamic login schema with translations
-const createLoginSchema = (t: (key: string) => string) => z.object({
-  username: z.string().min(1, t("auth.usernameRequired")),
-  password: z.string().min(1, t("auth.passwordRequired")),
-});
+type LoginFormValues = {
+  username: string;
+  password: string;
+};
 
-type LoginFormValues = z.infer<ReturnType<typeof createLoginSchema>>;
-
-// Create dynamic registration schema with translations
-const createRegisterSchema = (t: (key: string) => string) => z.object({
-  username: z.string().min(3, t("auth.usernameMinLength")),
-  email: z.string().email(t("auth.emailInvalid")),
-  password: z.string().min(6, t("auth.passwordMinLength")),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: t("auth.passwordsDoNotMatch"),
-  path: ["confirmPassword"],
-});
-
-type RegisterFormValues = z.infer<typeof registerSchema>;
+type RegisterFormValues = {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
@@ -57,8 +48,25 @@ export default function AuthPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { user, loginMutation, registerMutation } = useAuth();
   const [, navigate] = useLocation();
+  const { t } = useLanguage();
 
-  // Koristimo useEffect za preusmjeravanje kad korisnik postoji
+  // Create validation schemas with translations
+  const loginSchema = z.object({
+    username: z.string().min(1, t("auth.usernameRequired")),
+    password: z.string().min(1, t("auth.passwordRequired")),
+  });
+
+  const registerSchema = z.object({
+    username: z.string().min(3, t("auth.usernameMinLength")),
+    email: z.string().email(t("auth.emailInvalid")),
+    password: z.string().min(6, t("auth.passwordMinLength")),
+    confirmPassword: z.string(),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t("auth.passwordsDoNotMatch"),
+    path: ["confirmPassword"],
+  });
+
+  // Redirect if user is already logged in
   useEffect(() => {
     if (user) {
       navigate("/");
@@ -98,8 +106,8 @@ export default function AuthPage() {
   return (
     <Layout>
       <Helmet>
-        <title>Prijava / Registracija | Kerzenwelt by Dani</title>
-        <meta name="description" content="Prijavite se ili registrirajte kako biste kupovali ručno izrađene svijeće, pratili svoje narudžbe i uživali u posebnim ponudama." />
+        <title>{t("auth.title")}</title>
+        <meta name="description" content={t("auth.description")} />
       </Helmet>
       
       <div className="py-16 bg-background">
@@ -109,16 +117,16 @@ export default function AuthPage() {
             <div>
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-8">
-                  <TabsTrigger value="login">Prijava</TabsTrigger>
-                  <TabsTrigger value="register">Registracija</TabsTrigger>
+                  <TabsTrigger value="login">{t("auth.login")}</TabsTrigger>
+                  <TabsTrigger value="register">{t("auth.register")}</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="login">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="heading text-2xl">Prijava</CardTitle>
+                      <CardTitle className="heading text-2xl">{t("auth.loginTitle")}</CardTitle>
                       <CardDescription>
-                        Prijavite se na vaš Kerzenwelt račun
+                        {t("auth.loginDescription")}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -129,9 +137,9 @@ export default function AuthPage() {
                             name="username"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Korisničko ime</FormLabel>
+                                <FormLabel>{t("auth.username")}</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Unesite korisničko ime" {...field} />
+                                  <Input placeholder={t("auth.usernamePlaceholder")} {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -143,12 +151,12 @@ export default function AuthPage() {
                             name="password"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Lozinka</FormLabel>
+                                <FormLabel>{t("auth.password")}</FormLabel>
                                 <FormControl>
                                   <div className="relative">
                                     <Input 
                                       type={showLoginPassword ? "text" : "password"} 
-                                      placeholder="Unesite lozinku" 
+                                      placeholder={t("auth.passwordPlaceholder")} 
                                       {...field}
                                     />
                                     <Button
@@ -165,7 +173,7 @@ export default function AuthPage() {
                                         <Eye className="h-4 w-4 text-muted-foreground" />
                                       )}
                                       <span className="sr-only">
-                                        {showLoginPassword ? "Sakrij lozinku" : "Prikaži lozinku"}
+                                        {showLoginPassword ? t("auth.hidePassword") : t("auth.showPassword")}
                                       </span>
                                     </Button>
                                   </div>
@@ -183,10 +191,10 @@ export default function AuthPage() {
                             {loginMutation.isPending ? (
                               <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Prijava u tijeku...
+                                {t("auth.loginProcessing")}
                               </>
                             ) : (
-                              "Prijava"
+                              t("auth.loginButton")
                             )}
                           </Button>
                         </form>
