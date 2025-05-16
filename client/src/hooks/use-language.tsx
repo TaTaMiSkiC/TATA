@@ -5739,6 +5739,31 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   sl: {
+    // Auth Success/Error Messages
+    "auth.loginSuccessTitle": "Prijava uspešna",
+    "auth.loginSuccessMessage": "Dobrodošli nazaj, {username}!",
+    "auth.loginErrorTitle": "Prijava ni uspela",
+    "auth.loginErrorMessage": "Napačno uporabniško ime ali geslo.",
+    
+    "auth.registerSuccessTitle": "Registracija uspešna",
+    "auth.registerSuccessMessage": "Dobrodošli, {username}!",
+    "auth.registerErrorTitle": "Registracija ni uspela",
+    "auth.registerErrorMessage": "Uporabniško ime ali e-pošta že obstaja.",
+    
+    "auth.logoutSuccessTitle": "Odjava uspešna",
+    "auth.logoutSuccessMessage": "Uspešno ste se odjavili.",
+    "auth.logoutErrorTitle": "Odjava ni uspela",
+    "auth.logoutErrorMessage": "Pri odjavi je prišlo do težave. Poskusite znova.",
+    
+    "auth.verificationNeededTitle": "Potrebna je verifikacija",
+    "auth.emailVerificationSuccess": "Vaš e-poštni naslov je bil uspešno potrjen. Zdaj se lahko prijavite.",
+    "auth.emailVerificationFailed": "Preverjanje e-pošte ni uspelo. Povezava je morda potekla ali ni veljavna.",
+    "auth.emailVerificationError": "Pri preverjanju vašega e-poštnega naslova je prišlo do napake. Poskusite znova kasneje.",
+    "auth.emailNotVerified": "Vaš e-poštni naslov še ni potrjen. Preverite svoj predal in kliknite na potrditveno povezavo.",
+    "auth.registrationSuccessVerifyEmail": "Registracija uspešna! Preverite svoj predal za potrditev e-poštnega naslova.",
+    "auth.verificationSuccessTitle": "Verifikacija uspešna",
+    "auth.verificationErrorTitle": "Verifikacija ni uspela",
+    
     // Languages
     "languages.croatian": "Hrvaški",
     "languages.english": "Angleški",
