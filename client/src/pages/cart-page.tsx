@@ -206,18 +206,18 @@ export default function CartPage() {
             <div className="w-full lg:w-1/3">
               <Card>
                 <CardHeader>
-                  <CardTitle>Sažetak narudžbe</CardTitle>
+                  <CardTitle>{t('cart.orderSummary')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Međuzbroj</span>
+                      <span className="text-gray-500">{t('cart.subtotal')}</span>
                       <span>{cartTotal.toFixed(2)} €</span>
                     </div>
                     
                     {discount > 0 && (
                       <div className="flex justify-between text-success">
-                        <span>Popust</span>
+                        <span>{t('cart.discount')}</span>
                         <span>-{discount.toFixed(2)} €</span>
                       </div>
                     )}
@@ -232,7 +232,7 @@ export default function CartPage() {
                     
                     {/* Ukupno - uključuje dostavu */}
                     <div className="flex justify-between font-bold text-lg">
-                      <span>Ukupno</span>
+                      <span>{t('cart.total')}</span>
                       <span>{totalWithShipping.toFixed(2)} €</span>
                     </div>
                     
@@ -241,7 +241,7 @@ export default function CartPage() {
                       <div className="flex space-x-2">
                         <Input
                           type="text"
-                          placeholder="Promo kod"
+                          placeholder={t('cart.couponCode')}
                           value={couponCode}
                           onChange={(e) => setCouponCode(e.target.value)}
                         />
@@ -250,12 +250,12 @@ export default function CartPage() {
                           onClick={handleApplyCoupon}
                           disabled={!couponCode}
                         >
-                          Primijeni
+                          {t('cart.applyCoupon')}
                         </Button>
                       </div>
                       {couponCode === "dobrodosli" && discount > 0 && (
                         <p className="text-success text-sm mt-2">
-                          Kod "DOBRODOSLI" uspješno primijenjen! Ostvarili ste 10% popusta.
+                          {t('cart.couponApplied')}
                         </p>
                       )}
                     </div>
@@ -267,7 +267,7 @@ export default function CartPage() {
                     >
                       <Link href={user ? "/checkout" : "/auth?redirect=checkout"} className="flex items-center justify-center">
                         <CreditCard size={18} className="mr-2" />
-                        Nastavi na plaćanje
+                        {t('cart.proceedToCheckout')}
                       </Link>
                     </Button>
                   </div>
@@ -277,11 +277,11 @@ export default function CartPage() {
                     <Truck size={14} className="mr-2" />
                     <span>
                       {standardShippingRate === 0 ? (
-                        "Besplatna dostava za sve narudžbe"
+                        t('cart.freeShippingForAll')
                       ) : freeShippingThreshold > 0 ? (
-                        `Besplatna dostava za narudžbe iznad ${freeShippingThreshold.toFixed(2)}€`
+                        translateText(t('cart.freeShippingMessage').replace('{amount}', freeShippingThreshold.toFixed(2)))
                       ) : (
-                        `Dostava: ${standardShippingRate.toFixed(2)}€`
+                        `${t('cart.shippingCost')}: ${standardShippingRate.toFixed(2)}€`
                       )}
                     </span>
                   </div>
@@ -295,19 +295,22 @@ export default function CartPage() {
                     <AccordionTrigger className="text-sm">
                       <div className="flex items-center">
                         <Info size={16} className="mr-2" />
-                        Informacije o dostavi
+                        {t('cart.shippingInfo')}
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="text-sm text-gray-500">
-                      <p className="mb-2">Dostava se vrši putem dostavne službe GLS, DPD, UPS ili Pošte.</p>
-                      <p className="mb-2">Rok isporuke je 2-5 radna dana od trenutka narudžbe.</p>
+                      <p className="mb-2">{t('cart.shippingInfoText1')}</p>
+                      <p className="mb-2">{t('cart.shippingInfoText2')}</p>
                       <p>
                         {standardShippingRate === 0 ? (
-                          "Dostava je besplatna za sve narudžbe."
+                          t('cart.freeShippingForAll')
                         ) : freeShippingThreshold > 0 ? (
-                          `Za narudžbe iznad ${freeShippingThreshold.toFixed(2)}€ dostava je besplatna. Za ostale narudžbe trošak dostave iznosi ${standardShippingRate.toFixed(2)}€.`
+                          translateText(t('cart.shippingInfoText3')
+                            .replace('{amount}', freeShippingThreshold.toFixed(2))
+                            .replace('{shipping}', standardShippingRate.toFixed(2)))
                         ) : (
-                          `Trošak dostave iznosi ${standardShippingRate.toFixed(2)}€ za sve narudžbe.`
+                          translateText(t('cart.shippingInfoText4')
+                            .replace('{shipping}', standardShippingRate.toFixed(2)))
                         )}
                       </p>
                     </AccordionContent>
@@ -316,16 +319,16 @@ export default function CartPage() {
                     <AccordionTrigger className="text-sm">
                       <div className="flex items-center">
                         <CreditCard size={16} className="mr-2" />
-                        Načini plaćanja
+                        {t('cart.paymentMethods')}
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="text-sm text-gray-500">
-                      <p className="mb-2">Prihvaćamo sljedeće načine plaćanja:</p>
+                      <p className="mb-2">{t('cart.paymentMethodsText')}</p>
                       <ul className="list-disc list-inside">
-                        <li>PayPal</li>
-                        <li>Kreditne kartice (Visa, Mastercard)</li>
-                        <li>Virmansko plaćanje (po predračunu)</li>
-                        <li>Pouzeće (plaćanje prilikom preuzimanja)</li>
+                        <li>{t('cart.paymentMethod1')}</li>
+                        <li>{t('cart.paymentMethod2')}</li>
+                        <li>{t('cart.paymentMethod3')}</li>
+                        <li>{t('cart.paymentMethod4')}</li>
                       </ul>
                     </AccordionContent>
                   </AccordionItem>

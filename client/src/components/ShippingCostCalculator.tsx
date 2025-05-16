@@ -1,4 +1,5 @@
 import { useSettings } from "@/hooks/use-settings-api";
+import { useLanguage } from "@/hooks/use-language";
 import { Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { queryClient } from "@/lib/queryClient";
@@ -9,6 +10,7 @@ interface ShippingCostCalculatorProps {
 
 export function ShippingCostCalculator({ subtotal }: ShippingCostCalculatorProps) {
   const { getSetting } = useSettings();
+  const { t } = useLanguage();
   const [directValues, setDirectValues] = useState<{
     freeShippingThreshold: string;
     standardShippingRate: string;
