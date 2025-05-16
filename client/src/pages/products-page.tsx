@@ -199,16 +199,16 @@ export default function ProductsPage() {
                   
                   {/* Categories */}
                   <div>
-                    <h3 className="font-medium mb-2 text-foreground">Kategorije</h3>
+                    <h3 className="font-medium mb-2 text-foreground">{t('products.categories')}</h3>
                     <Select 
                       value={filters.category}
                       onValueChange={(value) => setFilters({ ...filters, category: value })}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Odaberi kategoriju" />
+                        <SelectValue placeholder={t('products.selectCategory')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Sve kategorije</SelectItem>
+                        <SelectItem value="all">{t('products.allCategories')}</SelectItem>
                         {categories?.map((category) => (
                           <SelectItem key={category.id} value={category.id.toString()}>
                             {category.name}
@@ -221,7 +221,7 @@ export default function ProductsPage() {
                   {/* Price range */}
                   <div>
                     <div className="flex justify-between mb-2">
-                      <h3 className="font-medium text-foreground">Cijena</h3>
+                      <h3 className="font-medium text-foreground">{t('products.price')}</h3>
                       <span className="text-sm text-muted-foreground">
                         {filters.priceRange[0]}€ - {filters.priceRange[1]}€
                       </span>
@@ -250,7 +250,7 @@ export default function ProductsPage() {
                 <div className="absolute inset-y-0 right-0 w-[300px] bg-background h-full overflow-y-auto">
                   <div className="p-5">
                     <div className="flex justify-between items-center mb-4">
-                      <h2 className="font-heading font-semibold text-lg text-foreground">Filteri</h2>
+                      <h2 className="font-heading font-semibold text-lg text-foreground">{t('products.filters')}</h2>
                       <Button variant="ghost" size="sm" onClick={() => setMobileFiltersOpen(false)}>
                         <X size={18} />
                       </Button>
@@ -261,12 +261,12 @@ export default function ProductsPage() {
                     <div className="space-y-6">
                       {/* Search */}
                       <div>
-                        <h3 className="font-medium mb-2 text-foreground">Pretraga</h3>
+                        <h3 className="font-medium mb-2 text-foreground">{t('products.search')}</h3>
                         <div className="relative">
                           <Search size={18} className="absolute left-2.5 top-2.5 text-muted-foreground" />
                           <Input
                             type="text"
-                            placeholder="Traži proizvode..."
+                            placeholder={t('products.searchProducts')}
                             className="pl-9"
                             value={filters.search}
                             onChange={(e) => setFilters({ ...filters, search: e.target.value })}
@@ -276,16 +276,16 @@ export default function ProductsPage() {
                       
                       {/* Categories */}
                       <div>
-                        <h3 className="font-medium mb-2 text-foreground">Kategorije</h3>
+                        <h3 className="font-medium mb-2 text-foreground">{t('products.categories')}</h3>
                         <Select 
                           value={filters.category}
                           onValueChange={(value) => setFilters({ ...filters, category: value })}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Odaberi kategoriju" />
+                            <SelectValue placeholder={t('products.selectCategory')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="all">Sve kategorije</SelectItem>
+                            <SelectItem value="all">{t('products.allCategories')}</SelectItem>
                             {categories?.map((category) => (
                               <SelectItem key={category.id} value={category.id.toString()}>
                                 {category.name}
@@ -298,7 +298,7 @@ export default function ProductsPage() {
                       {/* Price range */}
                       <div>
                         <div className="flex justify-between mb-2">
-                          <h3 className="font-medium text-foreground">Cijena</h3>
+                          <h3 className="font-medium text-foreground">{t('products.price')}</h3>
                           <span className="text-sm text-muted-foreground">
                             {filters.priceRange[0]}€ - {filters.priceRange[1]}€
                           </span>
@@ -329,13 +329,13 @@ export default function ProductsPage() {
                         className="w-full"
                       >
                         <X size={16} className="mr-2" />
-                        Očisti filtere
+                        {t('products.clearFilters')}
                       </Button>
                       <Button 
                         onClick={() => setMobileFiltersOpen(false)}
                         className="w-full"
                       >
-                        Primijeni filtere
+                        {t('products.applyFilters')}
                       </Button>
                     </div>
                   </div>
@@ -349,9 +349,9 @@ export default function ProductsPage() {
                 <ProductGrid products={[]} isLoading={true} />
               ) : sortedProducts.length === 0 ? (
                 <div className="bg-card rounded-lg p-8 text-center">
-                  <h3 className="heading text-xl font-semibold mb-2">Nema pronađenih proizvoda</h3>
-                  <p className="text-muted-foreground mb-4">Pokušajte s drugačijim filterima ili pogledajte našu cjelokupnu ponudu.</p>
-                  <Button onClick={clearFilters}>Prikaži sve proizvode</Button>
+                  <h3 className="heading text-xl font-semibold mb-2">{t('products.noProducts')}</h3>
+                  <p className="text-muted-foreground mb-4">{t('products.tryDifferent')}</p>
+                  <Button onClick={clearFilters}>{t('products.showAll')}</Button>
                 </div>
               ) : (
                 <ProductGrid products={sortedProducts} />
