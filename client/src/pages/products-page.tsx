@@ -133,8 +133,9 @@ export default function ProductsPage() {
             <div>
               <h1 className="heading text-3xl font-bold text-foreground">{getCategoryName()}</h1>
               <p className="text-muted-foreground mt-1">
-                {sortedProducts.length} {sortedProducts.length === 1 ? 'proizvod' : 
-                 sortedProducts.length % 10 >= 2 && sortedProducts.length % 10 <= 4 ? 'proizvoda' : 'proizvoda'}
+                {sortedProducts.length} {sortedProducts.length === 1 
+                  ? t('products.productCountSingular') 
+                  : t('products.productCount')}
               </p>
             </div>
             
@@ -145,7 +146,7 @@ export default function ProductsPage() {
                 onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
               >
                 <SlidersHorizontal size={18} className="mr-2" />
-                Filteri
+                {t('products.filters')}
               </Button>
               
               <Select 
@@ -153,13 +154,13 @@ export default function ProductsPage() {
                 onValueChange={(value) => setFilters({ ...filters, sortBy: value })}
               >
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Sortiraj po" />
+                  <SelectValue placeholder={t('products.sort')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="newest">Najnovije</SelectItem>
-                  <SelectItem value="price-asc">Cijena (najniža prvo)</SelectItem>
-                  <SelectItem value="price-desc">Cijena (najviša prvo)</SelectItem>
-                  <SelectItem value="name">Ime (A-Z)</SelectItem>
+                  <SelectItem value="newest">{t('products.newest')}</SelectItem>
+                  <SelectItem value="price-asc">{t('products.priceAsc')}</SelectItem>
+                  <SelectItem value="price-desc">{t('products.priceDesc')}</SelectItem>
+                  <SelectItem value="name">{t('products.nameAZ')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
