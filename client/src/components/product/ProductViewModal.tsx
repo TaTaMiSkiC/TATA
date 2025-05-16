@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import Image from "@/components/ui/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useLanguage } from "@/hooks/use-language";
 
 interface ProductViewModalProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ interface ProductViewModalProps {
 export default function ProductViewModal({ isOpen, onClose, product }: ProductViewModalProps) {
   const { toast } = useToast();
   const { addToCart } = useCart();
+  const { t } = useLanguage();
   const [selectedScentId, setSelectedScentId] = useState<number | null>(null);
   const [selectedColorId, setSelectedColorId] = useState<number | null>(null);
   const [selectedColorIds, setSelectedColorIds] = useState<number[]>([]);
@@ -195,7 +197,7 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[680px] max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Odaberite opcije</DialogTitle>
+          <DialogTitle className="text-xl font-bold">{t('product.selectOptions') || "Odaberite opcije"}</DialogTitle>
         </DialogHeader>
         
         <ScrollArea className="h-[calc(90vh-180px)] pr-4">
@@ -219,7 +221,7 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
               {/* Scent options */}
               {isScentSelectionRequired && (
                 <div>
-                  <h4 className="text-sm font-medium mb-2">Miris <span className="text-destructive">*</span></h4>
+                  <h4 className="text-sm font-medium mb-2">{t('product.scent') || "Miris"} <span className="text-destructive">*</span></h4>
                   <RadioGroup 
                     value={selectedScentId?.toString()} 
                     onValueChange={(value) => setSelectedScentId(parseInt(value))}
@@ -250,8 +252,8 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
               {isColorSelectionRequired && (
                 <div>
                   <h4 className="text-sm font-medium mb-2">
-                    Boja <span className="text-destructive">*</span>
-                    {useMultipleColorSelection && <span className="text-xs ml-1 text-muted-foreground">(možete odabrati više)</span>}
+                    {t('product.color') || "Boja"} <span className="text-destructive">*</span>
+                    {useMultipleColorSelection && <span className="text-xs ml-1 text-muted-foreground">{t('product.multipleColorsHint') || "(možete odabrati više)"}</span>}
                   </h4>
                   
                   {useMultipleColorSelection ? (
