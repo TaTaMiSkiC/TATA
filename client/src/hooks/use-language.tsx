@@ -2659,6 +2659,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "dialog.cancel": "Odustani",
     "dialog.confirm": "Potvrdi",
 
+    // Instagram
+    "instagram.followUs": "Pratite nas na Instagramu",
+    "instagram.followUsText": "Pratite nas na Instagramu za najnovije kreacije i inspiracije",
+    "instagram.loadingPhotos": "Učitavanje fotografija...",
+    "instagram.emptyFeed": "Instagram feed je prazan",
+    
     // Newsletter
     "newsletter.title": "Pretplatite se na novosti",
     "newsletter.description":
