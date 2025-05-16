@@ -27,23 +27,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2, Eye, EyeOff } from "lucide-react";
+import { useLanguage } from "@/hooks/use-language";
 
-// Login form schema
-const loginSchema = z.object({
-  username: z.string().min(1, "Korisničko ime je obavezno"),
-  password: z.string().min(1, "Lozinka je obavezna"),
+// Create dynamic login schema with translations
+const createLoginSchema = (t: (key: string) => string) => z.object({
+  username: z.string().min(1, t("auth.usernameRequired")),
+  password: z.string().min(1, t("auth.passwordRequired")),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type LoginFormValues = z.infer<ReturnType<typeof createLoginSchema>>;
 
-// Registration form schema
-const registerSchema = z.object({
-  username: z.string().min(3, "Korisničko ime mora imati barem 3 znaka"),
-  email: z.string().email("Nevažeća email adresa"),
-  password: z.string().min(6, "Lozinka mora imati barem 6 znakova"),
+// Create dynamic registration schema with translations
+const createRegisterSchema = (t: (key: string) => string) => z.object({
+  username: z.string().min(3, t("auth.usernameMinLength")),
+  email: z.string().email(t("auth.emailInvalid")),
+  password: z.string().min(6, t("auth.passwordMinLength")),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "Lozinke se ne podudaraju",
+  message: t("auth.passwordsDoNotMatch"),
   path: ["confirmPassword"],
 });
 
