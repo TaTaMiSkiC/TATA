@@ -168,15 +168,15 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
       let successMessage = `${product.name}`;
       if (selectedScentName || selectedColorName) {
         successMessage += " (";
-        if (selectedScentName) successMessage += `miris: ${selectedScentName}`;
+        if (selectedScentName) successMessage += `${t('product.scent') || 'miris'}: ${selectedScentName}`;
         if (selectedScentName && selectedColorName) successMessage += ", ";
-        if (selectedColorName) successMessage += `boja: ${selectedColorName}`;
+        if (selectedColorName) successMessage += `${t('product.color') || 'boja'}: ${selectedColorName}`;
         successMessage += ")";
       }
       
       toast({
-        title: "Proizvod dodan u košaricu",
-        description: `${successMessage} je uspješno dodan u vašu košaricu.`,
+        title: t('product.addedToCartTitle') || "Proizvod dodan u košaricu",
+        description: (t('product.addedToCartDesc') || `{product} je uspješno dodan u vašu košaricu.`).replace('{product}', successMessage),
       });
       
       // Close the modal after 1.5 seconds
@@ -186,8 +186,8 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
     } catch (error) {
       console.error("Greška pri dodavanju u košaricu:", error instanceof Error ? error.message : 'Nepoznata greška');
       toast({
-        title: "Greška",
-        description: "Dodavanje u košaricu nije uspjelo. Molimo pokušajte ponovno.",
+        title: t('product.errorTitle') || "Greška",
+        description: t('product.errorAddingToCart') || "Dodavanje u košaricu nije uspjelo. Molimo pokušajte ponovno.",
         variant: "destructive",
       });
     }
@@ -332,7 +332,7 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
               
               {/* Quantity */}
               <div>
-                <h4 className="text-sm font-medium mb-2">Količina</h4>
+                <h4 className="text-sm font-medium mb-2">{t('product.quantity') || "Količina"}</h4>
                 <div className="flex items-center border border-input rounded-md w-[120px]">
                   <button 
                     type="button" 
@@ -340,7 +340,7 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1}
                   >
-                    <span className="sr-only">Smanji</span>
+                    <span className="sr-only">{t('product.decrease') || "Smanji"}</span>
                     <span className="font-medium">-</span>
                   </button>
                   <input 
@@ -362,7 +362,7 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
                     onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
                     disabled={quantity >= product.stock}
                   >
-                    <span className="sr-only">Povećaj</span>
+                    <span className="sr-only">{t('product.increase') || "Povećaj"}</span>
                     <span className="font-medium">+</span>
                   </button>
                 </div>
