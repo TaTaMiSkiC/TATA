@@ -12,6 +12,13 @@ export type Language = "de" | "hr" | "en" | "it" | "sl";
 // Prijevodi po jezicima
 export const translations: Record<Language, Record<string, string>> = {
   de: {
+    // Languages
+    "languages.croatian": "Kroatisch",
+    "languages.english": "Englisch",
+    "languages.german": "Deutsch", 
+    "languages.italian": "Italienisch",
+    "languages.slovenian": "Slowenisch",
+    
     // Order Details
     "orders.details": "Bestelldetails",
     "orders.order": "Bestellung",
@@ -1452,6 +1459,12 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   hr: {
+    // Languages
+    "languages.croatian": "Hrvatski",
+    "languages.english": "Engleski",
+    "languages.german": "Njemački", 
+    "languages.italian": "Talijanski",
+    "languages.slovenian": "Slovenski",
     // Products page
     "products.allProducts": "Svi proizvodi",
     "products.product": "Proizvod",
@@ -2857,6 +2870,13 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   en: {
+    // Languages
+    "languages.croatian": "Croatian",
+    "languages.english": "English",
+    "languages.german": "German", 
+    "languages.italian": "Italian",
+    "languages.slovenian": "Slovenian",
+    
     // Order Details
     "orders.details": "Order Details",
     "orders.order": "Order",
@@ -3807,6 +3827,13 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   it: {
+    // Languages
+    "languages.croatian": "Croato",
+    "languages.english": "Inglese",
+    "languages.german": "Tedesco", 
+    "languages.italian": "Italiano",
+    "languages.slovenian": "Sloveno",
+    
     // Products page
     "products.allProducts": "Tutti i Prodotti",
     "products.product": "Prodotto",
