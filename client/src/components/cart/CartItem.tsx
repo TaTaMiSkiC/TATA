@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { CartItemWithProduct, SelectedColorInfo } from "@shared/schema";
 import { useCart } from "@/hooks/use-cart";
+import { useLanguage } from "@/hooks/use-language";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 
@@ -11,6 +12,7 @@ interface CartItemProps {
 
 export default function CartItem({ item }: CartItemProps) {
   const { updateCartItem, removeFromCart } = useCart();
+  const { t } = useLanguage();
   const [quantity, setQuantity] = useState(item.quantity);
   const [isUpdating, setIsUpdating] = useState(false);
   
@@ -109,7 +111,7 @@ export default function CartItem({ item }: CartItemProps) {
           </Link>
           <p className="text-sm text-gray-500">
             {stock > 10 ? (
-              <span className="text-success">Na zalihi</span>
+              <span className="text-success">{t('cart.inStock')}</span>
             ) : (
               <span className="text-warning">Dostupno: {stock} kom</span>
             )}
@@ -120,14 +122,14 @@ export default function CartItem({ item }: CartItemProps) {
             <div className="mt-1 p-1.5 bg-muted/40 rounded-md text-xs">
               {item.scent && (
                 <p className="text-muted-foreground">
-                  <span className="font-medium">Miris:</span> {item.scent.name}
+                  <span className="font-medium">{t('cart.scent')}</span> {item.scent.name}
                 </p>
               )}
               
               {/* Prikaz jedne odabrane boje */}
               {item.color && !item.hasMultipleColors && (
                 <div className="flex items-center mt-1">
-                  <span className="font-medium mr-1">Boja:</span>
+                  <span className="font-medium mr-1">{t('product.selectColor')}:</span>
                   {item.color.hexValue ? (
                     <div 
                       className="w-3 h-3 rounded-full mr-1 border"
@@ -148,7 +150,7 @@ export default function CartItem({ item }: CartItemProps) {
                 if (item.hasMultipleColors && item.selectedColors && item.selectedColors.length > 0) {
                   return (
                     <div className="mt-1">
-                      <span className="font-medium mr-1">Boje:</span>
+                      <span className="font-medium mr-1">{t('cart.colors')}:</span>
                       <div className="flex flex-wrap gap-2 items-center mt-1">
                         {item.selectedColors.map((color, index) => (
                           <div key={`color-${color.id}`} className="inline-flex items-center">
@@ -172,7 +174,7 @@ export default function CartItem({ item }: CartItemProps) {
                   // Fallback - ako nemamo selectedColors objekte, ali imamo colorName
                   return (
                     <div className="mt-1">
-                      <span className="font-medium mr-1">Boje:</span> {item.colorName}
+                      <span className="font-medium mr-1">{t('cart.colors')}:</span> {item.colorName}
                     </div>
                   );
                 }
@@ -229,7 +231,7 @@ export default function CartItem({ item }: CartItemProps) {
         
         <div className="w-24 text-right font-medium">
           {isUpdating ? (
-            <span className="text-sm text-gray-400">Ažuriranje...</span>
+            <span className="text-sm text-gray-400">{t('cart.clearing')}</span>
           ) : (
             <span>{totalPrice} €</span>
           )}
