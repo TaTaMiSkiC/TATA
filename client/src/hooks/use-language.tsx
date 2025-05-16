@@ -41,6 +41,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "languages.italian": "Italienisch",
     "languages.slovenian": "Slowenisch",
 
+    // Search
+    "search.title": "Produkte durchsuchen",
+    "search.placeholder": "Produkte durchsuchen...",
+    "search.enterTerm": "Suchbegriff eingeben...",
+    "search.noResults": "Keine Ergebnisse gefunden",
+
     // Auth Page
     "auth.title": "Anmelden / Registrieren | Kerzenwelt by Dani",
     "auth.description":
@@ -4072,6 +4078,12 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.product.categoryPlaceholder": "Select a category",
     "admin.product.burntimePlaceholder": "Burn time in hours",
 
+    // Search
+    "search.title": "Search Products",
+    "search.placeholder": "Search for products...",
+    "search.enterTerm": "Enter search term...",
+    "search.noResults": "No results found",
+    
     // Navigation
     "nav.home": "Home",
     "nav.products": "Products",
