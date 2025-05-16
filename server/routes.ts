@@ -2588,6 +2588,130 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: "Failed to get page visits" });
     }
   });
+  
+  // Newsletter subscription
+  app.post("/api/subscribe", async (req, res) => {
+    try {
+      // Validate the subscription data
+      const validationResult = subscriberSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid subscription data", 
+          errors: validationResult.error.errors 
+        });
+      }
+      
+      const { email, language } = validationResult.data;
+      
+      // Check if the email is already subscribed
+      const existingSubscriber = await storage.getSubscriberByEmail(email);
+      if (existingSubscriber) {
+        return res.status(400).json({ 
+          message: "Diese E-Mail-Adresse ist bereits angemeldet" 
+        });
+      }
+      
+      // Generate a unique discount code for the subscriber
+      const discountCode = generateDiscountCode();
+      
+      // Create the new subscriber
+      const newSubscriber = await storage.createSubscriber({
+        email,
+        language,
+        discountCode
+      });
+      
+      // Send welcome email with discount code (if configured)
+      if (process.env.SENDGRID_API_KEY) {
+        try {
+          await sendSubscriptionEmail(email, discountCode, language);
+        } catch (emailError) {
+          console.error("Failed to send subscription email:", emailError);
+          // Continue with the subscription process even if email fails
+        }
+      }
+      
+      res.status(201).json({ 
+        message: "Vielen Dank für Ihre Anmeldung! Ihr 10% Rabattcode ist: " + discountCode,
+        discountCode
+      });
+    } catch (error) {
+      console.error("Error processing subscription:", error);
+      res.status(500).json({ message: "Subscription failed. Please try again later." });
+    }
+  });
+
+  // Function to generate a unique discount code
+  function generateDiscountCode() {
+    const prefix = "WELCOME";
+    const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
+    return `${prefix}${randomPart}`;
+  }
+  
+  // Function to send subscription welcome email with discount code
+  async function sendSubscriptionEmail(email: string, discountCode: string, language: string) {
+    if (!process.env.SENDGRID_API_KEY) {
+      throw new Error("SENDGRID_API_KEY not configured");
+    }
+    
+    // Import the sendEmail function from your sendgrid helper
+    const { sendEmail } = await import("./sendgrid");
+    
+    // Determine email content based on user's language
+    let subject, text, html;
+    
+    switch(language) {
+      case "hr":
+        subject = "Dobrodošli na Kerzenwelt by Dani newsletter!";
+        text = `Hvala vam na pretplati na naš newsletter! Koristite kod ${discountCode} za 10% popusta na vašu prvu narudžbu.`;
+        break;
+      case "en":
+        subject = "Welcome to Kerzenwelt by Dani newsletter!";
+        text = `Thank you for subscribing to our newsletter! Use code ${discountCode} for 10% off your first order.`;
+        break;
+      case "it":
+        subject = "Benvenuto alla newsletter di Kerzenwelt by Dani!";
+        text = `Grazie per esserti iscritto alla nostra newsletter! Usa il codice ${discountCode} per ottenere il 10% di sconto sul tuo primo ordine.`;
+        break;
+      case "sl":
+        subject = "Dobrodošli v Kerzenwelt by Dani newsletter!";
+        text = `Hvala, ker ste se naročili na naš newsletter! Uporabite kodo ${discountCode} za 10% popusta pri prvem naročilu.`;
+        break;
+      default: // German
+        subject = "Willkommen beim Kerzenwelt by Dani Newsletter!";
+        text = `Vielen Dank für Ihre Anmeldung zu unserem Newsletter! Verwenden Sie den Code ${discountCode} für 10% Rabatt auf Ihre erste Bestellung.`;
+    }
+    
+    // Create HTML version of the email
+    html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="text-align: center; padding: 20px 0;">
+          <img src="https://kerzenwelt-by-dani.replit.app/uploads/logo-small.png" alt="Kerzenwelt by Dani" style="max-width: 200px;">
+        </div>
+        <div style="padding: 20px; background-color: #f9f9f9; border-radius: 5px;">
+          <h2 style="color: #D4AF37; margin-bottom: 20px;">${subject}</h2>
+          <p style="margin-bottom: 15px; line-height: 1.5;">${text}</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <div style="display: inline-block; background-color: #f5f5f5; border: 1px dashed #D4AF37; padding: 10px 20px; font-size: 18px; font-weight: bold; color: #333; border-radius: 3px;">
+              ${discountCode}
+            </div>
+          </div>
+          <p style="font-size: 12px; color: #777; margin-top: 30px;">
+            © ${new Date().getFullYear()} Kerzenwelt by Dani. Alle Rechte vorbehalten.
+          </p>
+        </div>
+      </div>
+    `;
+    
+    // Send the email
+    return await sendEmail(process.env.SENDGRID_API_KEY, {
+      to: email,
+      from: "daniela.svoboda2@gmail.com", // Make sure this is verified in SendGrid
+      subject,
+      text,
+      html
+    });
+  }
 
   // Create HTTP server
   const httpServer = createServer(app);

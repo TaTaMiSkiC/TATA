@@ -576,3 +576,27 @@ export const insertPageVisitSchema = createInsertSchema(pageVisits).omit({
 
 export type PageVisit = typeof pageVisits.$inferSelect;
 export type InsertPageVisit = z.infer<typeof insertPageVisitSchema>;
+
+// Newsletter subscribers
+export const subscribers = pgTable("subscribers", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  discountCode: text("discount_code").notNull(),
+  discountUsed: boolean("discount_used").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  language: text("language").notNull().default("de"),
+});
+
+export const insertSubscriberSchema = createInsertSchema(subscribers).omit({
+  id: true,
+  createdAt: true,
+  discountUsed: true,
+});
+
+export const subscriberSchema = z.object({
+  email: z.string().email("Gültige E-Mail-Adresse erforderlich"),
+  language: z.string().default("de"),
+});
+
+export type Subscriber = typeof subscribers.$inferSelect;
+export type InsertSubscriber = z.infer<typeof insertSubscriberSchema>;
