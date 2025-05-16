@@ -205,7 +205,7 @@ export default function AuthPage() {
                         variant="link" 
                         onClick={() => setActiveTab("register")}
                       >
-                        Nemate račun? Registrirajte se
+                        {t("auth.noAccount")}
                       </Button>
                     </CardFooter>
                   </Card>
@@ -214,9 +214,9 @@ export default function AuthPage() {
                 <TabsContent value="register">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="heading text-2xl">Registracija</CardTitle>
+                      <CardTitle className="heading text-2xl">{t("auth.registerTitle")}</CardTitle>
                       <CardDescription>
-                        Kreirajte novi Kerzenwelt račun
+                        {t("auth.registerDescription")}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -227,9 +227,9 @@ export default function AuthPage() {
                             name="username"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Korisničko ime</FormLabel>
+                                <FormLabel>{t("auth.username")}</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Odaberite korisničko ime" {...field} />
+                                  <Input placeholder={t("auth.usernameRegisterPlaceholder")} {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -241,9 +241,9 @@ export default function AuthPage() {
                             name="email"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Email adresa</FormLabel>
+                                <FormLabel>{t("auth.email")}</FormLabel>
                                 <FormControl>
-                                  <Input type="email" placeholder="Unesite email adresu" {...field} />
+                                  <Input type="email" placeholder={t("auth.emailPlaceholder")} {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -255,12 +255,12 @@ export default function AuthPage() {
                             name="password"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Lozinka</FormLabel>
+                                <FormLabel>{t("auth.password")}</FormLabel>
                                 <FormControl>
                                   <div className="relative">
                                     <Input 
                                       type={showRegisterPassword ? "text" : "password"} 
-                                      placeholder="Unesite lozinku" 
+                                      placeholder={t("auth.passwordPlaceholder")} 
                                       {...field}
                                     />
                                     <Button
@@ -277,7 +277,7 @@ export default function AuthPage() {
                                         <Eye className="h-4 w-4 text-muted-foreground" />
                                       )}
                                       <span className="sr-only">
-                                        {showRegisterPassword ? "Sakrij lozinku" : "Prikaži lozinku"}
+                                        {showRegisterPassword ? t("auth.hidePassword") : t("auth.showPassword")}
                                       </span>
                                     </Button>
                                   </div>
@@ -292,12 +292,12 @@ export default function AuthPage() {
                             name="confirmPassword"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Potvrdite lozinku</FormLabel>
+                                <FormLabel>{t("auth.confirmPassword")}</FormLabel>
                                 <FormControl>
                                   <div className="relative">
                                     <Input 
                                       type={showConfirmPassword ? "text" : "password"} 
-                                      placeholder="Potvrdite lozinku" 
+                                      placeholder={t("auth.confirmPasswordPlaceholder")} 
                                       {...field}
                                     />
                                     <Button
@@ -314,7 +314,7 @@ export default function AuthPage() {
                                         <Eye className="h-4 w-4 text-muted-foreground" />
                                       )}
                                       <span className="sr-only">
-                                        {showConfirmPassword ? "Sakrij lozinku" : "Prikaži lozinku"}
+                                        {showConfirmPassword ? t("auth.hidePassword") : t("auth.showPassword")}
                                       </span>
                                     </Button>
                                   </div>
@@ -332,10 +332,10 @@ export default function AuthPage() {
                             {registerMutation.isPending ? (
                               <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Registracija u tijeku...
+                                {t("auth.registerProcessing")}
                               </>
                             ) : (
-                              "Registracija"
+                              t("auth.registerButton")
                             )}
                           </Button>
                         </form>
@@ -346,7 +346,7 @@ export default function AuthPage() {
                         variant="link" 
                         onClick={() => setActiveTab("login")}
                       >
-                        Već imate račun? Prijavite se
+                        {t("auth.haveAccount")}
                       </Button>
                     </CardFooter>
                   </Card>
@@ -357,11 +357,10 @@ export default function AuthPage() {
             {/* Right side - Hero content */}
             <div className="bg-primary p-10 rounded-lg text-primary-foreground">
               <h2 className="heading text-3xl md:text-4xl font-bold mb-6">
-                Dobrodošli u Kerzenwelt svijet
+                {t("auth.welcome")}
               </h2>
               <p className="mb-6">
-                Ručno izrađene svijeće, stvorene s pažnjom i ljubavlju, baš za vas. Otkrijte razliku koju 
-                prirodni sastojci i umijeće izrade mogu donijeti vašem domu.
+                {t("auth.welcomeDescription")}
               </p>
               
               <div className="space-y-4 mb-8">
@@ -369,26 +368,26 @@ export default function AuthPage() {
                   <div className="w-10 h-10 rounded-full bg-primary-foreground bg-opacity-20 flex items-center justify-center mr-4">
                     <span className="text-xl font-bold">1</span>
                   </div>
-                  <p>Stvorite svoj račun i započnite kupovinu</p>
+                  <p>{t("auth.step1")}</p>
                 </div>
                 <div className="flex items-center">
                   <div className="w-10 h-10 rounded-full bg-primary-foreground bg-opacity-20 flex items-center justify-center mr-4">
                     <span className="text-xl font-bold">2</span>
                   </div>
-                  <p>Otkrijte široki asortiman ručno izrađenih svijeća</p>
+                  <p>{t("auth.step2")}</p>
                 </div>
                 <div className="flex items-center">
                   <div className="w-10 h-10 rounded-full bg-primary-foreground bg-opacity-20 flex items-center justify-center mr-4">
                     <span className="text-xl font-bold">3</span>
                   </div>
-                  <p>Pratite svoje narudžbe i uživajte u posebnim pogodnostima</p>
+                  <p>{t("auth.step3")}</p>
                 </div>
               </div>
               
               <p className="text-sm text-primary-foreground opacity-80 italic">
-                "Svaka svijeća koja napusti našu radionicu nosi djelić naše duše i strasti prema ovom zanatu."
+                {t("auth.quote")}
               </p>
-              <p className="text-sm font-medium mt-2 text-primary-foreground">- Dani, osnivačica</p>
+              <p className="text-sm font-medium mt-2 text-primary-foreground">{t("auth.founder")}</p>
             </div>
           </div>
         </div>
