@@ -127,7 +127,8 @@ export function setupAuth(app: Express) {
       try {
         // Get language preference from request or default to German
         const language = req.body.language || req.body.preferredLanguage || 'de';
-        await sendVerificationEmail(user.email, user.username, verificationLink, language);
+        console.log("Sending verification email to:", user.email, "with token:", tokenString);
+        await sendVerificationEmail(user.email, user.username, tokenString, language);
       } catch (emailError) {
         console.error("Failed to send verification email:", emailError);
         // Still create the user, but log the error
