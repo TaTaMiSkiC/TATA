@@ -9,6 +9,7 @@ import {
   OrderItemWithProduct
 } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
+import { useLanguage } from "@/hooks/use-language";
 import { 
   Card, 
   CardContent, 
@@ -112,6 +113,7 @@ function OrderStatusIcon({ status }: { status: string }) {
 }
 
 function OrderStatusBadge({ status }: { status: string }) {
+  const { t } = useLanguage();
   let variant: "default" | "secondary" | "destructive" | "outline" = "default";
   
   switch (status) {
@@ -132,23 +134,23 @@ function OrderStatusBadge({ status }: { status: string }) {
   return (
     <Badge variant={variant} className="ml-2">
       <OrderStatusIcon status={status} />
-      <span className="ml-1">{getStatusText(status)}</span>
+      <span className="ml-1">{getStatusText(status, t)}</span>
     </Badge>
   );
 }
 
-function getStatusText(status: string): string {
+function getStatusText(status: string, t: (key: string) => string): string {
   switch (status) {
     case 'pending':
-      return 'Na čekanju';
+      return t('orders.pending');
     case 'processing':
-      return 'U obradi';
+      return t('orders.processing');
     case 'shipped':
-      return 'Poslano';
+      return t('orders.shipped');
     case 'delivered':
-      return 'Dostavljeno';
+      return t('orders.delivered');
     case 'cancelled':
-      return 'Otkazano';
+      return t('orders.cancelled');
     default:
       return status;
   }
@@ -160,33 +162,8 @@ export default function OrderDetailsPage() {
   const [, navigate] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
-  const [selectedLanguage, setSelectedLanguage] = useState<'hr' | 'en' | 'de'>('hr');
-  
-  // Funkcija za prijevod tekstova sučelja
-  const translate = (key: string): string => {
-    const translations: Record<string, Record<string, string>> = {
-      hr: {
-        scent: "Miris",
-        color: "Boja",
-        colors: "Boje",
-        invoiceNumber: "Broj računa"
-      },
-      en: {
-        scent: "Scent",
-        color: "Color",
-        colors: "Colors",
-        invoiceNumber: "Invoice number"
-      },
-      de: {
-        scent: "Duft",
-        color: "Farbe",
-        colors: "Farben",
-        invoiceNumber: "Rechnungsnummer"
-      }
-    };
-    
-    return translations[selectedLanguage]?.[key] || translations.hr[key] || key;
-  };
+  const { language, t, setLanguage } = useLanguage();
+  const [selectedLanguage, setSelectedLanguage] = useState<'hr' | 'en' | 'de' | 'it' | 'sl'>(language as 'hr' | 'en' | 'de' | 'it' | 'sl');
   const [generatingInvoice, setGeneratingInvoice] = useState(false);
   
   // Dohvat narudžbe
