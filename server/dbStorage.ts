@@ -20,7 +20,8 @@ import {
   invoices,
   invoiceItems,
   pageVisits,
-  subscribers
+  subscribers,
+  verificationTokens
 } from "@shared/schema";
 
 import type { 
@@ -48,6 +49,8 @@ import type {
   ProductColor,
   InsertProductColor,
   Collection,
+  VerificationToken,
+  InsertVerificationToken,
   InsertCollection,
   Subscriber,
   InsertSubscriber,
@@ -1231,6 +1234,61 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error("Error marking discount as used:", error);
       return false;
+    }
+  }
+  
+  // Email verification methods
+  async verifyUserEmail(userId: number): Promise<User | undefined> {
+    try {
+      const [user] = await db
+        .update(users)
+        .set({ emailVerified: true })
+        .where(eq(users.id, userId))
+        .returning();
+      
+      return user;
+    } catch (error) {
+      console.error("Error verifying user email:", error);
+      return undefined;
+    }
+  }
+
+  async createVerificationToken(tokenData: InsertVerificationToken): Promise<VerificationToken> {
+    try {
+      const [token] = await db
+        .insert(verificationTokens)
+        .values(tokenData)
+        .returning();
+      
+      return token;
+    } catch (error) {
+      console.error("Error creating verification token:", error);
+      throw error;
+    }
+  }
+
+  async getVerificationToken(tokenString: string): Promise<VerificationToken | undefined> {
+    try {
+      const [token] = await db
+        .select()
+        .from(verificationTokens)
+        .where(eq(verificationTokens.token, tokenString));
+      
+      return token;
+    } catch (error) {
+      console.error("Error getting verification token:", error);
+      return undefined;
+    }
+  }
+
+  async deleteVerificationToken(tokenString: string): Promise<void> {
+    try {
+      await db
+        .delete(verificationTokens)
+        .where(eq(verificationTokens.token, tokenString));
+    } catch (error) {
+      console.error("Error deleting verification token:", error);
+      throw error;
     }
   }
 }
