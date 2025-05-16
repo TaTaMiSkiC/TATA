@@ -26,8 +26,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+import { 
+  Loader2, 
+  Eye, 
+  EyeOff, 
+  AlertCircle, 
+  CheckCircle2, 
+  Mail 
+} from "lucide-react";
 import { useLanguage } from "@/hooks/use-language";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 type LoginFormValues = {
   username: string;
@@ -169,6 +177,28 @@ export default function AuthPage() {
       
       <div className="py-16 bg-background">
         <div className="container mx-auto px-4">
+          {/* Verification Messages */}
+          {verificationMessage && (
+            <div className="mb-8">
+              <Alert variant={verificationSuccess ? "default" : "destructive"}>
+                {verificationSuccess ? (
+                  <CheckCircle2 className="h-4 w-4" />
+                ) : (
+                  <AlertCircle className="h-4 w-4" />
+                )}
+                <AlertTitle>
+                  {verificationSuccess 
+                    ? t("auth.verificationSuccessTitle") 
+                    : t("auth.verificationErrorTitle")
+                  }
+                </AlertTitle>
+                <AlertDescription>
+                  {verificationMessage}
+                </AlertDescription>
+              </Alert>
+            </div>
+          )}
+          
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             {/* Left side - Auth forms */}
             <div>

@@ -12,6 +12,24 @@ export type Language = "de" | "hr" | "en" | "it" | "sl";
 // Prijevodi po jezicima
 export const translations: Record<Language, Record<string, string>> = {
   de: {
+    // Auth Success/Error Messages
+    "auth.loginSuccessTitle": "Anmeldung erfolgreich",
+    "auth.loginSuccessMessage": "Willkommen zurück, {username}!",
+    "auth.loginErrorTitle": "Anmeldung fehlgeschlagen",
+    "auth.loginErrorMessage": "Falscher Benutzername oder Passwort.",
+    
+    "auth.registerSuccessTitle": "Registrierung erfolgreich",
+    "auth.registerSuccessMessage": "Willkommen, {username}!",
+    "auth.registerErrorTitle": "Registrierung fehlgeschlagen",
+    "auth.registerErrorMessage": "Benutzername oder E-Mail existiert bereits.",
+    
+    "auth.logoutSuccessTitle": "Abmeldung erfolgreich",
+    "auth.logoutSuccessMessage": "Sie haben sich erfolgreich abgemeldet.",
+    "auth.logoutErrorTitle": "Abmeldung fehlgeschlagen",
+    "auth.logoutErrorMessage": "Es gab ein Problem bei der Abmeldung. Bitte versuchen Sie es erneut.",
+    
+    "auth.verificationNeededTitle": "Verifizierung erforderlich",
+    
     // Languages
     "languages.croatian": "Kroatisch",
     "languages.english": "Englisch",
@@ -48,6 +66,13 @@ export const translations: Record<Language, Record<string, string>> = {
     "auth.welcome": "Willkommen in der Kerzenwelt",
     "auth.welcomeDescription": "Handgefertigte Kerzen, mit Sorgfalt und Liebe für Sie hergestellt. Entdecken Sie den Unterschied, den natürliche Zutaten und handwerkliches Können in Ihr Zuhause bringen können.",
     "auth.usernameRequired": "Benutzername ist erforderlich",
+    "auth.emailVerificationSuccess": "Ihre E-Mail-Adresse wurde erfolgreich verifiziert. Sie können sich jetzt anmelden.",
+    "auth.emailVerificationFailed": "E-Mail-Verifizierung fehlgeschlagen. Der Link ist möglicherweise abgelaufen oder ungültig.",
+    "auth.emailVerificationError": "Bei der Überprüfung Ihrer E-Mail ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+    "auth.emailNotVerified": "Ihre E-Mail-Adresse wurde noch nicht verifiziert. Bitte überprüfen Sie Ihren Posteingang und klicken Sie auf den Bestätigungslink.",
+    "auth.registrationSuccessVerifyEmail": "Registrierung erfolgreich! Bitte überprüfen Sie Ihren Posteingang, um Ihre E-Mail-Adresse zu bestätigen.",
+    "auth.verificationSuccessTitle": "Verifizierung erfolgreich",
+    "auth.verificationErrorTitle": "Verifizierung fehlgeschlagen",
     "auth.usernameMinLength": "Benutzername muss mindestens 3 Zeichen lang sein",
     "auth.emailRequired": "E-Mail-Adresse ist erforderlich",
     "auth.emailInvalid": "Ungültige E-Mail-Adresse",

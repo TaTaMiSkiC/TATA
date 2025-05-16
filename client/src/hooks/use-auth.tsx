@@ -7,6 +7,7 @@ import {
 import { insertUserSchema, User as SelectUser, InsertUser } from "@shared/schema";
 import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/use-language";
 
 type AuthContextType = {
   user: SelectUser | null;
@@ -22,6 +23,8 @@ type LoginData = Pick<InsertUser, "username" | "password">;
 export const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
+  const { t } = useLanguage();
+  
   const {
     data: user,
     error,
@@ -34,19 +37,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginData) => {
       const res = await apiRequest("POST", "/api/login", credentials);
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Login failed");
+      }
       return await res.json();
     },
     onSuccess: (user: SelectUser) => {
       queryClient.setQueryData(["/api/user"], user);
       toast({
-        title: "Uspješna prijava",
-        description: `Dobrodošli, ${user.username}!`,
+        title: t("auth.loginSuccessTitle"),
+        description: t("auth.loginSuccessMessage", { username: user.username }),
       });
     },
     onError: (error: Error) => {
+      // Handle the email verification error
+      if (error.message === "email_not_verified") {
+        toast({
+          title: t("auth.verificationNeededTitle"),
+          description: t("auth.emailNotVerified"),
+          variant: "destructive",
+        });
+        return;
+      }
+      
       toast({
-        title: "Prijava nije uspjela",
-        description: error.message || "Pogrešno korisničko ime ili lozinka.",
+        title: t("auth.loginErrorTitle"),
+        description: t("auth.loginErrorMessage"),
         variant: "destructive",
       });
     },
@@ -55,19 +72,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const registerMutation = useMutation({
     mutationFn: async (credentials: InsertUser) => {
       const res = await apiRequest("POST", "/api/register", credentials);
-      return await res.json();
+      const data = await res.json();
+      
+      // If it's a successful registration with verification required
+      if (res.ok && data.message === "registration_success_verify_email") {
+        // We still return the data so the UI can show the verification message
+        return {
+          ...data,
+          message: "registration_success_verify_email"
+        };
+      }
+      
+      // Regular registration success
+      if (res.ok) {
+        return data;
+      }
+      
+      // Error handling
+      throw new Error(data.message || "Registration failed");
     },
-    onSuccess: (user: SelectUser) => {
-      queryClient.setQueryData(["/api/user"], user);
-      toast({
-        title: "Uspješna registracija",
-        description: `Dobrodošli, ${user.username}!`,
-      });
+    onSuccess: (response: any) => {
+      // Only show the toast and set user data if it's not a verification required response
+      if (response.message !== "registration_success_verify_email") {
+        queryClient.setQueryData(["/api/user"], response);
+        toast({
+          title: t("auth.registerSuccessTitle"),
+          description: t("auth.registerSuccessMessage", { username: response.username }),
+        });
+      }
     },
     onError: (error: Error) => {
       toast({
-        title: "Registracija nije uspjela",
-        description: error.message || "Korisničko ime ili email već postoji.",
+        title: t("auth.registerErrorTitle"),
+        description: error.message || t("auth.registerErrorMessage"),
         variant: "destructive",
       });
     },
@@ -83,14 +120,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         queryKey: ["/api/cart"]
       });
       toast({
-        title: "Odjavili ste se",
-        description: "Uspješno ste se odjavili iz sustava.",
+        title: t("auth.logoutSuccessTitle"),
+        description: t("auth.logoutSuccessMessage"),
       });
     },
     onError: (error: Error) => {
       toast({
-        title: "Odjava nije uspjela",
-        description: error.message,
+        title: t("auth.logoutErrorTitle"),
+        description: error.message || t("auth.logoutErrorMessage"),
         variant: "destructive",
       });
     },
