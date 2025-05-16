@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { ShoppingBag, Eye, Heart, Star, StarHalf } from "lucide-react";
 import { Product } from "@shared/schema";
@@ -28,9 +28,15 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { id, price, imageUrl = '', categoryId } = product;
   const name = translateText(product.name, "de");
   
-  // Mock data for ratings
-  const rating = 4.5;
-  const reviewCount = 42;
+  // Ovdje ćemo dohvatiti stvarne ocjene proizvoda (ako ih ima)
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [hasReviews, setHasReviews] = useState(false);
+  
+  useEffect(() => {
+    // U pravoj implementaciji, ovdje bismo dohvatili recenzije za ovaj proizvod
+    // Za sada, podrazumijevamo da nema recenzija
+    setHasReviews(false);
+  }, [id]);
   
   const handleShowOptions = () => {
     setProductViewModalOpen(true);
@@ -106,20 +112,19 @@ export default function ProductCard({ product }: ProductCardProps) {
            categoryId === 3 ? translateText("Personalizirana svijeća", "hr") : translateText("Svijeća", "hr")}
         </div>
         
-        <div className="flex items-center mb-3">
-          <div className="flex text-warning">
-            <Star className="fill-current" size={14} />
-            <Star className="fill-current" size={14} />
-            <Star className="fill-current" size={14} />
-            <Star className="fill-current" size={14} />
-            {rating === 4.5 ? (
-              <StarHalf className="fill-current" size={14} />
-            ) : (
-              <Star className={rating >= 5 ? "fill-current" : ""} size={14} />
-            )}
+        {/* Prikazujemo ocjene samo ako proizvod stvarno ima ocjene */}
+        {hasReviews && (
+          <div className="flex items-center mb-3">
+            <div className="flex text-warning">
+              <Star className="fill-current" size={14} />
+              <Star className="fill-current" size={14} />
+              <Star className="fill-current" size={14} />
+              <Star className="fill-current" size={14} />
+              <Star className="fill-current" size={14} />
+            </div>
+            <span className="text-xs text-muted-foreground ml-1">({reviews.length})</span>
           </div>
-          <span className="text-xs text-muted-foreground ml-1">({reviewCount})</span>
-        </div>
+        )}
         
         <div className="flex justify-between items-center">
           <span className="font-accent font-medium text-primary">{parseFloat(price).toFixed(2)} €</span>

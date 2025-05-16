@@ -12,6 +12,9 @@ export type Language = "de" | "hr" | "en" | "it" | "sl";
 // Prijevodi po jezicima
 export const translations: Record<Language, Record<string, string>> = {
   de: {
+    // Home Page
+    "home.exploreCollection": "Kollektion erkunden →",
+    
     // Auth Success/Error Messages
     "auth.loginSuccessTitle": "Anmeldung erfolgreich",
     "auth.loginSuccessMessage": "Willkommen zurück, {username}!",
@@ -3075,10 +3078,10 @@ export const translations: Record<Language, Record<string, string>> = {
     "home.categories": "Naše kategorije",
     "home.categoriesSubtitle":
       "Istražite našu bogatu ponudu ručno izrađenih svijeća za svaku priliku",
+    "home.exploreCollection": "Istraži kolekciju →",
     "home.heroTitle": "Ručno izrađene svijeće za posebne trenutke",
     "home.heroSubtitle":
       "Otkrijte našu kolekciju premium mirisnih svijeća izrađenih s ljubavlju",
-    "home.exploreCollection": "Istraži kolekciju",
     "home.aboutUs": "O nama",
     "home.featuredSubtitle":
       "Naši najpopularniji proizvodi koje naši kupci vole",
@@ -3323,6 +3326,9 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   en: {
+    // Home Page
+    "home.exploreCollection": "Explore Collection →",
+    
     // Auth Success/Error Messages
     "auth.loginSuccessTitle": "Login successful",
     "auth.loginSuccessMessage": "Welcome back, {username}!",
@@ -4308,7 +4314,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "home.heroTitle": "Handmade Candles for Special Moments",
     "home.heroSubtitle":
       "Discover our collection of premium scented candles made with love",
-    "home.exploreCollection": "Explore Collection",
     "home.aboutUs": "About Us",
     "home.featuredSubtitle":
       "Our most popular products that our customers love",
@@ -4439,6 +4444,9 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   it: {
+    // Home Page
+    "home.exploreCollection": "Esplora la collezione →",
+    
     // Auth Success/Error Messages
     "auth.loginSuccessTitle": "Accesso riuscito",
     "auth.loginSuccessMessage": "Bentornato, {username}!",
@@ -5739,6 +5747,9 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   sl: {
+    // Home Page
+    "home.exploreCollection": "Razišči kolekcijo →",
+    
     // Auth Success/Error Messages
     "auth.loginSuccessTitle": "Prijava uspešna",
     "auth.loginSuccessMessage": "Dobrodošli nazaj, {username}!",
