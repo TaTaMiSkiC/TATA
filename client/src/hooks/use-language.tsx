@@ -3298,6 +3298,31 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   en: {
+    // Auth Success/Error Messages
+    "auth.loginSuccessTitle": "Login successful",
+    "auth.loginSuccessMessage": "Welcome back, {username}!",
+    "auth.loginErrorTitle": "Login failed",
+    "auth.loginErrorMessage": "Incorrect username or password.",
+    
+    "auth.registerSuccessTitle": "Registration successful",
+    "auth.registerSuccessMessage": "Welcome, {username}!",
+    "auth.registerErrorTitle": "Registration failed",
+    "auth.registerErrorMessage": "Username or email already exists.",
+    
+    "auth.logoutSuccessTitle": "Logout successful",
+    "auth.logoutSuccessMessage": "You have been successfully logged out.",
+    "auth.logoutErrorTitle": "Logout failed",
+    "auth.logoutErrorMessage": "There was a problem logging you out. Please try again.",
+    
+    "auth.verificationNeededTitle": "Verification required",
+    "auth.emailVerificationSuccess": "Your email address has been successfully verified. You can now log in.",
+    "auth.emailVerificationFailed": "Email verification failed. The link may have expired or is invalid.",
+    "auth.emailVerificationError": "An error occurred while verifying your email. Please try again later.",
+    "auth.emailNotVerified": "Your email address has not been verified yet. Please check your inbox and click on the confirmation link.",
+    "auth.registrationSuccessVerifyEmail": "Registration successful! Please check your inbox to confirm your email address.",
+    "auth.verificationSuccessTitle": "Verification Successful",
+    "auth.verificationErrorTitle": "Verification Failed",
+    
     // Languages
     "languages.croatian": "Croatian",
     "languages.english": "English",
