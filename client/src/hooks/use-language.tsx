@@ -1311,6 +1311,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.paymentMethod2": "Kreditkarten (Visa, Mastercard)",
     "cart.paymentMethod3": "Banküberweisung (per Vorkasse)",
     "cart.paymentMethod4": "Nachnahme (Zahlung bei Lieferung)",
+    "cart.addMoreForFreeShipping": "Fügen Sie noch {amount}€ in Ihren Warenkorb für kostenlosen Versand hinzu!",
+    "cart.inStock": "Auf Lager",
+    "cart.scent": "Duft:",
+    "cart.colors": "Farben",
+    "breadcrumbs.home": "Startseite",
 
     // Podnožje stranice
     "footer.about": "Über Kerzenwelt by Dani",
@@ -3451,6 +3456,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.paymentMethod2": "Credit cards (Visa, Mastercard)",
     "cart.paymentMethod3": "Bank transfer (by invoice)",
     "cart.paymentMethod4": "Cash on delivery (payment upon receipt)",
+    "cart.addMoreForFreeShipping": "Add {amount}€ more to your cart for free shipping!",
+    "cart.inStock": "In Stock",
+    "cart.scent": "Scent:",
+    "cart.colors": "Colors",
+    "breadcrumbs.home": "Home",
 
     // Footer
     "footer.about": "About Kerzenwelt by Dani",
