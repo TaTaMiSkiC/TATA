@@ -33,6 +33,8 @@ export const translations: Record<Language, Record<string, string>> = {
       "Es gab ein Problem bei der Abmeldung. Bitte versuchen Sie es erneut.",
 
     "auth.verificationNeededTitle": "Verifizierung erforderlich",
+    "product.selectRequiredOptions":
+      "Bitte wählen Sie alle erforderlichen Optionen aus.",
 
     // Languages
     "languages.croatian": "Kroatisch",
@@ -131,7 +133,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.cancelled": "Storniert",
 
     // Order Details
-    "orders.details": "Bestelldetails",
     "orders.order": "Bestellung",
     "orders.backToOrders": "Zurück zu Bestellungen",
     "orders.delivered": "Geliefert",
@@ -1747,7 +1748,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "languages.german": "Njemački",
     "languages.italian": "Talijanski",
     "languages.slovenian": "Slovenski",
-    
+
     // Search
     "search.title": "Pretraži proizvode",
     "search.placeholder": "Pretraži proizvode...",
@@ -2460,6 +2461,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.filterByStatus": "Filtriraj po statusu",
     "admin.users.applyFilters": "Primijeni filtre",
     "admin.users.resetFilters": "Poništi filtre",
+    "product.selectRequiredOptions": "Odaberite obavezne opcije",
 
     // Admin Page Settings
     "admin.pageSettings.title": "Postavke stranice",
@@ -3255,7 +3257,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "profile.orders": "Narudžbe",
 
     // Order Details
-    "orders.details": "Detalji narudžbe",
     "orders.order": "Narudžba",
     "orders.backToOrders": "Natrag na narudžbe",
     "orders.status": "Status",
@@ -3467,7 +3468,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.details": "Details",
     "orders.loadingError": "An error occurred while loading orders.",
     "orders.tryAgain": "Please try again later.",
-    "orders.bankTransfer": "Bank Transfer",
     "orders.pending": "Pending",
     "orders.processing": "Processing",
     "orders.shipped": "Shipped",
@@ -3475,7 +3475,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "orders.cancelled": "Cancelled",
 
     // Order Details
-    "orders.details": "Order Details",
     "orders.order": "Order",
     "orders.backToOrders": "Back to Orders",
     "orders.status": "Status",
@@ -4055,6 +4054,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.dashboard.productCategoryDistribution":
       "Product Category Distribution",
     "admin.dashboard.recentOrders": "Recent Orders",
+    "product.selectRequiredOptions": "Select required options",
     "admin.dashboard.id": "ID",
     "admin.dashboard.user": "User",
     "admin.dashboard.date": "Date",
@@ -4088,7 +4088,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "search.placeholder": "Search for products...",
     "search.enterTerm": "Enter search term...",
     "search.noResults": "No results found",
-    
+
     // Navigation
     "nav.home": "Home",
     "nav.products": "Products",
@@ -4501,7 +4501,7 @@ export const translations: Record<Language, Record<string, string>> = {
   it: {
     // Home Page
     "home.exploreCollection": "Esplora la collezione →",
-    
+
     // Search
     "search.title": "Cerca prodotti",
     "search.placeholder": "Cerca prodotti...",
@@ -5597,6 +5597,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "home.noProducts":
       "Non sono ancora stati aggiunti prodotti a questa collezione.",
     "home.viewCollection": "Visualizza collezione",
+    "product.selectRequiredOptions": "Seleziona le opzioni richieste",
 
     // Prodotti
     "product.addToCart": "Aggiungi al carrello",
@@ -5821,7 +5822,7 @@ export const translations: Record<Language, Record<string, string>> = {
   sl: {
     // Home Page
     "home.exploreCollection": "Razišči kolekcijo →",
-    
+
     // Search
     "search.title": "Išči izdelke",
     "search.placeholder": "Išči izdelke...",
@@ -6458,6 +6459,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.invoices.invoiceSummary": "Povzetek računa",
     "admin.invoices.relatedOrder": "Povezano naročilo",
     "admin.invoices.viewOrder": "Ogled naročila",
+    "product.selectRequiredOptions": "Prosimo, izberite zahtevane možnosti",
     "admin.invoices.noOrder": "Ni povezanega naročila",
     "admin.invoices.language": "Jezik računa",
     "admin.invoices.selectLanguage": "Izberite jezik",
