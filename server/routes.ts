@@ -34,6 +34,8 @@ import {
   cartItems,
   CartItem,
   heroSettingsSchema,
+  subscriberSchema,
+  insertSubscriberSchema,
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {

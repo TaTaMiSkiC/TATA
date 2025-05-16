@@ -19,7 +19,8 @@ import {
   settings,
   invoices,
   invoiceItems,
-  pageVisits
+  pageVisits,
+  subscribers
 } from "@shared/schema";
 
 import type { 
@@ -48,6 +49,8 @@ import type {
   InsertProductColor,
   Collection,
   InsertCollection,
+  Subscriber,
+  InsertSubscriber,
   ProductCollection,
   InsertProductCollection,
   Page,
@@ -1179,5 +1182,55 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(pageVisits)
       .orderBy(desc(pageVisits.count));
+  }
+  
+  // Newsletter subscribers methods
+  async getAllSubscribers(): Promise<Subscriber[]> {
+    return db
+      .select()
+      .from(subscribers)
+      .orderBy(desc(subscribers.createdAt));
+  }
+  
+  async getSubscriberByEmail(email: string): Promise<Subscriber | undefined> {
+    const [subscriber] = await db
+      .select()
+      .from(subscribers)
+      .where(eq(subscribers.email, email));
+    return subscriber;
+  }
+  
+  async getSubscriberByDiscountCode(code: string): Promise<Subscriber | undefined> {
+    const [subscriber] = await db
+      .select()
+      .from(subscribers)
+      .where(eq(subscribers.discountCode, code));
+    return subscriber;
+  }
+  
+  async createSubscriber(data: InsertSubscriber): Promise<Subscriber> {
+    try {
+      const [subscriber] = await db
+        .insert(subscribers)
+        .values(data)
+        .returning();
+      return subscriber;
+    } catch (error) {
+      console.error("Error creating subscriber:", error);
+      throw error;
+    }
+  }
+  
+  async markDiscountAsUsed(email: string): Promise<boolean> {
+    try {
+      await db
+        .update(subscribers)
+        .set({ discountUsed: true })
+        .where(eq(subscribers.email, email));
+      return true;
+    } catch (error) {
+      console.error("Error marking discount as used:", error);
+      return false;
+    }
   }
 }
