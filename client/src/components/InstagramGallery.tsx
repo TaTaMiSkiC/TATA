@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Instagram } from "lucide-react";
+import { useLanguage } from "@/hooks/use-language";
 
 interface InstagramPost {
   id: string;
@@ -19,6 +20,7 @@ interface InstagramGalleryProps {
 }
 
 export default function InstagramGallery({ accessToken, limit = 8 }: InstagramGalleryProps) {
+  const { t } = useLanguage();
   const [showAll, setShowAll] = useState(false);
   const [manualPosts, setManualPosts] = useState<InstagramPost[]>([]);
 
@@ -165,7 +167,7 @@ export default function InstagramGallery({ accessToken, limit = 8 }: InstagramGa
           className="inline-flex items-center text-primary hover:text-primary/80"
         >
           <Instagram size={20} className="mr-2" />
-          Pratite nas na Instagramu
+          {t('instagram.followUs')}
         </a>
       </div>
     </div>
