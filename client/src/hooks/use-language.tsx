@@ -5481,6 +5481,28 @@ export const translations: Record<Language, Record<string, string>> = {
     "languages.german": "Nemški",
     "languages.italian": "Italijanski",
     "languages.slovenian": "Slovenski",
+    
+    // Orders Page
+    "orders.myOrders": "Moja naročila",
+    "orders.orderHistory": "Zgodovina naročil",
+    "orders.noOrders": "Nimate nobenih naročil",
+    "orders.startShopping": "Čas je za vaš prvi nakup!",
+    "orders.browseProducts": "Prebrskajte izdelke",
+    "orders.orderNumber": "Številka naročila",
+    "orders.date": "Datum",
+    "orders.total": "Skupaj",
+    "orders.status": "Status",
+    "orders.paymentMethod": "Način plačila",
+    "orders.actions": "Dejanja",
+    "orders.details": "Podrobnosti",
+    "orders.loadingError": "Pri nalaganju naročil je prišlo do napake.",
+    "orders.tryAgain": "Prosimo, poskusite kasneje.",
+    "orders.bankTransfer": "Bančno nakazilo",
+    "orders.pending": "V obdelavi",
+    "orders.processing": "V izvajanju",
+    "orders.shipped": "Poslano",
+    "orders.completed": "Zaključeno",
+    "orders.cancelled": "Preklicano",
 
     // Products page
     "products.allProducts": "Vsi Izdelki",
