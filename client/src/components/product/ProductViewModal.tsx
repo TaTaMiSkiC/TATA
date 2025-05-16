@@ -375,7 +375,7 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
           {addedToCart ? (
             <Button className="w-full py-6 text-base" variant="default" disabled>
               <CheckCircle size={20} className="mr-2" />
-              Dodano u košaricu
+              {t('cart.addedToCart') || "Dodano u košaricu"}
             </Button>
           ) : (
             <Button 
@@ -384,12 +384,12 @@ export default function ProductViewModal({ isOpen, onClose, product }: ProductVi
               disabled={!canAddToCart || addToCart.isPending}
             >
               <ShoppingBag size={20} className="mr-2" />
-              {addToCart.isPending ? "Dodavanje..." : "Dodaj u košaricu"}
+              {addToCart.isPending ? (t('cart.adding') || "Dodavanje...") : (t('cart.addToCart') || "Dodaj u košaricu")}
             </Button>
           )}
           {!canAddToCart && !addedToCart && (
             <p className="text-xs text-destructive text-center w-full mt-2">
-              Molimo odaberite sve obavezne opcije prije dodavanja u košaricu
+              {t('product.selectRequiredOptions') || "Molimo odaberite sve obavezne opcije prije dodavanja u košaricu"}
             </p>
           )}
         </DialogFooter>
