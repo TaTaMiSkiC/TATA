@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Helmet } from 'react-helmet';
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/use-language";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
@@ -47,6 +48,7 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 export default function ProfilePage() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [tab, setTab] = useState("profil");
 
   // Dohvaćanje narudžbi korisnika
@@ -158,26 +160,26 @@ export default function ProfilePage() {
   return (
     <Layout>
       <Helmet>
-        <title>Moj profil | Kerzenwelt by Dani</title>
-        <meta name="description" content="Upravljajte svojim računom, pregledajte narudžbe i ažurirajte osobne podatke." />
+        <title>{t('profile.myProfile')} | Kerzenwelt by Dani</title>
+        <meta name="description" content={t('profile.meta.description')} />
       </Helmet>
 
       <div className="container mx-auto py-12 px-4">
-        <h1 className="text-3xl font-bold mb-6">Moj profil</h1>
+        <h1 className="text-3xl font-bold mb-6">{t('profile.myProfile')}</h1>
 
         <Tabs value={tab} onValueChange={setTab} className="space-y-6">
           <TabsList className="grid grid-cols-3 max-w-md">
-            <TabsTrigger value="profil">Profil</TabsTrigger>
-            <TabsTrigger value="narudzbe">Narudžbe</TabsTrigger>
-            <TabsTrigger value="lozinka">Lozinka</TabsTrigger>
+            <TabsTrigger value="profil">{t('profile.profile')}</TabsTrigger>
+            <TabsTrigger value="narudzbe">{t('profile.orders')}</TabsTrigger>
+            <TabsTrigger value="lozinka">{t('profile.password')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="profil" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Osobni podaci</CardTitle>
+                <CardTitle>{t('profile.personalInfo')}</CardTitle>
                 <CardDescription>
-                  Ažurirajte svoje osobne podatke i adresu za dostavu.
+                  {t('profile.updateInfo')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -189,9 +191,9 @@ export default function ProfilePage() {
                         name="firstName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Ime</FormLabel>
+                            <FormLabel>{t('profile.firstName')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Vaše ime" {...field} />
+                              <Input placeholder={t('profile.firstNamePlaceholder')} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -203,9 +205,9 @@ export default function ProfilePage() {
                         name="lastName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Prezime</FormLabel>
+                            <FormLabel>{t('profile.lastName')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Vaše prezime" {...field} />
+                              <Input placeholder={t('profile.lastNamePlaceholder')} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -217,9 +219,9 @@ export default function ProfilePage() {
                         name="email"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>{t('profile.email')}</FormLabel>
                             <FormControl>
-                              <Input type="email" placeholder="vas@email.com" {...field} />
+                              <Input type="email" placeholder="email@example.com" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -231,7 +233,7 @@ export default function ProfilePage() {
                         name="phone"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Telefon</FormLabel>
+                            <FormLabel>{t('profile.phone')}</FormLabel>
                             <FormControl>
                               <Input placeholder="+385..." {...field} />
                             </FormControl>
@@ -245,9 +247,9 @@ export default function ProfilePage() {
                         name="address"
                         render={({ field }) => (
                           <FormItem className="md:col-span-2">
-                            <FormLabel>Adresa</FormLabel>
+                            <FormLabel>{t('profile.address')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Ulica i broj" {...field} />
+                              <Input placeholder={t('profile.addressPlaceholder')} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -259,9 +261,9 @@ export default function ProfilePage() {
                         name="city"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Grad</FormLabel>
+                            <FormLabel>{t('profile.city')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Grad" {...field} />
+                              <Input placeholder={t('profile.cityPlaceholder')} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -273,7 +275,7 @@ export default function ProfilePage() {
                         name="postalCode"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Poštanski broj</FormLabel>
+                            <FormLabel>{t('profile.postalCode')}</FormLabel>
                             <FormControl>
                               <Input placeholder="10000" {...field} />
                             </FormControl>
@@ -287,9 +289,9 @@ export default function ProfilePage() {
                         name="country"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Država</FormLabel>
+                            <FormLabel>{t('profile.country')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Hrvatska" {...field} />
+                              <Input placeholder={t('profile.countryPlaceholder')} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -299,7 +301,7 @@ export default function ProfilePage() {
 
                     <Button type="submit" disabled={updateProfileMutation.isPending}>
                       {updateProfileMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Spremi promjene
+                      {t('profile.saveChanges')}
                     </Button>
                   </form>
                 </Form>
@@ -310,9 +312,9 @@ export default function ProfilePage() {
           <TabsContent value="narudzbe" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Moje narudžbe</CardTitle>
+                <CardTitle>{t('profile.myOrders')}</CardTitle>
                 <CardDescription>
-                  Pregled vaših prethodnih narudžbi i njihov status.
+                  {t('profile.ordersDescription')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -326,9 +328,9 @@ export default function ProfilePage() {
                       <div key={order.id} className="py-4">
                         <div className="flex flex-wrap justify-between items-start gap-2">
                           <div>
-                            <p className="font-medium">Narudžba #{order.id}</p>
+                            <p className="font-medium">{t('profile.order')} #{order.id}</p>
                             <p className="text-sm text-muted-foreground">
-                              {new Date(order.createdAt).toLocaleDateString('hr-HR')}
+                              {new Date(order.createdAt).toLocaleDateString()}
                             </p>
                           </div>
                           <div className="flex flex-col items-end">
@@ -336,9 +338,9 @@ export default function ProfilePage() {
                               ${order.status === 'completed' ? 'bg-green-100 text-green-800' : 
                                 order.status === 'processing' ? 'bg-blue-100 text-blue-800' : 
                                 'bg-orange-100 text-orange-800'}`}>
-                              {order.status === 'pending' ? 'Na čekanju' : 
-                               order.status === 'processing' ? 'U obradi' : 
-                               order.status === 'completed' ? 'Završeno' : 
+                              {order.status === 'pending' ? t('profile.orderStatus.pending') : 
+                               order.status === 'processing' ? t('profile.orderStatus.processing') : 
+                               order.status === 'completed' ? t('profile.orderStatus.completed') : 
                                order.status}
                             </div>
                             <p className="mt-1 font-medium">{Number(order.total).toFixed(2)} €</p>
@@ -346,7 +348,7 @@ export default function ProfilePage() {
                         </div>
                         <div className="mt-2">
                           <Link href={`/orders/${order.id}`}>
-                            <Button variant="outline" size="sm">Detalji narudžbe</Button>
+                            <Button variant="outline" size="sm">{t('profile.orderDetails')}</Button>
                           </Link>
                         </div>
                       </div>
@@ -354,9 +356,9 @@ export default function ProfilePage() {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-muted-foreground">Nemate narudžbi.</p>
+                    <p className="text-muted-foreground">{t('profile.noOrders')}</p>
                     <Link href="/products">
-                      <Button variant="outline" className="mt-4">Pregledaj proizvode</Button>
+                      <Button variant="outline" className="mt-4">{t('profile.browseProducts')}</Button>
                     </Link>
                   </div>
                 )}
@@ -367,9 +369,9 @@ export default function ProfilePage() {
           <TabsContent value="lozinka" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Promjena lozinke</CardTitle>
+                <CardTitle>{t('profile.passwordChange')}</CardTitle>
                 <CardDescription>
-                  Ažurirajte svoju lozinku kako biste osigurali sigurnost računa.
+                  {t('profile.passwordChangeDescription')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -380,7 +382,7 @@ export default function ProfilePage() {
                       name="currentPassword"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Trenutna lozinka</FormLabel>
+                          <FormLabel>{t('profile.currentPassword')}</FormLabel>
                           <FormControl>
                             <Input type="password" {...field} />
                           </FormControl>
@@ -394,7 +396,7 @@ export default function ProfilePage() {
                       name="newPassword"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Nova lozinka</FormLabel>
+                          <FormLabel>{t('profile.newPassword')}</FormLabel>
                           <FormControl>
                             <Input type="password" {...field} />
                           </FormControl>
@@ -408,7 +410,7 @@ export default function ProfilePage() {
                       name="confirmPassword"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Potvrdite novu lozinku</FormLabel>
+                          <FormLabel>{t('profile.confirmPassword')}</FormLabel>
                           <FormControl>
                             <Input type="password" {...field} />
                           </FormControl>
@@ -419,7 +421,7 @@ export default function ProfilePage() {
 
                     <Button type="submit" disabled={changePasswordMutation.isPending}>
                       {changePasswordMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Promijeni lozinku
+                      {t('profile.changePassword')}
                     </Button>
                   </form>
                 </Form>
