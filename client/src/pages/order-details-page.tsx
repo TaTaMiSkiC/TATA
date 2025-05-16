@@ -723,9 +723,9 @@ export default function OrderDetailsPage() {
                 <SelectValue placeholder={t('orders.invoiceLanguage')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="hr">Hrvatski</SelectItem>
-                <SelectItem value="en">Engleski</SelectItem>
-                <SelectItem value="de">Njemački</SelectItem>
+                <SelectItem value="hr">{t('languages.croatian')}</SelectItem>
+                <SelectItem value="en">{t('languages.english')}</SelectItem>
+                <SelectItem value="de">{t('languages.german')}</SelectItem>
               </SelectContent>
             </Select>
             
@@ -736,12 +736,12 @@ export default function OrderDetailsPage() {
               {generatingInvoice ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Generiranje...
+                  {t('orders.generating')}
                 </>
               ) : (
                 <>
                   <FileText className="h-4 w-4 mr-2" />
-                  Preuzmi račun
+                  {t('orders.downloadInvoice')}
                 </>
               )}
             </Button>
