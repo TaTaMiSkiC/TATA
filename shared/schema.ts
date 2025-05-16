@@ -17,6 +17,7 @@ export const users = pgTable("users", {
   country: text("country"),
   phone: text("phone"),
   isAdmin: boolean("is_admin").default(false).notNull(),
+  emailVerified: boolean("email_verified").default(false).notNull(), // Whether email has been verified
   discountAmount: decimal("discount_amount", { precision: 10, scale: 2 }).default("0"),
   discountMinimumOrder: decimal("discount_minimum_order", { precision: 10, scale: 2 }).default("0"),
   discountExpiryDate: timestamp("discount_expiry_date"),
@@ -26,7 +27,29 @@ export const users = pgTable("users", {
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
+  emailVerified: true,
 });
+
+// Email verification tokens
+export const verificationTokens = pgTable("verification_tokens", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  token: text("token").notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertVerificationTokenSchema = createInsertSchema(verificationTokens).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const verificationTokensRelations = relations(verificationTokens, ({ one }) => ({
+  user: one(users, { fields: [verificationTokens.userId], references: [users.id] }),
+}));
+
+export type VerificationToken = typeof verificationTokens.$inferSelect;
+export type InsertVerificationToken = z.infer<typeof insertVerificationTokenSchema>;
 
 // Products table
 export const products = pgTable("products", {

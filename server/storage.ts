@@ -19,9 +19,10 @@ import {
   type Invoice, type InsertInvoice,
   type InvoiceItem, type InsertInvoiceItem,
   type PageVisit, type InsertPageVisit,
+  type VerificationToken, type InsertVerificationToken,
   users, products, categories, orders, orderItems, cartItems, reviews, settings, pages,
   scents, colors, productScents, productColors, collections, productCollections, 
-  invoices, invoiceItems, pageVisits
+  invoices, invoiceItems, pageVisits, verificationTokens
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -43,6 +44,12 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   getAllUsers(): Promise<User[]>;
   updateUser(id: number, userData: Partial<User>): Promise<User | undefined>;
+  verifyUserEmail(userId: number): Promise<User | undefined>;
+  
+  // Email verification methods
+  createVerificationToken(token: InsertVerificationToken): Promise<VerificationToken>;
+  getVerificationToken(token: string): Promise<VerificationToken | undefined>;
+  deleteVerificationToken(token: string): Promise<void>;
   
   // Page visits methods
   incrementPageVisit(path: string): Promise<any>;
@@ -165,6 +172,7 @@ export class MemStorage implements IStorage {
   private invoices: Map<number, Invoice> = new Map();
   private invoiceItems: Map<number, InvoiceItem> = new Map();
   private pageVisits: Map<number, PageVisit> = new Map();
+  private verificationTokens: Map<number, VerificationToken> = new Map();
   
   private userIdCounter: number;
   private productIdCounter: number;
@@ -183,6 +191,7 @@ export class MemStorage implements IStorage {
   private invoiceIdCounter: number;
   private invoiceItemIdCounter: number;
   private pageVisitIdCounter: number;
+  private verificationTokenIdCounter: number;
   
   sessionStore: SessionStore;
   
@@ -202,6 +211,7 @@ export class MemStorage implements IStorage {
     this.productScents = [];
     this.productColors = [];
     this.productCollections = [];
+    this.verificationTokens = new Map();
     
     this.userIdCounter = 1;
     this.productIdCounter = 1;
@@ -220,6 +230,7 @@ export class MemStorage implements IStorage {
     this.invoiceIdCounter = 1;
     this.invoiceItemIdCounter = 1;
     this.pageVisitIdCounter = 1;
+    this.verificationTokenIdCounter = 1;
     
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000, // prune expired entries every 24h
