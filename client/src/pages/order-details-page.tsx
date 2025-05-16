@@ -804,34 +804,34 @@ export default function OrderDetailsPage() {
           
           <Card>
             <CardHeader>
-              <CardTitle>Dostava</CardTitle>
+              <CardTitle>{t('orders.shipping')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {orderWithItems.shippingFullName && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Ime:</span>
+                  <span className="text-muted-foreground">{t('orders.name')}:</span>
                   <span>{orderWithItems.shippingFullName}</span>
                 </div>
               )}
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Adresa:</span>
+                <span className="text-muted-foreground">{t('orders.address')}:</span>
                 <span>{orderWithItems.shippingAddress || 'N/A'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Grad:</span>
+                <span className="text-muted-foreground">{t('orders.city')}:</span>
                 <span>{orderWithItems.shippingCity || 'N/A'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Poštanski broj:</span>
+                <span className="text-muted-foreground">{t('orders.postalCode')}:</span>
                 <span>{orderWithItems.shippingPostalCode || 'N/A'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Država:</span>
+                <span className="text-muted-foreground">{t('orders.country')}:</span>
                 <span>{orderWithItems.shippingCountry || 'N/A'}</span>
               </div>
               {orderWithItems.shippingPhone && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Telefon:</span>
+                  <span className="text-muted-foreground">{t('orders.phone')}:</span>
                   <span>{orderWithItems.shippingPhone}</span>
                 </div>
               )}
