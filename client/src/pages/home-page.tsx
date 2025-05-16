@@ -5,7 +5,7 @@ import FeaturedProducts from "@/components/home/FeaturedProducts";
 import AboutUs from "@/components/home/AboutUs";
 import CollectionBanner from "@/components/home/CollectionBanner";
 import Testimonials from "@/components/home/Testimonials";
-import Newsletter from "@/components/home/Newsletter";
+import { Newsletter } from "@/components/home/Newsletter";
 import { useQuery } from "@tanstack/react-query";
 import { Category } from "@shared/schema";
 import CategoryCard from "@/components/products/CategoryCard";
