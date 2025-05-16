@@ -1708,6 +1708,31 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   hr: {
+    // Auth Success/Error Messages
+    "auth.loginSuccessTitle": "Prijava uspješna",
+    "auth.loginSuccessMessage": "Dobrodošli natrag, {username}!",
+    "auth.loginErrorTitle": "Prijava nije uspjela",
+    "auth.loginErrorMessage": "Pogrešno korisničko ime ili lozinka.",
+    
+    "auth.registerSuccessTitle": "Registracija uspješna",
+    "auth.registerSuccessMessage": "Dobrodošli, {username}!",
+    "auth.registerErrorTitle": "Registracija nije uspjela",
+    "auth.registerErrorMessage": "Korisničko ime ili email već postoji.",
+    
+    "auth.logoutSuccessTitle": "Odjava uspješna",
+    "auth.logoutSuccessMessage": "Uspješno ste se odjavili iz sustava.",
+    "auth.logoutErrorTitle": "Odjava nije uspjela",
+    "auth.logoutErrorMessage": "Došlo je do problema prilikom odjave. Molimo pokušajte ponovno.",
+    
+    "auth.verificationNeededTitle": "Potrebna verifikacija",
+    "auth.emailVerificationSuccess": "Vaša email adresa je uspješno potvrđena. Sada se možete prijaviti.",
+    "auth.emailVerificationFailed": "Potvrda email adrese nije uspjela. Poveznica je možda istekla ili nije važeća.",
+    "auth.emailVerificationError": "Došlo je do pogreške prilikom potvrde vaše email adrese. Molimo pokušajte ponovno kasnije.",
+    "auth.emailNotVerified": "Vaša email adresa još nije potvrđena. Provjerite svoj inbox i kliknite na poveznicu za potvrdu.",
+    "auth.registrationSuccessVerifyEmail": "Registracija uspješna! Provjerite svoj inbox za potvrdu email adrese.",
+    "auth.verificationSuccessTitle": "Potvrda uspješna",
+    "auth.verificationErrorTitle": "Potvrda nije uspjela",
+    
     // Languages
     "languages.croatian": "Hrvatski",
     "languages.english": "Engleski",
@@ -4414,6 +4439,31 @@ export const translations: Record<Language, Record<string, string>> = {
   },
 
   it: {
+    // Auth Success/Error Messages
+    "auth.loginSuccessTitle": "Accesso riuscito",
+    "auth.loginSuccessMessage": "Bentornato, {username}!",
+    "auth.loginErrorTitle": "Accesso fallito",
+    "auth.loginErrorMessage": "Nome utente o password errati.",
+    
+    "auth.registerSuccessTitle": "Registrazione riuscita",
+    "auth.registerSuccessMessage": "Benvenuto, {username}!",
+    "auth.registerErrorTitle": "Registrazione fallita",
+    "auth.registerErrorMessage": "Nome utente o email già esistente.",
+    
+    "auth.logoutSuccessTitle": "Disconnessione riuscita",
+    "auth.logoutSuccessMessage": "Sei stato disconnesso con successo.",
+    "auth.logoutErrorTitle": "Disconnessione fallita",
+    "auth.logoutErrorMessage": "Si è verificato un problema durante la disconnessione. Riprova.",
+    
+    "auth.verificationNeededTitle": "Verifica necessaria",
+    "auth.emailVerificationSuccess": "Il tuo indirizzo email è stato verificato con successo. Ora puoi accedere.",
+    "auth.emailVerificationFailed": "Verifica email fallita. Il link potrebbe essere scaduto o non valido.",
+    "auth.emailVerificationError": "Si è verificato un errore durante la verifica della tua email. Riprova più tardi.",
+    "auth.emailNotVerified": "Il tuo indirizzo email non è ancora stato verificato. Controlla la tua casella di posta e clicca sul link di conferma.",
+    "auth.registrationSuccessVerifyEmail": "Registrazione riuscita! Controlla la tua casella di posta per confermare il tuo indirizzo email.",
+    "auth.verificationSuccessTitle": "Verifica riuscita",
+    "auth.verificationErrorTitle": "Verifica fallita",
+    
     // Languages
     "languages.croatian": "Croato",
     "languages.english": "Inglese",
