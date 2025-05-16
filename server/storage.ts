@@ -295,6 +295,53 @@ export class MemStorage implements IStorage {
     return updatedUser;
   }
   
+  async verifyUserEmail(userId: number): Promise<User | undefined> {
+    const user = this.users.get(userId);
+    if (!user) return undefined;
+    
+    const updatedUser: User = {
+      ...user,
+      emailVerified: true,
+      updatedAt: new Date()
+    };
+    
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+  
+  // Email verification token methods
+  async createVerificationToken(tokenData: InsertVerificationToken): Promise<VerificationToken> {
+    const id = this.verificationTokenIdCounter++;
+    const now = new Date();
+    
+    const token: VerificationToken = {
+      ...tokenData,
+      id,
+      createdAt: now
+    };
+    
+    this.verificationTokens.set(id, token);
+    return token;
+  }
+  
+  async getVerificationToken(tokenString: string): Promise<VerificationToken | undefined> {
+    for (const token of this.verificationTokens.values()) {
+      if (token.token === tokenString) {
+        return token;
+      }
+    }
+    return undefined;
+  }
+  
+  async deleteVerificationToken(tokenString: string): Promise<void> {
+    for (const [id, token] of this.verificationTokens.entries()) {
+      if (token.token === tokenString) {
+        this.verificationTokens.delete(id);
+        return;
+      }
+    }
+  }
+  
   // Collection methods
   async getCollection(id: number): Promise<Collection | undefined> {
     return this.collections.get(id);

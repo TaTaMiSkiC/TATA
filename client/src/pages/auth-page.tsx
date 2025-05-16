@@ -46,9 +46,11 @@ export default function AuthPage() {
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [verificationMessage, setVerificationMessage] = useState<string | null>(null);
+  const [verificationSuccess, setVerificationSuccess] = useState<boolean>(false);
   const { user, loginMutation, registerMutation } = useAuth();
   const [, navigate] = useLocation();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   // Create validation schemas with translations
   const loginSchema = z.object({
@@ -93,14 +95,69 @@ export default function AuthPage() {
     },
   });
 
+  // Check for verification token in URL when component mounts
+  useEffect(() => {
+    const verifyEmailToken = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+      
+      if (token) {
+        try {
+          const response = await fetch(`/api/verify-email/${token}`);
+          const data = await response.json();
+          
+          if (response.ok) {
+            setVerificationSuccess(true);
+            setVerificationMessage(t("auth.emailVerificationSuccess"));
+          } else {
+            setVerificationSuccess(false);
+            setVerificationMessage(data.message || t("auth.emailVerificationFailed"));
+          }
+        } catch (error) {
+          console.error("Verification error:", error);
+          setVerificationSuccess(false);
+          setVerificationMessage(t("auth.emailVerificationError"));
+        }
+      }
+    };
+    
+    verifyEmailToken();
+  }, [t]);
+
   // Form submission handlers
   const onLoginSubmit = (values: LoginFormValues) => {
-    loginMutation.mutate(values);
+    // Reset verification message when attempting to login
+    setVerificationMessage(null);
+    
+    loginMutation.mutate(values, {
+      onError: (error: any) => {
+        // Check for email not verified error
+        if (error.message === "email_not_verified") {
+          setVerificationMessage(t("auth.emailNotVerified"));
+          setVerificationSuccess(false);
+        }
+      }
+    });
   };
 
   const onRegisterSubmit = (values: RegisterFormValues) => {
     const { confirmPassword, ...registerData } = values;
-    registerMutation.mutate(registerData);
+    
+    // Add current language preference to registration data
+    const registerDataWithLanguage = {
+      ...registerData,
+      language: language
+    };
+    
+    registerMutation.mutate(registerDataWithLanguage, {
+      onSuccess: (data) => {
+        // Check if the response contains the verification message
+        if (data.message === "registration_success_verify_email") {
+          setVerificationMessage(t("auth.registrationSuccessVerifyEmail"));
+          setVerificationSuccess(true);
+        }
+      }
+    });
   };
 
   return (

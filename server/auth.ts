@@ -6,6 +6,7 @@ import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
 import { User as SelectUser } from "@shared/schema";
+import { sendVerificationEmail } from "./sendgrid";
 
 declare global {
   namespace Express {
@@ -66,6 +67,9 @@ export function setupAuth(app: Express) {
         const user = await storage.getUserByUsername(username);
         if (!user || !(await comparePasswords(password, user.password))) {
           return done(null, false);
+        } else if (user.emailVerified === false) {
+          // User exists but email is not verified
+          return done(null, false, { message: "email_not_verified" });
         } else {
           return done(null, user);
         }
@@ -98,19 +102,87 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ message: "Email adresa već postoji" });
       }
 
-      // Create the user with hashed password
+      // Create the user with hashed password and set emailVerified to false
       const user = await storage.createUser({
         ...req.body,
         password: await hashPassword(req.body.password),
+        emailVerified: false
       });
 
-      // Log the user in
-      req.login(user, (err) => {
-        if (err) return next(err);
-        res.status(201).json(user);
+      // Generate a verification token
+      const tokenString = randomBytes(32).toString("hex");
+      const expirationDate = new Date();
+      expirationDate.setHours(expirationDate.getHours() + 24); // Token valid for 24 hours
+      
+      const token = await storage.createVerificationToken({
+        userId: user.id,
+        token: tokenString,
+        expiresAt: expirationDate
+      });
+
+      // Generate verification link
+      const verificationLink = `${req.protocol}://${req.get('host')}/verify-email?token=${tokenString}`;
+      
+      // Send verification email
+      try {
+        // Get language preference from request or default to German
+        const language = req.body.language || req.body.preferredLanguage || 'de';
+        await sendVerificationEmail(user.email, user.username, verificationLink, language);
+      } catch (emailError) {
+        console.error("Failed to send verification email:", emailError);
+        // Still create the user, but log the error
+      }
+
+      // Respond with success but don't log the user in yet
+      res.status(201).json({ 
+        message: "registration_success_verify_email",
+        userId: user.id
       });
     } catch (error) {
       next(error);
+    }
+  });
+  
+  // Email verification endpoint
+  app.get("/api/verify-email/:token", async (req, res) => {
+    try {
+      const { token } = req.params;
+      
+      // Verify the token
+      const verificationToken = await storage.getVerificationToken(token);
+      
+      if (!verificationToken) {
+        return res.status(400).json({ message: "Invalid or expired verification token" });
+      }
+      
+      // Check if token is expired
+      if (new Date() > verificationToken.expiresAt) {
+        // Delete the expired token
+        await storage.deleteVerificationToken(token);
+        return res.status(400).json({ message: "Verification token has expired" });
+      }
+      
+      // Verify the user's email
+      const user = await storage.verifyUserEmail(verificationToken.userId);
+      
+      if (!user) {
+        return res.status(400).json({ message: "User not found" });
+      }
+      
+      // Delete the used token
+      await storage.deleteVerificationToken(token);
+      
+      // Log the user in automatically after verification
+      req.login(user, (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Failed to login after verification" });
+        }
+        return res.status(200).json({ message: "Email verified successfully" });
+      });
+      
+    } catch (error) {
+      console.error("Error verifying email:", error);
+      res.status(500).json({ message: "Server error during verification" });
     }
   });
 
