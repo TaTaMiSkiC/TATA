@@ -14,6 +14,13 @@ export const translations: Record<Language, Record<string, string>> = {
   de: {
     // Home Page
     "home.exploreCollection": "Kollektion erkunden →",
+    "test.recenzija": "Rezension",
+    "produkt.specifikacije": "Spezifikationen",
+    "product.nodetailsforthisproduct":
+      "Für dieses Produkt sind keine Details verfügbar.",
+    "product.recenzijekupca": "Kundenrezensionen",
+    "product.recenzijebrisanje":
+      "Diese Aktion ist irreversibel. Die Bewertung wird dauerhaft aus dem System gelöscht.",
 
     // Auth Success/Error Messages
     "auth.loginSuccessTitle": "Anmeldung erfolgreich",
@@ -212,6 +219,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "products.tryDifferentFilters":
       "Versuchen Sie andere Filter oder sehen Sie sich unser gesamtes Angebot an.",
     "products.showAllProducts": "Alle Produkte anzeigen",
+    "product.favorite": "Favorit",
 
     // Instagram
     "instagram.followUs": "Folge uns auf Instagram",
@@ -1630,7 +1638,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "home.handmade": "Handgefertigt",
     "home.handmadeDesc": "Jede Kerze wird sorgfältig und von Hand hergestellt",
     "home.sustainability": "Nachhaltigkeit",
-    "home.sustainabilityDesc": "Umweltfreundliche Verpackung und Materialien",
+    "home.sustainabilityDesc":
+      "Es ist vegan, frei von Parafinen und ohne Tierversuche hergestellt.",
     "home.homeComfort": "Wohnkomfort",
     "home.homeComfortDesc":
       "Schaffen Sie eine gemütliche Atmosphäre in Ihrem Raum",
@@ -1710,6 +1719,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "breadcrumbs.home": "Startseite",
 
     // Podnožje stranice
+    "product.dimensionsandWeight": "Abmessungen und Gewicht",
     "footer.about": "Über Kerzenwelt by Dani",
     "footer.about.text":
       "Handgefertigte Kerzen aus natürlichen Inhaltsstoffen. Von unserer Familie zu Ihrem Zuhause.",
@@ -1874,6 +1884,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "products.tryDifferentFilters":
       "Pokušajte s drugačijim filterima ili pogledajte našu cjelokupnu ponudu.",
     "products.showAllProducts": "Prikaži sve proizvode",
+    "product.recenzijekupca": "Recenzije kupaca",
 
     // Instagram
     "instagram.followUs": "Pratite nas na Instagramu",
@@ -2262,6 +2273,8 @@ export const translations: Record<Language, Record<string, string>> = {
       "Informacije za praćenje uspješno ažurirane",
     "admin.orders.trackingError":
       "Greška prilikom ažuriranja informacija za praćenje",
+    "product.recenzijebrisanje":
+      "Ova akcija je nepovratna. Recenzija će biti trajno izbrisana iz sustava.",
 
     // Admin Invoices Page
     "admin.invoices.noInvoicesCreated": "Nema kreiranih računa",
@@ -2518,6 +2531,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.applyFilters": "Primijeni filtre",
     "admin.users.resetFilters": "Poništi filtre",
     "product.selectRequiredOptions": "Odaberite obavezne opcije",
+    "product.favorite": "Favorit",
 
     // Admin Page Settings
     "admin.pageSettings.title": "Postavke stranice",
@@ -2897,6 +2911,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "nav.allCategories": "Sve kategorije",
     "nav.loadingCategories": "Učitavanje kategorija...",
     "nav.pictures": "Slike",
+    "product.nodetailsforthisproduct":
+      "Nema dostupnih detalja za ovaj proizvod",
 
     // Admin izbornik
     "admin.dashboard": "Nadzorna ploča",
@@ -2963,6 +2979,7 @@ export const translations: Record<Language, Record<string, string>> = {
       "Jeste li sigurni da želite izbrisati ovu stavku? Ova radnja ne može se poništiti.",
 
     // Admin Product Page
+    "produkt.specifikacije": "Specifikacije Proizvoda",
     "admin.productDetails": "Detalji proizvoda",
     "admin.productName": "Naziv proizvoda",
     "admin.productDescription": "Opis proizvoda",
@@ -3191,6 +3208,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "product.materials": "Materijali",
     "product.instructions": "Upute za korištenje",
     "product.maintenance": "Održavanje",
+    "product.dimensionsandWeight": "Dimenzije i težina",
 
     // Stranica proizvoda
     "products.allProducts": "Svi proizvodi",
@@ -3285,6 +3303,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "footer.paymentMethods": "Načini plaćanja",
 
     // Testimonials
+    "test.recenzija": "Recenzija",
     "testimonials.title": "Što kažu naši kupci",
     "testimonials.subtitle": "Iskustva naših zadovoljnih kupaca",
     "testimonials.empty":
@@ -4172,6 +4191,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "nav.pictures": "Pictures",
 
     // Admin menu
+    "produkt.specifikacije": "Product Specifications",
     "admin.dashboard": "Dashboard",
     "admin.products": "Products",
     "admin.categories": "Categories",
@@ -4211,6 +4231,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.active": "Active",
     "admin.inactive": "Inactive",
     "admin.selectLanguage": "Select Language",
+    "product.dimensionsandWeight": "Dimensions and Weight",
+    "product.recenzijekupca": "Customer Reviews",
 
     // Admin Common Elements
     "admin.id": "ID",
@@ -4471,6 +4493,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "product.materials": "Materials",
     "product.instructions": "Instructions",
     "product.maintenance": "Maintenance",
+    "product.nodetailsforthisproduct": "No details available for this product",
 
     // Cart
     "cart.title": "Your Cart",
@@ -4575,6 +4598,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Auth Success/Error Messages
     "auth.loginSuccessTitle": "Accesso riuscito",
+    "product.dimensionsandWeight": "Dimensioni e peso",
     "auth.loginSuccessMessage": "Bentornato, {username}!",
     "auth.loginErrorTitle": "Accesso fallito",
     "auth.loginErrorMessage": "Nome utente o password errati.",
@@ -4979,6 +5003,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.active": "Attivo",
     "admin.inactive": "Inattivo",
     "admin.selectLanguage": "Seleziona lingua",
+    "product.favorite": "Favorit",
 
     // Admin Common Elements
     "admin.id": "ID",
@@ -5299,6 +5324,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.price": "Prezzo",
     "admin.orders.subtotal": "Subtotale",
     "admin.orders.tax": "Tassa",
+    "produkt.specifikacije": "Specifiche prodotto",
     "admin.orders.shippingCost": "Costo spedizione",
     "admin.orders.orderTotal": "Totale ordine",
     "admin.orders.statusPending": "In attesa",
@@ -5354,6 +5380,7 @@ export const translations: Record<Language, Record<string, string>> = {
       "Informazioni di tracciamento aggiornate con successo",
     "admin.orders.trackingError":
       "Errore durante l'aggiornamento delle informazioni di tracciamento",
+    "product.recenzijekupca": "Recensioni dei clienti",
 
     // Admin Invoices Page
     "admin.invoices.noInvoicesCreated": "Nessuna fattura creata",
@@ -5745,6 +5772,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "cart.scent": "Profumo:",
     "cart.colors": "Colori",
     "breadcrumbs.home": "Home",
+    "product.nodetailsforthisproduct": "Nessun dettaglio per questo prodotto",
 
     // Piè di pagina
     "footer.about": "Chi è Kerzenwelt by Dani",
@@ -6268,6 +6296,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "nav.allCategories": "Vse kategorije",
     "nav.loadingCategories": "Nalaganje kategorij...",
     "nav.pictures": "Slike",
+    "product.recenzijekupca": "Recenzije kupcev",
 
     // Admin meni
     "admin.dashboard": "Nadzorna plošča",
@@ -6493,6 +6522,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.orders.multipleColors": "Več barv",
 
     // Admin Invoices Page
+    "product.dimensionsandWeight": "Dimenzije in teža",
     "admin.invoices.noInvoicesCreated": "Ni ustvarjenih računov",
     "common.email": "E-pošta",
     "common.note": "Opomba",
@@ -6791,6 +6821,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.role": "Vloga",
     "admin.users.lastLogin": "Zadnja prijava",
     "admin.users.actions": "Dejanja",
+    "produkt.specifikacije": "Specifikacije izdelka",
     "admin.users.admin": "Administrator",
     "admin.users.customer": "Stranka",
     "admin.users.staff": "Osebje",
@@ -6841,6 +6872,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "admin.users.updating": "Posodabljanje...",
     "admin.users.successUpdate": "Uspeh",
     "admin.users.successUpdateDesc": "Uporabnik je bil uspešno posodobljen.",
+    "product.favorite": "Favorit",
     "admin.users.errorUpdate": "Napaka",
     "admin.users.errorUpdateDesc":
       "Pri posodabljanju uporabnika je prišlo do napake: {error}",
@@ -6946,6 +6978,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "product.materials": "Materiali",
     "product.instructions": "Navodila za uporabo",
     "product.maintenance": "Vzdrževanje",
+    "product.nodetailsforthisproduct": "Ni podrobnosti za ta izdelek",
 
     // Košarica
     "cart.title": "Vaša košarica",
